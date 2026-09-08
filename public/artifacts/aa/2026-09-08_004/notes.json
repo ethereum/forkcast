@@ -1,0 +1,59 @@
+{
+  "meeting": "AA #004 - 2026-09-08",
+  "sections": [
+    {
+      "heading": "EIP-8141 Spec Status",
+      "summary": "No spec changes in the past week; DevNet 0 spec is frozen, with only clarifications allowed going forward.",
+      "timestamp": "00:07:03",
+      "body": "- No spec changes to EIP-8141 in the last week; the DevNet Zero spec is frozen and only clarifications will be added at this point.\n- Open PRs against the spec exist but have not been reviewed yet; lightclient has been focused on the Geth implementation.\n  - [PRs against 8141](https://forkcast.org/eips/8141/?tab=history) were linked for reference.\n- Teams interested in prioritizing changes for DevNet 1 are encouraged to post in chat, raise hands, or DM lightclient."
+    },
+    {
+      "heading": "Test Release v0.3.0",
+      "summary": "Execution-specs test release v0.3.0 covers deep EVM code paths and frame-specific tests aligned with frozen DevNet 0 specs.",
+      "timestamp": "00:08:07",
+      "body": "- [Release tests-frames-devnet@v0.3.0](https://github.com/ethereum/execution-specs/releases#release-tests-frames-devnet@v0.3.0) published last week.\n- The release exercises deeper EVM code paths available to legacy transactions and now also via the Frame Transaction Envelope.\n- Passing all tests in this release should indicate good Frames DevNet 0 readiness.\n- More frame-specific tests are being developed and will be added in the coming days."
+    },
+    {
+      "heading": "Frames DevNet 0 Readiness and Client Updates",
+      "summary": "Geth, ethrex, and Nethermind are all ready for Frames DevNet 0; launch awaits EthPandaOps (likely Barnabas) availability.",
+      "timestamp": "00:10:14",
+      "body": "- **Geth**: Passing state tests; ran a Kurtosis network over the weekend with ethrex and Nethermind implementations. Branch name is `frames-devnet-0`.\n- **ethrex**: Passing the latest test suite; public testnet upgraded to latest spec tests. Nethermind has joined as a validator on ethrex's testnet.\n  - ethrex offered to onboard other clients (including Geth) as validators on their testnet; deposit tokens available on request.\n  - [Faucet link](https://faucet.frames.ethrex.xyz) shared for other clients to onboard.\n  - Ivan proposed a test for fork transition coverage for the Xperia verifier install; Guru sent feedback to be reviewed.\n- **Nethermind**: Ready for the first DevNet; running a validator on ethrex's DevNet. Code improvements underway, hoping to merge soon.\n- **Besu**: Not yet ready for the devnet and no status to report; Justin Florentine is the point person and will look into joining ethrex's testnet.\n- EthPandaOps facilitation: Barnabas (currently on vacation) identified as likely DevOps lead for the official DevNet 0 launch.\n- In the interim, teams can test interoperability on ethrex's existing testnet."
+    },
+    {
+      "heading": "Frame Expiry: Frames vs. Transaction Features",
+      "summary": "Proposal to move expiry from a special verify frame into the transaction envelope as an optional \"feature\" was debated; consensus leaned toward keeping the current frame-based approach.",
+      "timestamp": "00:15:31",
+      "body": "- raxhvl presented a proposal to replace the expiry verify frame with a native transaction-level field, arguing that expiry is a pure stateless check (block timestamp vs. expiry value) that does not need to flow through state or the EVM.\n- Current expiry frame approach: an empty frame targets an EVM contract that checks timestamp and reverts if expired, invalidating the transaction.\n  - Requires a native implementation for performance (acknowledged in the EIP text).\n  - No behavior guarantee across networks if the contract is not deployed.\n  - Calldata for the expiry frame must be signed (exception to normal verify frames), and banned-timestamp opcode must be allowed (another exception).\n  - Encoding overhead: ~41 bytes for the mostly-empty frame vs. ~9 bytes for a native integer.\n- Proposed \"transaction features\" mechanism: optional key-value pairs (feature tag + value) in the transaction envelope, canonically ordered by ascending integer tag, ensuring no duplicates and deterministic encoding.\n  - Two initial features proposed: \"valid from\" and \"valid until\" (expiry) timestamps, 8 bytes each.\n  - Empty feature list costs only 1 byte (RLP header).\n- lightclient pushed back: the functionality can be implemented outside the protocol, and adding it to the core protocol adds unnecessary complexity. The contract is deployed as part of the EIP, so state reads to check its existence are unnecessary.\n- Toni agreed with lightclient: the special verify frame approach is clean, the two use cases (expiry and valid-from) don't justify generalizing into a full features mechanism, and snappy compression largely eliminates the byte-size difference.\n- raxhvl acknowledged the points; follow-up discussion to continue on the Frame Transaction EthMagicians thread.\n  - soispoke noted a similar discussion occurred for recent roots ([EIP-8272](https://github.com/ethereum/EIPs/pull/12281))."
+    },
+    {
+      "heading": "ERC for Key Lifecycle in Native Account Abstraction",
+      "summary": "Nethermind proposed an ERC defining a common key lifecycle (add, rotate, revoke) across EIP-8141 and EIP-8130 using Merkle-tree authority roots with two storage tiers.",
+      "timestamp": "00:29:30",
+      "body": "- Daniil (Nethermind) presented [ERC PR #1979](https://github.com/ethereum/ERCs/pull/1979) addressing the problem that EIP-8141 and EIP-8130 coexist but lack a common key management model.\n- Three key operations defined: add, rotate, revoke. Add is monotone; rotate and revoke are anti-monotone.\n- Off-chain wallet data is organized as a Merkle tree with leaves containing authority ID and predicate (key logic such as session key, guardian key, spend limit). The tree root (\"authority root\") serves as the on-chain fingerprint.\n- Two storage tiers proposed:\n  - **Tier 1 (recent root)**: No state reads needed, cheap mempool cost, scales well. However, key revocation has a delay because the recent root persists on-chain beyond an instant update.\n  - **Tier 2 (account state slot)**: Requires one state read (allowed by frame transactions for own-account reads), but revocation is instant.\n- Same mechanism maps to EIP-8130's checkpointed image hash.\n- Wallet data can optionally be stored on-chain for recovery, or kept offline for privacy.\n- Cross-chain support: the authority root from a home chain can be delivered to an executing chain, requiring one additional proof (that the root exists at the account's home chain slot).\n- [Excalidraw diagram](https://excalidraw.com/#json=2pWxeBerW4Fq8GW-LRku0,FfVXlml_9qxztvasPFKxLQ) shared for visual reference.\n- Feedback requested from wallet developers and the broader community; discussion thread on Ethereum Magicians."
+    },
+    {
+      "heading": "MaxVerifyGas as Mempool Floor",
+      "summary": "Nethermind proposed redefining maxVerifyGas as a guaranteed mempool floor rather than a hard limit, allowing individual nodes to accept heavier transactions.",
+      "timestamp": "00:40:44",
+      "body": "- Daniil (Nethermind) presented [EIP PR #12301](https://github.com/ethereum/EIPs/pull/12301) proposing to redefine the `maxVerifyGas` constant.\n- Current status: `maxVerifyGas` acts as a hard limit on the verification prefix gas for frame transactions in mempools; benchmarking work is ongoing (led by Manuel).\n- Proposal: treat `maxVerifyGas` as a floor that guarantees gossip and handling across all nodes, while allowing individual nodes to set higher limits for heavier transactions.\n  - Rationale: different client implementations have different performance characteristics and attack vectors; a single hard limit is a poor fit.\n  - Creates a \"gradient\" in the mempool: a guaranteed layer (at the floor) and a non-guaranteed layer (above the floor) for complex transactions.\n- Some feedback already received in the PR (from Toni); further discussion to continue async.\n- ethrex (Ivan) indicated interest in reviewing the proposal."
+    },
+    {
+      "heading": "EIP-7906 Transaction Assertions and BAL",
+      "summary": "EIP-7906 (post-transaction assertions via state-diff opcodes) received positive feedback; Toni recommended including it in Hegota to avoid touching frame transactions again later.",
+      "timestamp": "00:46:08",
+      "body": "- Alex Forshtat raised [EIP-7906](https://eips.ethereum.org/EIPS/eip-7906), which adds a post-transaction frame and state-diff opcodes for transaction assertions.\n- A recent protocol review ranked the proposal \"A\" but gave brief feedback recommending focus on \"BAL-shaped data and events.\" Alex sought clarification on what that means.\n- Toni clarified that BAL (block access list) state diffs and transaction assertion state diffs should not be commingled: BAL operates at block level, transaction assertions at transaction level.\n  - Clients already collect state diffs for BAL and would use similar (but separate) mechanisms for transaction assertions.\n  - The opcode implementation should be left to clients, likely similar to debug-trace or BAL collection.\n- Toni recommended EIP-7906 for inclusion in Hegota, noting that deferring it would require touching frame transactions again in a later fork (I-Star or beyond).\n- Discussion thread on [Ethereum Magicians](https://ethereum-magicians.org/t/eip-7906-transaction-assertions-via-state-diff-opcode/23130/28?u=alex-forshtat-tbk) linked for further conversation.\n- Ben Adams noted that if an assertion fails, the revert would mean the assertion is not included in the BAL."
+    },
+    {
+      "heading": "Matcha: Multi-Transaction-per-Sender Mempool Policy",
+      "summary": "A new research post (\"Matcha\") proposes allowing multiple frame transactions per sender in the mempool while bounding state-based invalidation attacks.",
+      "timestamp": "00:50:41",
+      "body": "- soispoke flagged the [Matcha ethresear.ch post](https://ethresear.ch/t/mempool-account-transaction-capacity-from-historical-activity-matcha/25949) and requested client feedback.\n- Current mempool policy allows only one frame transaction per sender; this is a significant limitation for privacy applications that need many transactions per sender.\n- Matcha proposes a mechanism to allow multiple transactions per sender while bounding state-based invalidation attacks.\n- Feedback from client teams specifically requested."
+    },
+    {
+      "heading": "Upcoming Milestones",
+      "summary": "Frames as Hegota headliner expected to be ratified at Thursday's ACDE; client EIP preferences due 24 hours in advance.",
+      "timestamp": "00:52:09",
+      "body": "- This breakout call continues weekly at the same time.\n- Thursday's ACDE call will cover client team preferences for Hegota non-headliner EIPs; preferences should be submitted to Nixo and Ansgar at least 24 hours in advance.\n- Frames as a Hegota headliner is expected to be officially ratified at Thursday's ACDE call."
+    }
+  ]
+}

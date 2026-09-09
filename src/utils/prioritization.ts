@@ -269,16 +269,29 @@ export function calculateEipAggregate(
   eipData: EIP | undefined,
   forkName: string,
   /** Non-client teams the reader has opted into the scores. */
-  countedOtherTeams: ReadonlySet<string> = NO_COUNTED_TEAMS
+  countedOtherTeams: ReadonlySet<string> = NO_COUNTED_TEAMS,
+  /**
+   * When non-empty, the only teams in scope at all — the focused view's "show only these
+   * teams", where every score has to cover exactly the columns the reader can see.
+   */
+  focusTeams: ReadonlySet<string> = NO_COUNTED_TEAMS
 ): EipAggregateStance {
-  const elStances = stances.filter(s => s.clientType === 'EL');
-  const clStances = stances.filter(s => s.clientType === 'CL');
+  const inScope = (s: ClientStance) => focusTeams.size === 0 || focusTeams.has(s.clientName);
 
-  // Client teams always count; a non-client team counts only where the reader opted it in.
+  const elStances = stances.filter(s => s.clientType === 'EL' && inScope(s));
+  const clStances = stances.filter(s => s.clientType === 'CL' && inScope(s));
+
+  // Client teams always count; a non-client team counts only where the reader opted it in,
+  // and focusing on one is itself an opt-in.
   const countedStances = [
     ...elStances,
     ...clStances,
-    ...stances.filter(s => s.clientType === 'OTHER' && countedOtherTeams.has(s.clientName)),
+    ...stances.filter(
+      s =>
+        s.clientType === 'OTHER' &&
+        inScope(s) &&
+        (focusTeams.size > 0 || countedOtherTeams.has(s.clientName))
+    ),
   ];
   const scoredStances = countedStances.filter(s => s.normalizedScore !== null);
 

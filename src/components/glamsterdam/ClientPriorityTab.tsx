@@ -63,6 +63,13 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     const names = (searchParams.get('avg') ?? '').split(',').filter(Boolean);
     return names.length > 0 ? new Set(names) : NO_COUNTED_TEAMS;
   }, [searchParams]);
+  /**
+   * Drops every unpicked team's column so one team's board can be read on its own.
+   * Inert without a selection, so the param alone never empties the table.
+   */
+  const focusOnly = searchParams.get('only') === '1' && filterClients.size > 0;
+  // Focusing narrows the scores to match the columns, so Avg means what the reader sees.
+  const focusTeams = focusOnly ? filterClients : NO_COUNTED_TEAMS;
 
   const [expandedEip, setExpandedEip] = useState<number | null>(null);
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
@@ -84,7 +91,11 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     [setSearchParams]
   );
 
-  const { aggregates, elTeams, clTeams, otherTeams } = usePrioritizationData(fork, countedOtherTeams);
+  const { aggregates, elTeams, clTeams, otherTeams } = usePrioritizationData(
+    fork,
+    countedOtherTeams,
+    focusTeams
+  );
 
   // The fork's scale drives the legend, the badge colors and the "high support" cutoff.
   const scoreLegend = getScoreScale(fork);
@@ -161,6 +172,20 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     return result;
   }, [aggregates, filterLayer, filterStance, filterClients, hideExcluded, forkIsUndecided, supportFloor]);
 
+  const isShown = (team: TeamEntry) => !focusOnly || filterClients.has(team.name);
+  const shownElTeams = elTeams.filter(isShown);
+  const shownClTeams = clTeams.filter(isShown);
+  const shownOtherTeams = otherTeams.filter(isShown);
+
+  // Roster-level, so the toolbar and the filter modal keep every team reachable while focused.
+  const showOtherTeams = otherTeams.length > 0;
+  const showOtherColumn = shownOtherTeams.length > 0;
+  // EIP, Title, Stage and Avg, plus a column for each team group that has a team.
+  const columnCount =
+    4 + [shownElTeams, shownClTeams, shownOtherTeams].filter((teams) => teams.length > 0).length;
+  // Focusing narrows the table, so it no longer needs to escape the prose column.
+  const wideTable = showOtherTeams && !focusOnly;
+
   // Apply sorting
   const sortedAggregates = useMemo(() => {
     return sortEipAggregates(filteredAggregates, sortField, sortDirection);
@@ -210,12 +235,18 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     );
   };
 
-  const showOtherTeams = otherTeams.length > 0;
-  const columnCount = showOtherTeams ? 7 : 6;
+  /**
+   * While focused, Avg covers exactly the selected teams, so "counts towards Avg" and
+   * "is selected" are the same question and the panel has to ask the latter.
+   */
+  const avgSelection = focusOnly ? filterClients : countedOtherTeams;
 
   // Roster order, so the wording matches the panel and the Other Teams column.
   const countedTeamNames = otherTeams
-    .filter((team) => countedOtherTeams.has(team.name))
+    .filter((team) => avgSelection.has(team.name))
+    .map((team) => team.name);
+  const focusedTeamNames = [...elTeams, ...clTeams, ...otherTeams]
+    .filter((team) => filterClients.has(team.name))
     .map((team) => team.name);
 
   const toggleCountedTeam = (name: string) => {
@@ -251,11 +282,24 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     setParam('team', ordered.length > 0 ? ordered.join(',') : null);
   };
 
+  const toggleAvgTeam = focusOnly ? toggleClient : toggleCountedTeam;
+  const clearAvgTeams = () => {
+    if (!focusOnly) {
+      setParam('avg', null);
+      return;
+    }
+    // Dropping the non-client teams from the selection is what removes them from Avg here.
+    const ordered = [...elTeams, ...clTeams]
+      .filter((team) => filterClients.has(team.name))
+      .map((team) => team.name);
+    setParam('team', ordered.length > 0 ? ordered.join(',') : null);
+  };
+
   const clearFilters = () =>
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        ['layer', 'team', 'stance'].forEach((key) => next.delete(key));
+        ['layer', 'team', 'stance', 'only'].forEach((key) => next.delete(key));
         return next;
       },
       { replace: true }
@@ -266,14 +310,16 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       <p className={`text-sm text-slate-500 dark:text-slate-400 ${VINTAGE_NOTE[fork] ? 'mb-1' : 'mb-6'}`}>
         Aggregate client team stances on proposed EIPs. Scores normalized to a{' '}
         {lowestScore}-{maxScore} scale.
-        {countedTeamNames.length > 0 && ` Avg also counts ${countedTeamNames.join(', ')}.`}
+        {focusOnly
+          ? ` Avg covers only ${focusedTeamNames.join(', ')}.`
+          : countedTeamNames.length > 0 && ` Avg also counts ${countedTeamNames.join(', ')}.`}
       </p>
       {VINTAGE_NOTE[fork] && (
         <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">{VINTAGE_NOTE[fork]}</p>
       )}
 
       {/* Toolbar */}
-      <div className={`mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 ${showOtherTeams ? BREAKOUT : ''}`}>
+      <div className={`mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 ${wideTable ? BREAKOUT : ''}`}>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
           {/* Filters button */}
           <button
@@ -436,6 +482,31 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                 onToggle={toggleClient}
               />
             )}
+
+            <div className="md:col-span-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+              <label
+                className={`flex items-start gap-3 ${
+                  filterClients.size > 0 ? 'cursor-pointer' : 'cursor-not-allowed opacity-50'
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={focusOnly}
+                  disabled={filterClients.size === 0}
+                  onChange={(e) => setParam('only', e.target.checked ? '1' : null)}
+                  className="mt-0.5 w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+                />
+                <span>
+                  <span className="block text-sm text-slate-700 dark:text-slate-300">
+                    Show only the selected teams
+                  </span>
+                  <span className="block text-xs text-slate-500 dark:text-slate-400">
+                    Hides every other team&rsquo;s column, and narrows Avg and the rejection
+                    count to the teams still shown.
+                  </span>
+                </span>
+              </label>
+            </div>
           </div>
         </ModalShell>
       )}
@@ -448,7 +519,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           headerAction={
             countedTeamNames.length > 0 && (
               <button
-                onClick={() => setParam('avg', null)}
+                onClick={clearAvgTeams}
                 className="text-sm text-purple-600 dark:text-purple-400 font-medium"
               >
                 Clear
@@ -465,8 +536,9 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           }
         >
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-            Non-client teams are left out of the scores by default. Ticking one folds its ratings
-            into Avg, the stance counts and the rejection flag.
+            {focusOnly
+              ? 'Avg currently covers only the teams you selected, so ticking one here selects it — bringing back its column as well as its ratings.'
+              : 'Non-client teams are left out of the scores by default. Ticking one folds its ratings into Avg, the stance counts and the rejection flag.'}
           </p>
           <div className="space-y-1">
             {otherTeams.map((team) => (
@@ -476,8 +548,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               >
                 <input
                   type="checkbox"
-                  checked={countedOtherTeams.has(team.name)}
-                  onChange={() => toggleCountedTeam(team.name)}
+                  checked={avgSelection.has(team.name)}
+                  onChange={() => toggleAvgTeam(team.name)}
                   className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
                 />
                 <span className="text-sm text-slate-700 dark:text-slate-300">{team.name}</span>
@@ -558,9 +630,9 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
                     <ClientStancesGrid
                       stances={agg.stances}
-                      elTeams={elTeams}
-                      clTeams={clTeams}
-                      otherTeams={otherTeams}
+                      elTeams={shownElTeams}
+                      clTeams={shownClTeams}
+                      otherTeams={shownOtherTeams}
                       maxScore={maxScore}
                     />
                   </div>
@@ -575,7 +647,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       {/* Scrolls rather than clips: the columns grow as more teams publish rankings. */}
       <div
         className={`hidden lg:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded overflow-x-auto ${
-          showOtherTeams ? BREAKOUT : ''
+          wideTable ? BREAKOUT : ''
         }`}
       >
         <table className="w-full">
@@ -602,26 +674,32 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   <SortIcon field="stage" />
                 </div>
               </th>
-              <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
-                <div className="flex items-center justify-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-                  EL Clients
-                </div>
-              </th>
-              <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
-                <div className="flex items-center justify-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-                  CL Clients
-                </div>
-              </th>
+              {shownElTeams.length > 0 && (
+                <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <div className="flex items-center justify-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    EL Clients
+                  </div>
+                </th>
+              )}
+              {shownClTeams.length > 0 && (
+                <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <div className="flex items-center justify-center gap-1">
+                    <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+                    CL Clients
+                  </div>
+                </th>
+              )}
               {/* Avg sits with the clients it averages; Other Teams trail it as context. */}
               <th
                 className="px-4 py-3 text-right text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('average')}
                 title={
-                  countedTeamNames.length > 0
-                    ? `Client teams plus ${countedTeamNames.join(', ')}`
-                    : undefined
+                  focusOnly
+                    ? `Covers only ${focusedTeamNames.join(', ')}`
+                    : countedTeamNames.length > 0
+                      ? `Client teams plus ${countedTeamNames.join(', ')}`
+                      : undefined
                 }
               >
                 <div className="flex items-center justify-end gap-2">
@@ -632,7 +710,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   <SortIcon field="average" />
                 </div>
               </th>
-              {showOtherTeams && (
+              {showOtherColumn && (
                 <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">
                   <div className="flex items-center justify-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-fuchsia-500"></span>
@@ -654,9 +732,10 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                 <TableRow
                   key={agg.eipId}
                   agg={agg}
-                  elTeams={elTeams}
-                  clTeams={clTeams}
-                  otherTeams={showOtherTeams ? otherTeams : null}
+                  elTeams={shownElTeams}
+                  clTeams={shownClTeams}
+                  otherTeams={showOtherColumn ? shownOtherTeams : null}
+                  otherTeamsAsBadges={focusOnly}
                   maxScore={maxScore}
                   columnCount={columnCount}
                   isExpanded={expandedEip === agg.eipId}
@@ -669,7 +748,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       </div>
 
       {/* Legend */}
-      <div className={`mt-6 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg ${showOtherTeams ? BREAKOUT : ''}`}>
+      <div className={`mt-6 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg ${wideTable ? BREAKOUT : ''}`}>
         <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Score Legend</h3>
         <div className="flex flex-wrap gap-3 text-xs">
           {scoreLegend.map(({ score, label }) => (
@@ -700,6 +779,8 @@ interface TableRowProps {
   clTeams: TeamEntry[];
   /** null when the fork has no non-client teams, so the column is omitted entirely. */
   otherTeams: TeamEntry[] | null;
+  /** A count is useless once the column is narrowed to the teams you asked for. */
+  otherTeamsAsBadges: boolean;
   maxScore: number;
   columnCount: number;
   isExpanded: boolean;
@@ -711,6 +792,7 @@ const TableRow: React.FC<TableRowProps> = ({
   elTeams,
   clTeams,
   otherTeams,
+  otherTeamsAsBadges,
   maxScore,
   columnCount,
   isExpanded,
@@ -783,12 +865,16 @@ const TableRow: React.FC<TableRowProps> = ({
             {shortStage}
           </span>
         </td>
-        <td className="px-4 py-3">
-          <ClientStanceBadges stances={agg.stances} teams={elTeams} maxScore={maxScore} />
-        </td>
-        <td className="px-4 py-3">
-          <ClientStanceBadges stances={agg.stances} teams={clTeams} maxScore={maxScore} />
-        </td>
+        {elTeams.length > 0 && (
+          <td className="px-4 py-3">
+            <ClientStanceBadges stances={agg.stances} teams={elTeams} maxScore={maxScore} />
+          </td>
+        )}
+        {clTeams.length > 0 && (
+          <td className="px-4 py-3">
+            <ClientStanceBadges stances={agg.stances} teams={clTeams} maxScore={maxScore} />
+          </td>
+        )}
         <td className="px-4 py-3 text-right">
           <div className="flex items-center justify-end gap-1.5">
             {agg.rejectCount > 0 && <RejectionFlag count={agg.rejectCount} />}
@@ -805,7 +891,11 @@ const TableRow: React.FC<TableRowProps> = ({
         {otherTeams && (
           <td className="px-4 py-3">
             <div className="flex items-center justify-center gap-3">
-              <OtherTeamsCount stances={agg.stances} teams={otherTeams} />
+              {otherTeamsAsBadges ? (
+                <ClientStanceBadges stances={agg.stances} teams={otherTeams} maxScore={maxScore} />
+              ) : (
+                <OtherTeamsCount stances={agg.stances} teams={otherTeams} />
+              )}
               {expandButton}
             </div>
           </td>
@@ -940,20 +1030,24 @@ const ClientStancesGrid: React.FC<ClientStancesGridProps> = ({ stances, elTeams,
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div>
-        <h4 className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-2 flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-          Execution Layer Clients
-        </h4>
-        <div>{elTeams.map(renderClientRow)}</div>
-      </div>
-      <div>
-        <h4 className="text-xs font-medium text-teal-600 dark:text-teal-400 mb-2 flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full bg-teal-500"></span>
-          Consensus Layer Clients
-        </h4>
-        <div>{clTeams.map(renderClientRow)}</div>
-      </div>
+      {elTeams.length > 0 && (
+        <div>
+          <h4 className="text-xs font-medium text-indigo-600 dark:text-indigo-400 mb-2 flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
+            Execution Layer Clients
+          </h4>
+          <div>{elTeams.map(renderClientRow)}</div>
+        </div>
+      )}
+      {clTeams.length > 0 && (
+        <div>
+          <h4 className="text-xs font-medium text-teal-600 dark:text-teal-400 mb-2 flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-teal-500"></span>
+            Consensus Layer Clients
+          </h4>
+          <div>{clTeams.map(renderClientRow)}</div>
+        </div>
+      )}
       {otherTeams.length > 0 && (
         <div>
           <h4 className="text-xs font-medium text-fuchsia-600 dark:text-fuchsia-400 mb-2 flex items-center gap-1">

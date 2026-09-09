@@ -30,7 +30,9 @@ const FORK_DATA: Record<string, PrioritizationData> = {
 export function usePrioritizationData(
   fork: string = 'glamsterdam',
   /** Non-client teams to fold into the aggregate scores. Must be a stable reference. */
-  countedOtherTeams: ReadonlySet<string> = NO_COUNTED_TEAMS
+  countedOtherTeams: ReadonlySet<string> = NO_COUNTED_TEAMS,
+  /** When non-empty, the only teams the scores cover. Must be a stable reference. */
+  focusTeams: ReadonlySet<string> = NO_COUNTED_TEAMS
 ): UsePrioritizationDataResult {
   const data = useMemo(() => {
     return (
@@ -59,9 +61,9 @@ export function usePrioritizationData(
     // Build aggregates for ALL fork EIPs, using empty stances array if no data
     return forkEips.map((eip) => {
       const stances = stancesMap.get(eip.id) || [];
-      return calculateEipAggregate(eip.id, stances, eip, fork, countedOtherTeams);
+      return calculateEipAggregate(eip.id, stances, eip, fork, countedOtherTeams, focusTeams);
     });
-  }, [data, fork, countedOtherTeams]);
+  }, [data, fork, countedOtherTeams, focusTeams]);
 
   return {
     data,

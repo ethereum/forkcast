@@ -103,6 +103,21 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     };
   }, [filtersModalOpen, avgModalOpen]);
 
+  /**
+   * Whether SFI'd EIPs still count as settled. Only true while the fork is choosing its
+   * payload — a fork whose EIPs are all Scheduled or Declined (Glamsterdam) would
+   * otherwise render an empty table instead of its record.
+   */
+  const forkIsUndecided = useMemo(
+    () =>
+      aggregates.some(
+        (agg) =>
+          agg.inclusionStage === 'Proposed for Inclusion' ||
+          agg.inclusionStage === 'Considered for Inclusion'
+      ),
+    [aggregates]
+  );
+
   // Apply filtering
   const filteredAggregates = useMemo(() => {
     let result = aggregates;
@@ -110,7 +125,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     if (hideExcluded) {
       result = result.filter((agg) => {
         const stage = agg.inclusionStage;
-        return stage !== 'Declined for Inclusion' && stage !== 'Withdrawn' && stage !== 'Unknown';
+        if (stage === 'Declined for Inclusion' || stage === 'Withdrawn' || stage === 'Unknown') {
+          return false;
+        }
+        // An SFI'd EIP is locked into the fork, so there is no inclusion decision left for
+        // this table to support — the same reason the rank page won't put it on the board.
+        return !(forkIsUndecided && stage === 'Scheduled for Inclusion');
       });
     }
 
@@ -139,7 +159,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     }
 
     return result;
-  }, [aggregates, filterLayer, filterStance, filterClients, hideExcluded, supportFloor]);
+  }, [aggregates, filterLayer, filterStance, filterClients, hideExcluded, forkIsUndecided, supportFloor]);
 
   // Apply sorting
   const sortedAggregates = useMemo(() => {

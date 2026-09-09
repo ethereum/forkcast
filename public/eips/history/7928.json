@@ -2,6 +2,16 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "d2a64c2d4cc44f2f507577d0ebfb110dcc21d358",
+      "date": "2026-09-09T15:17:05Z",
+      "message": "Update EIP-7928: Amend storage-read gas-feasibility check",
+      "author": "fselmo",
+      "prNumber": null,
+      "patch": "@@ -229,7 +229,7 @@ Record **post‑transaction** balances (`uint256`) for:\n \n For unaltered account balances:\n \n-If an account’s balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change MUST NOT be recorded in `balance_changes`. The sender and recipient address MUST still be included in `AccountChanges`.\n+If an account's balance changes during a transaction, but its post-transaction balance is equal to its pre-transaction balance, then the change MUST NOT be recorded in `balance_changes`. The sender and recipient address MUST still be included in `AccountChanges`.\n \n The following special cases require addresses to be included with empty changes if no other state changes occur:\n \n@@ -569,22 +569,9 @@ Validating access lists and balance diffs adds validation overhead but is essent\n \n Increased block size impacts propagation but overhead (~70 KiB average) is reasonable for performance gains.\n \n-### Early Rejection of Malicious BALs\n+### Spurious Storage Reads\n \n-Since `storage_reads` entries are not mapped to specific transaction indices, their validity can only be confirmed after executing all transactions. A malicious proposer could exploit this by declaring phantom storage reads that are never accessed, forcing clients into unnecessary I/O prefetching and significant data download while the block remains unrejectable until completion.\n-\n-To mitigate this, clients SHOULD enforce a gas-budget feasibility check at transaction boundaries. Let:\n-\n-- `R_remaining` = number of declared storage reads not yet accessed\n-- `G_remaining` = remaining block gas\n-\n-The following invariant must hold:\n-\n-```\n-G_remaining >= R_remaining * 2000\n-```\n-\n-Where 2000 is the minimum gas cost for a storage read (via [EIP-2930](./eip-2930.md) access lists: 1900 upfront + 100 warm read). If this check fails, the block can be rejected immediately as invalid, since insufficient gas remains to access the declared reads. This check SHOULD be performed periodically (e.g., every 8 transactions) to enable early rejection without impacting parallel execution.\n+Since `storage_reads` entries are not mapped to specific transaction indices, their validity can only be confirmed after executing all transactions. A malicious proposer could exploit this by declaring spurious storage reads that are never accessed, forcing clients into unnecessary I/O prefetching and data download while the block remains unrejectable until completion. The `bal_items` constraint bounds the number of such entries. Clients SHOULD additionally consider mechanisms to detect infeasible `storage_reads` during execution and reject the block before it completes. Any such mechanism MUST NOT reject a valid block; in particular, the storage reads performed by system calls are not paid for by block gas and cannot be bounded by it.\n \n ## Copyright\n ",
+      "additions": 3,
+      "deletions": 16
+    },
+    {
       "sha": "6c666b8d646df8ea6dcef9638de7b48e3c45ab96",
       "date": "2026-07-09T15:16:40Z",
       "message": "Update EIP-7928: exclude the recipient when a runtime halt precedes i…",
@@ -636,14 +646,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12277,
-      "title": "Update EIP-7928: Amend storage-read gas-feasibility check",
-      "author": "fselmo",
-      "updatedAt": "2026-09-08T20:55:30Z",
-      "additions": 3,
-      "deletions": 16
-    },
     {
       "number": 9873,
       "title": "Update EIP-7928: Add note about linear scaling of BAL size w.r.t. `block.gasLimit`",

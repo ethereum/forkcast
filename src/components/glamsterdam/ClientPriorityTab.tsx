@@ -52,8 +52,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const sortDirection: SortDirection = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
   const filterLayer = readEnum(searchParams.get('layer'), FILTER_LAYERS) ?? 'all';
   const filterStance = readEnum(searchParams.get('stance'), FILTER_STANCES) ?? 'all';
-  const filterClient = searchParams.get('team') ?? 'all';
   const hideExcluded = searchParams.get('excluded') !== 'show';
+  // Comma-joined names; an EIP matches if any of the picked teams rated it.
+  const filterClients = useMemo(
+    () => new Set((searchParams.get('team') ?? '').split(',').filter(Boolean)),
+    [searchParams]
+  );
   // Memoized on the params, so the aggregates aren't recomputed on every render.
   const countedOtherTeams = useMemo<ReadonlySet<string>>(() => {
     const names = (searchParams.get('avg') ?? '').split(',').filter(Boolean);
@@ -110,9 +114,9 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       });
     }
 
-    if (filterClient !== 'all') {
+    if (filterClients.size > 0) {
       result = result.filter((agg) =>
-        agg.stances.some((s) => s.clientName === filterClient)
+        agg.stances.some((s) => filterClients.has(s.clientName))
       );
     }
 
@@ -135,7 +139,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     }
 
     return result;
-  }, [aggregates, filterLayer, filterStance, filterClient, hideExcluded, supportFloor]);
+  }, [aggregates, filterLayer, filterStance, filterClients, hideExcluded, supportFloor]);
 
   // Apply sorting
   const sortedAggregates = useMemo(() => {
@@ -213,11 +217,19 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
 
   const activeFilterCount = [
     filterLayer !== 'all',
-    filterClient !== 'all',
+    filterClients.size > 0,
     filterStance !== 'all',
   ].filter(Boolean).length;
 
-  const selectClient = (name: string) => setParam('team', name === 'all' ? null : name);
+  const toggleClient = (name: string) => {
+    const next = new Set(filterClients);
+    if (!next.delete(name)) next.add(name);
+    // Roster order, so the same selection always produces the same URL.
+    const ordered = [...elTeams, ...clTeams, ...otherTeams]
+      .filter((team) => next.has(team.name))
+      .map((team) => team.name);
+    setParam('team', ordered.length > 0 ? ordered.join(',') : null);
+  };
 
   const clearFilters = () =>
     setSearchParams(
@@ -383,16 +395,16 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               heading="EL Clients"
               teams={elTeams}
               accent="EL"
-              filterClient={filterClient}
-              onSelect={selectClient}
+              selected={filterClients}
+              onToggle={toggleClient}
             />
 
             <TeamFilterGroup
               heading="CL Clients"
               teams={clTeams}
               accent="CL"
-              filterClient={filterClient}
-              onSelect={selectClient}
+              selected={filterClients}
+              onToggle={toggleClient}
             />
 
             {showOtherTeams && (
@@ -400,8 +412,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                 heading="Other Teams"
                 teams={otherTeams}
                 accent="OTHER"
-                filterClient={filterClient}
-                onSelect={selectClient}
+                selected={filterClients}
+                onToggle={toggleClient}
               />
             )}
           </div>
@@ -995,11 +1007,11 @@ interface TeamFilterGroupProps {
   heading: string;
   teams: TeamEntry[];
   accent: TeamEntry['type'];
-  filterClient: string;
-  onSelect: (client: string) => void;
+  selected: ReadonlySet<string>;
+  onToggle: (client: string) => void;
 }
 
-const TeamFilterGroup: React.FC<TeamFilterGroupProps> = ({ heading, teams, accent, filterClient, onSelect }) => {
+const TeamFilterGroup: React.FC<TeamFilterGroupProps> = ({ heading, teams, accent, selected: selectedTeams, onToggle }) => {
   const { dot, selected } = FILTER_ACCENTS[accent];
 
   return (
@@ -1010,11 +1022,11 @@ const TeamFilterGroup: React.FC<TeamFilterGroupProps> = ({ heading, teams, accen
       </h3>
       <div className="flex flex-wrap gap-2">
         {teams.map((team) => {
-          const isSelected = filterClient === team.name;
+          const isSelected = selectedTeams.has(team.name);
           return (
             <button
               key={team.name}
-              onClick={() => onSelect(isSelected ? 'all' : team.name)}
+              onClick={() => onToggle(team.name)}
               className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                 isSelected
                   ? selected

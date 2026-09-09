@@ -20,7 +20,8 @@ export interface ClientStance {
   rawRating: string | null;
   normalizedScore: number | null; // 0-5 scale, null if no stance
   comment?: string;
-  sourceUrl: string;
+  /** Absent where a team has shared a ranking but not yet published it anywhere citable. */
+  sourceUrl?: string;
   lastUpdated: string; // ISO date string
 }
 

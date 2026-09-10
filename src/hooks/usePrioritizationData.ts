@@ -58,8 +58,23 @@ export function usePrioritizationData(
       data.eips.map((eipPrio) => [eipPrio.eipId, eipPrio.stances])
     );
 
-    // Build aggregates for ALL fork EIPs, using empty stances array if no data
-    return forkEips.map((eip) => {
+    /**
+     * An Informational or Meta EIP has no inclusion decision of its own — it ships as
+     * prose, not as a change to the fork — so it earns a row here only once a client
+     * team has actually rated it. That keeps the ones teams did weigh in on (several of
+     * Glamsterdam's) without listing proposals with nothing to decide.
+     */
+    const clientTeams = new Set(
+      data.teams.filter((team) => team.type !== 'OTHER').map((team) => team.name)
+    );
+    const boardEips = forkEips.filter(
+      (eip) =>
+        eip.type === 'Standards Track' ||
+        (stancesMap.get(eip.id) ?? []).some((stance) => clientTeams.has(stance.clientName))
+    );
+
+    // Build aggregates for every EIP on the board, using an empty stances array if no data
+    return boardEips.map((eip) => {
       const stances = stancesMap.get(eip.id) || [];
       return calculateEipAggregate(eip.id, stances, eip, fork, countedOtherTeams, focusTeams);
     });

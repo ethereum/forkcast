@@ -1,12 +1,24 @@
-import { EipCategory, eipCategories, UNCATEGORIZED } from '../../data/eip-categories';
+import {
+  EipCategory,
+  PresentationSlide,
+  categoryEips,
+  eipCategories,
+  presentationSlides,
+  UNCATEGORIZED,
+} from '../../data/eip-categories';
 
 export interface CategoryGroup<T> {
+  id: string;
   name: string;
   items: T[];
+  /** The category's finer cuts, or empty when it declares none. */
+  subgroups: Array<{ name: string; items: T[] }>;
 }
 
 interface Placement {
   category: number;
+  subcategory: number;
+  /** Position within the whole category, so a flat read stays in declared order. */
   position: number;
 }
 
@@ -14,10 +26,15 @@ interface Placement {
 const buildPlacements = (categories: EipCategory[]): Map<number, Placement> => {
   const placements = new Map<number, Placement>();
   categories.forEach((category, index) => {
-    category.eips.forEach((eipId, position) => {
-      if (!placements.has(eipId)) {
-        placements.set(eipId, { category: index, position });
-      }
+    let position = 0;
+    const subcategories = category.subcategories ?? [{ name: category.name, eips: categoryEips(category) }];
+    subcategories.forEach((subcategory, subIndex) => {
+      subcategory.eips.forEach(eipId => {
+        if (!placements.has(eipId)) {
+          placements.set(eipId, { category: index, subcategory: subIndex, position });
+        }
+        position += 1;
+      });
     });
   });
   return placements;
@@ -37,9 +54,9 @@ const placementsFor = (categories: EipCategory[]): Map<number, Placement> => {
 
 /**
  * Split items into their categories, in the order the categories are declared,
- * and within a category in the order it lists its EIPs. Empty categories are
- * dropped; anything uncategorized trails in a single "Uncategorized" group so
- * newly proposed EIPs still show up on the page.
+ * and within a category in the order it lists its EIPs. Empty categories and
+ * subcategories are dropped; anything uncategorized trails in a single
+ * "Uncategorized" group so newly proposed EIPs still show up on the page.
  */
 export function groupByCategory<T>(
   items: T[],
@@ -74,12 +91,51 @@ export function groupByCategory<T>(
     const bucket = buckets.get(index);
     if (!bucket) return;
     bucket.sort((a, b) => placementOf(a)!.position - placementOf(b)!.position);
-    groups.push({ name: category.name, items: bucket });
+
+    const subgroups = (category.subcategories ?? [])
+      .map((subcategory, subIndex) => ({
+        name: subcategory.name,
+        items: bucket.filter(item => placementOf(item)!.subcategory === subIndex),
+      }))
+      .filter(subgroup => subgroup.items.length > 0);
+
+    groups.push({ id: category.id, name: category.name, items: bucket, subgroups });
   });
 
   if (uncategorized.length > 0) {
-    groups.push({ name: UNCATEGORIZED, items: uncategorized });
+    groups.push({ id: 'uncategorized', name: UNCATEGORIZED, items: uncategorized, subgroups: [] });
   }
 
   return groups;
+}
+
+/**
+ * Reorder categories into the presentation's running order. A slide drawing on
+ * several categories keeps them as its subgroups, so merged content stays
+ * labelled; anything the plan doesn't name trails as its own slide.
+ */
+export function buildSlides<T>(
+  groups: CategoryGroup<T>[],
+  slides: PresentationSlide[] = presentationSlides
+): CategoryGroup<T>[] {
+  const byId = new Map(groups.map(group => [group.id, group]));
+  const planned = new Set(slides.flatMap(slide => slide.categoryIds));
+
+  const fromPlan = slides.flatMap(slide => {
+    const sources = slide.categoryIds
+      .map(id => byId.get(id))
+      .filter((group): group is CategoryGroup<T> => group !== undefined);
+    if (sources.length === 0) return [];
+    if (slide.categoryIds.length === 1) return [{ ...sources[0], name: slide.name }];
+    return [
+      {
+        id: slide.id,
+        name: slide.name,
+        items: sources.flatMap(source => source.items),
+        subgroups: sources.map(source => ({ name: source.name, items: source.items })),
+      },
+    ];
+  });
+
+  return [...fromPlan, ...groups.filter(group => !planned.has(group.id))];
 }

@@ -15,6 +15,8 @@ import {
 import { getInclusionStageColor } from '../../utils/colors';
 import { getProposalPrefix, getStageAbbreviation } from '../../utils';
 import { eipsData } from '../../data/eips';
+import { buildSlides, groupByCategory, CategoryGroup } from '../../domain/eips/eipCategories';
+import { UNCATEGORIZED } from '../../data/eip-categories';
 import { EipDrawer } from '../eip/EipDrawer';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
@@ -54,6 +56,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const filterLayer = readEnum(searchParams.get('layer'), FILTER_LAYERS) ?? 'all';
   const filterStance = readEnum(searchParams.get('stance'), FILTER_STANCES) ?? 'all';
   const hideExcluded = searchParams.get('excluded') !== 'show';
+  const groupedByCategory = searchParams.get('group') === 'category';
   // Comma-joined names; an EIP matches if any of the picked teams rated it.
   const filterClients = useMemo(
     () => new Set((searchParams.get('team') ?? '').split(',').filter(Boolean)),
@@ -76,6 +79,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
   const [avgModalOpen, setAvgModalOpen] = useState(false);
+  /** Index of the category on screen, or null when not presenting. */
+  const [slide, setSlide] = useState<number | null>(null);
 
   /** A default value drops its param, so a pristine view has a clean URL. */
   const setParam = useCallback(
@@ -104,9 +109,9 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const maxScore = getMaxScore(fork);
   const supportFloor = maxScore - 1;
 
-  // Lock body scroll while a modal is open
+  // Lock body scroll while a modal or the presentation is open
   useEffect(() => {
-    if (filtersModalOpen || avgModalOpen) {
+    if (filtersModalOpen || avgModalOpen || slide !== null) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
@@ -114,7 +119,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     return () => {
       document.body.style.overflow = '';
     };
-  }, [filtersModalOpen, avgModalOpen]);
+  }, [filtersModalOpen, avgModalOpen, slide]);
 
   /**
    * Whether SFI'd EIPs still count as settled. Only true while the fork is choosing its
@@ -192,6 +197,102 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const sortedAggregates = useMemo(() => {
     return sortEipAggregates(filteredAggregates, sortField, sortDirection);
   }, [filteredAggregates, sortField, sortDirection]);
+
+  /**
+   * The categories are curated per fork, so grouping is only worth offering once
+   * most of a fork's board sits in one — otherwise the view is an "Uncategorized"
+   * heap plus whichever few proposals a later fork happens to share.
+   */
+  const canGroupByCategory = useMemo(() => {
+    const groups = groupByCategory(aggregates, (agg) => agg.eipId);
+    const uncategorized = groups.find(({ name }) => name === UNCATEGORIZED)?.items.length ?? 0;
+    return uncategorized * 2 < aggregates.length;
+  }, [aggregates]);
+
+  /**
+   * Categories render in their declared order, but `groupByCategory` also orders
+   * within a group, so the column sort has to be re-applied to each bucket.
+   */
+  const groupAndSort = useCallback(
+    (items: EipAggregateStance[]) =>
+      groupByCategory(items, (agg) => agg.eipId).map(({ id, name, items: bucket, subgroups }) => ({
+        id,
+        name,
+        items: sortEipAggregates(bucket, sortField, sortDirection),
+        subgroups: subgroups.map((subgroup) => ({
+          name: subgroup.name,
+          items: sortEipAggregates(subgroup.items, sortField, sortDirection),
+        })),
+      })),
+    [sortField, sortDirection]
+  );
+
+  const categoryGroups = useMemo(
+    () => (groupedByCategory && canGroupByCategory ? groupAndSort(filteredAggregates) : null),
+    [groupedByCategory, canGroupByCategory, filteredAggregates, groupAndSort]
+  );
+
+  /**
+   * The deck walks the same cuts as the grouped table, but in its own running order
+   * and as an EL board — CL proposals go with the CL columns, so a category with
+   * nothing on the execution layer drops out of the deck by itself.
+   */
+  const slides = useMemo(() => {
+    if (!canGroupByCategory) return null;
+    const elOnly = filteredAggregates.filter((agg) => agg.layer === 'EL');
+    return elOnly.length > 0 ? buildSlides(groupAndSort(elOnly)) : null;
+  }, [canGroupByCategory, filteredAggregates, groupAndSort]);
+  const slideCount = slides?.length ?? 0;
+
+  const stopPresenting = useCallback(() => {
+    setSlide(null);
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  }, []);
+
+  const startPresenting = () => {
+    setSlide(0);
+    // A slide is only worth the screen it fills, but the browser may refuse.
+    document.documentElement.requestFullscreen?.().catch(() => {});
+  };
+
+  useEffect(() => {
+    if (slide === null) return;
+
+    // In fullscreen the browser handles Escape itself and swallows the keydown, so
+    // leaving fullscreen has to leave the presentation or the slide would sit over
+    // the page with no way back.
+    const onFullscreenChange = () => {
+      if (!document.fullscreenElement) setSlide(null);
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        stopPresenting();
+        return;
+      }
+      const last = slideCount - 1;
+      let next: number | null = null;
+      if (['ArrowRight', ' ', 'PageDown', 'ArrowDown'].includes(event.key)) {
+        next = Math.min(slide + 1, last);
+      } else if (['ArrowLeft', 'PageUp', 'ArrowUp'].includes(event.key)) {
+        next = Math.max(slide - 1, 0);
+      } else if (event.key === 'Home') {
+        next = 0;
+      } else if (event.key === 'End') {
+        next = last;
+      }
+      if (next === null) return;
+      event.preventDefault();
+      setSlide(next);
+    };
+
+    document.addEventListener('fullscreenchange', onFullscreenChange);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('fullscreenchange', onFullscreenChange);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [slide, slideCount, stopPresenting]);
 
   // Gates the ⚑ flag and the "Has Rejections" filter, so both stay reachable no
   // matter how the current view is narrowed.
@@ -320,6 +421,97 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       { replace: true }
     );
 
+  const renderCard = (agg: EipAggregateStance) => {
+    const eip = eipsData.find((e) => e.id === agg.eipId);
+    const isExpanded = expandedEip === agg.eipId;
+    const shortStage = getStageAbbreviation(agg.inclusionStage);
+
+    return (
+      <div
+        key={agg.eipId}
+        className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+      >
+        <button
+          onClick={() => setExpandedEip(isExpanded ? null : agg.eipId)}
+          className="w-full px-4 py-3 text-left"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <span className="font-mono text-sm text-purple-600 dark:text-purple-400">
+                  {eip ? getProposalPrefix(eip) : 'EIP'}-{agg.eipId}
+                </span>
+                {agg.layer && (
+                  <span className={`px-1.5 py-0.5 text-[10px] rounded ${
+                    agg.layer === 'EL'
+                      ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
+                      : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
+                  }`}>
+                    {agg.layer}
+                  </span>
+                )}
+                <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(agg.inclusionStage as InclusionStage)}`} title={agg.inclusionStage}>
+                  {shortStage}
+                </span>
+              </div>
+              <p className="text-sm text-slate-900 dark:text-slate-100 line-clamp-2">
+                {agg.eipTitle}
+              </p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              {agg.rejectCount > 0 && <RejectionFlag count={agg.rejectCount} />}
+              {agg.averageScore !== null ? (
+                <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded ${getScoreColor(Math.round(agg.averageScore), true, maxScore)}`}>
+                  {agg.averageScore.toFixed(1)}
+                </span>
+              ) : (
+                <span className="text-xs text-slate-400 dark:text-slate-400 italic">
+                  No data
+                </span>
+              )}
+              <svg
+                className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </button>
+
+        {isExpanded && (
+          <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
+            <ClientStancesGrid
+              stances={agg.stances}
+              elTeams={shownElTeams}
+              clTeams={shownClTeams}
+              otherTeams={shownOtherTeams}
+              maxScore={maxScore}
+            />
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderRow = (agg: EipAggregateStance) => (
+    <TableRow
+      key={agg.eipId}
+      agg={agg}
+      elTeams={shownElTeams}
+      clTeams={shownClTeams}
+      otherTeams={showOtherColumn ? shownOtherTeams : null}
+      otherTeamsAsBadges={focusOnly}
+      maxScore={maxScore}
+      columnCount={columnCount}
+      isExpanded={expandedEip === agg.eipId}
+      onToggle={() => setExpandedEip(expandedEip === agg.eipId ? null : agg.eipId)}
+      onOpenDrawer={openDrawer(agg.eipId)}
+    />
+  );
+
   return (
     <>
       <p className={`text-sm text-slate-500 dark:text-slate-400 ${VINTAGE_NOTE[fork] ? 'mb-1' : 'mb-6'}`}>
@@ -386,6 +578,19 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
             />
             <span className="text-sm text-slate-600 dark:text-slate-300">Active only</span>
           </label>
+
+          {/* Group by category toggle */}
+          {canGroupByCategory && (
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={groupedByCategory}
+                onChange={(e) => setParam('group', e.target.checked ? 'category' : null)}
+                className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+              />
+              <span className="text-sm text-slate-600 dark:text-slate-300">Group by category</span>
+            </label>
+          )}
 
           {/* Stats summary */}
           <div className="flex items-center gap-4 ml-auto text-sm">
@@ -580,81 +785,27 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-6 text-center text-slate-500 dark:text-slate-400">
             No EIPs found with prioritization data
           </div>
+        ) : categoryGroups ? (
+          categoryGroups.map(({ name, items, subgroups }) => (
+            <div key={name} className="space-y-2">
+              {/* One step brighter than the subheads below, so dark mode keeps the hierarchy. */}
+              <h4 className="pt-3 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300">
+                {name}
+              </h4>
+              {subgroups.length > 0
+                ? subgroups.map((subgroup) => (
+                    <div key={subgroup.name} className="space-y-2">
+                      <h5 className="pt-1 text-[11px] font-medium text-slate-400">
+                        {subgroup.name}
+                      </h5>
+                      {subgroup.items.map(renderCard)}
+                    </div>
+                  ))
+                : items.map(renderCard)}
+            </div>
+          ))
         ) : (
-          sortedAggregates.map((agg) => {
-            const eip = eipsData.find((e) => e.id === agg.eipId);
-            const isExpanded = expandedEip === agg.eipId;
-            const shortStage = getStageAbbreviation(agg.inclusionStage);
-
-            return (
-              <div
-                key={agg.eipId}
-                className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
-              >
-                <button
-                  onClick={() => setExpandedEip(isExpanded ? null : agg.eipId)}
-                  className="w-full px-4 py-3 text-left"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span className="font-mono text-sm text-purple-600 dark:text-purple-400">
-                          {eip ? getProposalPrefix(eip) : 'EIP'}-{agg.eipId}
-                        </span>
-                        {agg.layer && (
-                          <span className={`px-1.5 py-0.5 text-[10px] rounded ${
-                            agg.layer === 'EL'
-                              ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300'
-                              : 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300'
-                          }`}>
-                            {agg.layer}
-                          </span>
-                        )}
-                        <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(agg.inclusionStage as InclusionStage)}`} title={agg.inclusionStage}>
-                          {shortStage}
-                        </span>
-                      </div>
-                      <p className="text-sm text-slate-900 dark:text-slate-100 line-clamp-2">
-                        {agg.eipTitle}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      {agg.rejectCount > 0 && <RejectionFlag count={agg.rejectCount} />}
-                      {agg.averageScore !== null ? (
-                        <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded ${getScoreColor(Math.round(agg.averageScore), true, maxScore)}`}>
-                          {agg.averageScore.toFixed(1)}
-                        </span>
-                      ) : (
-                        <span className="text-xs text-slate-400 dark:text-slate-400 italic">
-                          No data
-                        </span>
-                      )}
-                      <svg
-                        className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
-                    </div>
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
-                    <ClientStancesGrid
-                      stances={agg.stances}
-                      elTeams={shownElTeams}
-                      clTeams={shownClTeams}
-                      otherTeams={shownOtherTeams}
-                      maxScore={maxScore}
-                    />
-                  </div>
-                )}
-              </div>
-            );
-          })
+          sortedAggregates.map(renderCard)
         )}
       </div>
 
@@ -742,22 +893,36 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   No EIPs found with prioritization data
                 </td>
               </tr>
-            ) : (
-              sortedAggregates.map((agg) => (
-                <TableRow
-                  key={agg.eipId}
-                  agg={agg}
-                  elTeams={shownElTeams}
-                  clTeams={shownClTeams}
-                  otherTeams={showOtherColumn ? shownOtherTeams : null}
-                  otherTeamsAsBadges={focusOnly}
-                  maxScore={maxScore}
-                  columnCount={columnCount}
-                  isExpanded={expandedEip === agg.eipId}
-                  onToggle={() => setExpandedEip(expandedEip === agg.eipId ? null : agg.eipId)}
-                  onOpenDrawer={openDrawer(agg.eipId)}
-                />
+            ) : categoryGroups ? (
+              categoryGroups.map(({ name, items, subgroups }) => (
+                <React.Fragment key={name}>
+                  <tr className="bg-slate-50 dark:bg-slate-700/30">
+                    <td
+                      colSpan={columnCount}
+                      className="px-4 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-300"
+                    >
+                      {name}
+                    </td>
+                  </tr>
+                  {subgroups.length > 0
+                    ? subgroups.map((subgroup) => (
+                        <React.Fragment key={subgroup.name}>
+                          <tr>
+                            <td
+                              colSpan={columnCount}
+                              className="px-4 pt-3 pb-1 text-[11px] font-medium text-slate-400"
+                            >
+                              {subgroup.name}
+                            </td>
+                          </tr>
+                          {subgroup.items.map(renderRow)}
+                        </React.Fragment>
+                      ))
+                    : items.map(renderRow)}
+                </React.Fragment>
               ))
+            ) : (
+              sortedAggregates.map(renderRow)
             )}
           </tbody>
         </table>
@@ -765,7 +930,22 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
 
       {/* Legend */}
       <div className={`mt-6 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg ${wideTable ? BREAKOUT : ''}`}>
-        <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-3">Score Legend</h3>
+        <div className="flex items-center justify-between gap-3 mb-3">
+          <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Score Legend</h3>
+          {/* Desktop only: a slide is sized to a projector, not a phone. */}
+          {slideCount > 0 && (
+            <button
+              onClick={startPresenting}
+              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:hover:bg-purple-900/40"
+              title="One full-screen slide per category, execution layer only"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM12 15v5m0 0h-3m3 0h3" />
+              </svg>
+              Present EL
+            </button>
+          )}
+        </div>
         <div className="flex flex-wrap gap-3 text-xs">
           {scoreLegend.map(({ score, label }) => (
             <span key={score} className={`px-2 py-1 rounded ${getScoreColor(score, true, maxScore)}`}>
@@ -785,6 +965,17 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           Data may not reflect current positions.
         </p>
       </div>
+
+      {slide !== null && slides && (
+        <PresentationView
+          groups={slides}
+          index={slide}
+          elTeams={shownElTeams}
+          maxScore={maxScore}
+          onNavigate={setSlide}
+          onExit={stopPresenting}
+        />
+      )}
 
       <EipDrawer eipId={drawerEipId} onClose={() => setDrawerEipId(null)} />
     </>
@@ -978,13 +1169,205 @@ const OtherTeamsCount: React.FC<{ stances: ClientStance[]; teams: TeamEntry[] }>
   );
 };
 
+type SlideRow =
+  | { kind: 'subhead'; key: string; name: string }
+  | { kind: 'eip'; key: string; agg: EipAggregateStance };
+
+/** Slides carry no links, so the prefix is all that distinguishes an RIP from an EIP. */
+const slideProposalLabel = (eipId: number) => {
+  const eip = eipsData.find((e) => e.id === eipId);
+  return `${eip ? getProposalPrefix(eip) : 'EIP'}-${eipId}`;
+};
+
+interface PresentationViewProps {
+  groups: CategoryGroup<EipAggregateStance>[];
+  index: number;
+  elTeams: TeamEntry[];
+  maxScore: number;
+  onNavigate: (index: number) => void;
+  onExit: () => void;
+}
+
+/**
+ * One category per screen, for walking a fork's EL proposals on a call. Everything is
+ * sized in viewport units so a slide fills whatever it is projected onto, and the
+ * row height shrinks to fit the longest category rather than clipping it — which is
+ * why the type sizes are computed here instead of being classes.
+ */
+const PresentationView: React.FC<PresentationViewProps> = ({
+  groups,
+  index,
+  elTeams,
+  maxScore,
+  onNavigate,
+  onExit,
+}) => {
+  const group = groups[index];
+
+  const eipRow = (agg: EipAggregateStance): SlideRow => ({
+    kind: 'eip',
+    key: String(agg.eipId),
+    agg,
+  });
+  const rows: SlideRow[] =
+    group.subgroups.length > 0
+      ? group.subgroups.flatMap((subgroup) => [
+          { kind: 'subhead' as const, key: `sub-${subgroup.name}`, name: subgroup.name },
+          ...subgroup.items.map(eipRow),
+        ])
+      : group.items.map(eipRow);
+
+  // The vertical budget the table gets, once the heading and footer have theirs.
+  const rowH = Math.min(6.7, 76 / (rows.length + 1));
+  const vh = (fraction: number) => `${(rowH * fraction).toFixed(2)}vh`;
+  const badgeStyle: React.CSSProperties = {
+    width: vh(0.67),
+    height: vh(0.67),
+    fontSize: vh(0.27),
+    borderRadius: vh(0.09),
+    flex: 'none',
+  };
+  /** Wide enough for the group's badges, so columns don't shift between slides. */
+  const badgesWidth = (count: number) => `${(count * rowH * 0.67 + count * 0.55 + 2).toFixed(2)}vh`;
+
+  const cell = { height: vh(1), fontSize: vh(0.37), padding: `0 ${vh(0.22)}` };
+  const header = { height: vh(0.67), fontSize: vh(0.27), padding: `0 ${vh(0.22)}` };
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-slate-900">
+      <div className="flex-1 flex flex-col justify-center min-h-0 px-[4vw]">
+        <h2
+          className="font-semibold text-slate-900 dark:text-slate-100"
+          style={{ fontSize: '4.2vh', marginBottom: '2vh' }}
+        >
+          {group.name}
+          <span className="ml-3 font-normal text-slate-400" style={{ fontSize: '1.8vh' }}>
+            {group.items.length} {group.items.length === 1 ? 'EIP' : 'EIPs'}
+          </span>
+        </h2>
+
+        <table className="w-full table-fixed border-collapse">
+          <colgroup>
+            <col style={{ width: '13vh' }} />
+            <col />
+            {elTeams.length > 0 && <col style={{ width: badgesWidth(elTeams.length) }} />}
+            <col style={{ width: '10vh' }} />
+          </colgroup>
+          <thead>
+            <tr className="border-b border-slate-200 dark:border-slate-700">
+              <th className="text-left font-medium text-slate-500 dark:text-slate-400" style={header}>
+                EIP
+              </th>
+              <th className="text-left font-medium text-slate-500 dark:text-slate-400" style={header}>
+                Title
+              </th>
+              {elTeams.length > 0 && (
+                <th className="text-center font-medium text-indigo-600 dark:text-indigo-400" style={header}>
+                  EL Clients
+                </th>
+              )}
+              <th className="text-right font-medium text-slate-500 dark:text-slate-400" style={header}>
+                Avg
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) =>
+              row.kind === 'subhead' ? (
+                <tr key={row.key}>
+                  <td
+                    colSpan={elTeams.length > 0 ? 4 : 3}
+                    className="align-bottom font-medium uppercase tracking-wide text-slate-400"
+                    style={{ ...cell, height: vh(0.63), fontSize: vh(0.22) }}
+                  >
+                    {row.name}
+                  </td>
+                </tr>
+              ) : (
+                <tr key={row.key} className="border-b border-slate-100 dark:border-slate-800">
+                  <td
+                    className="font-mono text-purple-600 dark:text-purple-400 whitespace-nowrap"
+                    style={cell}
+                  >
+                    {slideProposalLabel(row.agg.eipId)}
+                  </td>
+                  <td className="text-slate-900 dark:text-slate-100 truncate" style={cell}>
+                    {row.agg.eipTitle}
+                  </td>
+                  {elTeams.length > 0 && (
+                    <td style={cell}>
+                      <ClientStanceBadges
+                        stances={row.agg.stances}
+                        teams={elTeams}
+                        maxScore={maxScore}
+                        boxStyle={badgeStyle}
+                      />
+                    </td>
+                  )}
+                  <td className="text-right" style={cell}>
+                    {row.agg.averageScore !== null ? (
+                      <span
+                        className={`inline-flex items-center font-medium rounded ${getScoreColor(Math.round(row.agg.averageScore), true, maxScore)}`}
+                        style={{ fontSize: vh(0.3), padding: `${vh(0.07)} ${vh(0.17)}`, borderRadius: vh(0.09) }}
+                      >
+                        {row.agg.averageScore.toFixed(1)}
+                      </span>
+                    ) : (
+                      <span className="text-slate-300 dark:text-slate-500" style={{ fontSize: vh(0.3) }}>
+                        —
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        className="shrink-0 flex items-center justify-between px-[4vw] pb-[2vh] text-slate-400"
+        style={{ fontSize: '1.6vh' }}
+      >
+        <span>&larr; &rarr; to navigate &middot; Esc to exit</span>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => onNavigate(Math.max(index - 1, 0))}
+            disabled={index === 0}
+            className="disabled:opacity-30 hover:text-slate-600 dark:hover:text-slate-300"
+            aria-label="Previous category"
+          >
+            &larr;
+          </button>
+          <span className="tabular-nums">
+            {index + 1} / {groups.length}
+          </span>
+          <button
+            onClick={() => onNavigate(Math.min(index + 1, groups.length - 1))}
+            disabled={index === groups.length - 1}
+            className="disabled:opacity-30 hover:text-slate-600 dark:hover:text-slate-300"
+            aria-label="Next category"
+          >
+            &rarr;
+          </button>
+          <button onClick={onExit} className="hover:text-slate-600 dark:hover:text-slate-300">
+            Exit
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 interface ClientStanceBadgesProps {
   stances: ClientStance[];
   teams: TeamEntry[];
   maxScore: number;
+  /** Overrides the badge box, for the viewport-scaled presentation slides. */
+  boxStyle?: React.CSSProperties;
 }
 
-const ClientStanceBadges: React.FC<ClientStanceBadgesProps> = ({ stances, teams, maxScore }) => {
+const ClientStanceBadges: React.FC<ClientStanceBadgesProps> = ({ stances, teams, maxScore, boxStyle }) => {
   return (
     <div className="flex justify-center gap-1">
       {teams.map((team) => {
@@ -995,7 +1378,10 @@ const ClientStanceBadges: React.FC<ClientStanceBadgesProps> = ({ stances, teams,
         return (
           <div
             key={team.name}
-            className={`w-6 h-6 flex items-center justify-center text-[10px] font-medium rounded ${getScoreColor(score, hasStance, maxScore)}`}
+            className={`flex items-center justify-center font-medium rounded ${
+              boxStyle ? '' : 'w-6 h-6 text-[10px]'
+            } ${getScoreColor(score, hasStance, maxScore)}`}
+            style={boxStyle}
             title={stance ? `${team.name}: ${getRatingLabel(stance.ratingSystem, stance.rawRating)}` : `${team.name}: Not mentioned`}
           >
             {team.initials}

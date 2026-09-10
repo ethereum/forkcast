@@ -1038,7 +1038,13 @@ const RankPage: React.FC = () => {
                     </button>
                     {isExpanded && (
                       <div className="flex flex-col gap-4 p-3">
-                        {groupByCategory(layerItems, (item) => item.eip?.id).map(
+                        {/* The board is for dragging, so it reads at the finest
+                            cut a category offers rather than nesting headings. */}
+                        {groupByCategory(layerItems, (item) => item.eip?.id)
+                          .flatMap((group) =>
+                            group.subgroups.length > 0 ? group.subgroups : [group]
+                          )
+                          .map(
                           ({ name, items: categoryItems }) => (
                             <div key={name} className="flex flex-col gap-2">
                               <div className="flex items-center gap-2">

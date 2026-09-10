@@ -1,117 +1,154 @@
 // Thematic categories for the proposals shown on the rank page. Grouping is by
 // what a proposal is *for*, not by its dependency graph.
 //
+// The cuts follow the themes in the Ethlabs Hegotá view
+// (https://ethlabs.org/writings/hegota-view.html), which is the most worked-out
+// public grouping of this fork's proposals. The *names* here are deliberately
+// not theirs: theirs carry the recommendation ("FOCIL: strengthen
+// censorship-resistance"), and Forkcast's own chrome has to stay neutral, so
+// each is reduced to the mechanism or area it covers.
+//
 // Categories are declared in display order. The page groups by layer first, so a
 // category shows up under every layer its EIPs belong to. EIPs listed here that
 // are not up for ranking are ignored, and EIPs in no category at all fall into a
 // trailing "Uncategorized".
 
-export interface EipCategory {
-  /** Slug, stable across renames of `name`. */
-  id: string;
+/** A finer cut within a category, where the source draws one. */
+export interface EipSubcategory {
   name: string;
   /** Member EIPs, in display order. */
   eips: number[];
 }
 
+export interface EipCategory {
+  /** Slug, stable across renames of `name`. */
+  id: string;
+  name: string;
+  /** Member EIPs, in display order. Set unless the category has subcategories. */
+  eips?: number[];
+  /** Set instead of `eips` when the category is worth reading in parts. */
+  subcategories?: EipSubcategory[];
+}
+
 export const eipCategories: EipCategory[] = [
-  // --- Execution layer ---
   {
-    id: 'frame-transactions',
-    name: 'Frame Transactions',
-    // 8141 is the transaction type; the rest amend or build on its frames.
-    eips: [8141, 7906, 8250, 8272]
+    id: 'focil',
+    name: 'FOCIL',
+    eips: [7805]
+  },
+  {
+    id: 'quick-slots',
+    name: 'Quick Slots',
+    eips: [8198]
   },
   {
     id: 'account-abstraction',
-    name: 'Account Abstraction & Delegation',
-    eips: [7645, 7819, 7851, 8151, 8298]
+    name: 'Account Abstraction',
+    subcategories: [
+      {
+        // 8141 is the transaction type; the rest amend or build on its frames.
+        name: 'Frame Transactions',
+        eips: [8141, 7906, 8250, 8272, 8369]
+      },
+      {
+        name: 'Code Reuse',
+        eips: [7819, 8058, 8298]
+      },
+      {
+        name: 'EOA Migration',
+        eips: [7851, 8151]
+      },
+      {
+        name: 'Post-Quantum Signatures',
+        eips: [8355]
+      }
+    ]
   },
   {
-    id: 'evm-features',
-    name: 'EVM Features',
-    eips: [5920, 7979, 8163, 8173, 8219]
-  },
-  {
-    id: 'repricing',
-    name: 'Repricing',
-    eips: [3298, 7709, 7923, 7973, 8058, 8131, 8279, 8358, 8368, 8372, 8374]
-  },
-  {
-    id: 'precompiles-cryptography',
-    name: 'Precompiles & Cryptography',
-    eips: [7666, 8200, 8355]
-  },
-  {
-    id: 'block-state-data',
-    name: 'Block & State Data',
-    eips: [7807, 8115, 8116, 8188, 8268, 8304]
-  },
-  {
-    id: 'mempool-propagation',
-    name: 'Mempool & Transaction Propagation',
-    eips: [8077, 8094]
-  },
-  {
-    id: 'privacy',
-    name: 'Privacy',
-    eips: [8182]
-  },
-  {
-    id: 'state-transition',
-    name: 'State Transition',
-    eips: [8253, 7862]
+    id: 'performance-engineering',
+    name: 'Performance Engineering',
+    subcategories: [
+      {
+        // Put to ACD as a pair, so they are read as one decision.
+        name: 'Data Repricing Bundle',
+        eips: [8131, 8279]
+      },
+      {
+        name: 'Other Performance EIPs',
+        eips: [7862, 8146, 8334, 8341, 8368, 8372]
+      }
+    ]
   },
 
-  // --- Consensus layer ---
+  // --- Ethlabs' "Other EIPs", which their view leaves as flat peers ---
   {
-    id: 'beacon-block-data',
-    name: 'Beacon Block Data',
-    eips: [8341, 8359]
-  },
-  {
-    id: 'sync-history-retention',
-    name: 'Sync & History Retention',
-    eips: [8237, 8379, 8383]
-  },
-  {
-    id: 'block-propagation',
-    name: 'Block Propagation & Validation',
-    eips: [8146]
-  },
-  {
-    id: 'attestations',
-    name: 'Attestations',
-    eips: [8243, 8334]
-  },
-  {
-    id: 'consensus-fork-choice',
-    name: 'Consensus & Fork Choice',
-    eips: [8198, 8321, 8333]
+    id: 'issuance',
+    name: 'Issuance',
+    eips: [8363]
   },
   {
     id: 'staking-features',
     name: 'Staking Features',
-    eips: [8148, 8205, 8365, 8367]
+    eips: [7716, 8015, 8148, 8205, 8237, 8333, 8359, 8375]
   },
   {
-    id: 'rewards-penalties',
-    name: 'Rewards & Penalties',
-    eips: [7716, 8363, 8375]
+    id: 'post-quantum-prep',
+    name: 'Post-Quantum Preparation',
+    eips: [8321, 8365, 8367]
   },
   {
-    id: 'data-availability',
-    name: 'Data Availability & Proofs',
-    eips: [8025, 8142, 8371]
+    id: 'zkevm-prep',
+    name: 'zkEVM Preparation',
+    eips: [7666, 7709, 8025, 8200, 8268]
   },
-
-  // --- Spans both layers, so this is declared last and renders last everywhere ---
   {
-    id: 'cleanup-deprecations',
-    name: 'Cleanup & Deprecations',
-    eips: [2488, 4758, 7668, 8015]
+    id: 'evm-features',
+    name: 'EVM Features',
+    eips: [2488, 4758, 5920, 7645, 7686, 7923, 7979, 8163, 8173, 8182, 8219, 8253]
+  },
+  {
+    id: 'evm-pricing',
+    name: 'EVM Pricing',
+    eips: [3298, 7973, 8115, 8188, 8358, 8374]
+  },
+  {
+    id: 'execution-data',
+    name: 'Execution Data & Indexing',
+    eips: [7668, 7807, 8116, 8304]
+  },
+  {
+    id: 'networking',
+    name: 'Networking',
+    // 8379 is not in the Ethlabs view; it sits with 8383, the other retention EIP.
+    eips: [8077, 8094, 8142, 8243, 8371, 8379, 8383]
   }
 ];
+
+/**
+ * Running order for the Client Priority presentation, which walks the biggest
+ * themes first rather than in the table's declared order. A slide may merge
+ * several categories, which then read as its subheads.
+ */
+export interface PresentationSlide {
+  id: string;
+  name: string;
+  /** Categories to draw from, in the order they should appear on the slide. */
+  categoryIds: string[];
+}
+
+// Categories absent from this plan still get a slide of their own, after the
+// planned ones — a newly filed category must not vanish from the deck.
+export const presentationSlides: PresentationSlide[] = [
+  { id: 'slide-account-abstraction', name: 'Account Abstraction', categoryIds: ['account-abstraction'] },
+  { id: 'slide-evm-features', name: 'EVM Features', categoryIds: ['evm-features'] },
+  { id: 'slide-evm-pricing', name: 'EVM Pricing', categoryIds: ['evm-pricing', 'zkevm-prep'] },
+  { id: 'slide-performance', name: 'Performance Engineering', categoryIds: ['performance-engineering'] },
+  { id: 'slide-misc', name: 'Misc', categoryIds: ['execution-data', 'networking'] }
+];
+
+/** Every EIP a category claims, whether it declares them flat or in parts. */
+export const categoryEips = (category: EipCategory): number[] =>
+  category.eips ?? category.subcategories?.flatMap(sub => sub.eips) ?? [];
 
 // Deliberately not "Other": the rank page already uses that name for the
 // section holding EIPs with no layer.

@@ -15,6 +15,7 @@ import {
 import { getInclusionStageColor } from '../../utils/colors';
 import { getProposalPrefix, getStageAbbreviation } from '../../utils';
 import { eipsData } from '../../data/eips';
+import { EipDrawer } from '../eip/EipDrawer';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
 
@@ -72,6 +73,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const focusTeams = focusOnly ? filterClients : NO_COUNTED_TEAMS;
 
   const [expandedEip, setExpandedEip] = useState<number | null>(null);
+  const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
   const [avgModalOpen, setAvgModalOpen] = useState(false);
 
@@ -298,6 +300,14 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       .filter((team) => filterClients.has(team.name))
       .map((team) => team.name);
     setParam('team', ordered.length > 0 ? ordered.join(',') : null);
+  };
+
+  // The EIP links stay real anchors, so keep every navigating gesture — modifier
+  // clicks, middle click, "open in new tab" — and only take over the plain click.
+  const openDrawer = (eipId: number) => (event: React.MouseEvent) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+    event.preventDefault();
+    setDrawerEipId(eipId);
   };
 
   const clearFilters = () =>
@@ -745,6 +755,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   columnCount={columnCount}
                   isExpanded={expandedEip === agg.eipId}
                   onToggle={() => setExpandedEip(expandedEip === agg.eipId ? null : agg.eipId)}
+                  onOpenDrawer={openDrawer(agg.eipId)}
                 />
               ))
             )}
@@ -774,6 +785,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           Data may not reflect current positions.
         </p>
       </div>
+
+      <EipDrawer eipId={drawerEipId} onClose={() => setDrawerEipId(null)} />
     </>
   );
 };
@@ -790,6 +803,7 @@ interface TableRowProps {
   columnCount: number;
   isExpanded: boolean;
   onToggle: () => void;
+  onOpenDrawer: (event: React.MouseEvent) => void;
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -802,6 +816,7 @@ const TableRow: React.FC<TableRowProps> = ({
   columnCount,
   isExpanded,
   onToggle,
+  onOpenDrawer,
 }) => {
   const eip = eipsData.find((e) => e.id === agg.eipId);
   const shortStage = getStageAbbreviation(agg.inclusionStage);
@@ -832,6 +847,7 @@ const TableRow: React.FC<TableRowProps> = ({
             {eip ? (
               <Link
                 to={`/eips/${eip.id}`}
+                onClick={onOpenDrawer}
                 className="font-mono text-sm text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
               >
                 {getProposalPrefix(eip)}-{agg.eipId}
@@ -860,6 +876,8 @@ const TableRow: React.FC<TableRowProps> = ({
         <td className="px-4 py-3">
           <Link
             to={`/eips/${agg.eipId}`}
+            // The drawer reads from `eipsData`, so an EIP we don't carry has to navigate.
+            onClick={eip ? onOpenDrawer : undefined}
             className="text-sm text-slate-900 dark:text-slate-100 hover:text-purple-600 dark:hover:text-purple-400 line-clamp-1"
           >
             {agg.eipTitle}

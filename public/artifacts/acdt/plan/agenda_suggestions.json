@@ -1,63 +1,56 @@
 {
   "series": "ACDT",
-  "generated": "2026-09-03",
-  "for_call": "ACDT #95",
+  "generated": "2026-09-10",
+  "for_call": "ACDT #96",
   "suggestions": [
     {
-      "topic": "EIP-8037 cross-frame state gas bug resolution and devnet impact",
+      "topic": "EIP-8253 Glamsterdam vs Hegota final decision",
       "priority": "high",
-      "rationale": "ACDC decision expected yesterday (Sept 4) on consensus-breaking EIP-8037 PR #12265. If fix is adopted, could require ~1-month Sepolia delay and new devnet cycle. Critical path decision for fork timeline.",
+      "rationale": "Deferred from ACDT #95 to tomorrow's ACDE (Sept 11). ACDT rough consensus was Hegota, but formal decision needed. If ACDE reverses to Glamsterdam inclusion, would require immediate client implementation.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Devnet-9 non-finality testing status and readiness for Sepolia",
+      "topic": "glamsterdam-devnet-11 launch status and L2 coordination readiness",
       "priority": "high",
-      "rationale": "Devnet-9 launched Sept 1 as chaos network. Need status update on stability, client participation (Nimbus EL, Reth, Grandine trunk branches), and whether it unblocked Sepolia shadow fork targeting mid-to-end September.",
+      "rationale": "Devnet-11 blocked on Prysm alpha.14 merge as of ACDT #95. This is the final happy-path fork transition devnet before testnet launches; critical for L2 teams to coordinate. Confirm readiness and timeline.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Sepolia shadow fork launch decision and client release status",
+      "topic": "Besu JUMPDEST-spam vulnerability mitigation",
       "priority": "high",
-      "rationale": "ACDT #94 targeted Sepolia for mid-to-end September pending devnet-9 stability and client releases. With Sept 3 today, need go/no-go decision and confirmation all clients have stable releases ready.",
+      "rationale": "ACDT #95 showed Jochem's 64KB JUMPDEST-spam knocked out 12/13 Besu nodes (65% missed proposals vs 0.1% Geth). This is a critical pre-testnet blocker. Confirm fix status and whether EEST can express this attack for ongoing testing.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "Nimbus PTC voting-too-early bug from worst-case blob payload",
+      "priority": "medium",
+      "rationale": "Surfaced by Toni's attack testing on devnet-8; still under investigation per ACDT #95. Could impact testnet stability if unresolved.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "Sepolia shadow fork timeline",
+      "priority": "medium",
+      "rationale": "ACDT #93 targeted mid-to-end September for Sepolia shadow fork. We're now in that window. Confirm readiness of client releases, devnet-11 completion status, and whether Snap2 testing is ready to begin.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "HiveChain RPC compatibility test blocker resolution",
+      "topic": "glamsterdam-devnet-9 Prysm trunk offline incident post-mortem",
       "priority": "medium",
-      "rationale": "ACDT #93 identified HiveChain PRs (#1589, #1585) blocking all RPC compat test writing for Glamsterdam. No resolution in ACDT #94. Critical for test coverage before public testnets.",
+      "rationale": "~30% of devnet-9 (Prysm trunk) went offline at Gloas fork; Lighthouse had OOM issues with 4M validator keys. Network was not kept running. Understanding root cause is important before scaling to testnet.",
       "related_eips": [],
-      "source": "open_action_item"
+      "source": "devnet_update"
     },
     {
-      "topic": "REST SSZ Engine API (execution-apis PR #793) review status",
-      "priority": "medium",
-      "rationale": "PR is spec-complete but stuck in Draft awaiting EL team reviews. Blocking merge into SSZ branch. Needs push to unblock before testnets.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "FOCIL inclusion list P2P message size and empty transaction handling",
-      "priority": "medium",
-      "rationale": "ACDT #94 proposed raising signed inclusion list size from 8KB to 41KB and rejecting empty transaction lists. No decisions reached; needs CL breakout discussion before testnet deployment.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Devnet-8 RPC interoperability issues and eth_estimateGas consistency",
+      "topic": "Payload-flooding attack retest status on devnet-8",
       "priority": "low",
-      "rationale": "Stefan's ACDT #93 report highlighted eth_estimateGas inconsistencies across clients on devnet-8. Client teams asked to review; no follow-up yet. Should be addressed before Sepolia.",
+      "rationale": "Deferred from ACDT #91 to devnet-8. ACDT #93 and #95 show Toni conducted various attack tests, but no explicit confirmation that the duplicate envelope fix was retested. Low priority since other attack vectors have been tested and devnet-8 is running well.",
       "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Post-fork attestation deadline analysis planning",
-      "priority": "low",
-      "rationale": "EthPandaOps action item from ACDT #90 to gather timing data post-fork for potential 2s attestation deadline. Fork approaching; should confirm data collection plan is in place.",
-      "related_eips": [],
-      "source": "open_action_item"
+      "source": "deferred_decision"
     }
   ]
 }

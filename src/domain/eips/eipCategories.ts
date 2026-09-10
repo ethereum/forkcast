@@ -1,9 +1,9 @@
 import {
+  DisplayGroup,
   EipCategory,
-  PresentationSlide,
   categoryEips,
+  displayGroups,
   eipCategories,
-  presentationSlides,
   UNCATEGORIZED,
 } from '../../data/eip-categories';
 
@@ -110,32 +110,32 @@ export function groupByCategory<T>(
 }
 
 /**
- * Reorder categories into the presentation's running order. A slide drawing on
- * several categories keeps them as its subgroups, so merged content stays
- * labelled; anything the plan doesn't name trails as its own slide.
+ * Reorder categories into the board's running order. A group drawing on several
+ * categories keeps them as its subgroups, so merged content stays labelled;
+ * anything the order doesn't name trails as its own group.
  */
-export function buildSlides<T>(
+export function buildDisplayGroups<T>(
   groups: CategoryGroup<T>[],
-  slides: PresentationSlide[] = presentationSlides
+  order: DisplayGroup[] = displayGroups
 ): CategoryGroup<T>[] {
   const byId = new Map(groups.map(group => [group.id, group]));
-  const planned = new Set(slides.flatMap(slide => slide.categoryIds));
+  const listed = new Set(order.flatMap(entry => entry.categoryIds));
 
-  const fromPlan = slides.flatMap(slide => {
-    const sources = slide.categoryIds
+  const ordered = order.flatMap(entry => {
+    const sources = entry.categoryIds
       .map(id => byId.get(id))
       .filter((group): group is CategoryGroup<T> => group !== undefined);
     if (sources.length === 0) return [];
-    if (slide.categoryIds.length === 1) return [{ ...sources[0], name: slide.name }];
+    if (entry.categoryIds.length === 1) return [{ ...sources[0], name: entry.name }];
     return [
       {
-        id: slide.id,
-        name: slide.name,
+        id: entry.id,
+        name: entry.name,
         items: sources.flatMap(source => source.items),
         subgroups: sources.map(source => ({ name: source.name, items: source.items })),
       },
     ];
   });
 
-  return [...fromPlan, ...groups.filter(group => !planned.has(group.id))];
+  return [...ordered, ...groups.filter(group => !listed.has(group.id))];
 }

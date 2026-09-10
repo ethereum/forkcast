@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  DisplayGroup,
   EipCategory,
-  PresentationSlide,
   categoryEips,
+  displayGroups,
   eipCategories,
-  presentationSlides,
 } from '../../data/eip-categories';
-import { buildSlides, groupByCategory } from './eipCategories';
+import { buildDisplayGroups, groupByCategory } from './eipCategories';
 import { getRankableEips } from './rankableEips';
 
 const categories: EipCategory[] = [
@@ -81,43 +81,43 @@ describe('groupByCategory', () => {
   });
 });
 
-describe('buildSlides', () => {
+describe('buildDisplayGroups', () => {
   const groups = () => groupByCategory([item(8131), item(8141), item(7851), item(5920)], i => i.id, categories);
 
-  it('follows the plan order, not the declared order', () => {
-    const slides: PresentationSlide[] = [
+  it('follows the running order, not the declared order', () => {
+    const order: DisplayGroup[] = [
       { id: 'a', name: 'EVM Features', categoryIds: ['evm'] },
       { id: 'b', name: 'Repricing', categoryIds: ['repricing'] },
     ];
 
-    expect(names(buildSlides(groups(), slides))).toEqual(['EVM Features', 'Repricing', 'Accounts']);
+    expect(names(buildDisplayGroups(groups(), order))).toEqual(['EVM Features', 'Repricing', 'Accounts']);
   });
 
-  it('keeps a single-category slide whole, under the plan name', () => {
-    const slides: PresentationSlide[] = [{ id: 'a', name: 'Accounts & Frames', categoryIds: ['accounts'] }];
-    const [first] = buildSlides(groups(), slides);
+  it('keeps a single-category group whole, under the listed name', () => {
+    const order: DisplayGroup[] = [{ id: 'a', name: 'Accounts & Frames', categoryIds: ['accounts'] }];
+    const [first] = buildDisplayGroups(groups(), order);
 
     expect(first.name).toBe('Accounts & Frames');
     expect(names(first.subgroups)).toEqual(['Frames', 'Migration']);
   });
 
-  it('merges categories into one slide, keeping them as its subheads', () => {
-    const slides: PresentationSlide[] = [
+  it('merges categories into one group, keeping them as its subheads', () => {
+    const order: DisplayGroup[] = [
       { id: 'misc', name: 'Misc', categoryIds: ['evm', 'repricing'] },
     ];
-    const [misc] = buildSlides(groups(), slides);
+    const [misc] = buildDisplayGroups(groups(), order);
 
     expect(misc.items.map(i => i.id)).toEqual([5920, 8131]);
     expect(names(misc.subgroups)).toEqual(['EVM Features', 'Repricing']);
   });
 
-  it('skips a slide whose categories are all empty', () => {
-    const slides: PresentationSlide[] = [
+  it('skips a group whose categories are all empty', () => {
+    const order: DisplayGroup[] = [
       { id: 'misc', name: 'Misc', categoryIds: ['evm', 'repricing'] },
     ];
     const groups = groupByCategory([item(7851)], i => i.id, categories);
 
-    expect(names(buildSlides(groups, slides))).toEqual(['Accounts']);
+    expect(names(buildDisplayGroups(groups, order))).toEqual(['Accounts']);
   });
 });
 
@@ -141,10 +141,10 @@ describe('eipCategories data', () => {
     }
   });
 
-  // A renamed or dropped category would leave a slide silently empty.
-  it('has a real category behind every id the slide plan names', () => {
+  // A renamed or dropped category would leave a display group silently empty.
+  it('has a real category behind every id the running order names', () => {
     const ids = new Set(eipCategories.map(c => c.id));
-    const missing = presentationSlides.flatMap(s => s.categoryIds).filter(id => !ids.has(id));
+    const missing = displayGroups.flatMap(g => g.categoryIds).filter(id => !ids.has(id));
 
     expect(missing).toEqual([]);
   });

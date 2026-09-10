@@ -15,7 +15,7 @@ import {
 import { getInclusionStageColor } from '../../utils/colors';
 import { getProposalPrefix, getStageAbbreviation } from '../../utils';
 import { eipsData } from '../../data/eips';
-import { buildSlides, groupByCategory, CategoryGroup } from '../../domain/eips/eipCategories';
+import { buildDisplayGroups, groupByCategory, CategoryGroup } from '../../domain/eips/eipCategories';
 import { UNCATEGORIZED } from '../../data/eip-categories';
 import { EipDrawer } from '../eip/EipDrawer';
 import { InclusionStage } from '../../types';
@@ -210,20 +210,23 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   }, [aggregates]);
 
   /**
-   * Categories render in their declared order, but `groupByCategory` also orders
-   * within a group, so the column sort has to be re-applied to each bucket.
+   * `groupByCategory` orders within a group as well as between them, so the column
+   * sort has to be re-applied to each bucket. `buildDisplayGroups` then puts the
+   * groups in the board's running order, which the table and the deck share.
    */
   const groupAndSort = useCallback(
     (items: EipAggregateStance[]) =>
-      groupByCategory(items, (agg) => agg.eipId).map(({ id, name, items: bucket, subgroups }) => ({
-        id,
-        name,
-        items: sortEipAggregates(bucket, sortField, sortDirection),
-        subgroups: subgroups.map((subgroup) => ({
-          name: subgroup.name,
-          items: sortEipAggregates(subgroup.items, sortField, sortDirection),
-        })),
-      })),
+      buildDisplayGroups(groupByCategory(items, (agg) => agg.eipId)).map(
+        ({ id, name, items: bucket, subgroups }) => ({
+          id,
+          name,
+          items: sortEipAggregates(bucket, sortField, sortDirection),
+          subgroups: subgroups.map((subgroup) => ({
+            name: subgroup.name,
+            items: sortEipAggregates(subgroup.items, sortField, sortDirection),
+          })),
+        })
+      ),
     [sortField, sortDirection]
   );
 
@@ -233,14 +236,14 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   );
 
   /**
-   * The deck walks the same cuts as the grouped table, but in its own running order
-   * and as an EL board — CL proposals go with the CL columns, so a category with
-   * nothing on the execution layer drops out of the deck by itself.
+   * The deck walks the same groups as the table, but as an EL board — CL proposals
+   * go with the CL columns, so a category with nothing on the execution layer drops
+   * out of the deck by itself.
    */
   const slides = useMemo(() => {
     if (!canGroupByCategory) return null;
     const elOnly = filteredAggregates.filter((agg) => agg.layer === 'EL');
-    return elOnly.length > 0 ? buildSlides(groupAndSort(elOnly)) : null;
+    return elOnly.length > 0 ? groupAndSort(elOnly) : null;
   }, [canGroupByCategory, filteredAggregates, groupAndSort]);
   const slideCount = slides?.length ?? 0;
 

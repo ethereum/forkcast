@@ -125,25 +125,26 @@ export const eipCategories: EipCategory[] = [
 ];
 
 /**
- * Running order for the Client Priority presentation, which walks the biggest
- * themes first rather than in the table's declared order. A slide may merge
- * several categories, which then read as its subheads.
+ * Running order for the Client Priority board, walking the biggest themes first.
+ * Shared by the grouped table and the presentation, so a reader who saw the deck
+ * finds the table in the same shape. A group may merge several categories, which
+ * then read as its subheads.
  */
-export interface PresentationSlide {
+export interface DisplayGroup {
   id: string;
   name: string;
-  /** Categories to draw from, in the order they should appear on the slide. */
+  /** Categories to draw from, in the order they should appear in the group. */
   categoryIds: string[];
 }
 
-// Categories absent from this plan still get a slide of their own, after the
-// planned ones — a newly filed category must not vanish from the deck.
-export const presentationSlides: PresentationSlide[] = [
-  { id: 'slide-account-abstraction', name: 'Account Abstraction', categoryIds: ['account-abstraction'] },
-  { id: 'slide-evm-features', name: 'EVM Features', categoryIds: ['evm-features'] },
-  { id: 'slide-evm-pricing', name: 'EVM Pricing', categoryIds: ['evm-pricing', 'zkevm-prep'] },
-  { id: 'slide-performance', name: 'Performance Engineering', categoryIds: ['performance-engineering'] },
-  { id: 'slide-misc', name: 'Misc', categoryIds: ['execution-data', 'networking'] }
+// Categories absent from this order still get a group of their own, after the
+// listed ones — a newly filed category must not vanish from the board.
+export const displayGroups: DisplayGroup[] = [
+  { id: 'group-account-abstraction', name: 'Account Abstraction', categoryIds: ['account-abstraction'] },
+  { id: 'group-evm-features', name: 'EVM Features', categoryIds: ['evm-features'] },
+  { id: 'group-evm-pricing', name: 'EVM Pricing', categoryIds: ['evm-pricing', 'zkevm-prep'] },
+  { id: 'group-performance', name: 'Performance Engineering', categoryIds: ['performance-engineering'] },
+  { id: 'group-misc', name: 'Misc', categoryIds: ['execution-data', 'networking'] }
 ];
 
 /** Every EIP a category claims, whether it declares them flat or in parts. */

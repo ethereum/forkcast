@@ -191,13 +191,18 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     return sortEipAggregates(filteredAggregates, sortField, sortDirection);
   }, [filteredAggregates, sortField, sortDirection]);
 
-  const rejectedCount = useMemo(
-    () => aggregates.filter((a) => a.rejectCount > 0).length,
+  // Gates the ⚑ flag and the "Has Rejections" filter, so both stay reachable no
+  // matter how the current view is narrowed.
+  const hasRejections = useMemo(
+    () => aggregates.some((a) => a.rejectCount > 0),
     [aggregates]
   );
 
-  // Gates the ⚑ flag, the toolbar count and the "Has Rejections" filter together.
-  const hasRejections = rejectedCount > 0;
+  // Sits beside the EIP count in the toolbar, so it has to share that count's basis.
+  const rejectedInView = useMemo(
+    () => filteredAggregates.filter((a) => a.rejectCount > 0).length,
+    [filteredAggregates]
+  );
 
   const lowestScore = getMinScore(fork);
 
@@ -377,10 +382,10 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
             <span className="text-slate-500 dark:text-slate-400">
               {sortedAggregates.length} EIPs
             </span>
-            {hasRejections && (
+            {rejectedInView > 0 && (
               <span className="hidden md:flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500"></span>
-                <span className="text-slate-600 dark:text-slate-300">{rejectedCount} with rejections</span>
+                <span className="text-slate-600 dark:text-slate-300">{rejectedInView} with rejections</span>
               </span>
             )}
           </div>

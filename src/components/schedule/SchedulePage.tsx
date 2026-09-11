@@ -176,8 +176,10 @@ const SchedulePage: React.FC = () => {
         // A proposed fork slot beats the backwards-from-mainnet projection, but
         // stays overridable in the sandbox.
         const withProposals = phase.testnets.map(testnet => {
-          const proposedDate = staticTestnets?.find(t => t.name === testnet.name)?.proposedDate;
-          return proposedDate ? { ...testnet, proposedDate } : testnet;
+          const proposal = staticTestnets?.find(t => t.name === testnet.name);
+          return proposal?.proposedDate
+            ? { ...testnet, proposedDate: proposal.proposedDate, proposedSource: proposal.proposedSource }
+            : testnet;
         });
         const sepoliaIdx = withProposals.findIndex(t => t.name === 'Sepolia');
         const insertAt = sepoliaIdx === -1 ? withProposals.length : sepoliaIdx;
@@ -1019,6 +1021,7 @@ const SchedulePage: React.FC = () => {
                                       gapTooltip={showGap ? currentGapTooltip : undefined}
                                       gapType="fixed"
                                       isProposed={!glamTestnet.date && !!glamTestnet.proposedDate}
+                                      proposedSource={glamTestnet.proposedSource}
                                       isLive={glamTestnet.status === 'in-progress'}
                                     />
                                   );

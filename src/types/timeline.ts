@@ -33,6 +33,8 @@ export interface TestnetDetail {
    * `projectedDate` (derived from a target mainnet date) and `date` (settled).
    */
   proposedDate?: string;
+  /** Where the slot was put forward, linked from the `~` badge. */
+  proposedSource?: string;
 }
 
 export interface SubstepDetail {

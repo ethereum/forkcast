@@ -280,8 +280,18 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
       testnets: [
         { name: 'Platåberget', status: 'completed', date: 'Aug 13, 2026' },
         // Fork slots put forward on ACD, not yet agreed.
-        { name: 'Sepolia', status: 'upcoming', proposedDate: 'Oct 6, 2026' },
-        { name: 'Hoodi', status: 'upcoming', proposedDate: 'Oct 26, 2026' }
+        {
+          name: 'Sepolia',
+          status: 'upcoming',
+          proposedDate: 'Oct 6, 2026',
+          proposedSource: 'https://github.com/ethereum/pm/pull/2205'
+        },
+        {
+          name: 'Hoodi',
+          status: 'upcoming',
+          proposedDate: 'Oct 26, 2026',
+          proposedSource: 'https://github.com/ethereum/pm/pull/2205'
+        }
       ]
     },
     {

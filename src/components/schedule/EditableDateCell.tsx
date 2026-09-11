@@ -4,8 +4,9 @@ import { formatISODate } from '../../utils/date';
 import { Tooltip } from '../ui';
 import { Link } from '../navigation';
 
-const doneBadgeClasses =
-  'inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
+const badgeBase = 'inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium';
+const doneBadgeClasses = `${badgeBase} bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300`;
+const proposedBadgeClasses = `${badgeBase} bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300`;
 
 export interface EditableDateCellProps {
   fork: string;
@@ -25,6 +26,8 @@ export interface EditableDateCellProps {
   isSourceLocked?: boolean;
   /** Date was put forward on ACD but not yet agreed. */
   isProposed?: boolean;
+  /** Where the proposal was put forward, linked from the proposed badge. */
+  proposedSource?: string;
   /** Network launched on this date and is still running. */
   isLive?: boolean;
   /** Page for the running network, linked from the live badge. */
@@ -48,6 +51,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   gapType,
   isSourceLocked,
   isProposed,
+  proposedSource,
   isLive,
   liveHref,
 }) => {
@@ -254,10 +258,22 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
       ) : isProposed && displayDate === calculatedDate ? (
         /* A specific date came out of ACD discussion. Firmer than a projection
            off the mainnet estimate, but not agreed, so no 🔒. */
-        <Tooltip text="Proposed, not yet agreed." position="top">
-          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
-            ~
-          </div>
+        <Tooltip
+          text={proposedSource ? 'Proposed, not yet agreed. See the proposal.' : 'Proposed, not yet agreed.'}
+          position="top"
+        >
+          {proposedSource ? (
+            <a
+              href={proposedSource}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${proposedBadgeClasses} hover:bg-blue-200 dark:hover:bg-blue-900/40`}
+            >
+              ~
+            </a>
+          ) : (
+            <div className={proposedBadgeClasses}>~</div>
+          )}
         </Tooltip>
       ) : (
         /* A question mark, not a neutral circle: these dates are projections

@@ -2,6 +2,16 @@
   "eipId": 8250,
   "commits": [
     {
+      "sha": "f3079a09e8c606afcb0e5e1a309ff228b88dc067",
+      "date": "2026-09-11T09:45:33Z",
+      "message": "Update EIP-8250: Preserve nested fees in transaction payload",
+      "author": "danceratopz",
+      "prNumber": null,
+      "patch": "@@ -57,9 +57,9 @@ This specification is a delta against [EIP-8141](./eip-8141.md).\n This EIP replaces the `nonce` field in the EIP-8141 `FRAME_TX_TYPE` payload with two consecutive fields, `nonce_keys` followed by `nonce_seq`. No other payload field is changed. Applied to the EIP-8141 payload, the result is:\n \n ```text\n-[chain_id, nonce_keys, nonce_seq, sender, frames, signatures,\n- max_priority_fee_per_gas, max_fee_per_gas,\n- max_fee_per_blob_gas, blob_versioned_hashes]\n+[chain_id, nonce_keys, nonce_seq, sender, frames, signatures, fees, blob_versioned_hashes]\n+\n+fees = [max_priority_fee_per_gas, max_fee_per_gas, max_fee_per_blob_gas]\n ```\n \n `nonce_keys` is a list of `uint256` values; `nonce_seq` is a `uint64`. Each nonce key and `nonce_seq` MUST be encoded as canonical minimal-length RLP integers. The frame layout and all other EIP-8141 transaction fields are unchanged.",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
       "sha": "94f5a3e3c146c28625d9ab2f8a7c0a848530a13a",
       "date": "2026-09-02T11:38:14Z",
       "message": "Update EIP-8250: charge keyed nonce first use as state gas",

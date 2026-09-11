@@ -145,6 +145,13 @@ const SchedulePage: React.FC = () => {
                   projectedDate: staticDevnet.projectedDate
                 };
               }
+              // The projection only infers status from whether the whole fork is
+              // historical, so a devnet we know the state of keeps its own — a
+              // dateless devnet that has already run would otherwise read as
+              // upcoming against a projected date.
+              if (staticDevnet) {
+                return { ...devnet, status: staticDevnet.status };
+              }
               return devnet;
             })
           };
@@ -867,6 +874,7 @@ const SchedulePage: React.FC = () => {
                                           gapIsNegative={glamDevnetGap.isNegative}
                                           gapType="variable"
                                           isLive={glamDevnet.status === 'in-progress'}
+                                          liveHref={`/networks/glamsterdam-devnet-${idx}`}
                                         />
                                       );
                                     })() : (
@@ -893,6 +901,7 @@ const SchedulePage: React.FC = () => {
                                           gapIsNegative={hegotaDevnetGap.isNegative}
                                           gapType="variable"
                                           isLive={hegotaDevnet.status === 'in-progress'}
+                                          liveHref={`/networks/hegota-devnet-${idx}`}
                                         />
                                       );
                                     })() : (

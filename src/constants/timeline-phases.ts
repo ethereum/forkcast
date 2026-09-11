@@ -11,7 +11,7 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     id: 'devnets',
     title: 'Devnets',
     dateRange: 'Ongoing',
-    description: 'Client teams implement and test Glamsterdam changes on internal development networks. Devnet-8 and Devnet-9 are live alongside the public testnets, and Devnet-10 is still to come.',
+    description: 'Client teams implement and test Glamsterdam changes on internal development networks. Devnet-11 is live alongside the public testnets.',
     status: 'in-progress'
   },
   {
@@ -246,7 +246,7 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
       phaseId: 'development',
       status: 'in-progress',
       actualStartDate: 'Feb 2026',
-      progressNotes: 'Devnet-8 and Devnet-9 are live alongside the public testnets; Devnet-10 still to come',
+      progressNotes: 'Devnet-11 is live alongside the public testnets',
       // Only the planned devnets are declared here. Once one launches,
       // enrichDevnetDates takes over its date and status from
       // devnet-launches.json. Devnet-8 doubles as the Platåberget public testnet.
@@ -261,7 +261,12 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
         { name: 'Devnet-7', status: 'upcoming' },
         { name: 'Devnet-8', status: 'upcoming' },
         { name: 'Devnet-9', status: 'upcoming' },
-        { name: 'Devnet-10', status: 'upcoming' }
+        // Devnet-10 ran as a short internal test with no published spec, so it
+        // never reaches devnet-launches.json and its status is set by hand.
+        // Cartographoor drops the config of an inactive network, so its launch
+        // date is not recoverable.
+        { name: 'Devnet-10', status: 'completed' },
+        { name: 'Devnet-11', status: 'upcoming' }
       ]
     },
     {

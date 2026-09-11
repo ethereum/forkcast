@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { parseLocalDate, parseShortDate } from './forkDateCalculator';
 import { formatISODate } from '../../utils/date';
 import { Tooltip } from '../ui';
+import { Link } from '../navigation';
+
+const doneBadgeClasses =
+  'inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300';
 
 export interface EditableDateCellProps {
   fork: string;
@@ -23,6 +27,8 @@ export interface EditableDateCellProps {
   isProposed?: boolean;
   /** Network launched on this date and is still running. */
   isLive?: boolean;
+  /** Page for the running network, linked from the live badge. */
+  liveHref?: string;
 }
 
 const EditableDateCell: React.FC<EditableDateCellProps> = ({
@@ -43,6 +49,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   isSourceLocked,
   isProposed,
   isLive,
+  liveHref,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState('');
@@ -52,8 +59,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   const displayDate = lockedDates[dateKey] ?? calculatedDate;
 
   // Check if date is overdue (past today and the milestone hasn't happened).
-  // A live network's date is its launch, so it is in the past by definition.
-  const isOverdue = !isCompleted && !isLive && displayDate && (() => {
+  const isOverdue = !isCompleted && displayDate && (() => {
     const parsed = parseShortDate(displayDate);
     if (!parsed) return false;
     const today = new Date();
@@ -116,6 +122,21 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         ? 'text-blue-500 dark:text-blue-400'
         : 'text-slate-400 dark:text-slate-400';
 
+  const renderLiveBadge = () => (
+    <Tooltip
+      text={liveHref ? 'Launched on this date and still running. View the network.' : 'Launched on this date and still running.'}
+      position="top"
+    >
+      {liveHref ? (
+        <Link to={liveHref} className={`${doneBadgeClasses} hover:bg-green-200 dark:hover:bg-green-900/40`}>
+          ●
+        </Link>
+      ) : (
+        <div className={doneBadgeClasses}>●</div>
+      )}
+    </Tooltip>
+  );
+
   const renderGap = () => {
     if (!gapText) return <span className={gapWidth}></span>;
     const span = (
@@ -157,13 +178,12 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
     );
   }
 
-  // Completed milestone (not editable)
-  if (isCompleted) {
+  // Already happened, so the date is a fact rather than an estimate: not
+  // editable, and nothing downstream of it is recalculated.
+  if (isCompleted || isLive) {
     return (
       <div className="flex items-center gap-1">
-        <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
-          ✓
-        </div>
+        {isLive ? renderLiveBadge() : <div className={doneBadgeClasses}>✓</div>}
         <div className={`text-slate-700 dark:text-slate-300 text-sm ${dateWidth}`}>
           {displayDate}
         </div>
@@ -229,12 +249,6 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <Tooltip text="This date is in the past" position="top">
           <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400">
             ⚠
-          </div>
-        </Tooltip>
-      ) : isLive ? (
-        <Tooltip text="Launched on this date and still running." position="top">
-          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300">
-            ●
           </div>
         </Tooltip>
       ) : isProposed && displayDate === calculatedDate ? (

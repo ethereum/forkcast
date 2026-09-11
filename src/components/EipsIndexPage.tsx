@@ -679,15 +679,17 @@ const EipsIndexPage: React.FC = () => {
                     </Tooltip>
                   </th>
                   <th className="px-4 py-3 text-left">
-                    <button
-                      onClick={() => handleSort('updated')}
-                      className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1 transition-colors"
-                    >
-                      Updated
-                      {sortField === 'updated' && (
-                        <span className="text-purple-500">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-                      )}
-                    </button>
+                    <Tooltip text="Date of the most recent inclusion stage change, in the latest upgrade this EIP is tracked for">
+                      <button
+                        onClick={() => handleSort('updated')}
+                        className="text-xs font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wider hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1 transition-colors cursor-help"
+                      >
+                        Stage Change
+                        {sortField === 'updated' && (
+                          <span className="text-purple-500">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+                        )}
+                      </button>
+                    </Tooltip>
                   </th>
                   <th className="px-4 py-3 text-left">
                     <button
@@ -755,11 +757,12 @@ const EipsIndexPage: React.FC = () => {
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-1.5">
                         {eip.forkRelationships.length > 0 ? (
-                          [...eip.forkRelationships].reverse().map((fork) => (
+                          [...eip.forkRelationships].reverse().map((fork, index) => (
                             <UpgradeStageBadge
                               key={fork.forkName}
                               forkName={fork.forkName}
                               stage={getInclusionStage(eip, fork.forkName)}
+                              muted={index > 0}
                             />
                           ))
                         ) : (
@@ -876,11 +879,12 @@ const EipsIndexPage: React.FC = () => {
                         {layer}
                       </span>
                     )}
-                    {eip.forkRelationships.map((fork) => (
+                    {eip.forkRelationships.map((fork, index) => (
                       <UpgradeStageBadge
                         key={fork.forkName}
                         forkName={fork.forkName}
                         stage={getInclusionStage(eip, fork.forkName)}
+                        muted={index < eip.forkRelationships.length - 1}
                       />
                     ))}
                   </div>
@@ -894,7 +898,7 @@ const EipsIndexPage: React.FC = () => {
                 {/* Dates */}
                 <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                   {statusWithDate?.date && (
-                    <span>Updated {formatDate(statusWithDate.date)}</span>
+                    <span>Stage change {formatDate(statusWithDate.date)}</span>
                   )}
                   <span className="text-slate-400 dark:text-slate-400">
                     Created {formatDate(eip.createdDate)}

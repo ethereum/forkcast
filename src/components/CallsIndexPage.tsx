@@ -32,29 +32,47 @@ interface CallsIndexPageProps {
 }
 
 const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   // On a scoped path (/calls/acde) the type is path-owned; otherwise it's the
   // query filter. Aggregate filters (acd, breakouts) only ever live in the query.
   const selectedFilter = scope ?? (searchParams.get('filter') || 'all');
   const selectedBreakoutType = scope ? '' : (searchParams.get('breakoutType') || '');
+  const showEvents = searchParams.get('events') !== 'hide';
   const [upcomingCalls, setUpcomingCalls] = useState<UpcomingCall[]>(upcomingCallsSnapshot);
   const [upcomingCallsLoading, setUpcomingCallsLoading] = useState(true);
   const [breakoutDropdownOpen, setBreakoutDropdownOpen] = useState(false);
   const breakoutDropdownRef = useRef<HTMLDivElement>(null);
 
+  // Picking a filter rebuilds the query from scratch, so anything orthogonal to
+  // the filter has to be carried across here or it resets on every click.
+  const buildQuery = (filterParams: Record<string, string | undefined>): string => {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(filterParams)) {
+      if (value) params.set(key, value);
+    }
+    if (!showEvents) params.set('events', 'hide');
+    const query = params.toString();
+    return query ? `?${query}` : '';
+  };
+
   // Navigate concrete types to their path scope; keep aggregate filters in the query.
   const selectFilter = (filter: string) => {
-    if (filter === 'all') navigate('/calls');
-    else if (CONCRETE_TYPE_FILTERS.includes(filter)) navigate(`/calls/${filter}`);
-    else navigate(`/calls?filter=${filter}`);
+    if (filter === 'all') navigate(`/calls${buildQuery({})}`);
+    else if (CONCRETE_TYPE_FILTERS.includes(filter)) navigate(`/calls/${filter}${buildQuery({})}`);
+    else navigate(`/calls${buildQuery({ filter })}`);
   };
 
   const setBreakoutType = (breakoutType: string | null) => {
-    const params = new URLSearchParams();
-    params.set('filter', 'breakouts');
-    if (breakoutType) params.set('breakoutType', breakoutType);
-    navigate(`/calls?${params.toString()}`);
+    navigate(`/calls${buildQuery({ filter: 'breakouts', breakoutType: breakoutType ?? undefined })}`);
+  };
+
+  const toggleEvents = (next: boolean) => {
+    setSearchParams((params) => {
+      if (next) params.delete('events');
+      else params.set('events', 'hide');
+      return params;
+    }, { replace: true });
   };
 
   useEffect(() => {
@@ -118,9 +136,9 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
     return [
       ...filteredCalls,
       ...filteredUpcomingCalls,
-      ...timelineEvents
+      ...(showEvents ? timelineEvents : [])
     ];
-  }, [filteredCalls, filteredUpcomingCalls]);
+  }, [filteredCalls, filteredUpcomingCalls, showEvents]);
 
   const viewerTimeZone = useMemo(() => Intl.DateTimeFormat().resolvedOptions().timeZone, []);
   const todayDateString = getTodayDateString(new Date(), viewerTimeZone);
@@ -166,8 +184,10 @@ const CallsIndexPage: React.FC<CallsIndexPageProps> = ({ scope }) => {
             breakoutLabel={breakoutLabel}
             breakoutTypes={breakoutTypes}
             hasOneOffCalls={hasOneOffCalls}
+            showEvents={showEvents}
+            onToggleEvents={toggleEvents}
             onSelectFilter={selectFilter}
-            onBackToAllFilters={() => navigate('/calls')}
+            onBackToAllFilters={() => selectFilter('all')}
             onToggleBreakoutDropdown={() => setBreakoutDropdownOpen((open) => !open)}
             onSelectBreakoutType={(breakoutType) => {
               setBreakoutType(breakoutType);

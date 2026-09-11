@@ -42,7 +42,8 @@ export function getStaticPaths() {
     const seriesName = getCallTypeName(call.type);
     const name = call.name || seriesName;
     // A hand-written name already reads as a full title, so it takes no number.
-    const displayName = call.name ? name : `${name} #${call.number}`;
+    const numbered = call.name ? name : `${name} #${call.number}`;
+    const displayName = call.topic ? `${numbered} | ${call.topic}` : numbered;
     const description = call.name
       ? `Watch ${name} from ${call.date}.`
       : `Watch ${name} call #${call.number} from ${call.date}.`;

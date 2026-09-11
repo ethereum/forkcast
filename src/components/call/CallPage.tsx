@@ -1061,9 +1061,10 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     breakoutLabels[kind as BreakoutKind] ?? kind.toUpperCase();
 
   // Breakout views inherit the parent ACDT's identity so headers don't lose context.
+  const topicSuffix = matchingCall?.topic ? ` | ${matchingCall.topic}` : '';
   const headerLabel = activeBreakout
     ? `${parentType.toUpperCase()} #${parentNumber} — ${getBreakoutLabel(activeBreakout.kind)} Breakout`
-    : `${getCallTypeLabel()}${callNumberSuffix}`;
+    : `${getCallTypeLabel()}${callNumberSuffix}${topicSuffix}`;
 
   // Get associated EIP info for breakout calls
   const getBreakoutEipInfo = (): { eip: EIP; latestFork: ForkRelationship | null } | null => {

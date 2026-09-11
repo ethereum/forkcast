@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from './navigation';
 import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
-import { getRecentCalls, isOneOffCall, callTypeNames, protocolCalls, type Call, type CallType } from '../data/calls';
+import { getRecentCalls, getCallTypeBadgeLabel, isOneOffCall, callTypeNames, protocolCalls, type Call, type CallType } from '../data/calls';
 import { eipsData, eipById } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle } from '../utils/eip';
@@ -163,12 +163,13 @@ const HomePage = () => {
     rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
     zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
     etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-    awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
+    awd: 'bg-stone-100 dark:bg-stone-900/30 text-stone-700 dark:text-stone-300',
     pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
     fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
     aa: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
     p2p: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-    ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300'
+    ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300',
+    ethproofs: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
   };
 
   return (
@@ -288,7 +289,7 @@ const HomePage = () => {
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded min-w-[3.5rem] text-center flex-shrink-0 ${callTypeBadgeColors[call.type as CallType] || fallbackBadgeColor}`}>
-                      {oneOff ? '1-OFF' : call.type.toUpperCase()}
+                      {oneOff ? '1-OFF' : getCallTypeBadgeLabel(call.type)}
                     </span>
                     <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
                       {oneOff

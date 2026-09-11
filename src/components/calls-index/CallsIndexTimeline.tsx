@@ -1,5 +1,5 @@
 import { Link } from '../navigation';
-import { callTypeNames, isOneOffCall, type Call, type CallType } from '../../data/calls';
+import { callTypeNames, getCallTypeBadgeLabel, isOneOffCall, type Call, type CallType } from '../../data/calls';
 import { hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
 import { type TimelineEvent } from '../../data/events';
 import {
@@ -25,12 +25,13 @@ const CALL_TYPE_BORDER_COLORS: Record<CallType, string> = {
   rpc: 'border-l-violet-500 dark:border-l-violet-400',
   zkevm: 'border-l-fuchsia-500 dark:border-l-fuchsia-400',
   etm: 'border-l-purple-500 dark:border-l-purple-400',
-  awd: 'border-l-lime-500 dark:border-l-lime-400',
+  awd: 'border-l-stone-500 dark:border-l-stone-400',
   pqi: 'border-l-emerald-500 dark:border-l-emerald-400',
   fcr: 'border-l-teal-500 dark:border-l-teal-400',
   aa: 'border-l-indigo-500 dark:border-l-indigo-400',
   p2p: 'border-l-green-500 dark:border-l-green-400',
-  ssz: 'border-l-zinc-500 dark:border-l-zinc-400'
+  ssz: 'border-l-zinc-500 dark:border-l-zinc-400',
+  ethproofs: 'border-l-lime-500 dark:border-l-lime-400'
 };
 
 const CALL_TYPE_BADGE_COLORS: Record<CallType, string> = {
@@ -46,12 +47,13 @@ const CALL_TYPE_BADGE_COLORS: Record<CallType, string> = {
   rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
   zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
   etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-  awd: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
+  awd: 'bg-stone-100 dark:bg-stone-900/30 text-stone-700 dark:text-stone-300',
   pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
   fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
   aa: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
   p2p: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-  ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300'
+  ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300',
+  ethproofs: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
 };
 
 const FALLBACK_BORDER_COLOR = 'border-l-slate-400 dark:border-l-slate-500';
@@ -134,7 +136,7 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <span className={`inline-block min-w-[3.5rem] flex-shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium ${CALL_TYPE_BADGE_COLORS[item.type]}`}>
-            {item.type.toUpperCase()}
+            {getCallTypeBadgeLabel(item.type)}
           </span>
           <div className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
             <span className="sm:hidden">Call #{item.number}</span>
@@ -189,7 +191,7 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
           <span className={`inline-block min-w-[3.5rem] flex-shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium ${CALL_TYPE_BADGE_COLORS[call.type as CallType] || FALLBACK_BADGE_COLOR}`}>
-            {oneOff ? '1-OFF' : call.type.toUpperCase()}
+            {oneOff ? '1-OFF' : getCallTypeBadgeLabel(call.type)}
           </span>
           <div className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
             {oneOff ? (
@@ -198,6 +200,7 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
               <>
                 <span className="sm:hidden">Call #{call.number}</span>
                 <span className="hidden sm:inline">{callTypeNames[call.type as CallType] || call.type} #{call.number}</span>
+                {call.topic && <span> | {call.topic}</span>}
               </>
             )}
           </div>

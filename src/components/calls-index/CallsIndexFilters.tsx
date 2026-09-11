@@ -36,6 +36,8 @@ interface CallsIndexFiltersProps {
   breakoutLabel: string;
   breakoutTypes: string[];
   hasOneOffCalls: boolean;
+  showEvents: boolean;
+  onToggleEvents: (next: boolean) => void;
   onSelectFilter: (filter: string) => void;
   onBackToAllFilters: () => void;
   onToggleBreakoutDropdown: () => void;
@@ -50,6 +52,8 @@ export const CallsIndexFilters = ({
   breakoutLabel,
   breakoutTypes,
   hasOneOffCalls,
+  showEvents,
+  onToggleEvents,
   onSelectFilter,
   onBackToAllFilters,
   onToggleBreakoutDropdown,
@@ -142,6 +146,19 @@ export const CallsIndexFilters = ({
             ))}
           </>
         )}
+
+        <div className="h-4 w-px flex-shrink-0 bg-slate-200 dark:bg-slate-700" />
+        <button
+          onClick={() => onToggleEvents(!showEvents)}
+          aria-pressed={showEvents}
+          className={`cursor-pointer flex-shrink-0 whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-medium transition-all ${
+            showEvents
+              ? 'bg-emerald-600 text-white dark:bg-emerald-500'
+              : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/30 dark:text-emerald-400 dark:hover:bg-emerald-900/30'
+          }`}
+        >
+          Events
+        </button>
       </div>
     </div>
   );

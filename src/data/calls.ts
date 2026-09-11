@@ -1,7 +1,7 @@
 import generatedCalls from './protocol-calls.generated.json';
 import { getTodayDateString } from '../utils/localDate';
 
-export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr' | 'aa' | 'p2p' | 'ssz';
+export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr' | 'aa' | 'p2p' | 'ssz' | 'ethproofs';
 
 export interface Call {
   type: string;
@@ -9,6 +9,8 @@ export interface Call {
   number: string;
   path: string;
   name?: string;
+  /** This call's subject, for series that give each call its own theme. */
+  topic?: string;
   issue?: number;
 }
 
@@ -32,7 +34,16 @@ export const callTypeNames: Record<CallType, string> = {
   aa: 'Frame Transaction Breakout',
   p2p: 'P2P Networking',
   ssz: 'SSZ Engine API',
+  ethproofs: 'Ethproofs',
 };
+
+// Badge text for series whose slug is too long for the badge pill.
+const callTypeBadgeLabels: Partial<Record<CallType, string>> = {
+  ethproofs: 'EP',
+};
+
+export const getCallTypeBadgeLabel = (type: string): string =>
+  callTypeBadgeLabels[type as CallType] ?? type.toUpperCase();
 
 export const protocolCalls: Call[] = generatedCalls as Call[];
 

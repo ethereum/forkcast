@@ -137,7 +137,7 @@ export interface DisplayGroup {
   categoryIds: string[];
 }
 
-// Categories absent from this order still get a group of their own, after the
+// Categories absent from an order still get a group of their own, after the
 // listed ones — a newly filed category must not vanish from the board.
 export const displayGroups: DisplayGroup[] = [
   { id: 'group-account-abstraction', name: 'Account Abstraction', categoryIds: ['account-abstraction'] },
@@ -145,6 +145,21 @@ export const displayGroups: DisplayGroup[] = [
   { id: 'group-evm-pricing', name: 'EVM Pricing', categoryIds: ['evm-pricing', 'zkevm-prep'] },
   { id: 'group-performance', name: 'Performance Engineering', categoryIds: ['performance-engineering'] },
   { id: 'group-misc', name: 'Misc', categoryIds: ['execution-data', 'networking'] }
+];
+
+/**
+ * The consensus layer's own running order, used by its deck. Most of the themes
+ * above are execution-side and land on the CL board one EIP at a time, so those
+ * gather into a trailing Misc instead of taking a slide each — which also leaves
+ * the shared Misc holding nothing but networking here. Listing every CL theme is
+ * deliberate: an unlisted one would trail *after* Misc.
+ */
+export const clDisplayGroups: DisplayGroup[] = [
+  { id: 'group-performance', name: 'Performance Engineering', categoryIds: ['performance-engineering'] },
+  { id: 'group-networking', name: 'Networking', categoryIds: ['networking'] },
+  { id: 'group-staking-features', name: 'Staking Features', categoryIds: ['staking-features'] },
+  { id: 'group-post-quantum-prep', name: 'Post-Quantum Preparation', categoryIds: ['post-quantum-prep'] },
+  { id: 'group-cl-misc', name: 'Misc', categoryIds: ['zkevm-prep', 'quick-slots', 'issuance'] }
 ];
 
 /** Every EIP a category claims, whether it declares them flat or in parts. */

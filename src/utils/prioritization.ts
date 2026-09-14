@@ -188,7 +188,12 @@ export function getRatingLabel(
 }
 
 /**
- * Get Tailwind color classes for a normalized score badge
+ * Get Tailwind color classes for a normalized score badge.
+ *
+ * The middle rung is yellow rather than amber: amber sits close enough to the orange
+ * below it that the two were near-indistinguishable once the dark fills composite at
+ * low opacity against slate-900 (ΔE 2.8).
+ *
  * @param score - The normalized score (0-5), null for neutral/uncertain, or undefined for no stance
  * @param hasStance - Whether the client has any stance recorded (to differentiate neutral vs not mentioned)
  * @param maxScore - Top of the fork's scale, so its best tier reads green on a shorter scale too
@@ -219,7 +224,7 @@ export function getScoreColor(
     case 4:
       return 'bg-lime-100 text-lime-700 dark:bg-lime-900/30 dark:text-lime-300';
     case 3:
-      return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300';
+      return 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300';
     case 2:
       return 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300';
     case 1:

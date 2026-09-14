@@ -16,12 +16,13 @@ import { getInclusionStageColor } from '../../utils/colors';
 import { getProposalPrefix, getStageAbbreviation } from '../../utils';
 import { eipsData } from '../../data/eips';
 import { buildDisplayGroups, groupByCategory, CategoryGroup } from '../../domain/eips/eipCategories';
-import { UNCATEGORIZED } from '../../data/eip-categories';
+import { DisplayGroup, UNCATEGORIZED, clDisplayGroups, displayGroups } from '../../data/eip-categories';
 import { EipDrawer } from '../eip/EipDrawer';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
 
 type FilterLayer = 'all' | 'EL' | 'CL';
+type PresentLayer = 'EL' | 'CL';
 type FilterStance = 'all' | 'support' | 'mixed' | 'oppose' | 'rejected' | 'none';
 
 /** Fork-specific caveat about when the linked perspectives were written. */
@@ -39,6 +40,11 @@ const BREAKOUT = 'lg:relative lg:left-1/2 lg:-translate-x-1/2 lg:w-[72rem] lg:ma
 const SORT_FIELDS: SortField[] = ['eip', 'average', 'elAverage', 'clAverage', 'stanceCount', 'stage'];
 const FILTER_LAYERS: FilterLayer[] = ['EL', 'CL'];
 const FILTER_STANCES: FilterStance[] = ['support', 'mixed', 'oppose', 'rejected', 'none'];
+const PRESENT_LAYERS: PresentLayer[] = ['EL', 'CL'];
+const LAYER_NAME: Record<PresentLayer, string> = { EL: 'execution layer', CL: 'consensus layer' };
+/** The table's order is the EL board's, so only the CL deck departs from it. */
+const DECK_ORDER: Record<PresentLayer, DisplayGroup[]> = { EL: displayGroups, CL: clDisplayGroups };
+const LAYER_SORT: Record<PresentLayer, SortField> = { EL: 'elAverage', CL: 'clAverage' };
 
 /** Query values are user input, so anything off the known list falls back to the default. */
 const readEnum = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
@@ -81,6 +87,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const [avgModalOpen, setAvgModalOpen] = useState(false);
   /** Index of the category on screen, or null when not presenting. */
   const [slide, setSlide] = useState<number | null>(null);
+  const [slideLayer, setSlideLayer] = useState<PresentLayer>('EL');
 
   /** A default value drops its param, so a pristine view has a clean URL. */
   const setParam = useCallback(
@@ -210,41 +217,57 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   }, [aggregates]);
 
   /**
-   * `groupByCategory` orders within a group as well as between them, so the column
-   * sort has to be re-applied to each bucket. `buildDisplayGroups` then puts the
-   * groups in the board's running order, which the table and the deck share.
+   * `groupByCategory` orders within a group as well as between them, so a sort has to
+   * be re-applied to each bucket. `buildDisplayGroups` then puts the groups in the
+   * running order it is given.
    */
   const groupAndSort = useCallback(
-    (items: EipAggregateStance[]) =>
-      buildDisplayGroups(groupByCategory(items, (agg) => agg.eipId)).map(
+    (
+      items: EipAggregateStance[],
+      order: DisplayGroup[] | undefined,
+      field: SortField,
+      direction: SortDirection
+    ) =>
+      buildDisplayGroups(groupByCategory(items, (agg) => agg.eipId), order).map(
         ({ id, name, items: bucket, subgroups }) => ({
           id,
           name,
-          items: sortEipAggregates(bucket, sortField, sortDirection),
+          items: sortEipAggregates(bucket, field, direction),
           subgroups: subgroups.map((subgroup) => ({
             name: subgroup.name,
-            items: sortEipAggregates(subgroup.items, sortField, sortDirection),
+            items: sortEipAggregates(subgroup.items, field, direction),
           })),
         })
       ),
-    [sortField, sortDirection]
+    []
   );
 
   const categoryGroups = useMemo(
-    () => (groupedByCategory && canGroupByCategory ? groupAndSort(filteredAggregates) : null),
-    [groupedByCategory, canGroupByCategory, filteredAggregates, groupAndSort]
+    () =>
+      groupedByCategory && canGroupByCategory
+        ? groupAndSort(filteredAggregates, undefined, sortField, sortDirection)
+        : null,
+    [groupedByCategory, canGroupByCategory, filteredAggregates, groupAndSort, sortField, sortDirection]
   );
 
   /**
-   * The deck walks the same groups as the table, but as an EL board — CL proposals
-   * go with the CL columns, so a category with nothing on the execution layer drops
-   * out of the deck by itself.
+   * A deck walks the same groups as the table, but for one layer at a time and in that
+   * layer's running order — with the other layer's columns gone, a category with nothing
+   * on this layer would be a wall of blanks, so it drops out by itself. Slides always
+   * lead with the strongest support, on the same layer-pure average the slide prints,
+   * rather than inheriting whatever the table is sorted by.
    */
-  const slides = useMemo(() => {
-    if (!canGroupByCategory) return null;
-    const elOnly = filteredAggregates.filter((agg) => agg.layer === 'EL');
-    return elOnly.length > 0 ? groupAndSort(elOnly) : null;
+  const decks = useMemo(() => {
+    const deckFor = (layer: PresentLayer) => {
+      if (!canGroupByCategory) return null;
+      const ofLayer = filteredAggregates.filter((agg) => agg.layer === layer);
+      if (ofLayer.length === 0) return null;
+      return groupAndSort(ofLayer, DECK_ORDER[layer], LAYER_SORT[layer], 'desc');
+    };
+    return { EL: deckFor('EL'), CL: deckFor('CL') };
   }, [canGroupByCategory, filteredAggregates, groupAndSort]);
+
+  const slides = decks[slideLayer];
   const slideCount = slides?.length ?? 0;
 
   const stopPresenting = useCallback(() => {
@@ -252,7 +275,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
   }, []);
 
-  const startPresenting = () => {
+  const startPresenting = (layer: PresentLayer) => {
+    setSlideLayer(layer);
     setSlide(0);
     // A slide is only worth the screen it fills, but the browser may refuse.
     document.documentElement.requestFullscreen?.().catch(() => {});
@@ -936,18 +960,23 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
         <div className="flex items-center justify-between gap-3 mb-3">
           <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Score Legend</h3>
           {/* Desktop only: a slide is sized to a projector, not a phone. */}
-          {slideCount > 0 && (
-            <button
-              onClick={startPresenting}
-              className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:hover:bg-purple-900/40"
-              title="One full-screen slide per category, execution layer only"
-            >
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM12 15v5m0 0h-3m3 0h3" />
-              </svg>
-              Present EL
-            </button>
-          )}
+          <div className="hidden lg:flex items-center gap-2">
+            {PRESENT_LAYERS.map((layer) =>
+              decks[layer] ? (
+                <button
+                  key={layer}
+                  onClick={() => startPresenting(layer)}
+                  className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium rounded bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-900/20 dark:text-purple-300 dark:hover:bg-purple-900/40"
+                  title={`One full-screen slide per category, ${LAYER_NAME[layer]} only`}
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h14a1 1 0 011 1v9a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM12 15v5m0 0h-3m3 0h3" />
+                  </svg>
+                  Present {layer}
+                </button>
+              ) : null
+            )}
+          </div>
         </div>
         <div className="flex flex-wrap gap-3 text-xs">
           {scoreLegend.map(({ score, label }) => (
@@ -973,7 +1002,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
         <PresentationView
           groups={slides}
           index={slide}
-          elTeams={shownElTeams}
+          layer={slideLayer}
+          teams={slideLayer === 'EL' ? shownElTeams : shownClTeams}
           maxScore={maxScore}
           onNavigate={setSlide}
           onExit={stopPresenting}
@@ -1185,14 +1215,15 @@ const slideProposalLabel = (eipId: number) => {
 interface PresentationViewProps {
   groups: CategoryGroup<EipAggregateStance>[];
   index: number;
-  elTeams: TeamEntry[];
+  layer: PresentLayer;
+  teams: TeamEntry[];
   maxScore: number;
   onNavigate: (index: number) => void;
   onExit: () => void;
 }
 
 /**
- * One category per screen, for walking a fork's EL proposals on a call. Everything is
+ * One category per screen, for walking one layer's proposals on a call. Everything is
  * sized in viewport units so a slide fills whatever it is projected onto, and the
  * row height shrinks to fit the longest category rather than clipping it — which is
  * why the type sizes are computed here instead of being classes.
@@ -1200,12 +1231,21 @@ interface PresentationViewProps {
 const PresentationView: React.FC<PresentationViewProps> = ({
   groups,
   index,
-  elTeams,
+  layer,
+  teams,
   maxScore,
   onNavigate,
   onExit,
 }) => {
   const group = groups[index];
+
+  /**
+   * The layer-pure average, not the board's `Avg`: the slide shows only this layer's
+   * badges, so a number covering the other layer's teams — or a non-client team the
+   * reader opted into the board — would not be the row the audience is reading.
+   */
+  const layerAverage = (agg: EipAggregateStance) =>
+    layer === 'EL' ? agg.elAverageScore : agg.clAverageScore;
 
   const eipRow = (agg: EipAggregateStance): SlideRow => ({
     kind: 'eip',
@@ -1253,7 +1293,7 @@ const PresentationView: React.FC<PresentationViewProps> = ({
           <colgroup>
             <col style={{ width: '13vh' }} />
             <col />
-            {elTeams.length > 0 && <col style={{ width: badgesWidth(elTeams.length) }} />}
+            {teams.length > 0 && <col style={{ width: badgesWidth(teams.length) }} />}
             <col style={{ width: '10vh' }} />
           </colgroup>
           <thead>
@@ -1264,9 +1304,12 @@ const PresentationView: React.FC<PresentationViewProps> = ({
               <th className="text-left font-medium text-slate-500 dark:text-slate-400" style={header}>
                 Title
               </th>
-              {elTeams.length > 0 && (
-                <th className="text-center font-medium text-indigo-600 dark:text-indigo-400" style={header}>
-                  EL Clients
+              {teams.length > 0 && (
+                <th
+                  className={`text-center font-medium ${layer === 'EL' ? 'text-indigo-600 dark:text-indigo-400' : 'text-teal-600 dark:text-teal-400'}`}
+                  style={header}
+                >
+                  {layer} Clients
                 </th>
               )}
               <th className="text-right font-medium text-slate-500 dark:text-slate-400" style={header}>
@@ -1279,7 +1322,7 @@ const PresentationView: React.FC<PresentationViewProps> = ({
               row.kind === 'subhead' ? (
                 <tr key={row.key}>
                   <td
-                    colSpan={elTeams.length > 0 ? 4 : 3}
+                    colSpan={teams.length > 0 ? 4 : 3}
                     className="align-bottom font-medium uppercase tracking-wide text-slate-400"
                     style={{ ...cell, height: vh(0.63), fontSize: vh(0.22) }}
                   >
@@ -1297,23 +1340,23 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                   <td className="text-slate-900 dark:text-slate-100 truncate" style={cell}>
                     {row.agg.eipTitle}
                   </td>
-                  {elTeams.length > 0 && (
+                  {teams.length > 0 && (
                     <td style={cell}>
                       <ClientStanceBadges
                         stances={row.agg.stances}
-                        teams={elTeams}
+                        teams={teams}
                         maxScore={maxScore}
                         boxStyle={badgeStyle}
                       />
                     </td>
                   )}
                   <td className="text-right" style={cell}>
-                    {row.agg.averageScore !== null ? (
+                    {layerAverage(row.agg) !== null ? (
                       <span
-                        className={`inline-flex items-center font-medium rounded ${getScoreColor(Math.round(row.agg.averageScore), true, maxScore)}`}
+                        className={`inline-flex items-center font-medium rounded ${getScoreColor(Math.round(layerAverage(row.agg)!), true, maxScore)}`}
                         style={{ fontSize: vh(0.3), padding: `${vh(0.07)} ${vh(0.17)}`, borderRadius: vh(0.09) }}
                       >
-                        {row.agg.averageScore.toFixed(1)}
+                        {layerAverage(row.agg)!.toFixed(1)}
                       </span>
                     ) : (
                       <span className="text-slate-300 dark:text-slate-500" style={{ fontSize: vh(0.3) }}>

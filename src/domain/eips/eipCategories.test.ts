@@ -3,6 +3,7 @@ import {
   DisplayGroup,
   EipCategory,
   categoryEips,
+  clDisplayGroups,
   displayGroups,
   eipCategories,
 } from '../../data/eip-categories';
@@ -142,11 +143,24 @@ describe('eipCategories data', () => {
   });
 
   // A renamed or dropped category would leave a display group silently empty.
-  it('has a real category behind every id the running order names', () => {
+  it.each([
+    ['default', displayGroups],
+    ['consensus layer', clDisplayGroups],
+  ])('has a real category behind every id the %s running order names', (_label, order) => {
     const ids = new Set(eipCategories.map(c => c.id));
-    const missing = displayGroups.flatMap(g => g.categoryIds).filter(id => !ids.has(id));
+    const missing = order.flatMap(g => g.categoryIds).filter(id => !ids.has(id));
 
     expect(missing).toEqual([]);
+  });
+
+  // Ordering is per group, so a category drawn twice would render twice.
+  it.each([
+    ['default', displayGroups],
+    ['consensus layer', clDisplayGroups],
+  ])('names each category at most once in the %s running order', (_label, order) => {
+    const ids = order.flatMap(g => g.categoryIds);
+
+    expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('has unique category ids and names', () => {

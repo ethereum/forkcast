@@ -1,61 +1,54 @@
 {
   "series": "ACDC",
-  "generated": "2026-09-07",
+  "generated": "2026-09-14",
   "for_call": "ACDC #187",
   "suggestions": [
     {
-      "topic": "Hegota EIP tier rankings review and rough consensus",
+      "topic": "Hegota EIP tier rankings review and consensus building",
       "priority": "high",
-      "rationale": "September 10 deadline for client team rankings is imminent (3 days away). Goal is to reach rough consensus before DevCon. This is the critical decision window for Hegota scope.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "DevNet 10 status and Gloas fork transition stability",
-      "priority": "high",
-      "rationale": "DevNet 9 exhibited critical failures (Prysm state transition failure, Grandine OOM, Teku memory issues). DevNet 10 was planned for the week of Sept 8 pending fixed images. Must confirm stability before proceeding with testnet forks.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Sepolia Glamsterdam fork final approval for October 6",
-      "priority": "high",
-      "rationale": "Date was set in ACDC #186 but formal approval via PM PR #2205 is still pending. Fork is 29 days away; client teams need to finalize releases and coordination.",
+      "rationale": "Client teams were required to publish S/A/B/D rankings by September 10 (4 days ago). With DevCon approaching, rough consensus on Hegota scope is needed before the conference. This is blocking forward progress on fork planning.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
       "topic": "Hoodi Glamsterdam fork date decision",
-      "priority": "medium",
-      "rationale": "Proposed for October 26 in ACDC #185 but deferred twice (in #185 and #186) pending stable devnets. DevNet 10 stability should unblock this decision.",
+      "priority": "high",
+      "rationale": "Deferred from ACDC #185 and #186, originally proposed for October 26 contingent on stable devnets. With Sepolia fork set for October 6, Hoodi timeline needs finalization to maintain testnet rollout momentum.",
       "related_eips": [],
       "source": "deferred_decision"
+    },
+    {
+      "topic": "DevNet 10 status and Glamsterdam fork transition stability",
+      "priority": "high",
+      "rationale": "DevNet 9 failed with critical bugs (Prysm Gloas transition failure, Grandine OOM, Teku memory issues, same-hash-as-parent halting). DevNet 10 was planned for week of Sept 8 pending fixes. Sepolia forks Oct 6, so stable fork transition must be demonstrated urgently.",
+      "related_eips": [],
+      "source": "devnet_update"
     },
     {
       "topic": "EIP-8148 and EIP-8205 CFI/DFI discussion",
       "priority": "medium",
-      "rationale": "Expected revisit at ~2 weeks from ACDC #186 (Sept 3) means this discussion should occur now. Specs and POC implementations are ready for validator withdrawal credential proposals.",
+      "rationale": "Expected revisit at ~2 weeks from ACDC #186 (Sept 3), putting it around Sept 17 — close to this call. Specs and POC implementations are ready for custom sweep thresholds and withdrawal credential pre-registration.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8363 Tapered Issuance Burn community consensus check-in",
+      "topic": "EIP-8037 Glamsterdam deployment status across all clients",
       "priority": "medium",
-      "rationale": "PFI'd in ACDC #184 with explicit requirement for community consensus before any CFI. Community discussion was deferred to ETH R&D/ETH Magicians. Time to assess if consensus is forming or if this should be deprioritized for Hegota.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Engine API SSZ implementation status",
-      "priority": "low",
-      "rationale": "Spec merged to execution-apis master in ACDC #186. Check-in on client implementation progress and any iteration needs.",
+      "rationale": "Cross-frame state gas fix was approved for Glamsterdam in ACDC #186. Geth/Erigon already deployed on DevNet 8, but ethrex was 1-2 days out. With Sepolia fork Oct 6, all clients must confirm readiness.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-8037 cross-frame state gas fix deployment confirmation",
+      "topic": "Optimism and Lido Glamsterdam testing window on stable devnet",
+      "priority": "medium",
+      "rationale": "ACDC #185 noted Lido needs ≥1 day (preferably 2) on stable devnet before fork; Optimism also requested testing. DevNets 9 and 10 had stability issues, so testing window must be confirmed before Sepolia Oct 6 fork.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Parent-hash equality check spec fix implementation status",
       "priority": "low",
-      "rationale": "Approved in ACDC #186 for all EL clients to implement and deploy on DevNet 8. Quick confirmation that this is live and working as expected.",
+      "rationale": "Critical bug (block with same hash as parent halts network) was discovered on DevNet 8. Consensus-specs PR #5594 and beta.0 release were planned for Sept 3. All clients should confirm implementation and testing status.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

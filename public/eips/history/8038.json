@@ -2,6 +2,16 @@
   "eipId": 8038,
   "commits": [
     {
+      "sha": "286a88e75f7bb301ba58e534e3484aae86001ed2",
+      "date": "2026-09-14T14:55:07Z",
+      "message": "Update EIP-8038: Preserve the warm SELFDESTRUCT access exemption",
+      "author": "flcl42",
+      "prNumber": null,
+      "patch": "@@ -43,7 +43,7 @@ Upon activation of this EIP, the following parameters of the gas model are intro\n | :---: | :---: | :---: | :---: | :---: | :---: | :---: |\n | `COLD_ACCOUNT_ACCESS` | Access | Cold touch of an account. Renamed from `COLD_ACCOUNT_ACCESS_COST` ([EIP-2929](./eip-2929.md)) | 2,600 | 3,000 | +15% | `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT`, `EXT*` opcodes, EOA delegations, contract creation txs and ETH transfers |\n | `COLD_STORAGE_ACCESS` | Access | Cold touch of a storage slot. Renamed from `COLD_SLOAD_COST` ([EIP-2929](./eip-2929.md)) | 2,100 | 2,100 | +0% | `SSTORE` and `SLOAD` |\n-| `WARM_ACCESS` | Access | Touch of an already-warm account or storage slot. Renamed from `WARM_STORAGE_READ_COST` ([EIP-2929](./eip-2929.md)) | 100 | 100 | +0% | `SSTORE`, `SLOAD`, `*CALL` opcodes, `BALANCE`, `SELFDESTRUCT` and `EXT*` opcodes |\n+| `WARM_ACCESS` | Access | Touch of an already-warm account or storage slot. Renamed from `WARM_STORAGE_READ_COST` ([EIP-2929](./eip-2929.md)) | 100 | 100 | +0% | `SSTORE`, `SLOAD`, `*CALL` opcodes, `BALANCE` and `EXT*` opcodes |\n | `ACCOUNT_WRITE` | Write | Write to an account's leaf values (nonce, balance, code hash); charged per operation. New named parameter (previously embedded in `CALL_VALUE`, see footnote 1) | 6,700 (1) | 9,000 | +34% | value-transferring `*CALL` opcodes, `SELFDESTRUCT`, `CREATE`/`CREATE2`, EOA delegations and ETH transfers |\n | `STORAGE_WRITE` | Write | Write that changes a storage slot's value; net-metered per transaction. New named parameter (previously derived, see footnote 2) | 2,800 (2) | 10,000 | +257% | `SSTORE` |\n | `CREATE_ACCESS` | Access + write | Combined access-and-write cost of contract deployment: `ACCOUNT_WRITE` + `COLD_ACCOUNT_ACCESS`. New named parameter (previously derived, see footnote 3) | 7,000 (3) | 12,000 | +71% | `CREATE`/ `CREATE2` and contract creation txs |\n@@ -113,6 +113,8 @@ Note: this definition does not exactly match the legacy decomposition shown in f\n \n #### `SELFDESTRUCT`\n \n+For `SELFDESTRUCT`, charge `COLD_ACCOUNT_ACCESS` in execution gas if the beneficiary is cold, regardless of the balance being transferred. A warm beneficiary incurs no access charge: the [EIP-2929](./eip-2929.md) exemption from `WARM_ACCESS` is preserved, including when the beneficiary is the executing account itself or a precompile. The opcode base cost and the rules for determining and updating the beneficiary's cold or warm status are unchanged.\n+\n For `SELFDESTRUCT`, an additional charge of `ACCOUNT_WRITE` is added if a positive balance is sent to a dead account (as defined in [EIP-161](./eip-161.md)) — the write component of creating the beneficiary's leaf. The state-creation component in this same case is `GAS_NEW_ACCOUNT`, which remains in place alongside the new `ACCOUNT_WRITE` charge and is metered in state-gas by [EIP-8037](./eip-8037.md).\n \n #### `EXT*` family update\n@@ -128,7 +130,7 @@ The cases for account-related operations and their corresponding cost components\n | `CALL` / `CALLCODE` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | when value is transferred (via `CALL_VALUE` = `ACCOUNT_WRITE` + `CALL_STIPEND`) | `GAS_NEW_ACCOUNT` when value is transferred to a dead account |\n | `DELEGATECALL` / `STATICCALL` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | never (no value transfer) | — |\n | `CREATE` / `CREATE2` | folded into `CREATE_ACCESS` | always (folded into `CREATE_ACCESS` = `ACCOUNT_WRITE` + `COLD_ACCOUNT_ACCESS`, replacing `GAS_CREATE`) | `GAS_NEW_ACCOUNT`, plus the per-byte code-deposit cost |\n-| `SELFDESTRUCT` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | when a positive balance is sent to a dead account | `GAS_NEW_ACCOUNT` in the same case |\n+| `SELFDESTRUCT` | `COLD_ACCOUNT_ACCESS` if cold; zero if warm | when a positive balance is sent to a dead account | `GAS_NEW_ACCOUNT` in the same case |\n | `BALANCE` / `EXTCODEHASH` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS` | never | — |\n | `EXTCODESIZE` / `EXTCODECOPY` | `COLD_ACCOUNT_ACCESS` or `WARM_ACCESS`, plus `WARM_ACCESS` for the second database read | never | — |\n ",
+      "additions": 4,
+      "deletions": 2
+    },
+    {
       "sha": "8331fb3eed0a5366b28b25a016f1ad04fac0fa8e",
       "date": "2026-08-04T12:14:19Z",
       "message": "Update EIP-2780: revise COLD_STORAGE_ACCESS and ACCOUNT_WRITE values",
@@ -189,14 +199,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12317,
-      "title": "Update EIP-8038: Preserve the warm SELFDESTRUCT access exemption",
-      "author": "flcl42",
-      "updatedAt": "2026-09-11T12:41:59Z",
-      "additions": 4,
-      "deletions": 2
-    },
     {
       "number": 10769,
       "title": "Update EIP-8038: fix grammar issues",

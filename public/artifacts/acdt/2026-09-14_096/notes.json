@@ -1,0 +1,53 @@
+{
+  "meeting": "ACDT #096 - 2026-09-14",
+  "sections": [
+    {
+      "heading": "Devnet 8 and Devnet 11 Status",
+      "summary": "Devnet 8 attack ended and clients are recovering; Devnet 11 launched and Glamsterdam activated successfully with no participation drop.",
+      "timestamp": "00:06:13",
+      "body": "- Devnet 8 ran Jochem's attack for the full week; it was stopped the morning of the call\n  - Besu and Erigon were most impacted and not producing blocks during the attack\n  - Erigon was updated to the latest image and wiped; Besu is re-syncing\n  - Nimbus nodes were restarted without boot nodes and are syncing back up\n  - Participation rose after the attack stopped; network is on the path to recovery\n- Devnet 11 was started the previous Wednesday running unstable main/master branches from all clients\n  - Glamsterdam activated on the day of the call; transition was smooth with no participation drop\n  - Lido and Optimism deployed their stacks and gave positive early feedback\n  - Devnet 11 will not have attack/spam scenarios — it is intended for Layer 2s and Optimism to test cleanly\n- Grandine raised concern that Devnet 8 feels \"somewhat abandoned\" with multiple clients struggling and slow progress\n  - Many EL clients are doing full sync (replaying attack transactions), which is slow; some may be switched to snap sync\n  - pk910 confirmed he has already notified struggling clients and is coordinating fixes\n  - Grandine noted that CL teams often see issues that are actually on the EL side, and requested better cross-layer coordination and pinging of EL teams"
+    },
+    {
+      "heading": "Sepolia Upgrade on October 6",
+      "summary": "All clients confirmed they are on track for the Sepolia upgrade on October 6, pending the progressive container deserialization discussion.",
+      "timestamp": "00:10:18",
+      "body": "- Explicit confirmations received from Nethermind, Lighthouse, Lodestar, Besu, Erigon, Geth, Teku, and Grandine\n- Teku (Enrico) raised a concern about the progressive container deserialization / progressive list size discussion, noting it would be addressed in the CL breakout\n  - Justin acknowledged this concern but noted most clients are handling it\n- Luca (Vero) noted in chat that full Beacon API support a few weeks ahead of Hoodi would be nice, mentioning gaps in POST produceBlockV4, SSE events, and v2 proposer duties varying by client\n  - Linked [beacon-APIs PR #627](https://github.com/ethereum/beacon-APIs/pull/627) for an endpoint still being discussed\n  - Lighthouse (Pawan) will double-check API support"
+    },
+    {
+      "heading": "Restricting EIP Tests in Consensus Specs",
+      "summary": "Proposal to limit test additions in consensus-specs to CFI and SFI EIPs received general support; EIP champions can prepare tests in forks beforehand.",
+      "timestamp": "00:15:51",
+      "body": "- Justin proposed restricting which EIPs can add tests to the consensus-specs repo, limiting to CFI and SFI EIPs only ([consensus-specs issue #5618](https://github.com/ethereum/consensus-specs/issues/5618))\n  - Rationale: tests are more invasive than self-contained spec directories, touching multiple files and modifying testing infrastructure; removing them later becomes messy\n- Jochem agreed with the restriction for the trunk branch but emphasized this should not signal that people should delay working on tests\n  - Tests should be prepared in PRs or forked repos so they can be merged immediately when an EIP moves to CFI\n- Jihoon echoed the same point: the intention is to reduce maintenance burden, not discourage early test development\n- Teku (Enrico) agreed that early tests for clients are important\n- Discussion to continue asynchronously on Discord"
+    },
+    {
+      "heading": "Sepolia and Mainnet Shadow Forks",
+      "summary": "Shadow forks deferred by one week at Lighthouse's request to fix progressive container bugs before testing.",
+      "timestamp": "00:17:09",
+      "body": "- pk910 proposed launching a Sepolia shadow fork during the current week, needing client confirmation that unstable/master branches are ready\n- Lighthouse (Pawan) requested waiting one more ACDT cycle, citing unresolved progressive container issues in their dependency\n- Agreement: revisit shadow fork readiness at next ACDT call\n- Dragan suggested leaving a heads-up in Discord so teams can prepare"
+    },
+    {
+      "heading": "Blob Elided Length vs Payload Length in devp2p",
+      "summary": "Nethermind will switch from payload-form to network-form lengths for sparse blob pools, aligning with all other clients; devp2p PR needs review.",
+      "timestamp": "00:23:01",
+      "body": "- FLCL (Nethermind) explained that eth/72 ([EIP-8070](https://eips.ethereum.org/EIPS/eip-8070), Sparse Blobpool) introduced a new format for block exchange where blobs can be elided\n  - Nethermind implemented length announcements using payload-form per the original spec, while other clients use the updated network-form (with elided blobs)\n- Nethermind agreed to change their implementation to match the other clients\n- The [devp2p PR #281](https://github.com/ethereum/devp2p/pull/281) needs to be reviewed and merged to formalize this\n- Action: all clients asked to review the PR to confirm implementations are aligned"
+    },
+    {
+      "heading": "EIP-7610 Removal and Legacy Test Expectations",
+      "summary": "Agreement to merge Erigon's PR restoring pre-EIP-7610 legacy tests (Yellow Paper + EIP-684 behavior); BAL behavior for collision cases left undefined for now.",
+      "timestamp": "00:30:02",
+      "body": "- EIP-7610 introduced undefined behavior around contract creation collisions on accounts with non-empty storage; this causes legacy test failures and formal verification issues\n- Erigon (Milen) opened [legacytests PR #18](https://github.com/ethereum/legacytests/pull/18) to restore tests to their pre-EIP-7610 state, reflecting Yellow Paper + EIP-684 behavior (nullify storage slots on collision)\n  - This caught an actual regression in Erigon, demonstrating value of keeping these tests\n  - A separate [legacytests PR #17](https://github.com/ethereum/legacytests/pull/17) removes the tests entirely; PR #18 is preferred\n- The Block Access List (BAL) complication: if a collision occurs, the BAL needs to include storage slot deletions to serve as a complete state diff\n  - Jochem explained the pre-image problem: clients storing only hashed keys cannot retrieve pre-images needed to enumerate storage slots for deletion\n  - Karim (Besu) noted BAL is used for snap sync healing, so incomplete BAL could cause invalid state\n  - Three options discussed by Milen: (1) leave BAL behavior undefined, (2) explicitly exclude BAL entries for collisions, (3) implement EIP-8253 to eliminate the issue\n- Jochem noted EIP-8253 is PFI for Hegotá and was planned for CFI\n- FLCL argued that fewer undefined behaviors is better for verification and bug hunting\n- Agreement: merge Milen's legacy test PR (#18), create a single fixture for clients to compare collision behavior, and discuss BAL handling async\n  - Spencer confirmed plan to merge the PR and noted legacy tests may be archived by end of year\n  - Felipe suggested `fill_until(Osaka)` to mark tests as unavailable in Amsterdam\n  - Jochem agreed this approach works"
+    },
+    {
+      "heading": "EIP-8038 SELFDESTRUCT Beneficiary Clarification",
+      "summary": "EIP-8038 text update confirmed as clarification only — no spec or client behavior change needed; all clients already skip the warm-access charge.",
+      "timestamp": "00:47:42",
+      "body": "- FLCL explained that the EIP-8038 text incorrectly suggests charging 100 gas for warm-access of the beneficiary on SELFDESTRUCT, but no client actually does this\n- The [EIP PR #12317](https://github.com/ethereum/EIPs/pull/12317) is a text-only clarification, not a spec change\n- Agreement that this is just a documentation fix with no behavioral implications\n- Spencer noted a test can be added for this as well"
+    },
+    {
+      "heading": "EIP-8037 State Gas Limit",
+      "summary": "A PR adding a formal total state gas limit to EIP-8037 was merged; small spec update needed but no client behavior change.",
+      "timestamp": "00:49:28",
+      "body": "- Jochem noted that Paweł Bylica opened [EIP PR #12311](https://github.com/ethereum/EIPs/pull/12311) to add an explicit limit on total state gas for EIP-8037 (previously only implicitly bounded by the block gas limit)\n- Maria confirmed it was merged the same day; it doesn't change behavior, just makes the spec cleaner\n- Spencer confirmed a small spec addition is needed and a test will be included in the upcoming official testnet release, targeted for the following week"
+    }
+  ]
+}

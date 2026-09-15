@@ -372,7 +372,9 @@ const parseVTTTranscript = (text: string) => {
       continue;
     }
 
-    // Parse the "start --> end" timecode line
+    // Parse the "start --> end" timecode line. A cue whose end time is
+    // missing or differently formatted still yields a displayable message;
+    // it just carries no endTimestamp, so gap detection passes over it.
     if (line.includes('-->')) {
       const timeMatch = line.match(
         /(\d{2}:\d{2}:\d{2}\.\d{3})\s*-->\s*(\d{2}:\d{2}:\d{2}\.\d{3})/,
@@ -380,6 +382,11 @@ const parseVTTTranscript = (text: string) => {
       if (timeMatch) {
         currentEntry.timestamp = timeMatch[1];
         currentEntry.endTimestamp = timeMatch[2];
+        continue;
+      }
+      const startMatch = line.match(/(\d{2}:\d{2}:\d{2}\.\d{3})/);
+      if (startMatch) {
+        currentEntry.timestamp = startMatch[1];
       }
       continue;
     }
@@ -758,18 +765,26 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     };
   }, [player, callConfig, getAdjustedVideoTime]);
 
+  // The transcript messages the page shows, from the sync start time onward.
+  // Both the rendered list and gap detection read this one parse.
+  const transcriptEntries = useMemo(() => {
+    const text = callData?.transcriptContent;
+    if (!text?.trim()) return [];
+    const entries = parseVTTTranscript(text);
+    const startTime = callConfig?.sync?.transcriptStartTime;
+    if (!startTime) return entries;
+    const startSeconds = timestampToSeconds(startTime);
+    return entries.filter(
+      entry => timestampToSeconds(entry.timestamp) >= startSeconds,
+    );
+  }, [callData, callConfig]);
+
   // Video-time gaps between transcript messages that gap-skip fast-forwards.
   const gapSkipIntervals = useMemo(() => {
     const sync = callConfig?.sync;
     if (!sync?.transcriptStartTime || !sync?.videoStartTime) return [];
-    if (!callData?.transcriptContent?.trim()) return [];
-    const entries = parseVTTTranscript(callData.transcriptContent).filter(
-      entry =>
-        timestampToSeconds(entry.timestamp) >=
-        timestampToSeconds(sync.transcriptStartTime),
-    );
-    return computeGapSkipIntervals(entries, sync);
-  }, [callData, callConfig]);
+    return computeGapSkipIntervals(transcriptEntries, sync);
+  }, [transcriptEntries, callConfig]);
 
   // Total video time that gap skipping fast-forwards, in seconds.
   const gapSkipSeconds = useMemo(
@@ -1526,16 +1541,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
           ref={transcriptRef}
           className={`space-y-1 overflow-y-auto pr-2 ${isWorkspaceView ? 'min-h-0 flex-1' : 'max-h-[400px]'}`}
         >
-          {parseVTTTranscript(callData.transcriptContent)
-            .filter(entry => {
-              if (callConfig?.sync?.transcriptStartTime) {
-                const entrySeconds = timestampToSeconds(entry.timestamp);
-                const startSeconds = timestampToSeconds(callConfig.sync.transcriptStartTime);
-                return entrySeconds >= startSeconds;
-              }
-              return true;
-            })
-            .map((entry, index, entries) => {
+          {transcriptEntries.map((entry, index, entries) => {
               const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
               const isSelectedSearch = selectedSearchResult?.timestamp === entry.timestamp && selectedSearchResult?.type === 'transcript';
               return (

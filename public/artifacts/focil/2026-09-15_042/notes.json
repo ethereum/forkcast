@@ -1,0 +1,41 @@
+{
+  "meeting": "FOCIL #042 - 2026-09-15",
+  "sections": [
+    {
+      "heading": "Lodestar–Teku Interop Issue",
+      "summary": "Teku batches gossip objects into a single RPC exceeding Lodestar's 4 MB incoming limit; a Lodestar PR raises the limit to 10 MB.",
+      "timestamp": "00:04:10",
+      "body": "- Local interop testing between CL clients revealed Teku and Lodestar were not reaching consensus together.\n- NC diagnosed the root cause: Teku batches all gossip objects into one single RPC message that exceeds Lodestar's incoming size limit.\n  - Lodestar drops Teku as a peer when Teku proposes.\n- Lodestar PR ([#10079](https://github.com/ChainSafe/lodestar/pull/10079)) increases the incoming limit from 4 MB to 10 MB.\n- Workaround before the fix: adjusting the Lodestar-to-Teku validator ratio in the devnet.\n- This issue is unrelated to the previously discussed P2P object limit for the Engine API."
+    },
+    {
+      "heading": "Execution Spec Test Fixes",
+      "summary": "ethrex has two open PRs on the execution-specs repo fixing failing test cases; Besu found a separate test failure likely caused by recent Glamsterdam changes.",
+      "timestamp": "00:06:41",
+      "body": "- ethrex flagged two PRs awaiting review on the execution-specs repo:\n  - [execution-specs#3470](https://github.com/ethereum/execution-specs/pull/3470)\n  - [execution-specs#3471](https://github.com/ethereum/execution-specs/pull/3471)\n- Besu (Fabio) rebased FOCIL work onto main and discovered a failing EIP test that does not appear FOCIL-related.\n  - Nethermind is failing the same test for what looks like the same reason; tests likely need updating due to latest Glamsterdam spec changes.\n  - Failing test name was posted in the Discord channel.\n- Reth pushed fixes for failing tests and was added to EthPandaOps; 12 remaining consume-rlp failures are all for EIP-7610, which is no longer slated for inclusion.\n  - Nethermind is also failing those same EIP-7610 tests."
+    },
+    {
+      "heading": "Client Readiness for DevNet 0",
+      "summary": "Three EL clients (Nethermind, ethrex, Besu) are ready; Lighthouse is progressing but not yet ready; launch requires two CL clients working together.",
+      "timestamp": "00:07:19",
+      "body": "- Nethermind confirmed ready for the devnet.\n- ethrex confirmed still ready for DevNet 0.\n- Besu confirmed ready for the devnet.\n- Reth is up on EthPandaOps with test fixes merged.\n- Lighthouse is not yet ready but making good progress: merged PRs on block production and Engine API integration, with more in review; now working on gossip verification, fork choice enforcement, and inclusion checks.\n- Minimum bar for DevNet 0 launch is a 2×2 grid (2 CL × 2 EL clients); currently at 3 EL clients ready, awaiting 2 CL clients (Teku and Lodestar) to resolve interop issues.\n- No intent to wait for all clients; others can join after launch.\n- Jihoon reiterated that shipping Glamsterdam remains the first priority — no need to rush FOCIL, but clients with spare resources are encouraged to work on it."
+    },
+    {
+      "heading": "GetInclusionList-Based Testing",
+      "summary": "GetInclusionList is non-deterministic; a post-condition testing framework will be needed for it and similar methods like eth_estimateGas.",
+      "timestamp": "00:11:04",
+      "body": "- The GetInclusionList method is not deterministic, which complicates test generation.\n- Other methods such as eth_estimateGas also lack specific expected outputs.\n- Felix indicated this will likely require adding a testing framework for defining post-conditions rather than exact outputs.\n- Jihoon will continue collaborating with others on this and share updates."
+    },
+    {
+      "heading": "FOCIL and Frames Interaction",
+      "summary": "FOCIL and frames are both SFI'd headliners; EIP-8369 defines VOPS profiles to determine which frame transactions benefit from FOCIL inclusion guarantees.",
+      "timestamp": "00:14:31",
+      "body": "- soispoke presented the interaction design between FOCIL and frame transactions, described in [EIP-8369](https://eips.ethereum.org/EIPS/eip-8369) (informational, titled \"VOPS Profiles for FOCIL Eligibility\").\n- Two profiles defined:\n  - Profile 1: FOCIL with regular transactions (current behavior — nonce, balance, gas checks; missing transactions appended at end of block).\n  - Profile 2: FOCIL with frame transactions, requiring significantly more expressive validation.\n- VOPS (Validity-Only Partial Statelessness) defines the minimal state mempool nodes must hold to validate transactions in the public mempool.\n  - Transactions using only VOPS state benefit from FOCIL inclusion guarantees.\n  - Key trade-off: larger VOPS means more transactions covered by FOCIL but more state for nodes to store; smaller VOPS is better for decentralization but fewer transactions benefit.\n- Justin Florentine (Besu) asked where the upper and lower limits sit; soispoke put the minimum at roughly signature validity, nonce placement, root recency and nonces, plus possibly 2–4 storage slots, with the exact set depending on which EIPs ship.\n- Compute dimension: tied to the max verify gas limit for frames; soispoke wants it above 100K to support private transactions but benchmarks are needed.\n- Jihoon summarized FOCIL's current (frames-free) validity requirements: the EL checks the transaction decodes, is intrinsically valid, has the right nonce and balance, and that enough gas remains in the block; a missing transaction must be placeable at the end of the block.\n- Builder index mechanism: the builder provides a witness indicating at which index it attempted to place an IL frame transaction.\n  - Open questions: whether this is a separate object or part of an existing one, whether it lives on-chain (likely not), and how it is propagated.\n  - Jihoon noted that putting it in the beacon block envelope would retain it for ~33,024 epochs; he and soispoke both leaned toward it being ephemeral and not needing on-chain persistence, but left it unresolved.\n- Spec changes will need to be reflected in both FOCIL and frame transaction EIPs.\n- soispoke encouraged all participants to think about use cases that should benefit from FOCIL guarantees (e.g., private transactions, which is why he wants recent roots and kid nonces in VOPS) to inform VOPS boundaries."
+    },
+    {
+      "heading": "FOCIL–Frames DevNet Planning and Spec Work",
+      "summary": "ethrex will deliver a FOCIL–Frames spec PR within one to two weeks; the next breakout will review spec changes, benchmarks, and use cases.",
+      "timestamp": "00:29:02",
+      "body": "- DevNet sequencing is still TBD: options include CL-only and EL-only devnets first, or a FOCIL+Frames devnet first, before a combined Hegotá devnet.\n  - EthPandaOps prefers the regular devnet at the end of the cycle.\n- ethrex and Nethermind are already working together on a Frames devnet but have not tested interop with FOCIL and frames both enabled.\n  - Marc (Nethermind) will try testing FOCIL+Frames interop, and he and Iván will share links to their implementations in Discord.\n- soispoke urged moving fast on the interaction spec, arguing that once FOCIL–Frames mechanics are settled, FOCIL itself can be largely finalized and the EL side can focus on frame mempool work independently.\n  - A common spec doc everyone can agree on was framed as a good starting point alongside (not necessarily after) a devnet.\n- ethrex (Iván) is close to a spec PR and will try to have it ready this week, at latest before the next breakout.\n- Max verify gas benchmarks are being developed by Nethermind; concrete numbers not yet available.\n  - Benchmarks will ultimately be needed from all clients since resource consumption is client-dependent.\n  - Max verify gas benchmarking is not FOCIL-specific; it is needed for frames regardless.\n- Agreement: two-track approach — continue FOCIL DevNet 0 work in parallel with FOCIL–Frames spec development.\n- Next breakout agenda: review FOCIL–Frames spec changes, max verify gas benchmarks, and potential use cases for FOCIL inclusion guarantees."
+    }
+  ]
+}

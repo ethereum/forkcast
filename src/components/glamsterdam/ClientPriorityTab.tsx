@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from '../navigation';
-import { usePrioritizationData } from '../../hooks/usePrioritizationData';
+import { forkTeams, usePrioritizationData } from '../../hooks/usePrioritizationData';
 import {
   sortEipAggregates,
   getScoreColor,
@@ -50,6 +50,13 @@ const LAYER_SORT: Record<PresentLayer, SortField> = { EL: 'elAverage', CL: 'clAv
 const readEnum = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
   allowed.includes(value as T) ? (value as T) : null;
 
+/** The layer shorthand reads as `?quick=cl`, but layers are uppercase everywhere else. */
+const readQuick = (params: URLSearchParams): PresentLayer | null =>
+  readEnum((params.get('quick') ?? '').toUpperCase(), PRESENT_LAYERS);
+
+/** The parts of a view the layer shorthand stands for. */
+const QUICK_KEYS = ['layer', 'team', 'only'] as const;
+
 interface ClientPriorityTabProps {
   fork: string;
 }
@@ -59,14 +66,33 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortField = readEnum(searchParams.get('sort'), SORT_FIELDS) ?? 'average';
   const sortDirection: SortDirection = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
-  const filterLayer = readEnum(searchParams.get('layer'), FILTER_LAYERS) ?? 'all';
   const filterStance = readEnum(searchParams.get('stance'), FILTER_STANCES) ?? 'all';
   const hideExcluded = searchParams.get('excluded') !== 'show';
   const groupedByCategory = searchParams.get('group') === 'category';
+  /**
+   * Shorthand for a whole layer: the layer filter, every one of its clients and column
+   * focus, which spelled out is most of the query string. Read here rather than written
+   * to the URL, so a shared link stays `?quick=cl`.
+   */
+  const quickPreset = readQuick(searchParams);
+  const presetTeams = useMemo<Record<PresentLayer, string[]>>(() => {
+    const teams = forkTeams(fork);
+    // Roster order, so the expanded form always produces the same URL.
+    return {
+      EL: teams.filter((team) => team.type === 'EL').map((team) => team.name),
+      CL: teams.filter((team) => team.type === 'CL').map((team) => team.name),
+    };
+  }, [fork]);
+  const filterLayer = quickPreset ?? readEnum(searchParams.get('layer'), FILTER_LAYERS) ?? 'all';
   // Comma-joined names; an EIP matches if any of the picked teams rated it.
   const filterClients = useMemo(
-    () => new Set((searchParams.get('team') ?? '').split(',').filter(Boolean)),
-    [searchParams]
+    () =>
+      new Set(
+        quickPreset
+          ? presetTeams[quickPreset]
+          : (searchParams.get('team') ?? '').split(',').filter(Boolean)
+      ),
+    [searchParams, quickPreset, presetTeams]
   );
   // Memoized on the params, so the aggregates aren't recomputed on every render.
   const countedOtherTeams = useMemo<ReadonlySet<string>>(() => {
@@ -77,7 +103,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
    * Drops every unpicked team's column so one team's board can be read on its own.
    * Inert without a selection, so the param alone never empties the table.
    */
-  const focusOnly = searchParams.get('only') === '1' && filterClients.size > 0;
+  const focusOnly =
+    (quickPreset !== null || searchParams.get('only') === '1') && filterClients.size > 0;
   // Focusing narrows the scores to match the columns, so Avg means what the reader sees.
   const focusTeams = focusOnly ? filterClients : NO_COUNTED_TEAMS;
 
@@ -89,12 +116,29 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const [slide, setSlide] = useState<number | null>(null);
   const [slideLayer, setSlideLayer] = useState<PresentLayer>('EL');
 
+  /**
+   * Writes out what the layer shorthand stands for, so that adjusting one of those
+   * parts isn't silently overridden by the shorthand still being in the URL.
+   */
+  const expandQuick = useCallback(
+    (params: URLSearchParams) => {
+      const preset = readQuick(params);
+      if (!preset) return;
+      params.delete('quick');
+      params.set('layer', preset);
+      params.set('team', presetTeams[preset].join(','));
+      params.set('only', '1');
+    },
+    [presetTeams]
+  );
+
   /** A default value drops its param, so a pristine view has a clean URL. */
   const setParam = useCallback(
     (key: string, value: string | null) => {
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
+          if ((QUICK_KEYS as readonly string[]).includes(key)) expandQuick(next);
           if (value === null) next.delete(key);
           else next.set(key, value);
           return next;
@@ -102,7 +146,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
         { replace: true }
       );
     },
-    [setSearchParams]
+    [setSearchParams, expandQuick]
   );
 
   const { aggregates, elTeams, clTeams, otherTeams } = usePrioritizationData(
@@ -438,11 +482,23 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     setDrawerEipId(eipId);
   };
 
+  /** Clicking the active shorthand backs the whole view out again. */
+  const applyLayerPreset = (layer: PresentLayer) =>
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        [...QUICK_KEYS, 'quick'].forEach((key) => next.delete(key));
+        if (quickPreset !== layer) next.set('quick', layer.toLowerCase());
+        return next;
+      },
+      { replace: true }
+    );
+
   const clearFilters = () =>
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        ['layer', 'team', 'stance', 'only'].forEach((key) => next.delete(key));
+        [...QUICK_KEYS, 'quick', 'stance'].forEach((key) => next.delete(key));
         return next;
       },
       { replace: true }
@@ -659,48 +715,54 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           }
         >
           <div className="grid md:grid-cols-2 gap-6">
+            <div className="md:col-span-2 pb-4 border-b border-slate-200 dark:border-slate-700">
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                Quick Filters
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {PRESENT_LAYERS.map((layer) => (
+                  <FilterChip
+                    key={layer}
+                    selected={quickPreset === layer}
+                    onClick={() => applyLayerPreset(layer)}
+                  >
+                    {layer} only
+                  </FilterChip>
+                ))}
+              </div>
+              <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                Keeps one layer&rsquo;s EIPs and that layer&rsquo;s client columns, and narrows
+                Avg to them.
+              </p>
+            </div>
+
             <div>
               <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
               <div className="flex flex-wrap gap-2">
-                {(['all', 'EL', 'CL'] as const).map((layer) => {
-                  const isSelected = filterLayer === layer;
-                  const label = layer === 'all' ? 'All Layers' : layer === 'EL' ? 'Execution Layer' : 'Consensus Layer';
-                  return (
-                    <button
-                      key={layer}
-                      onClick={() => setParam('layer', layer === 'all' ? null : layer)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                        isSelected
-                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
+                {(['all', 'EL', 'CL'] as const).map((layer) => (
+                  <FilterChip
+                    key={layer}
+                    selected={filterLayer === layer}
+                    onClick={() => setParam('layer', layer === 'all' ? null : layer)}
+                  >
+                    {layer === 'all' ? 'All Layers' : layer}
+                  </FilterChip>
+                ))}
               </div>
             </div>
 
             <div>
               <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stance</h3>
               <div className="flex flex-wrap gap-2">
-                {stanceFilterOptions.map(({ value, label }) => {
-                  const isSelected = filterStance === value;
-                  return (
-                    <button
-                      key={value}
-                      onClick={() => setParam('stance', value === 'all' ? null : value)}
-                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                        isSelected
-                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
+                {stanceFilterOptions.map(({ value, label }) => (
+                  <FilterChip
+                    key={value}
+                    selected={filterStance === value}
+                    onClick={() => setParam('stance', value === 'all' ? null : value)}
+                  >
+                    {label}
+                  </FilterChip>
+                ))}
               </div>
             </div>
 
@@ -1557,6 +1619,23 @@ const ModalShell: React.FC<ModalShellProps> = ({ title, onClose, headerAction, f
       </div>
     </div>
   </div>
+);
+
+const FilterChip: React.FC<{
+  selected: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}> = ({ selected, onClick, children }) => (
+  <button
+    onClick={onClick}
+    className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+      selected
+        ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+        : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+    }`}
+  >
+    {children}
+  </button>
 );
 
 const FILTER_ACCENTS: Record<TeamEntry['type'], { dot: string; selected: string }> = {

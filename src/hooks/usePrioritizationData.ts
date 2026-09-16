@@ -23,6 +23,10 @@ const FORK_DATA: Record<string, PrioritizationData> = {
   hegota: hegotaData as PrioritizationData,
 };
 
+/** The roster alone, for callers that need it before the hook's arguments can be built. */
+export const forkTeams = (fork: string): TeamEntry[] =>
+  FORK_DATA[fork.toLowerCase()]?.teams ?? [];
+
 /**
  * Hook to load and process prioritization data for a fork
  * Includes ALL EIPs related to the fork, not just those with stances

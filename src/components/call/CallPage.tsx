@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, type ReactNode } from 'react';
 import { Link, useLocation, useNavigate, useSearchParams } from '../navigation';
 import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
@@ -82,11 +82,16 @@ type LoadResult = { callData: CallData; callConfig: CallConfig | null; isUpcomin
 const DESKTOP_WORKSPACE_HEIGHT = 'clamp(40rem, calc(100vh - 7rem), 72rem)';
 // Keep the collapsed summary card inside short desktop viewports, including when the announcement banner is visible.
 const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(28rem, calc(100svh - 13.75rem), 68rem)';
-const DESKTOP_SIDEBAR_PANE_HEIGHT = `calc((${DESKTOP_WORKSPACE_HEIGHT} - 1rem) / 2)`;
-const DESKTOP_SIDEBAR_PANE_HEIGHT_WITH_BAR = `calc((${DESKTOP_WORKSPACE_HEIGHT_WITH_BAR} - 1rem) / 2)`;
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
 const SURFACE_DEEP_LINK_QUERY_KEYS = ['search', 'timestamp', 'type', 'text', 'chat', 'summary'] as const;
 const SUMMARY_CONTENT_ID = 'call-summary-content';
+const TRANSCRIPT_CONTENT_ID = 'call-transcript-content';
+const CHAT_CONTENT_ID = 'call-chat-content';
+
+/** Theater gives the video the whole width; reading trades video width for the transcript/chat column. */
+type LayoutMode = 'theater' | 'balanced' | 'reading';
+/** On desktop one sidebar pane can take the other's half; the collapsed one stays as a clickable title strip. */
+type PaneFocus = 'split' | 'transcript' | 'chat';
 
 const LAYOUT_DEFAULT = {
   header: 'max-w-[1800px] mx-auto px-4 sm:px-6 xl:px-8 2xl:px-10 py-2',
@@ -98,6 +103,11 @@ const LAYOUT_DEFAULT = {
   chatSection: 'lg:col-start-2 lg:row-start-2',
 };
 
+const LAYOUT_READING = {
+  ...LAYOUT_DEFAULT,
+  grid: 'grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(32rem,1fr)] lg:items-start',
+};
+
 const LAYOUT_EXPANDED = {
   header: 'max-w-7xl mx-auto px-4 sm:px-6 py-2',
   content: 'max-w-7xl mx-auto px-6 py-4',
@@ -106,6 +116,20 @@ const LAYOUT_EXPANDED = {
   summarySection: 'lg:col-span-2',
   transcriptSection: '',
   chatSection: '',
+};
+
+/** Order is load-bearing — it becomes the button number, running from most video space to most text space. */
+const LAYOUT_MODES: { mode: LayoutMode; label: string }[] = [
+  { mode: 'theater', label: 'Theater' },
+  { mode: 'balanced', label: 'Balanced' },
+  { mode: 'reading', label: 'Reading' },
+];
+
+const LAYOUT_MODE_STORAGE_KEY = 'call-layout-mode';
+
+const readStoredLayoutMode = (): LayoutMode => {
+  const stored = localStorage.getItem(LAYOUT_MODE_STORAGE_KEY);
+  return LAYOUT_MODES.some(({ mode }) => mode === stored) ? (stored as LayoutMode) : 'balanced';
 };
 
 const timestampToSeconds = (timestamp: string | null | undefined): number => {
@@ -497,15 +521,20 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedSearchResult, setSelectedSearchResult] = useState<{timestamp: string, text: string, type: string} | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
-  const [isVideoExpanded, setIsVideoExpanded] = useState(false);
+  // The view is a per-device reading preference, so it persists; it stays out of the URL because a
+  // shared link's query params are all content deep links and shouldn't impose someone's pane geometry.
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(readStoredLayoutMode);
+  const [paneFocus, setPaneFocus] = useState<PaneFocus>('split');
+
+  useEffect(() => {
+    localStorage.setItem(LAYOUT_MODE_STORAGE_KEY, layoutMode);
+  }, [layoutMode]);
   const [isLargeScreen, setIsLargeScreen] = useState(
     () => window.matchMedia('(min-width: 1024px)').matches
   );
   const [isTallScreen, setIsTallScreen] = useState(
     () => window.matchMedia(TALL_SCREEN_QUERY).matches
   );
-
-  const isDesktopExpanded = isLargeScreen && isVideoExpanded;
 
   const handlePauseVideo = useCallback(() => {
     if (player && isPlaying) {
@@ -966,11 +995,13 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
         scrollTranscriptToEntry(entryParent);
       }
     }
-  }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript, isDesktopExpanded, scrollTranscriptToEntry]);
+  }, [currentVideoTime, isPlaying, callConfig, isUserScrollingTranscript, layoutMode, paneFocus, scrollTranscriptToEntry]);
 
+  // Resizing the transcript pane can strand the active cue outside the scroll band; clearing the
+  // last-highlighted ref lets the effect above re-center it without waiting for the next cue.
   useEffect(() => {
     lastHighlightedTimestampRef.current = null;
-  }, [isDesktopExpanded]);
+  }, [layoutMode, paneFocus]);
 
   // YouTube player handlers
   const onPlayerReady: YouTubeProps['onReady'] = (event) => {
@@ -1233,13 +1264,16 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     setSearchParams(next, { replace: true });
   };
 
-  const isExpandedVideo = isDesktopExpanded && Boolean(callData.videoUrl);
+  const isExpandedVideo = isLargeScreen && layoutMode === 'theater' && Boolean(callData.videoUrl);
   const isWorkspaceView = !isExpandedVideo && isLargeScreen && Boolean(callData.videoUrl);
-  const showSummaryInColumn = isWorkspaceView && isTallScreen && hasSummary;
+  const isReadingView = isWorkspaceView && layoutMode === 'reading';
+  // Reading mode shrinks the video to its natural 16:9 height, so the summary has room to fill the rest of the column.
+  const showSummaryInColumn = isWorkspaceView && (isTallScreen || isReadingView) && hasSummary;
   const hasCollapsibleSummary = isWorkspaceView && !showSummaryInColumn && hasSummary;
   const effectiveWorkspaceHeight = hasCollapsibleSummary ? DESKTOP_WORKSPACE_HEIGHT_WITH_BAR : DESKTOP_WORKSPACE_HEIGHT;
-  const effectiveSidebarHeight = hasCollapsibleSummary ? DESKTOP_SIDEBAR_PANE_HEIGHT_WITH_BAR : DESKTOP_SIDEBAR_PANE_HEIGHT;
-  const layout = isExpandedVideo ? LAYOUT_EXPANDED : LAYOUT_DEFAULT;
+  const layout = isExpandedVideo ? LAYOUT_EXPANDED : isReadingView ? LAYOUT_READING : LAYOUT_DEFAULT;
+  const transcriptCollapsed = isWorkspaceView && paneFocus === 'chat';
+  const chatCollapsed = isWorkspaceView && paneFocus === 'transcript';
 
   const renderSummaryHeader = () => hasSummary && (
     <div className="flex items-center gap-2">
@@ -1250,9 +1284,6 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
         {summaryTab === 'notes'
           ? `${callData.notesData!.sections.length} sections`
           : `${Object.values(callData.tldrData!.highlights).flat().length} highlights${callData.keyDecisions?.length ? ` • ${callData.keyDecisions.length} decisions` : ''} • ${callData.tldrData!.action_items?.length || 0} action items`}
-      </span>
-      <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 px-2 py-0.5 rounded-full font-normal border border-slate-200 dark:border-slate-600">
-        Experimental
       </span>
     </div>
   );
@@ -1365,16 +1396,93 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     );
   };
 
+  const renderViewSwitcher = () => (
+    <div className="hidden lg:flex flex-shrink-0 items-center gap-1.5">
+      <span className="text-xs text-slate-500 dark:text-slate-400">View</span>
+      <div className="inline-flex items-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+        {LAYOUT_MODES.map(({ mode, label }, index) => {
+          const isActive = layoutMode === mode;
+          return (
+            <button
+              key={mode}
+              type="button"
+              aria-pressed={isActive}
+              aria-label={`${label} view`}
+              title={`${label} view`}
+              onClick={() => setLayoutMode(mode)}
+              className={`px-2.5 py-1 text-xs font-normal transition-colors cursor-pointer ${
+                isActive
+                  ? 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
+                  : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-700/50 dark:hover:text-slate-300'
+              }`}
+            >
+              {index + 1}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  const renderReadingField = (label: string, value: ReactNode) => (
+    <div>
+      <dt className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
+        {label}
+      </dt>
+      <dd className="mt-0.5 text-sm text-slate-700 dark:text-slate-200">{value}</dd>
+    </div>
+  );
+
+  // Beside the player the metadata has a column rather than a line, so it reads as a spec sheet:
+  // the type scale and a shared left edge carry the structure instead of icons and colons.
+  const renderReadingMasthead = () => (
+    <div className="flex min-w-0 flex-1 flex-col">
+      <h2 className="text-[17px] font-semibold leading-tight text-slate-900 dark:text-slate-100">
+        {headerLabel}
+      </h2>
+      <dl className="mt-4 space-y-3">
+        {callData.date && renderReadingField('Date', callData.date)}
+        {callConfig?.issue && renderReadingField('Agenda', (
+          <a
+            href={`https://github.com/ethereum/pm/issues/${callConfig.issue}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
+          >
+            #{callConfig.issue}
+          </a>
+        ))}
+        {breakoutEipInfo && renderReadingField('EIP', (
+          <Link
+            to={`/eips/${breakoutEipInfo.eip.id}`}
+            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
+          >
+            {breakoutEipInfo.eip.id}
+          </Link>
+        ))}
+      </dl>
+      <div className="mt-auto border-t border-slate-200 pt-3 dark:border-slate-700">
+        {renderViewSwitcher()}
+      </div>
+    </div>
+  );
+
+  // The player only stretches to fill a height-locked card where it has the width to do so without
+  // pillarboxing. Reading mode's column doesn't, so there the card takes its natural 16:9 height and
+  // the summary gets the remainder — the player always spans the full column, never a capped width.
+  const stretchesVideo = isWorkspaceView && !isReadingView;
+
   const renderVideoSection = () => (
     <div
-      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex h-full flex-col' : ''}`}
-      style={isWorkspaceView ? { height: showSummaryInColumn ? effectiveSidebarHeight : effectiveWorkspaceHeight } : undefined}
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? (stretchesVideo ? 'flex min-h-0 flex-1 flex-col' : 'flex flex-none flex-col') : ''}`}
     >
       {renderBreakoutTabs()}
-      <div className={isWorkspaceView ? 'flex min-h-0 flex-1 flex-col' : 'flex flex-col gap-4'}>
+      <div className={stretchesVideo ? 'flex min-h-0 flex-1 flex-col' : isReadingView ? 'flex gap-4' : 'flex flex-col gap-4'}>
         {/* Video Player */}
-        <div className={isWorkspaceView ? 'min-h-0 flex-1' : ''}>
-          <div className={`relative overflow-hidden rounded-lg ${isWorkspaceView ? 'h-full min-h-0' : 'aspect-video'}`}>
+        {/* Reading mode sets the player beside its metadata rather than above it, so the 16:9 box
+            gives up two thirds of the column's width — and with it a third of its height. */}
+        <div className={stretchesVideo ? 'min-h-0 flex-1' : isReadingView ? 'min-w-0 flex-[2]' : ''}>
+          <div className={`relative overflow-hidden rounded-lg ${stretchesVideo ? 'h-full min-h-0' : 'aspect-video'}`}>
             <YouTube
               key={extractYouTubeId(callData.videoUrl!)}
               videoId={extractYouTubeId(callData.videoUrl!)}
@@ -1396,7 +1504,8 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
         </div>
 
         {/* Video Metadata */}
-        <div className={isWorkspaceView ? 'border-t border-slate-200 pt-3 dark:border-slate-700' : 'border-t border-slate-200 pt-3 dark:border-slate-700'}>
+        {isReadingView ? renderReadingMasthead() : (
+        <div className="border-t border-slate-200 pt-3 dark:border-slate-700">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
             <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">
               {headerLabel}
@@ -1404,7 +1513,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             {callData.date && (
               <>
                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-shrink-0 items-center gap-1.5">
                   <span className="text-slate-500 dark:text-slate-400">📅</span>
                   <span className="text-slate-700 dark:text-slate-200 font-medium">{callData.date}</span>
                 </div>
@@ -1413,7 +1522,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             {callConfig?.issue && (
               <>
                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-shrink-0 items-center gap-1.5" title="Agenda">
                   <span className="text-slate-500 dark:text-slate-400">📌</span>
                   <span className="text-slate-600 dark:text-slate-300">Agenda:</span>
                   <a
@@ -1430,7 +1539,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             {breakoutEipInfo && (
               <>
                 <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">|</span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex flex-shrink-0 items-center gap-1.5" title="EIP">
                   <span className="text-slate-500 dark:text-slate-400">📋</span>
                   <span className="text-slate-600 dark:text-slate-300">EIP:</span>
                   <Link
@@ -1448,32 +1557,9 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
               </>
             )}
             <span className="flex-1" />
-            <button
-              type="button"
-              onClick={() => setIsVideoExpanded(current => !current)}
-              className="hidden lg:inline-flex items-center gap-1.5 flex-shrink-0 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1 text-xs font-normal text-slate-500 dark:text-slate-400 transition-colors hover:bg-slate-50 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-300 cursor-pointer"
-            >
-              {isExpandedVideo ? (
-                <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round">
-                  {/* Arrows pointing inward — hooks at inner points */}
-                  <path d="M4 4l5 5M9 5.5v3.5H5.5" />
-                  <path d="M20 4l-5 5M15 5.5v3.5h3.5" />
-                  <path d="M4 20l5-5M9 18.5v-3.5H5.5" />
-                  <path d="M20 20l-5-5M15 18.5v-3.5h3.5" />
-                </svg>
-              ) : (
-                <svg className="h-4.5 w-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.25} strokeLinecap="round" strokeLinejoin="round">
-                  {/* Arrows pointing outward — hooks at corners */}
-                  <path d="M9 9L4 4M4 8V4h4" />
-                  <path d="M15 9l5-5M20 8V4h-4" />
-                  <path d="M9 15l-5 5M4 16v4h4" />
-                  <path d="M15 15l5 5M20 16v4h-4" />
-                </svg>
-              )}
-              {isExpandedVideo ? 'Exit Theater' : 'Theater Mode'}
-            </button>
+            {renderViewSwitcher()}
           </div>
-          {isExpandedVideo && (prevCall || nextCall) && (
+          {(prevCall || nextCall) && (
             <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700 flex justify-between items-center gap-2">
               {prevCall ? (
                 <Link
@@ -1514,33 +1600,93 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             </div>
           )}
         </div>
+        )}
       </div>
     </div>
   );
 
-  const renderTranscriptCard = () => (
+  const paneResizeIcon = (focused: boolean) => (
+    <svg
+      className="w-4 h-4 flex-shrink-0 text-slate-400"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      strokeWidth={1.75}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {focused ? (
+        <>
+          <path d="M8 5l4 4 4-4" />
+          <path d="M8 19l4-4 4 4" />
+        </>
+      ) : (
+        <>
+          <path d="M8 9l4-4 4 4" />
+          <path d="M8 15l4 4 4-4" />
+        </>
+      )}
+    </svg>
+  );
+
+  const renderPaneToggle = (pane: 'transcript' | 'chat', label: string) => {
+    const focused = paneFocus === pane;
+    return (
+      <button
+        type="button"
+        onClick={() => setPaneFocus(focused ? 'split' : pane)}
+        aria-pressed={focused}
+        aria-label={focused ? 'Restore split view' : `Expand ${label}`}
+        className="flex-shrink-0 rounded p-0.5 transition-colors cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+      >
+        {paneResizeIcon(focused)}
+      </button>
+    );
+  };
+
+  const renderCollapsedPane = (title: string, contentId: string) => (
+    <div className="flex-none bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+      <button
+        type="button"
+        onClick={() => setPaneFocus('split')}
+        aria-expanded={false}
+        aria-controls={contentId}
+        className="w-full flex items-center justify-between gap-2 rounded-lg px-4 py-3 text-left transition-colors cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+      >
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
+        {paneResizeIcon(false)}
+      </button>
+    </div>
+  );
+
+  const renderTranscriptCard = () => transcriptCollapsed ? (
+    renderCollapsedPane('Transcript', TRANSCRIPT_CONTENT_ID)
+  ) : (
     <div
-      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex min-h-0 flex-col' : ''}`}
-      style={isWorkspaceView ? { height: effectiveSidebarHeight } : undefined}
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex min-h-0 flex-1 flex-col' : ''}`}
     >
       <div className="flex items-center justify-between gap-2 mb-3">
         <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Transcript</h2>
-        {gapSkipIntervals.length > 0 && (
-          <label className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={isGapSkipEnabled}
-              onChange={handleGapSkipToggle}
-              className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
-            />
-            <span>Skip gaps ({(gapSkipSeconds / 60).toFixed(1)} min)</span>
-          </label>
-        )}
+        <div className="flex items-center gap-3">
+          {gapSkipIntervals.length > 0 && (
+            <label className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={isGapSkipEnabled}
+                onChange={handleGapSkipToggle}
+                className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
+              />
+              <span>Skip gaps ({(gapSkipSeconds / 60).toFixed(1)} min)</span>
+            </label>
+          )}
+          {isWorkspaceView && renderPaneToggle('transcript', 'transcript')}
+        </div>
       </div>
       {callData.transcriptContent?.trim() ? (
         <div
+          id={TRANSCRIPT_CONTENT_ID}
           ref={transcriptRef}
-          className={`space-y-1 overflow-y-auto pr-2 ${isWorkspaceView ? 'min-h-0 flex-1' : 'max-h-[400px]'}`}
+          className={`space-y-1 overflow-y-auto pr-2 ${isWorkspaceView ? 'min-h-0 flex-1' : 'max-h-[70vh]'}`}
         >
           {transcriptEntries.map((entry, index, entries) => {
               const isHighlighted = isCurrentEntry(entry.timestamp, index, entries);
@@ -1602,14 +1748,18 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     </div>
   );
 
-  const renderChatCard = () => (
+  const renderChatCard = () => chatCollapsed ? (
+    renderCollapsedPane('Chat Logs', CHAT_CONTENT_ID)
+  ) : (
     <div
-      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex min-h-0 flex-col' : ''}`}
-      style={isWorkspaceView ? { height: effectiveSidebarHeight } : undefined}
+      className={`bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow ${isWorkspaceView ? 'flex min-h-0 flex-1 flex-col' : ''}`}
     >
-      <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3">Chat Logs</h2>
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100">Chat Logs</h2>
+        {isWorkspaceView && renderPaneToggle('chat', 'chat logs')}
+      </div>
       {callData.chatContent ? (
-        <div ref={chatLogRef} className={`overflow-y-auto pr-2 ${isWorkspaceView ? 'min-h-0 flex-1' : 'max-h-[400px]'}`}>
+        <div id={CHAT_CONTENT_ID} ref={chatLogRef} className={`overflow-y-auto pr-2 ${isWorkspaceView ? 'min-h-0 flex-1' : 'max-h-[70vh]'}`}>
           <ChatLog
             content={callData.chatContent}
             syncConfig={callConfig?.sync}
@@ -1670,25 +1820,27 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
       <div className={layout.content}>
         <div className={layout.grid}>
           {callData.videoUrl && (
-            <div className={`min-w-0 ${showSummaryInColumn ? 'lg:col-start-1 lg:row-start-1' : layout.videoSection}`}>
-              {renderVideoSection()}
-            </div>
-          )}
-
-          {showSummaryInColumn && hasSummary && (
-            <div
-              className="lg:col-start-1 lg:row-start-2"
-              style={{ height: effectiveSidebarHeight }}
-            >
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
-                <div className="px-4 py-3 flex-shrink-0">
-                  {renderSummaryHeader()}
-                </div>
-                <div className="border-t border-slate-200 dark:border-slate-700 min-h-0 flex-1 overflow-y-auto">
-                  {renderSummaryContent()}
+            isWorkspaceView ? (
+              <div className="min-w-0 lg:col-start-1 lg:row-start-1 lg:row-span-2">
+                <div className="flex flex-col gap-4" style={{ height: effectiveWorkspaceHeight }}>
+                  {renderVideoSection()}
+                  {showSummaryInColumn && (
+                    <div className="min-h-0 flex-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col">
+                      <div className="px-4 py-3 flex-shrink-0">
+                        {renderSummaryHeader()}
+                      </div>
+                      <div className="border-t border-slate-200 dark:border-slate-700 min-h-0 flex-1 overflow-y-auto">
+                        {renderSummaryContent()}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className={`min-w-0 ${layout.videoSection}`}>
+                {renderVideoSection()}
+              </div>
+            )
           )}
 
           {!showSummaryInColumn && hasSummary && (
@@ -1725,13 +1877,24 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             </div>
           )}
 
-          <div className={`min-w-0 ${layout.transcriptSection}`}>
-            {renderTranscriptCard()}
-          </div>
+          {isWorkspaceView ? (
+            <div className="min-w-0 lg:col-start-2 lg:row-start-1 lg:row-span-2">
+              <div className="flex flex-col gap-4" style={{ height: effectiveWorkspaceHeight }}>
+                {renderTranscriptCard()}
+                {renderChatCard()}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className={`min-w-0 ${layout.transcriptSection}`}>
+                {renderTranscriptCard()}
+              </div>
 
-          <div className={`min-w-0 ${layout.chatSection}`}>
-            {renderChatCard()}
-          </div>
+              <div className={`min-w-0 ${layout.chatSection}`}>
+                {renderChatCard()}
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

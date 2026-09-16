@@ -444,35 +444,6 @@ export const EipCard: React.FC<EipCardProps> = ({
             </div>
           </div>
         )}
-
-        {/* North Star Goal Alignment */}
-        {(eip.northStarAlignment?.scaleL1 || eip.northStarAlignment?.scaleBlobs || eip.northStarAlignment?.improveUX) && (
-          <div>
-            <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-4 uppercase tracking-wide">North Star Goal Alignment</h4>
-            <div className="bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded p-4">
-              <div className="space-y-4">
-                {eip.northStarAlignment?.scaleL1 && (
-                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4">
-                    <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-xs mb-3 border-b border-blue-200 dark:border-blue-600 pb-2">Scale L1</h5>
-                    <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{eip.northStarAlignment.scaleL1.description}</p>
-                  </div>
-                )}
-                {eip.northStarAlignment?.scaleBlobs && (
-                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4">
-                    <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-xs mb-3 border-b border-purple-200 dark:border-purple-600 pb-2">Scale Blobs</h5>
-                    <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{eip.northStarAlignment.scaleBlobs.description}</p>
-                  </div>
-                )}
-                {eip.northStarAlignment?.improveUX && (
-                  <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4">
-                    <h5 className="font-semibold text-slate-900 dark:text-slate-100 text-xs mb-3 border-b border-emerald-200 dark:border-emerald-600 pb-2">Improve UX</h5>
-                    <p className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">{eip.northStarAlignment.improveUX.description}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
           </div>
         </div>
       </div>

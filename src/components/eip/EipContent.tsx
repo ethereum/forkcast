@@ -292,7 +292,6 @@ export const EipContent: React.FC<EipContentProps> = ({
     (eip.benefits && eip.benefits.length > 0) ||
     (eip.tradeoffs && eip.tradeoffs.length > 0) ||
     (eip.stakeholderImpacts && Object.keys(eip.stakeholderImpacts).length > 0) ||
-    eip.northStarAlignment ||
     (eip.forkRelationships && eip.forkRelationships.length > 0)
   );
 

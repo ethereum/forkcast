@@ -136,45 +136,5 @@ export const EipAnalysisSections: React.FC<EipAnalysisSectionsProps> = ({
         </div>
       </section>
     )}
-
-    {/* North Star Alignment */}
-    {(eip.northStarAlignment?.scaleL1 ||
-      eip.northStarAlignment?.scaleBlobs ||
-      eip.northStarAlignment?.improveUX) && (
-      <section className="bg-indigo-50/50 dark:bg-indigo-900/10 border-l-4 border-indigo-500 rounded-r-lg p-4">
-        <h3 className="text-sm font-semibold text-indigo-900 dark:text-indigo-100 mb-3 uppercase tracking-wide">
-          North Star Goal Alignment
-        </h3>
-        <ul className="space-y-2">
-          {eip.northStarAlignment?.scaleL1 && (
-            <li className="flex items-start text-sm">
-              <span className="text-blue-600 dark:text-blue-400 mr-3 mt-0.5 text-xs">●</span>
-              <span>
-                <span className="font-medium text-blue-700 dark:text-blue-300">Scale L1:</span>{' '}
-                <span className="text-slate-700 dark:text-slate-300">{eip.northStarAlignment.scaleL1.description}</span>
-              </span>
-            </li>
-          )}
-          {eip.northStarAlignment?.scaleBlobs && (
-            <li className="flex items-start text-sm">
-              <span className="text-purple-600 dark:text-purple-400 mr-3 mt-0.5 text-xs">●</span>
-              <span>
-                <span className="font-medium text-purple-700 dark:text-purple-300">Scale Blobs:</span>{' '}
-                <span className="text-slate-700 dark:text-slate-300">{eip.northStarAlignment.scaleBlobs.description}</span>
-              </span>
-            </li>
-          )}
-          {eip.northStarAlignment?.improveUX && (
-            <li className="flex items-start text-sm">
-              <span className="text-emerald-600 dark:text-emerald-400 mr-3 mt-0.5 text-xs">●</span>
-              <span>
-                <span className="font-medium text-emerald-700 dark:text-emerald-300">Improve UX:</span>{' '}
-                <span className="text-slate-700 dark:text-slate-300">{eip.northStarAlignment.improveUX.description}</span>
-              </span>
-            </li>
-          )}
-        </ul>
-      </section>
-    )}
   </>
 );

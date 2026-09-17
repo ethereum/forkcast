@@ -16,8 +16,10 @@ import { getInclusionStageColor } from '../../utils/colors';
 import { getProposalPrefix, getStageAbbreviation } from '../../utils';
 import { eipsData } from '../../data/eips';
 import { buildDisplayGroups, groupByCategory, CategoryGroup } from '../../domain/eips/eipCategories';
+import { RANK_FORK } from '../../domain/eips/rankableEips';
 import { DisplayGroup, UNCATEGORIZED, clDisplayGroups, displayGroups } from '../../data/eip-categories';
 import { EipDrawer } from '../eip/EipDrawer';
+import { Tooltip } from '../ui/Tooltip';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
 
@@ -1063,9 +1065,13 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
         </div>
 
         {hasNonStandardsTrack && (
-          <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-            <NonStandardsTrackMark type="Informational or Meta" />
-            Informational or Meta: {PROSE_EIP_NOTE}.
+          <p className="mt-3 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            <NonStandardsTrackMark type="Informational or Meta" className="mt-px" />
+            <span>
+              Informational or Meta: {NON_STANDARDS_TRACK_NOTE}.
+              {/* The rank page covers one fork, and drops Informational EIPs but not Meta ones. */}
+              {fork.toLowerCase() === RANK_FORK && ' Informational EIPs are left off the rank page.'}
+            </span>
           </p>
         )}
       </div>
@@ -1082,6 +1088,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
         <PresentationView
           groups={slides}
           index={slide}
+          fork={fork}
           layer={slideLayer}
           teams={slideLayer === 'EL' ? shownElTeams : shownClTeams}
           maxScore={maxScore}
@@ -1248,35 +1255,43 @@ const TableRow: React.FC<TableRowProps> = ({
   );
 };
 
-const PROSE_EIP_NOTE = 'ships as prose, not as a change to the fork';
+const NON_STANDARDS_TRACK_NOTE = 'documents rather than changes the protocol';
 
 /**
- * An Informational or Meta EIP ships as prose rather than as a change to the fork, so it
- * otherwise reads on the board as one more inclusion candidate. The mark says it isn't.
+ * An Informational or Meta EIP documents the protocol rather than changing it, so it would
+ * otherwise read on the board as one more inclusion candidate. The mark says it isn't.
  * `size` is for the slides, which size everything to the projector.
  */
-const NonStandardsTrackMark: React.FC<{ type: string | null; size?: string }> = ({ type, size }) =>
-  type === null ? null : (
-    <span
-      className="inline-flex shrink-0 text-slate-400 dark:text-slate-400"
-      title={`${type}: ${PROSE_EIP_NOTE}`}
-      aria-label={`${type}: ${PROSE_EIP_NOTE}`}
-    >
-      <svg
-        className="w-3.5 h-3.5"
-        style={size ? { width: size, height: size } : undefined}
-        fill="currentColor"
-        viewBox="0 0 20 20"
-        aria-hidden="true"
-      >
-        <path
-          fillRule="evenodd"
-          d="M18 10A8 8 0 112 10a8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-          clipRule="evenodd"
-        />
-      </svg>
-    </span>
+const NonStandardsTrackMark: React.FC<{
+  type: string | null;
+  size?: string;
+  className?: string;
+  /** Appended to the tooltip, for surfaces that carry no legend of their own. */
+  note?: string;
+}> = ({ type, size, className = '', note }) => {
+  if (type === null) return null;
+  const text = `${type}: ${NON_STANDARDS_TRACK_NOTE}${note ? `. ${note}` : ''}`;
+
+  return (
+    <Tooltip text={text} className={`shrink-0 ${className}`}>
+      <span className="flex cursor-help text-slate-400 dark:text-slate-400" aria-label={text}>
+        <svg
+          className="w-3.5 h-3.5"
+          style={size ? { width: size, height: size } : undefined}
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M18 10A8 8 0 112 10a8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </span>
+    </Tooltip>
   );
+};
 
 const RejectionFlag: React.FC<{ count: number }> = ({ count }) => (
   <span
@@ -1325,15 +1340,26 @@ const slideProposalLabel = (eipId: number) => {
   return `${eip ? getProposalPrefix(eip) : 'EIP'}-${eipId}`;
 };
 
-/** The EIP's type, when it is one of the ones that ship as prose. */
-const proseEipType = (eipId: number): string | null => {
+/** The EIP's type, when it is Informational or Meta rather than Standards Track. */
+const nonStandardsTrackType = (eipId: number): string | null => {
   const eip = eipsData.find((e) => e.id === eipId);
   return eip && eip.type !== 'Standards Track' ? eip.type : null;
 };
 
+/**
+ * Only true where it is: the rank page covers one fork, and drops Informational EIPs but
+ * not Meta ones. The board's legend says this in prose; a slide has no legend, so its
+ * tooltip has to carry it.
+ */
+const rankPageNote = (fork: string, type: string | null): string | undefined =>
+  fork.toLowerCase() === RANK_FORK && type === 'Informational'
+    ? 'Not among the EIPs on the rank page.'
+    : undefined;
+
 interface PresentationViewProps {
   groups: CategoryGroup<EipAggregateStance>[];
   index: number;
+  fork: string;
   layer: PresentLayer;
   teams: TeamEntry[];
   maxScore: number;
@@ -1350,6 +1376,7 @@ interface PresentationViewProps {
 const PresentationView: React.FC<PresentationViewProps> = ({
   groups,
   index,
+  fork,
   layer,
   teams,
   maxScore,
@@ -1394,6 +1421,11 @@ const PresentationView: React.FC<PresentationViewProps> = ({
 
   const cell = { height: vh(1), fontSize: vh(0.37), padding: `0 ${vh(0.22)}` };
   const header = { height: vh(0.67), fontSize: vh(0.27), padding: `0 ${vh(0.22)}` };
+
+  const typeMark = (eipId: number) => {
+    const type = nonStandardsTrackType(eipId);
+    return <NonStandardsTrackMark type={type} note={rankPageNote(fork, type)} size={vh(0.37)} />;
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-slate-900">
@@ -1459,7 +1491,7 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                   <td className="text-slate-900 dark:text-slate-100" style={cell}>
                     <div className="flex items-center" style={{ gap: vh(0.14) }}>
                       <span className="truncate">{row.agg.eipTitle}</span>
-                      <NonStandardsTrackMark type={proseEipType(row.agg.eipId)} size={vh(0.37)} />
+                      {typeMark(row.agg.eipId)}
                     </div>
                   </td>
                   {teams.length > 0 && (

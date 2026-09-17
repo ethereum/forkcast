@@ -25,11 +25,11 @@ const FORK_DATA: Record<string, PrioritizationData> = {
 
 /**
  * Forks whose board carries every Informational and Meta EIP, rated or not. Elsewhere one
- * earns a row only once a client team rates it, since it ships as prose rather than as a
- * change to the fork and has no inclusion decision of its own. Glamsterdam's board is
+ * earns a row only once a client team rates it, since it documents the protocol rather
+ * than changing it and so has no inclusion decision of its own. Glamsterdam's board is
  * published against that older rule and stays as it was.
  */
-const LISTS_UNRATED_PROSE = new Set(['hegota']);
+const LISTS_UNRATED_NON_STANDARDS_TRACK = new Set(['hegota']);
 
 /** The roster alone, for callers that need it before the hook's arguments can be built. */
 export const forkTeams = (fork: string): TeamEntry[] =>
@@ -73,7 +73,7 @@ export function usePrioritizationData(
     const clientTeams = new Set(
       data.teams.filter((team) => team.type !== 'OTHER').map((team) => team.name)
     );
-    const boardEips = LISTS_UNRATED_PROSE.has(fork.toLowerCase())
+    const boardEips = LISTS_UNRATED_NON_STANDARDS_TRACK.has(fork.toLowerCase())
       ? forkEips
       : forkEips.filter(
           (eip) =>

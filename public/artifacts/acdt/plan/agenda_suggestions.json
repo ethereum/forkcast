@@ -1,54 +1,61 @@
 {
   "series": "ACDT",
-  "generated": "2026-09-10",
-  "for_call": "ACDT #96",
+  "generated": "2026-09-17",
+  "for_call": "ACDT #97",
   "suggestions": [
     {
-      "topic": "EIP-8253 Glamsterdam vs Hegota final decision",
+      "topic": "Client readiness confirmation for Sepolia shadow fork",
       "priority": "high",
-      "rationale": "Deferred from ACDT #95 to tomorrow's ACDE (Sept 11). ACDT rough consensus was Hegota, but formal decision needed. If ACDE reverses to Glamsterdam inclusion, would require immediate client implementation.",
+      "rationale": "ACDT #96 deferred this to 'next ACDT' (this call). Shadow fork is targeted for 'next week' from Sept 14, meaning launch is imminent. All clients need to confirm readiness.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "glamsterdam-devnet-11 launch status and L2 coordination readiness",
+      "topic": "Sepolia Glamsterdam upgrade status check (October 6th)",
       "priority": "high",
-      "rationale": "Devnet-11 blocked on Prysm alpha.14 merge as of ACDT #95. This is the final happy-path fork transition devnet before testnet launches; critical for L2 teams to coordinate. Confirm readiness and timeline.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Besu JUMPDEST-spam vulnerability mitigation",
-      "priority": "high",
-      "rationale": "ACDT #95 showed Jochem's 64KB JUMPDEST-spam knocked out 12/13 Besu nodes (65% missed proposals vs 0.1% Geth). This is a critical pre-testnet blocker. Confirm fix status and whether EEST can express this attack for ongoing testing.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Nimbus PTC voting-too-early bug from worst-case blob payload",
-      "priority": "medium",
-      "rationale": "Surfaced by Toni's attack testing on devnet-8; still under investigation per ACDT #95. Could impact testnet stability if unresolved.",
-      "related_eips": [],
-      "source": "devnet_update"
-    },
-    {
-      "topic": "Sepolia shadow fork timeline",
-      "priority": "medium",
-      "rationale": "ACDT #93 targeted mid-to-end September for Sepolia shadow fork. We're now in that window. Confirm readiness of client releases, devnet-11 completion status, and whether Snap2 testing is ready to begin.",
+      "rationale": "Upgrade is 19 days away. Need confirmation that all clients are on track for release candidates and that no blockers have emerged from devnet 11 testing or shadow fork prep.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "glamsterdam-devnet-9 Prysm trunk offline incident post-mortem",
+      "topic": "BAL collision fixture review and cross-client behavior comparison",
       "priority": "medium",
-      "rationale": "~30% of devnet-9 (Prysm trunk) went offline at Gloas fork; Lighthouse had OOM issues with 4M validator keys. Network was not kept running. Understanding root cause is important before scaling to testnet.",
+      "rationale": "ACDT #96 decided to create a single fixture for BAL collision scenarios to compare client implementations. Spencer (EF testing) was assigned this. Review needed to close the topic before testnets.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Glamsterdam devnet 8 and 11 status update",
+      "priority": "medium",
+      "rationale": "Devnet 8 was recovering from Jochem's JUMPDEST attack (Besu, Erigon, Nimbus affected). Devnet 11 is the L2 coordination network. Status check needed, especially if further adversarial testing is planned on devnet 8.",
       "related_eips": [],
       "source": "devnet_update"
     },
     {
-      "topic": "Payload-flooding attack retest status on devnet-8",
+      "topic": "Progressive list size handling concern resolution (Teku)",
+      "priority": "medium",
+      "rationale": "ACDT #96 noted Teku/Enrico's concern about progressive list size handling, awaiting CL breakout signal. With Sepolia upgrade approaching, this needs resolution or explicit acknowledgment it's not blocking.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "Official EL test release status (including EIP-8037)",
+      "priority": "medium",
+      "rationale": "Spencer mentioned in ACDT #96 that official EL test release was targeting 'next week' (this week). Confirmation needed that tests are ready and have been integrated by client teams.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Mainnet shadow fork planning and Snap2 testing readiness",
       "priority": "low",
-      "rationale": "Deferred from ACDT #91 to devnet-8. ACDT #93 and #95 show Toni conducted various attack tests, but no explicit confirmation that the duplicate envelope fix was retested. Low priority since other attack vectors have been tested and devnet-8 is running well.",
+      "rationale": "ACDT #94 mentioned mainnet shadow fork to follow Sepolia for Snap2 block-access-list healing and heavy EL state ePBS testing. With Sepolia shadow fork imminent, good time for a brief mainnet shadow fork planning update.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-8253 Hegota timeline and testing requirements",
+      "priority": "low",
+      "rationale": "EIP-8253 was deferred to Hegota in ACDT #95. With Glamsterdam nearly done, early discussion of Hegota timeline and EIP-8253 test requirements could help avoid last-minute scrambles.",
       "related_eips": [],
       "source": "deferred_decision"
     }

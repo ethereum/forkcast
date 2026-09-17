@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { ForkProgress } from '../../types/timeline';
 import { parseShortDate } from './forkDateCalculator';
+import { acdCallsBetween, type AcdCall, type AcdSeries } from '../../domain/schedule/acdCalls';
 
 interface ForkGanttChartProps {
   forks: {
@@ -29,6 +31,74 @@ const PHASE_LABELS: Record<string, string> = {
   'development': 'Devnets',
   'public-testnets': 'Testnets',
   'mainnet-deployment': 'Mainnet',
+};
+
+// Execution indigo, consensus teal, as the client priority board colours the two layers.
+const SERIES_DOT: Record<AcdSeries, string> = {
+  ACDE: 'bg-indigo-300',
+  ACDC: 'bg-teal-300',
+};
+
+const SERIES_ORDER: AcdSeries[] = ['ACDE', 'ACDC'];
+
+const shortDate = (date: Date) =>
+  date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+/**
+ * A phase's length in the unit the work is actually paced by: one dot per ACD call it
+ * contains. Revealed on hover, since a bar wide enough to hold the dots inline would crowd
+ * out the milestones sitting on top of it.
+ *
+ * The dots a phase has already spent are hollow, so the count that reads at a glance is the
+ * one that can still be planned against.
+ */
+const AcdCallDots: React.FC<{ calls: AcdCall[]; start: Date; end: Date; today: Date }> = ({
+  calls,
+  start,
+  end,
+  today,
+}) => {
+  const spent = (call: AcdCall) => call.date < today;
+  const anySpent = calls.some(spent);
+  return (
+    <div className="space-y-1">
+      {/* The panel is dark in both themes, so none of its type takes a `dark:` variant —
+          dimming it against the lighter dark-mode panel is what loses the contrast. */}
+      <div className="text-slate-300">
+        {shortDate(start)} – {shortDate(end)}
+      </div>
+      {SERIES_ORDER.map((series) => {
+        const ofSeries = calls.filter((call) => call.series === series);
+        const left = ofSeries.filter((call) => !spent(call)).length;
+        return (
+          <div key={series} className="flex items-center gap-1.5">
+            <span className="w-8">{series}</span>
+            <span className="flex flex-wrap items-center gap-0.5 w-24">
+              {ofSeries.map((call, i) => (
+                <span
+                  key={i}
+                  className={
+                    spent(call)
+                      ? 'w-1 h-1 rounded-full border border-slate-400'
+                      : `w-1 h-1 rounded-full ${SERIES_DOT[series]}`
+                  }
+                />
+              ))}
+            </span>
+            <span className="tabular-nums">
+              {left}
+              {anySpent ? ' left' : ''}
+            </span>
+          </div>
+        );
+      })}
+      {anySpent && (
+        <div className="text-slate-300">
+          {calls.length} in the phase, {calls.filter(spent).length} held
+        </div>
+      )}
+    </div>
+  );
 };
 
 function getDateFromPhase(phase: ForkProgress['phases'][0]): { start: Date | null; end: Date | null } {
@@ -230,6 +300,19 @@ const ForkGanttChart: React.FC<ForkGanttChartProps> = ({
   const headerHeight = 48;
   const labelWidth = 140;
 
+  /**
+   * The hovered bar's call panel, in viewport coordinates. The chart scrolls horizontally, and
+   * `overflow-x` forces the vertical axis to clip too, so a panel rendered inside a row is cut
+   * off on the bottom fork. It goes to the body instead, positioned off the bar's own rect.
+   */
+  const [hoveredBar, setHoveredBar] = useState<{
+    x: number;
+    y: number;
+    calls: AcdCall[];
+    start: Date;
+    end: Date;
+  } | null>(null);
+
   // Calculate today's position if within range
   const today = new Date();
   const todayInRange = today >= timelineStart && today <= timelineEnd;
@@ -349,16 +432,39 @@ const ForkGanttChart: React.FC<ForkGanttChartProps> = ({
                           </div>
 
                           {/* Phase bar - only show if phase spans multiple dates */}
-                          {phase.startDate.getTime() !== phase.endDate.getTime() && (
-                            <div
-                              className="absolute top-1/2 -translate-y-1/2 h-5 rounded opacity-30"
-                              style={{
-                                left: `${getPosition(phase.startDate)}%`,
-                                width: `${Math.max(0.5, getPosition(phase.endDate) - getPosition(phase.startDate))}%`,
-                                backgroundColor: fork.color,
-                              }}
-                            />
-                          )}
+                          {phase.startDate.getTime() !== phase.endDate.getTime() && (() => {
+                            const calls = acdCallsBetween(phase.startDate, phase.endDate);
+                            const barLeft = getPosition(phase.startDate);
+                            return (
+                              <div
+                                className="absolute top-1/2 -translate-y-1/2 h-5"
+                                style={{
+                                  left: `${barLeft}%`,
+                                  width: `${Math.max(0.5, getPosition(phase.endDate) - barLeft)}%`,
+                                }}
+                                onMouseEnter={
+                                  calls.length > 0
+                                    ? (e) => {
+                                        const bar = e.currentTarget.getBoundingClientRect();
+                                        setHoveredBar({
+                                          x: bar.left + bar.width / 2,
+                                          y: bar.bottom + 8,
+                                          calls,
+                                          start: phase.startDate,
+                                          end: phase.endDate,
+                                        });
+                                      }
+                                    : undefined
+                                }
+                                onMouseLeave={() => setHoveredBar(null)}
+                              >
+                                <div
+                                  className="absolute inset-0 rounded opacity-30"
+                                  style={{ backgroundColor: fork.color }}
+                                />
+                              </div>
+                            );
+                          })()}
 
                           {/* Milestones */}
                           {milestones.map((milestone, mIdx) => (
@@ -454,6 +560,22 @@ const ForkGanttChart: React.FC<ForkGanttChartProps> = ({
           ))}
         </div>
       </div>
+
+      {hoveredBar &&
+        createPortal(
+          <div
+            className="fixed z-50 -translate-x-1/2 px-2 py-1.5 bg-slate-900 dark:bg-slate-700 text-white text-[10px] rounded whitespace-nowrap pointer-events-none"
+            style={{ left: hoveredBar.x, top: hoveredBar.y }}
+          >
+            <AcdCallDots
+              calls={hoveredBar.calls}
+              start={hoveredBar.start}
+              end={hoveredBar.end}
+              today={today}
+            />
+          </div>,
+          document.body
+        )}
     </div>
   );
 };

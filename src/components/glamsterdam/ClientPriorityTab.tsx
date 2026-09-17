@@ -156,6 +156,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     countedOtherTeams,
     focusTeams
   );
+  /**
+   * A deck is shown to a room, so it is a fixed view of the fork rather than of the table:
+   * every team's rating counts, whatever the toolbar is narrowed to. An EIP or a score that
+   * moved because of a filter the presenter forgot would read as the fork's actual standing.
+   */
+  const { aggregates: deckAggregates } = usePrioritizationData(fork);
 
   // The fork's scale drives the legend, the badge colors and the "high support" cutoff.
   const scoreLegend = getScoreScale(fork);
@@ -189,20 +195,26 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     [aggregates]
   );
 
+  /** What the "Active only" view keeps: the EIPs this fork still has a decision to make about. */
+  const isActive = useCallback(
+    (agg: EipAggregateStance) => {
+      const stage = agg.inclusionStage;
+      if (stage === 'Declined for Inclusion' || stage === 'Withdrawn' || stage === 'Unknown') {
+        return false;
+      }
+      // An SFI'd EIP is locked into the fork, so there is no inclusion decision left for
+      // this table to support — the same reason the rank page won't put it on the board.
+      return !(forkIsUndecided && stage === 'Scheduled for Inclusion');
+    },
+    [forkIsUndecided]
+  );
+
   // Apply filtering
   const filteredAggregates = useMemo(() => {
     let result = aggregates;
 
     if (hideExcluded) {
-      result = result.filter((agg) => {
-        const stage = agg.inclusionStage;
-        if (stage === 'Declined for Inclusion' || stage === 'Withdrawn' || stage === 'Unknown') {
-          return false;
-        }
-        // An SFI'd EIP is locked into the fork, so there is no inclusion decision left for
-        // this table to support — the same reason the rank page won't put it on the board.
-        return !(forkIsUndecided && stage === 'Scheduled for Inclusion');
-      });
+      result = result.filter(isActive);
     }
 
     if (filterClients.size > 0) {
@@ -230,7 +242,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     }
 
     return result;
-  }, [aggregates, filterLayer, filterStance, filterClients, hideExcluded, forkIsUndecided, supportFloor]);
+  }, [aggregates, filterLayer, filterStance, filterClients, hideExcluded, isActive, supportFloor]);
 
   const isShown = (team: TeamEntry) => !focusOnly || filterClients.has(team.name);
   const shownElTeams = elTeams.filter(isShown);
@@ -302,16 +314,19 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
    * on this layer would be a wall of blanks, so it drops out by itself. Slides always
    * lead with the strongest support, on the same layer-pure average the slide prints,
    * rather than inheriting whatever the table is sorted by.
+   *
+   * Its rows are the layer's active EIPs and nothing else, ignoring every filter.
    */
   const decks = useMemo(() => {
+    const active = deckAggregates.filter(isActive);
     const deckFor = (layer: PresentLayer) => {
       if (!canGroupByCategory) return null;
-      const ofLayer = filteredAggregates.filter((agg) => agg.layer === layer);
+      const ofLayer = active.filter((agg) => agg.layer === layer);
       if (ofLayer.length === 0) return null;
       return groupAndSort(ofLayer, DECK_ORDER[layer], LAYER_SORT[layer], 'desc');
     };
     return { EL: deckFor('EL'), CL: deckFor('CL') };
-  }, [canGroupByCategory, filteredAggregates, groupAndSort]);
+  }, [canGroupByCategory, deckAggregates, isActive, groupAndSort]);
 
   const slides = decks[slideLayer];
   const slideCount = slides?.length ?? 0;
@@ -1090,7 +1105,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           index={slide}
           fork={fork}
           layer={slideLayer}
-          teams={slideLayer === 'EL' ? shownElTeams : shownClTeams}
+          teams={slideLayer === 'EL' ? elTeams : clTeams}
           maxScore={maxScore}
           onNavigate={setSlide}
           onExit={stopPresenting}

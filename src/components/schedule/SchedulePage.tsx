@@ -18,6 +18,10 @@ interface PlanningTableState {
   phaseDurations: PhaseDurations;
 }
 
+/** Where ACD's agreed minimum gaps are written down, and the source every gap tooltip cites. */
+const PROTOCOL_UPGRADE_DOC =
+  'https://github.com/ethereum/pm/blob/master/processes/protocol-upgrade.md';
+
 // Seeded from the shared upgrade data so this sandbox and /cadence can't
 // disagree about the working estimate.
 const projectedActivation = (id: string): string =>
@@ -947,12 +951,21 @@ const SchedulePage: React.FC = () => {
                         });
                       });
 
+                      // Both minimums come from the Protocol Upgrade Process document, which
+                      // measures the first gap from the client releases being ready rather than
+                      // from the last devnet — so the figure here is a floor, not the rule itself.
                       const testnetGapTooltip: Record<string, string> = {
                         'Platåberget': 'Platåberget is a short-lived testnet, spun up specifically for Glamsterdam.',
-                        'Sepolia': '30 days is needed before the first testnet for a comprehensive security review of the code',
-                        'Hoodi': 'A minimum of 14 days is needed between testnets to ensure the first testnet upgrade went smoothly',
+                        'Sepolia': 'At least 14 days must pass between client releases being ready and the first testnet, leaving time for internal security reviews, bug bounty coverage and any external review. Click to read the Protocol Upgrade Process.',
+                        'Hoodi': 'Testnet upgrades must be at least 10 days apart, ideally two weeks, so the first upgrade can be confirmed to have gone smoothly. Click to read the Protocol Upgrade Process.',
                       };
-                      const testnetMinGap: Record<string, number> = { 'Sepolia': 30, 'Hoodi': 14 };
+                      const testnetMinGap: Record<string, number> = { 'Sepolia': 14, 'Hoodi': 10 };
+                      // The two rules sit in different sections of the document, so each ⓘ
+                      // opens the one its own row is quoting.
+                      const testnetGapSource: Record<string, string> = {
+                        'Sepolia': `${PROTOCOL_UPGRADE_DOC}#testnets`,
+                        'Hoodi': `${PROTOCOL_UPGRADE_DOC}#general`,
+                      };
 
                       // Once a fork's first public testnet is live, the minimum gaps have
                       // served their purpose, and devnets keep running past it — so the row
@@ -963,6 +976,7 @@ const SchedulePage: React.FC = () => {
                       return testnetOrder.map((testnetName) => {
                         const currentGapTooltip = testnetGapTooltip[testnetName];
                         const minGap = testnetMinGap[testnetName];
+                        const gapSource = testnetGapSource[testnetName];
                         const fusakaTestnet = fusakaTestnetPhase?.testnets?.find(t => t.name === testnetName);
                         const glamTestnet = glamsterdamTestnetPhase?.testnets?.find(t => t.name === testnetName);
                         const hegotaTestnet = hegotaTestnetPhase?.testnets?.find(t => t.name === testnetName);
@@ -1019,6 +1033,7 @@ const SchedulePage: React.FC = () => {
                                       gapIsNegative={showGap && glamTestnetGap.isNegative}
                                       gapIsWarning={!glamFirstTestnetIsLive && minGap != null && glamTestnetGap.days != null && glamTestnetGap.days < minGap}
                                       gapTooltip={showGap ? currentGapTooltip : undefined}
+                                      gapTooltipHref={showGap ? gapSource : undefined}
                                       gapType="fixed"
                                       isProposed={!glamTestnet.date && !!glamTestnet.proposedDate}
                                       proposedSource={glamTestnet.proposedSource}
@@ -1053,6 +1068,7 @@ const SchedulePage: React.FC = () => {
                                       gapIsNegative={hegotaTestnetGap.isNegative}
                                       gapIsWarning={minGap != null && hegotaTestnetGap.days != null && hegotaTestnetGap.days < minGap}
                                       gapTooltip={currentGapTooltip}
+                                      gapTooltipHref={gapSource}
                                       gapType="fixed"
                                     />
                                   );
@@ -1075,12 +1091,20 @@ const SchedulePage: React.FC = () => {
                           {(() => {
                             const gap = calculateGap('Dec 3, 2025', 'fusaka');
                             return gap.text && (
-                              <Tooltip text="30 days is required to allow ecosystem participants like L2s and DAOs to prepare for the upgrade" position="top">
+                              <Tooltip text="Mainnet must not upgrade less than 30 days after the final testnet, so L2s and DAOs have time to produce proposals and organize their own upgrades. Click to read the Protocol Upgrade Process." position="top">
                                 <span className="inline-flex items-center gap-0.5">
                                   <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                     {gap.text}
                                   </span>
-                                  <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
+                                  <a
+                                    href={`${PROTOCOL_UPGRADE_DOC}#mainnet`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Read the source for this minimum"
+                                    className="hidden md:inline text-slate-400 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 text-[10px]"
+                                  >
+                                    ⓘ
+                                  </a>
                                 </span>
                               </Tooltip>
                             );
@@ -1104,12 +1128,20 @@ const SchedulePage: React.FC = () => {
                             const dateStr = glamDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                             const gap = calculateGap(dateStr, 'glamsterdam');
                             return gap.text && (
-                              <Tooltip text="30 days is required to allow ecosystem participants like L2s and DAOs to prepare for the upgrade" position="top">
+                              <Tooltip text="Mainnet must not upgrade less than 30 days after the final testnet, so L2s and DAOs have time to produce proposals and organize their own upgrades. Click to read the Protocol Upgrade Process." position="top">
                                 <span className="inline-flex items-center gap-0.5">
                                   <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                     {gap.text}
                                   </span>
-                                  <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
+                                  <a
+                                    href={`${PROTOCOL_UPGRADE_DOC}#mainnet`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Read the source for this minimum"
+                                    className="hidden md:inline text-slate-400 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 text-[10px]"
+                                  >
+                                    ⓘ
+                                  </a>
                                 </span>
                               </Tooltip>
                             );
@@ -1133,12 +1165,20 @@ const SchedulePage: React.FC = () => {
                             const dateStr = hegotaDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                             const gap = calculateGap(dateStr, 'hegota');
                             return gap.text && (
-                              <Tooltip text="30 days is required to allow ecosystem participants like L2s and DAOs to prepare for the upgrade" position="top">
+                              <Tooltip text="Mainnet must not upgrade less than 30 days after the final testnet, so L2s and DAOs have time to produce proposals and organize their own upgrades. Click to read the Protocol Upgrade Process." position="top">
                                 <span className="inline-flex items-center gap-0.5">
                                   <span className={`text-xs ${gap.isNegative ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-400'}`}>
                                     {gap.text}
                                   </span>
-                                  <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
+                                  <a
+                                    href={`${PROTOCOL_UPGRADE_DOC}#mainnet`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Read the source for this minimum"
+                                    className="hidden md:inline text-slate-400 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 text-[10px]"
+                                  >
+                                    ⓘ
+                                  </a>
                                 </span>
                               </Tooltip>
                             );

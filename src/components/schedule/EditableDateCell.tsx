@@ -22,6 +22,8 @@ export interface EditableDateCellProps {
   gapIsNegative?: boolean;
   gapIsWarning?: boolean;
   gapTooltip?: string;
+  /** Where the tooltip's claim comes from. Set, and the ⓘ opens it. */
+  gapTooltipHref?: string;
   gapType?: 'fixed' | 'variable';
   isSourceLocked?: boolean;
   /** Date was put forward on ACD but not yet agreed. */
@@ -48,6 +50,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   gapIsNegative,
   gapIsWarning,
   gapTooltip,
+  gapTooltipHref,
   gapType,
   isSourceLocked,
   isProposed,
@@ -153,7 +156,19 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
         <Tooltip text={gapTooltip} position="top">
           <span className="inline-flex items-center gap-0.5">
             {span}
-            <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
+            {gapTooltipHref ? (
+              <a
+                href={gapTooltipHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Read the source for this minimum"
+                className="hidden md:inline text-slate-400 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 text-[10px]"
+              >
+                ⓘ
+              </a>
+            ) : (
+              <span className="hidden md:inline text-slate-400 dark:text-slate-400 text-[10px]">ⓘ</span>
+            )}
           </span>
         </Tooltip>
       );

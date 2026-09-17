@@ -372,6 +372,15 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     [aggregates]
   );
 
+  const hasNonStandardsTrack = useMemo(
+    () =>
+      aggregates.some((a) => {
+        const eip = eipsData.find((e) => e.id === a.eipId);
+        return eip !== undefined && eip.type !== 'Standards Track';
+      }),
+    [aggregates]
+  );
+
   // Sits beside the EIP count in the toolbar, so it has to share that count's basis.
   const rejectedInView = useMemo(
     () => filteredAggregates.filter((a) => a.rejectCount > 0).length,
@@ -536,6 +545,9 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                 <span className={`px-1.5 py-0.5 text-[10px] rounded ${getInclusionStageColor(agg.inclusionStage as InclusionStage)}`} title={agg.inclusionStage}>
                   {shortStage}
                 </span>
+                {eip && eip.type !== 'Standards Track' && (
+                  <NonStandardsTrackMark type={eip.type} />
+                )}
               </div>
               <p className="text-sm text-slate-900 dark:text-slate-100 line-clamp-2">
                 {agg.eipTitle}
@@ -1050,6 +1062,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           <span className={`px-2 py-1 rounded ${getScoreColor(null, false)}`}>- = Not Mentioned</span>
         </div>
 
+        {hasNonStandardsTrack && (
+          <p className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+            <NonStandardsTrackMark type="Informational or Meta" />
+            Informational or Meta: {PROSE_EIP_NOTE}.
+          </p>
+        )}
       </div>
 
       {/* Footer */}
@@ -1157,6 +1175,9 @@ const TableRow: React.FC<TableRowProps> = ({
                 {agg.layer}
               </span>
             )}
+            {eip && eip.type !== 'Standards Track' && (
+                  <NonStandardsTrackMark type={eip.type} />
+                )}
           </div>
         </td>
         <td className="px-4 py-3">
@@ -1227,6 +1248,36 @@ const TableRow: React.FC<TableRowProps> = ({
   );
 };
 
+const PROSE_EIP_NOTE = 'ships as prose, not as a change to the fork';
+
+/**
+ * An Informational or Meta EIP ships as prose rather than as a change to the fork, so it
+ * otherwise reads on the board as one more inclusion candidate. The mark says it isn't.
+ * `size` is for the slides, which size everything to the projector.
+ */
+const NonStandardsTrackMark: React.FC<{ type: string | null; size?: string }> = ({ type, size }) =>
+  type === null ? null : (
+    <span
+      className="inline-flex shrink-0 text-slate-400 dark:text-slate-400"
+      title={`${type}: ${PROSE_EIP_NOTE}`}
+      aria-label={`${type}: ${PROSE_EIP_NOTE}`}
+    >
+      <svg
+        className="w-3.5 h-3.5"
+        style={size ? { width: size, height: size } : undefined}
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        aria-hidden="true"
+      >
+        <path
+          fillRule="evenodd"
+          d="M18 10A8 8 0 112 10a8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+          clipRule="evenodd"
+        />
+      </svg>
+    </span>
+  );
+
 const RejectionFlag: React.FC<{ count: number }> = ({ count }) => (
   <span
     className="inline-flex items-center gap-0.5 px-1.5 py-0.5 text-[10px] font-medium rounded bg-red-200 text-red-800 dark:bg-red-900/50 dark:text-red-200"
@@ -1272,6 +1323,12 @@ type SlideRow =
 const slideProposalLabel = (eipId: number) => {
   const eip = eipsData.find((e) => e.id === eipId);
   return `${eip ? getProposalPrefix(eip) : 'EIP'}-${eipId}`;
+};
+
+/** The EIP's type, when it is one of the ones that ship as prose. */
+const proseEipType = (eipId: number): string | null => {
+  const eip = eipsData.find((e) => e.id === eipId);
+  return eip && eip.type !== 'Standards Track' ? eip.type : null;
 };
 
 interface PresentationViewProps {
@@ -1399,8 +1456,11 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                   >
                     {slideProposalLabel(row.agg.eipId)}
                   </td>
-                  <td className="text-slate-900 dark:text-slate-100 truncate" style={cell}>
-                    {row.agg.eipTitle}
+                  <td className="text-slate-900 dark:text-slate-100" style={cell}>
+                    <div className="flex items-center" style={{ gap: vh(0.14) }}>
+                      <span className="truncate">{row.agg.eipTitle}</span>
+                      <NonStandardsTrackMark type={proseEipType(row.agg.eipId)} size={vh(0.37)} />
+                    </div>
                   </td>
                   {teams.length > 0 && (
                     <td style={cell}>

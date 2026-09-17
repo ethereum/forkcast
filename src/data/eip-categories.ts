@@ -1,12 +1,15 @@
 // Thematic categories for the proposals shown on the rank page. Grouping is by
 // what a proposal is *for*, not by its dependency graph.
 //
-// The cuts follow the themes in the Ethlabs Hegotá view
-// (https://ethlabs.org/writings/hegota-view.html), which is the most worked-out
-// public grouping of this fork's proposals. The *names* here are deliberately
-// not theirs: theirs carry the recommendation ("FOCIL: strengthen
+// The execution-side cuts follow the themes in the Ethlabs Hegotá view
+// (https://ethlabs.org/writings/hegota-view.html). The *names* here are
+// deliberately not theirs: theirs carry the recommendation ("FOCIL: strengthen
 // censorship-resistance"), and Forkcast's own chrome has to stay neutral, so
 // each is reduced to the mechanism or area it covers.
+//
+// The consensus-side cuts follow https://hackmd.io/@kevaundray/rkJ0g9dtfl, which
+// reads the CL proposals on their own terms rather than as leftovers of the
+// execution themes.
 //
 // Categories are declared in display order. The page groups by layer first, so a
 // category shows up under every layer its EIPs belong to. EIPs listed here that
@@ -31,16 +34,7 @@ export interface EipCategory {
 }
 
 export const eipCategories: EipCategory[] = [
-  {
-    id: 'focil',
-    name: 'FOCIL',
-    eips: [7805]
-  },
-  {
-    id: 'quick-slots',
-    name: 'Quick Slots',
-    eips: [8198]
-  },
+  // --- Execution layer ---
   {
     id: 'account-abstraction',
     name: 'Account Abstraction',
@@ -48,7 +42,7 @@ export const eipCategories: EipCategory[] = [
       {
         // 8141 is the transaction type; the rest amend or build on its frames.
         name: 'Frame Transactions',
-        eips: [8141, 7906, 8250, 8272, 8369]
+        eips: [8141, 7906, 8250, 8272]
       },
       {
         name: 'Code Reuse',
@@ -75,26 +69,9 @@ export const eipCategories: EipCategory[] = [
       },
       {
         name: 'Other Performance EIPs',
-        eips: [7862, 8146, 8334, 8341, 8368, 8372]
+        eips: [7862, 8368, 8372]
       }
     ]
-  },
-
-  // --- Ethlabs' "Other EIPs", which their view leaves as flat peers ---
-  {
-    id: 'issuance',
-    name: 'Issuance',
-    eips: [8363]
-  },
-  {
-    id: 'staking-features',
-    name: 'Staking Features',
-    eips: [7716, 8015, 8148, 8205, 8237, 8333, 8359, 8375]
-  },
-  {
-    id: 'post-quantum-prep',
-    name: 'Post-Quantum Preparation',
-    eips: [8321, 8365, 8367]
   },
   {
     id: 'zkevm-prep',
@@ -119,8 +96,56 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'networking',
     name: 'Networking',
-    // 8379 is not in the Ethlabs view; it sits with 8383, the other retention EIP.
-    eips: [8077, 8094, 8142, 8243, 8371, 8379, 8383]
+    eips: [8077, 8094]
+  },
+
+  // --- Consensus layer ---
+  {
+    id: 'focil',
+    name: 'FOCIL',
+    // 7805 is the headliner, so only 8369 reaches the board.
+    eips: [7805, 8369]
+  },
+  {
+    id: 'attestations-timing',
+    name: 'Attestations & Consensus Timing',
+    eips: [8198, 8243, 8333, 8334]
+  },
+  {
+    id: 'data-availability',
+    name: 'Data Availability',
+    eips: [8371]
+  },
+  {
+    id: 'payload-propagation',
+    name: 'Payload Propagation',
+    eips: [8142, 8146, 8341]
+  },
+  {
+    id: 'post-quantum-prep',
+    name: 'Post-Quantum Preparation',
+    eips: [8321, 8365, 8367]
+  },
+  {
+    id: 'staking-features',
+    name: 'Staking Features',
+    // 8015 is not in the source's cut; it sits here as the other deposit-flow EIP.
+    eips: [7716, 8015, 8148, 8205]
+  },
+  {
+    id: 'sync-history',
+    name: 'Sync & History',
+    eips: [8237, 8379, 8383]
+  },
+  {
+    id: 'issuance',
+    name: 'Economics',
+    eips: [8363, 8375]
+  },
+  {
+    id: 'telemetry',
+    name: 'Telemetry',
+    eips: [8359]
   }
 ];
 
@@ -148,18 +173,21 @@ export const displayGroups: DisplayGroup[] = [
 ];
 
 /**
- * The consensus layer's own running order, used by its deck. Most of the themes
- * above are execution-side and land on the CL board one EIP at a time, so those
- * gather into a trailing Misc instead of taking a slide each — which also leaves
- * the shared Misc holding nothing but networking here. Listing every CL theme is
- * deliberate: an unlisted one would trail *after* Misc.
+ * The consensus layer's own running order, used by its deck. The single-EIP
+ * themes gather into a trailing Misc instead of taking a slide each. Listing
+ * every CL theme is deliberate: an unlisted one would trail *after* Misc.
  */
 export const clDisplayGroups: DisplayGroup[] = [
-  { id: 'group-performance', name: 'Performance Engineering', categoryIds: ['performance-engineering'] },
-  { id: 'group-networking', name: 'Networking', categoryIds: ['networking'] },
+  { id: 'group-attestations-timing', name: 'Attestations & Consensus Timing', categoryIds: ['attestations-timing'] },
   { id: 'group-staking-features', name: 'Staking Features', categoryIds: ['staking-features'] },
+  { id: 'group-payload-propagation', name: 'Payload Propagation', categoryIds: ['payload-propagation'] },
   { id: 'group-post-quantum-prep', name: 'Post-Quantum Preparation', categoryIds: ['post-quantum-prep'] },
-  { id: 'group-cl-misc', name: 'Misc', categoryIds: ['zkevm-prep', 'quick-slots', 'issuance'] }
+  { id: 'group-sync-history', name: 'Sync & History', categoryIds: ['sync-history'] },
+  {
+    id: 'group-cl-misc',
+    name: 'Misc',
+    categoryIds: ['focil', 'data-availability', 'zkevm-prep', 'issuance', 'telemetry']
+  }
 ];
 
 /** Every EIP a category claims, whether it declares them flat or in parts. */

@@ -23,6 +23,14 @@ const FORK_DATA: Record<string, PrioritizationData> = {
   hegota: hegotaData as PrioritizationData,
 };
 
+/**
+ * Forks whose board carries every Informational and Meta EIP, rated or not. Elsewhere one
+ * earns a row only once a client team rates it, since it ships as prose rather than as a
+ * change to the fork and has no inclusion decision of its own. Glamsterdam's board is
+ * published against that older rule and stays as it was.
+ */
+const LISTS_UNRATED_PROSE = new Set(['hegota']);
+
 /** The roster alone, for callers that need it before the hook's arguments can be built. */
 export const forkTeams = (fork: string): TeamEntry[] =>
   FORK_DATA[fork.toLowerCase()]?.teams ?? [];
@@ -62,20 +70,16 @@ export function usePrioritizationData(
       data.eips.map((eipPrio) => [eipPrio.eipId, eipPrio.stances])
     );
 
-    /**
-     * An Informational or Meta EIP has no inclusion decision of its own — it ships as
-     * prose, not as a change to the fork — so it earns a row here only once a client
-     * team has actually rated it. That keeps the ones teams did weigh in on (several of
-     * Glamsterdam's) without listing proposals with nothing to decide.
-     */
     const clientTeams = new Set(
       data.teams.filter((team) => team.type !== 'OTHER').map((team) => team.name)
     );
-    const boardEips = forkEips.filter(
-      (eip) =>
-        eip.type === 'Standards Track' ||
-        (stancesMap.get(eip.id) ?? []).some((stance) => clientTeams.has(stance.clientName))
-    );
+    const boardEips = LISTS_UNRATED_PROSE.has(fork.toLowerCase())
+      ? forkEips
+      : forkEips.filter(
+          (eip) =>
+            eip.type === 'Standards Track' ||
+            (stancesMap.get(eip.id) ?? []).some((stance) => clientTeams.has(stance.clientName))
+        );
 
     // Build aggregates for every EIP on the board, using an empty stances array if no data
     return boardEips.map((eip) => {

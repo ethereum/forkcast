@@ -119,7 +119,7 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'payload-propagation',
     name: 'Payload Propagation',
-    eips: [8142, 8146, 8341]
+    eips: [8142, 8146, 8341, 8411]
   },
   {
     id: 'post-quantum-prep',

@@ -1,0 +1,23 @@
+{
+  "meeting": "ACDT #097 - 2026-09-21 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "Validator 0 Edge Case at Gloas Fork Transition",
+      "summary": "A possible consensus split involving ValidatorIndex 0 at the fork transition will be fixed via a spec PR using a higher sentinel value.",
+      "timestamp": "00:01:19",
+      "body": "- Michael Sproul raised an [issue](https://github.com/ethereum/consensus-specs/issues/5650) describing a potential consensus split if Validator 0 is voted in the first epoch after the Gloas fork, because it is technically part of the PTC.\n  - Lighthouse treats these as invalid, which could cause a split with other clients.\n- Kyle suggested initializing the PTC with a higher, non-active value instead of ValidatorIndex 0; the proposed sentinel value is 2 to the 22 (~4 million).\n- Justin Traglia will propose a spec PR after the call implementing this fix.\n- No objections were raised; attendees were asked to stay aware of the issue."
+    },
+    {
+      "heading": "Consensus-Specs PRs: Proposer Preferences and BLS-to-Execution-Change Gossip Tests",
+      "summary": "Two Teku-failing test PRs are progressing; a clock disparity edge case test may be removed as it covers an irrelevant post-Capella scenario.",
+      "timestamp": "00:04:12",
+      "body": "- Mehdi (Teku) brought attention to two PRs ([#5646](https://github.com/ethereum/consensus-specs/pull/5646) and [#5647](https://github.com/ethereum/consensus-specs/pull/5647)) fixing failing Teku gossip tests — one for proposer preferences, the other for BLS-to-execution-change.\n  - The first PR was already merged after receiving reviews; the second received reviews from Jihoon and work is ongoing.\n- Jihoon's suggestion to swap two checks was adopted in a new commit, but a separate clock disparity check test remains problematic.\n  - The test uses a Capella scene while still at Bellatrix, which is a weird edge case that may not be worth covering given Capella is already past.\n- Mehdi and Jihoon both leaned toward removing the clock disparity test to avoid testing an irrelevant scenario.\n- Justin Traglia said he would think about it and leave comments on the PR; no final decision was made."
+    },
+    {
+      "heading": "Merging PR 5509: Only Return Viable Payload-Status Variants from get_head",
+      "summary": "Decision deferred to after the Glamsterdam fork; the PR will remain open and clients may implement at their preference until then.",
+      "timestamp": "00:07:00",
+      "body": "- Jihoon raised [PR #5509](https://github.com/ethereum/consensus-specs/pull/5509) which makes `filter_block_tree` operate on payload-status variants so that `get_head` only traverses nodes the filtered block tree returns, along with the [related issue #5496](https://github.com/ethereum/consensus-specs/issues/5496).\n- The PR has been reviewed and approved by several people including Michael Sproul, but merge timing is contentious given proximity to Sepolia.\n- Potuz noted that Prysm already implements this logic, so any theoretical consensus split risk already exists regardless of the merge.\n  - He also stated the triggering scenario (justify a checkpoint then sync to an FFG-incompatible branch) is practically impossible.\n- Michael Sproul's concern (quoted by Potuz) was about implementation churn — he suggested not merging before the fork to avoid introducing unrelated bugs.\n- Nico Flaig (Lodestar) noted Lodestar has hacks in their compliance test runner due to this; merging would allow proper testing.\n  - Lodestar is already spec-compliant with the PR's semantics.\n- Enrico Del Fante (Teku) supported delaying the merge, noting Teku's compliance status is uncertain and Prysm/Teku are still partially failing fork choice compliance tests.\n- Potuz clarified this is not a fork-bound change and can be shipped anytime.\n- No consensus to merge now; agreement to keep the PR open and merge it after Glamsterdam ships (e.g., in a v1.7.1 or v1.8.alpha0 release).\n  - Clients may implement at their own preference in the interim.\n- Justin Traglia noted the same approach is being taken for the progressive list limits enforcement PR in the SSZ library.\n- Potuz requested that if this PR does not change existing reference tests, new compliance tests covering this behavior should be added when it is eventually merged.\n- Further discussion deferred to Discord or the next ACD call."
+    }
+  ]
+}

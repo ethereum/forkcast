@@ -2,6 +2,16 @@
   "eipId": 8250,
   "commits": [
     {
+      "sha": "9e4d5878ac4935877cc346b1067632428a0e596b",
+      "date": "2026-09-21T11:23:39Z",
+      "message": "Update EIP-8250: forbid reverting approval effects on validation-prefix restore",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -173,7 +173,7 @@ Only after those checks and costs succeed, and before any approval effect is com\n \n Steps 3 through 5 are one approval transition. The state gas charge, nonce consumption, `max_cost` collection, `payer` update, and any `sender_approved` update either all apply or none apply.\n \n-If the enclosing EIP-8141 frame reverts or halts exceptionally, clients MUST revert the transition. Once that frame succeeds, a later frame failure or atomic batch rollback MUST NOT revert it unless the transaction is invalid under EIP-8141. Clients MUST discard all effects of an invalid transaction.\n+If the enclosing EIP-8141 frame reverts or halts exceptionally, clients MUST revert the transition. Once that frame succeeds, a later frame failure, an atomic batch rollback, or a validation-prefix state restore that discards the transaction body MUST NOT revert it unless the transaction is invalid under EIP-8141. Clients MUST discard all effects of an invalid transaction.\n \n The charge counts toward the transaction's and block's state gas totals and is included in fee settlement. It does not consume execution gas or increase `gas_used.execution`.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "f3079a09e8c606afcb0e5e1a309ff228b88dc067",
       "date": "2026-09-11T09:45:33Z",
       "message": "Update EIP-8250: Preserve nested fees in transaction payload",
@@ -124,14 +134,6 @@
       "updatedAt": "2026-07-30T16:42:08Z",
       "additions": 19,
       "deletions": 3
-    },
-    {
-      "number": 12266,
-      "title": "Update EIP-8250: forbid reverting approval effects on validation-prefix restore",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-09-19T05:59:23Z",
-      "additions": 1,
-      "deletions": 1
     },
     {
       "number": 12352,

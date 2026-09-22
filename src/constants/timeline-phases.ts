@@ -31,7 +31,7 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'hoodi',
     title: 'Hoodi Testnet Deployment',
-    dateRange: 'Oct 26 (proposed)',
+    dateRange: 'Oct 27 (proposed)',
     description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing.',
     status: 'upcoming'
   },
@@ -289,8 +289,9 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
         {
           name: 'Hoodi',
           status: 'upcoming',
-          proposedDate: 'Oct 26, 2026',
-          proposedSource: 'https://github.com/ethereum/pm/pull/2205'
+          // Tentative. Go/no-go on the Oct 8 ACD, once Sepolia has forked.
+          proposedDate: 'Oct 27, 2026',
+          proposedSource: 'https://forkcast.org/calls/acdc/187#tt=00:33:10'
         }
       ]
     },

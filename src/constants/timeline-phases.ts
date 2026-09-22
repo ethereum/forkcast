@@ -311,7 +311,7 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
       status: 'completed',
       actualStartDate: 'Jan 8, 2026',
       actualEndDate: 'Mar 26, 2026',
-      progressNotes: 'FOCIL (EIP-7805) SFI\'d as headliner, Frame Transaction (EIP-8141) CFI\'d as non-headliner',
+      progressNotes: 'FOCIL (EIP-7805) and Frame Transaction (EIP-8141) both SFI\'d as headliners',
       substeps: [
         {
           name: 'Proposal Deadline',

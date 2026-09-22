@@ -91,11 +91,11 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
             <div>
               <h4 className="font-medium text-purple-900 dark:text-purple-100 text-sm mb-1">CFI Decisions Underway</h4>
               <p className="text-purple-800 dark:text-purple-200 text-xs leading-relaxed">
-                Headliner selection has concluded with{' '}
+                Headliner selection has concluded, with{' '}
                 <a href="#eip-7805" className="text-purple-600 dark:text-purple-300 underline decoration-1 underline-offset-2 hover:text-purple-800 dark:hover:text-purple-100">FOCIL (EIP-7805)</a>
-                {' '}SFI'd and{' '}
+                {' '}and{' '}
                 <a href="#eip-8141" className="text-purple-600 dark:text-purple-300 underline decoration-1 underline-offset-2 hover:text-purple-800 dark:hover:text-purple-100">Frame Transaction (EIP-8141)</a>
-                {' '}CFI'd. The non-headliner EIP proposal window closed August 6th, and ACDC and ACDE calls are now deciding which proposals advance to Considered for Inclusion. Follow updates on the{' '}
+                {' '}both SFI'd as headliners. The non-headliner EIP proposal window closed August 6th, and ACDC and ACDE calls are now deciding which proposals advance to Considered for Inclusion. Follow updates on the{' '}
                 <a
                   href="https://ethereum-magicians.org/t/eip-8081-hegota-network-upgrade-meta-thread/26876"
                   target="_blank"

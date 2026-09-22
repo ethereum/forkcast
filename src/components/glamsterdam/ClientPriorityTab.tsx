@@ -218,8 +218,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     }
 
     if (filterClients.size > 0) {
-      result = result.filter((agg) =>
-        agg.stances.some((s) => filterClients.has(s.clientName))
+      result = result.filter(
+        (agg) =>
+          agg.stances.some((s) => filterClients.has(s.clientName)) ||
+          // An EIP no client team has rated yet is waiting on a rating rather than being
+          // excluded by this filter, and a layer's view has to show the gaps it still has.
+          agg.stances.every((s) => s.clientType === 'OTHER')
       );
     }
 

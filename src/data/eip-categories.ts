@@ -81,7 +81,7 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'evm-features',
     name: 'EVM Features',
-    eips: [2488, 4758, 5920, 7645, 7686, 7923, 7979, 8163, 8173, 8182, 8219, 8253]
+    eips: [2488, 4758, 5920, 7645, 7686, 7923, 7979, 8163, 8173, 8182, 8219, 8253, 8360]
   },
   {
     id: 'evm-pricing',

@@ -262,6 +262,29 @@ function calculateAverage(stances: ClientStance[]): number | null {
   return Math.round((sum / scoredStances.length) * 10) / 10;
 }
 
+/**
+ * How far apart the counted teams are, in tiers: the top rating minus the bottom one.
+ * Null below two ratings, where there is no disagreement to measure.
+ *
+ * A range rather than a standard deviation, because a lone dissenter is exactly what this
+ * is for and a deviation dampens one — and because a range can be read back in the fork's
+ * own tier labels ("Strong Support against DFI, four tiers apart").
+ */
+function calculateSpread(stances: ClientStance[]): number | null {
+  const scores = stances
+    .map(s => s.normalizedScore)
+    .filter((score): score is number => score !== null);
+  if (scores.length < 2) return null;
+
+  return Math.max(...scores) - Math.min(...scores);
+}
+
+/**
+ * The gap at which a row stops reading as emergent consensus and is worth a call's time.
+ * Both fork scales have five rungs, so two tiers is the same distance on each.
+ */
+export const DISCUSSION_SPREAD = 2;
+
 /** Shared so callers that opt nobody in keep one reference across renders. */
 export const NO_COUNTED_TEAMS: ReadonlySet<string> = new Set();
 
@@ -315,6 +338,10 @@ export function calculateEipAggregate(
     // Per-layer columns stay layer-pure: a non-client team belongs to neither.
     elAverageScore: calculateAverage(elStances),
     clAverageScore: calculateAverage(clStances),
+    // Same arrays as the averages, so a spread always covers the teams its Avg does.
+    spread: calculateSpread(countedStances),
+    elSpread: calculateSpread(elStances),
+    clSpread: calculateSpread(clStances),
     stanceCount: scoredStances.length,
     elStanceCount: elStances.filter(s => s.normalizedScore !== null).length,
     clStanceCount: clStances.filter(s => s.normalizedScore !== null).length,
@@ -348,7 +375,14 @@ function determineEipLayer(eip: EIP | undefined): 'EL' | 'CL' | null {
   return null;
 }
 
-export type SortField = 'eip' | 'average' | 'elAverage' | 'clAverage' | 'stanceCount' | 'stage';
+export type SortField =
+  | 'eip'
+  | 'average'
+  | 'elAverage'
+  | 'clAverage'
+  | 'spread'
+  | 'stanceCount'
+  | 'stage';
 export type SortDirection = 'asc' | 'desc';
 
 /**
@@ -410,6 +444,21 @@ export function sortEipAggregates(
           comparison = a.clAverageScore - b.clAverageScore;
           if (comparison === 0) {
             return b.clStanceCount - a.clStanceCount;
+          }
+        }
+        break;
+      case 'spread':
+        // A row with one rating has no spread, so it sorts last either way.
+        if (a.spread === null && b.spread === null) {
+          return b.stanceCount - a.stanceCount;
+        } else if (a.spread === null) {
+          return 1;
+        } else if (b.spread === null) {
+          return -1;
+        } else {
+          comparison = a.spread - b.spread;
+          if (comparison === 0) {
+            return b.stanceCount - a.stanceCount;
           }
         }
         break;

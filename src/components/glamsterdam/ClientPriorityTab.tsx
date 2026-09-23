@@ -8,6 +8,7 @@ import {
   getScoreScale,
   getMaxScore,
   getMinScore,
+  DISCUSSION_SPREAD,
   NO_COUNTED_TEAMS,
   SortField,
   SortDirection,
@@ -34,7 +35,7 @@ import {
 
 type FilterLayer = 'all' | 'EL' | 'CL';
 type PresentLayer = 'EL' | 'CL';
-type FilterStance = 'all' | 'support' | 'mixed' | 'oppose' | 'rejected' | 'none';
+type FilterStance = 'all' | 'support' | 'divergent' | 'oppose' | 'rejected' | 'none';
 
 /** Fork-specific caveat about when the linked perspectives were written. */
 const VINTAGE_NOTE: Record<string, string> = {
@@ -42,15 +43,23 @@ const VINTAGE_NOTE: Record<string, string> = {
 };
 
 /**
- * The team columns don't fit the page's prose column once a fork has an Other Teams column,
- * so the table and its toolbar break out of it — centered on the same axis, so the page
- * header and the surrounding prose keep one left edge on every tab.
+ * The team columns don't fit the page's prose column, so the table and its toolbar break
+ * out of it — centered on the same axis, so the page header and the surrounding prose keep
+ * one left edge on every tab.
  */
 const BREAKOUT = 'lg:relative lg:left-1/2 lg:-translate-x-1/2 lg:w-[72rem] lg:max-w-[calc(100vw-3rem)]';
 
-const SORT_FIELDS: SortField[] = ['eip', 'average', 'elAverage', 'clAverage', 'stanceCount', 'stage'];
+const SORT_FIELDS: SortField[] = [
+  'eip',
+  'average',
+  'elAverage',
+  'clAverage',
+  'spread',
+  'stanceCount',
+  'stage',
+];
 const FILTER_LAYERS: FilterLayer[] = ['EL', 'CL'];
-const FILTER_STANCES: FilterStance[] = ['support', 'mixed', 'oppose', 'rejected', 'none'];
+const FILTER_STANCES: FilterStance[] = ['support', 'divergent', 'oppose', 'rejected', 'none'];
 const PRESENT_LAYERS: PresentLayer[] = ['EL', 'CL'];
 const LAYER_NAME: Record<PresentLayer, string> = { EL: 'execution layer', CL: 'consensus layer' };
 /** The table's order is the EL board's, so only the CL deck departs from it. */
@@ -86,6 +95,13 @@ const DECISION_ANIMATION: Record<CallDecision, string> = {
   deferred: 'animate-decision-defer',
   dfi: 'animate-decision-drop',
 };
+
+/**
+ * Far enough apart that the mean is hiding a disagreement rather than reporting a
+ * consensus — the rows a call should stop on.
+ */
+const isDivergent = (agg: EipAggregateStance) =>
+  agg.spread !== null && agg.spread >= DISCUSSION_SPREAD;
 
 /** Query values are user input, so anything off the known list falls back to the default. */
 const readEnum = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
@@ -275,10 +291,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       result = result.filter((agg) => agg.averageScore !== null && agg.averageScore >= supportFloor);
     } else if (filterStance === 'oppose') {
       result = result.filter((agg) => agg.opposeCount > agg.supportCount);
-    } else if (filterStance === 'mixed') {
-      result = result.filter(
-        (agg) => agg.supportCount > 0 && agg.opposeCount > 0
-      );
+    } else if (filterStance === 'divergent') {
+      result = result.filter(isDivergent);
     } else if (filterStance === 'rejected') {
       result = result.filter((agg) => agg.rejectCount > 0);
     } else if (filterStance === 'none') {
@@ -296,11 +310,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   // Roster-level, so the toolbar and the filter modal keep every team reachable while focused.
   const showOtherTeams = otherTeams.length > 0;
   const showOtherColumn = shownOtherTeams.length > 0;
-  // EIP, Title, Stage and Avg, plus a column for each team group that has a team.
+  // EIP, Title, Stage, Avg and Spread, plus a column for each team group that has a team.
   const columnCount =
-    4 + [shownElTeams, shownClTeams, shownOtherTeams].filter((teams) => teams.length > 0).length;
-  // Focusing narrows the table, so it no longer needs to escape the prose column.
-  const wideTable = showOtherTeams && !focusOnly;
+    5 + [shownElTeams, shownClTeams, shownOtherTeams].filter((teams) => teams.length > 0).length;
+  // The team columns outgrow the prose column on every fork. Focusing drops most of them,
+  // at which point the table fits again and can sit back on the page's left edge.
+  const wideTable = !focusOnly;
 
   // Apply sorting
   const sortedAggregates = useMemo(() => {
@@ -443,9 +458,13 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     [aggregates]
   );
 
-  // Sits beside the EIP count in the toolbar, so it has to share that count's basis.
+  // Both sit beside the EIP count in the toolbar, so they share that count's basis.
   const rejectedInView = useMemo(
     () => filteredAggregates.filter((a) => a.rejectCount > 0).length,
+    [filteredAggregates]
+  );
+  const divergentInView = useMemo(
+    () => filteredAggregates.filter(isDivergent).length,
     [filteredAggregates]
   );
 
@@ -521,7 +540,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const stanceFilterOptions: { value: FilterStance; label: string }[] = [
     { value: 'all', label: 'All Stances' },
     { value: 'support', label: 'High Support' },
-    { value: 'mixed', label: 'Contested' },
+    { value: 'divergent', label: 'Worth Discussing' },
     { value: 'oppose', label: 'More Opposition' },
     ...(hasRejections ? [{ value: 'rejected' as const, label: 'Has Rejections' }] : []),
     { value: 'none', label: 'No Stances' },
@@ -627,6 +646,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
+              {/* No columns on a card, so a row with nothing to spread just omits the mark. */}
+              {agg.spread !== null && <SpreadMark agg={agg} />}
               {agg.rejectCount > 0 && <RejectionFlag count={agg.rejectCount} />}
               {agg.averageScore !== null ? (
                 <span className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded ${getScoreColor(Math.round(agg.averageScore), true, maxScore)}`}>
@@ -765,6 +786,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
             <span className="text-slate-500 dark:text-slate-400">
               {sortedAggregates.length} EIPs
             </span>
+            {divergentInView > 0 && (
+              <span className="hidden md:flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
+                <span className="text-slate-600 dark:text-slate-300">{divergentInView} worth discussing</span>
+              </span>
+            )}
             {rejectedInView > 0 && (
               <span className="hidden md:flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500"></span>
@@ -1050,6 +1077,16 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   <SortIcon field="average" />
                 </div>
               </th>
+              <th
+                className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
+                onClick={() => handleSort('spread')}
+                title={`Tiers between the highest and lowest rating. ${DISCUSSION_SPREAD} or more is worth discussing.`}
+              >
+                <div className="flex items-center justify-center gap-2">
+                  Spread
+                  <SortIcon field="spread" />
+                </div>
+              </th>
               {showOtherColumn && (
                 <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">
                   <div className="flex items-center justify-center gap-1">
@@ -1153,6 +1190,14 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           <span className={`px-2 py-1 rounded ${getScoreColor(null, true)}`}>? = Uncertain</span>
           <span className={`px-2 py-1 rounded ${getScoreColor(null, false)}`}>- = Not Mentioned</span>
         </div>
+
+        <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+          Spread is the gap between the highest and lowest rating, in tiers, darkening as it
+          widens. At {DISCUSSION_SPREAD} or more the mean is hiding a disagreement rather than
+          reporting a consensus, which is what{' '}
+          <span className="font-medium">Worth Discussing</span> filters for. A dash means only
+          one team has rated it.
+        </p>
 
         {hasNonStandardsTrack && (
           <p className="mt-3 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
@@ -1314,6 +1359,11 @@ const TableRow: React.FC<TableRowProps> = ({
             ) : (
               <span className="text-slate-400 dark:text-slate-400">&mdash;</span>
             )}
+          </div>
+        </td>
+        <td className="px-3 py-3">
+          <div className="flex items-center justify-center gap-3">
+            <SpreadMark agg={agg} />
             {!otherTeams && expandButton}
           </div>
         </td>
@@ -1382,6 +1432,46 @@ const NonStandardsTrackMark: React.FC<{
         </svg>
       </span>
     </Tooltip>
+  );
+};
+
+/**
+ * One grey at rising opacity, so the column reads as a gradient when sorted but never
+ * competes with the score and rejection chips beside it, which are what the row is about.
+ * Text weight is constant; only the fill moves. Indexed by tier count, which every fork
+ * scale tops out at four.
+ */
+const SPREAD_SHADES = [
+  'bg-slate-500/5 dark:bg-slate-400/5',
+  'bg-slate-500/10 dark:bg-slate-400/10',
+  'bg-slate-500/15 dark:bg-slate-400/15',
+  'bg-slate-500/20 dark:bg-slate-400/20',
+  'bg-slate-500/25 dark:bg-slate-400/25',
+].map(fill => `${fill} text-slate-600 dark:text-slate-300`);
+
+const spreadShade = (spread: number) =>
+  SPREAD_SHADES[Math.min(spread, SPREAD_SHADES.length - 1)];
+
+/**
+ * How far apart the teams are. Which teams sit at the two ends is left to the expanded row,
+ * which lists every team's tier.
+ */
+const SpreadMark: React.FC<{ agg: EipAggregateStance }> = ({ agg }) => {
+  if (agg.spread === null) {
+    return (
+      <span className="text-slate-400 dark:text-slate-400" title="Only one team has rated this">
+        &mdash;
+      </span>
+    );
+  }
+
+  return (
+    <span
+      className={`inline-flex items-center px-2 py-0.5 text-xs font-medium rounded ${spreadShade(agg.spread)}`}
+      title={`${agg.spread} tier${agg.spread === 1 ? '' : 's'} between the highest and lowest rating`}
+    >
+      {agg.spread}
+    </span>
   );
 };
 
@@ -1531,6 +1621,9 @@ const PresentationView: React.FC<PresentationViewProps> = ({
    */
   const layerAverage = (agg: EipAggregateStance) =>
     layer === 'EL' ? agg.elAverageScore : agg.clAverageScore;
+  /** Layer-pure for the same reason the average is: these are the badges on the slide. */
+  const layerSpread = (agg: EipAggregateStance) =>
+    layer === 'EL' ? agg.elSpread : agg.clSpread;
 
   const eipRow = (agg: EipAggregateStance): SlideRow => ({
     kind: 'eip',
@@ -1621,6 +1714,7 @@ const PresentationView: React.FC<PresentationViewProps> = ({
             <col />
             {teams.length > 0 && <col style={{ width: badgesWidth(teams.length) }} />}
             <col style={{ width: '10vh' }} />
+            <col style={{ width: '9vh' }} />
             {/* Holds the longest tag plus the cell's own padding, so it never runs to the edge. */}
             <col style={{ width: '15vh' }} />
           </colgroup>
@@ -1644,6 +1738,9 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                 Avg
               </th>
               <th className="text-center font-medium text-slate-500 dark:text-slate-400" style={header}>
+                Spread
+              </th>
+              <th className="text-center font-medium text-slate-500 dark:text-slate-400" style={header}>
                 Decision
               </th>
             </tr>
@@ -1653,7 +1750,7 @@ const PresentationView: React.FC<PresentationViewProps> = ({
               row.kind === 'subhead' ? (
                 <tr key={row.key}>
                   <td
-                    colSpan={teams.length > 0 ? 5 : 4}
+                    colSpan={teams.length > 0 ? 6 : 5}
                     className="align-bottom font-medium uppercase tracking-wide text-slate-400"
                     style={{ ...cell, height: vh(0.63), fontSize: vh(0.22) }}
                   >
@@ -1698,6 +1795,20 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                         style={{ fontSize: vh(0.3), padding: `${vh(0.07)} ${vh(0.17)}`, borderRadius: vh(0.09) }}
                       >
                         {layerAverage(row.agg)!.toFixed(1)}
+                      </span>
+                    ) : (
+                      <span className="text-slate-400" style={{ fontSize: vh(0.3) }}>
+                        —
+                      </span>
+                    )}
+                  </td>
+                  <td className="text-center" style={cell}>
+                    {layerSpread(row.agg) !== null ? (
+                      <span
+                        className={`inline-flex items-center font-medium rounded ${spreadShade(layerSpread(row.agg)!)}`}
+                        style={{ fontSize: vh(0.3), padding: `${vh(0.07)} ${vh(0.17)}`, borderRadius: vh(0.09) }}
+                      >
+                        {layerSpread(row.agg)}
                       </span>
                     ) : (
                       <span className="text-slate-400" style={{ fontSize: vh(0.3) }}>

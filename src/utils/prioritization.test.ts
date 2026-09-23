@@ -71,8 +71,57 @@ describe('calculateEipAggregate', () => {
   });
 });
 
-// Support is the fork's two "Support" tiers and opposition is its bottom rung, so the one
-// sentence behind the "contested" stat holds on a 0-4 and a 1-5 scale alike.
+describe('spread', () => {
+  const geth = stance('Geth', 'EL', 'S', 4);
+  const teku = stance('Teku', 'CL', 'B', 2);
+  const ethlabs = stance('Ethlabs', 'OTHER', 'D', 0);
+
+  it('has nothing to measure below two ratings', () => {
+    expect(aggregate([]).spread).toBeNull();
+    expect(aggregate([geth]).spread).toBeNull();
+  });
+
+  it('is zero where the teams agree', () => {
+    expect(aggregate([geth, stance('Reth', 'EL', 'S', 4)]).spread).toBe(0);
+  });
+
+  it('counts the tiers between the highest and lowest rating', () => {
+    expect(aggregate([geth, teku]).spread).toBe(2);
+    expect(aggregate([geth, stance('Reth', 'EL', 'D', 0)]).spread).toBe(4);
+  });
+
+  it('widens with a non-client team only once that team is counted', () => {
+    expect(aggregate([geth, teku, ethlabs]).spread).toBe(2);
+    expect(aggregate([geth, teku, ethlabs], new Set(['Ethlabs'])).spread).toBe(4);
+  });
+
+  it('narrows to the focused teams, so it covers what the Avg does', () => {
+    const focused = calculateEipAggregate(
+      1234,
+      [geth, stance('Reth', 'EL', 'C', 1), teku],
+      undefined,
+      'hegota',
+      undefined,
+      new Set(['Geth', 'Teku'])
+    );
+
+    expect(focused.spread).toBe(2);
+  });
+
+  it('keeps the per-layer spreads layer-pure', () => {
+    const agg = aggregate(
+      [geth, stance('Reth', 'EL', 'C', 1), teku, stance('Lodestar', 'CL', 'A', 3), ethlabs],
+      new Set(['Ethlabs'])
+    );
+
+    expect(agg.spread).toBe(4);
+    expect(agg.elSpread).toBe(3);
+    expect(agg.clSpread).toBe(1);
+  });
+});
+
+// Support is the fork's two "Support" tiers and opposition is its bottom rung, so one
+// sentence describes both on a 0-4 and a 1-5 scale alike.
 describe('support and opposition read off the fork scale', () => {
   it('treats a low priority as neither support nor opposition on the 0-4 scale', () => {
     const agg = aggregate([stance('Geth', 'EL', 'A', 3), stance('Reth', 'EL', 'C', 1)]);

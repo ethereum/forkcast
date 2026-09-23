@@ -56,6 +56,10 @@ export interface EipAggregateStance {
   averageScore: number | null;
   elAverageScore: number | null;
   clAverageScore: number | null;
+  /** Tiers between the highest and lowest rating; null below two ratings. */
+  spread: number | null;
+  elSpread: number | null;
+  clSpread: number | null;
   stanceCount: number;
   elStanceCount: number;
   clStanceCount: number;

@@ -2,6 +2,16 @@
   "eipId": 8163,
   "commits": [
     {
+      "sha": "9e24115af7b6ecf492d4e5b7aac84c975fe4f938",
+      "date": "2026-09-23T15:02:38Z",
+      "message": "Update EIP-8163: move non-L1 usage out of Specification",
+      "author": "pdobacz",
+      "prNumber": null,
+      "patch": "@@ -25,7 +25,7 @@ Similarly, making it easier for innovations to happen inside the EVM should gene\n \n In particular, the extension opcode might be adopted by Ethereum L2 EVMs, allowing them to specialize and experiment, potentially expanding the catalogue of extensions relevant to the L1.\n \n-The extension opcode is designed in such a way to not only have **no impact** on Ethereum L1 EVM behavior, but also to not require any Ethereum Execution Layer Client modifications, except, optionally, for their presentation layer (e.g., traces), which is irrelevant to consensus.\n+The extension opcode reservation has **no impact** on Ethereum L1 EVM behavior and **does not require any Ethereum Execution Layer Client modifications**. Clients may optionally update their presentation layer (e.g., traces) to name the reserved opcode.\n \n ## Specification\n \n@@ -39,17 +39,17 @@ Reserve a new opcode `EXTENSION (0xae)` which MUST behave exactly like `INVALID\n 2. `EXTENSION` byte in the bytecode MUST NOT impact `JUMPDEST` analysis in any way, i.e. all jump destinations' validity MUST NOT be affected.\n 3. Any validation, static analysis, or preprocessing of bytecode, if introduced, MUST NOT be affected by the `EXTENSION` byte in the bytecode in any way other than how `INVALID` would affect it.\n \n-### Chain Specifics\n+## Rationale\n \n-Outside of Ethereum L1, `EXTENSION` MAY have meaningful behavior during execution, but it is up to the particular EVM implementations to decide.\n+### Usage outside of Ethereum L1\n \n-However, in these EVMs which execute `EXTENSION`, the `JUMPDEST` analysis MUST still be unaffected by `EXTENSION`, i.e. the set of valid jump destinations MUST be identical to that obtained on Ethereum L1.\n+Outside of Ethereum L1, `EXTENSION` may have meaningful behavior during execution, but it is up to the particular EVM implementations to decide.\n \n-The particular behavior of the `EXTENSION` instruction on non-Ethereum-L1 EVMs adopting it MUST be determined by bytes following `EXTENSION` as immediate args. If such immediate args contain any `JUMPDEST (0x5b)` byte which remains a valid jump destination, execution MUST result in an exceptional halt.\n+However, in these EVMs which execute `EXTENSION`, the `JUMPDEST` analysis must still be unaffected by `EXTENSION`, i.e. the set of valid jump destinations must be identical to that obtained on Ethereum L1.\n \n-The non-Ethereum-L1 EVM implementers SHOULD coordinate via the discussion thread of this EIP on their specific usage of `EXTENSION`.\n+The particular behavior of the `EXTENSION` instruction on non-Ethereum-L1 EVMs adopting it must be determined by bytes following `EXTENSION` as immediate args.\n \n-## Rationale\n+The non-Ethereum-L1 EVM implementers will coordinate via the discussion thread of this EIP on their specific usage of `EXTENSION`.\n \n ### No effect on `JUMPDEST` analysis\n ",
+      "additions": 7,
+      "deletions": 7
+    },
+    {
       "sha": "aef32ae28e42ba3a391ed8d991ddf6a68d53c152",
       "date": "2026-05-22T16:43:30Z",
       "message": "Update EIP-8163: Move to Review",
@@ -19,16 +29,6 @@
       "prNumber": null,
       "additions": 109,
       "deletions": 0
-    }
-  ],
-  "openPrs": [
-    {
-      "number": 12365,
-      "title": "Update EIP-8163: move non-L1 usage out of Specification",
-      "author": "pdobacz",
-      "updatedAt": "2026-09-22T08:14:02Z",
-      "additions": 7,
-      "deletions": 7
     }
   ]
 }

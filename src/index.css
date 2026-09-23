@@ -164,11 +164,71 @@
   animation: fadeOut 0.22s ease-out forwards;
 }
 
+/* Decisions logged against a presentation slide. The three outcomes are meant to be
+   told apart from the back of a room without reading the word, so each entrance
+   carries the weight of what it records: a proposal rising, one set aside, one
+   dropped. Movement stays within a few pixels — this plays during a live call, and
+   nothing here should pull focus from whoever is talking. */
+@keyframes decisionAdvance {
+  0% {
+    opacity: 0;
+    transform: translateY(0.35em) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-0.1em) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes decisionDefer {
+  from {
+    opacity: 0;
+    transform: translateX(-0.3em);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes decisionDrop {
+  from {
+    opacity: 0;
+    transform: translateY(-0.3em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Rises and overshoots slightly before settling. */
+.animate-decision-advance {
+  animation: decisionAdvance 0.34s cubic-bezier(0.22, 1.2, 0.36, 1);
+}
+
+/* Slides in flat and level: neither gaining nor losing ground. */
+.animate-decision-defer {
+  animation: decisionDefer 0.26s ease-out;
+}
+
+/* Settles downward and decelerates into place, with no rebound. */
+.animate-decision-drop {
+  animation: decisionDrop 0.42s cubic-bezier(0.25, 0.5, 0.35, 1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-slide-in-right,
   .animate-slide-out-right,
   .animate-backdrop-in,
-  .animate-backdrop-out {
+  .animate-backdrop-out,
+  .animate-decision-advance,
+  .animate-decision-defer,
+  .animate-decision-drop {
     animation-duration: 0.01ms;
   }
 }

@@ -22,6 +22,15 @@ import { EipDrawer } from '../eip/EipDrawer';
 import { Tooltip } from '../ui/Tooltip';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
+import { useCallDecisions } from '../../hooks/useCallDecisions';
+import {
+  CALL_DECISION_LABEL,
+  CallDecision,
+  CallDecisionMap,
+  decisionForKey,
+  decisionForStage,
+  formatDecisions,
+} from '../../domain/prioritization/callDecisions';
 
 type FilterLayer = 'all' | 'EL' | 'CL';
 type PresentLayer = 'EL' | 'CL';
@@ -47,6 +56,36 @@ const LAYER_NAME: Record<PresentLayer, string> = { EL: 'execution layer', CL: 'c
 /** The table's order is the EL board's, so only the CL deck departs from it. */
 const DECK_ORDER: Record<PresentLayer, DisplayGroup[]> = { EL: displayGroups, CL: clDisplayGroups };
 const LAYER_SORT: Record<PresentLayer, SortField> = { EL: 'elAverage', CL: 'clAverage' };
+
+/**
+ * A logged outcome has to read from the back of a room, so each one gets its own hue.
+ * The border is what separates it from the score chip alongside, which shares the same
+ * ramp of fills — a decision is a thing the call did, not another reading of the data.
+ */
+const DECISION_STYLE: Record<CallDecision, string> = {
+  cfi: 'border border-emerald-400 bg-emerald-100 text-emerald-800 dark:border-emerald-400/70 dark:bg-emerald-500/20 dark:text-emerald-300',
+  deferred:
+    'border border-amber-400 bg-amber-100 text-amber-800 dark:border-amber-400/70 dark:bg-amber-500/20 dark:text-amber-300',
+  dfi: 'border border-red-400 bg-red-100 text-red-800 dark:border-red-400/70 dark:bg-red-500/20 dark:text-red-300',
+};
+
+/**
+ * The same outcome as a stage the proposal already held coming in. Dashed and unfilled,
+ * so a presenter can tell at a glance what this call resolved from what was already true.
+ */
+const DECISION_STAGE_STYLE: Record<CallDecision, string> = {
+  cfi: 'border border-dashed border-emerald-500/60 text-emerald-700 dark:border-emerald-400/50 dark:text-emerald-400',
+  deferred:
+    'border border-dashed border-amber-500/60 text-amber-700 dark:border-amber-400/50 dark:text-amber-400',
+  dfi: 'border border-dashed border-red-500/60 text-red-700 dark:border-red-400/50 dark:text-red-400',
+};
+
+/** Entrances defined in `index.css`: the proposal rises, is set aside, or is dropped. */
+const DECISION_ANIMATION: Record<CallDecision, string> = {
+  cfi: 'animate-decision-advance',
+  deferred: 'animate-decision-defer',
+  dfi: 'animate-decision-drop',
+};
 
 /** Query values are user input, so anything off the known list falls back to the default. */
 const readEnum = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
@@ -162,6 +201,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
    * moved because of a filter the presenter forgot would read as the fork's actual standing.
    */
   const { aggregates: deckAggregates } = usePrioritizationData(fork);
+  const { decisions, decide, clear: clearDecisions } = useCallDecisions(fork);
 
   // The fork's scale drives the legend, the badge colors and the "high support" cutoff.
   const scoreLegend = getScoreScale(fork);
@@ -364,9 +404,10 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       }
       const last = slideCount - 1;
       let next: number | null = null;
-      if (['ArrowRight', ' ', 'PageDown', 'ArrowDown'].includes(event.key)) {
+      // Up/Down belong to the row cursor, so a slide only moves on the horizontal keys.
+      if (['ArrowRight', ' ', 'PageDown'].includes(event.key)) {
         next = Math.min(slide + 1, last);
-      } else if (['ArrowLeft', 'PageUp', 'ArrowUp'].includes(event.key)) {
+      } else if (['ArrowLeft', 'PageUp'].includes(event.key)) {
         next = Math.max(slide - 1, 0);
       } else if (event.key === 'Home') {
         next = 0;
@@ -409,6 +450,17 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   );
 
   const lowestScore = getMinScore(fork);
+
+  const decisionCount = Object.keys(decisions).length;
+  const [copiedDecisions, setCopiedDecisions] = useState(false);
+  const copyDecisions = () => {
+    const titleFor = (eipId: number) =>
+      deckAggregates.find((agg) => agg.eipId === eipId)?.eipTitle;
+    navigator.clipboard.writeText(formatDecisions(decisions, titleFor)).then(() => {
+      setCopiedDecisions(true);
+      setTimeout(() => setCopiedDecisions(false), 2000);
+    });
+  };
 
   const handleSort = (field: SortField) => {
     const direction = sortField === field && sortDirection === 'desc' ? 'asc' : 'desc';
@@ -1056,6 +1108,25 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Score Legend</h3>
           {/* Desktop only: a slide is sized to a projector, not a phone. */}
           <div className="hidden lg:flex items-center gap-2">
+            {/* Only surfaced once a call has logged something, so the usual reader sees nothing. */}
+            {decisionCount > 0 && (
+              <>
+                <button
+                  onClick={copyDecisions}
+                  className="px-2.5 py-1 text-xs font-medium rounded bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
+                  title="Copy this call's decisions, grouped by outcome"
+                >
+                  {copiedDecisions ? 'Copied' : `Copy ${decisionCount} decision${decisionCount === 1 ? '' : 's'}`}
+                </button>
+                <button
+                  onClick={clearDecisions}
+                  className="px-2.5 py-1 text-xs font-medium rounded text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+                  title="Discard this call's decisions"
+                >
+                  Clear
+                </button>
+              </>
+            )}
             {PRESENT_LAYERS.map((layer) =>
               decks[layer] ? (
                 <button
@@ -1111,6 +1182,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           layer={slideLayer}
           teams={slideLayer === 'EL' ? elTeams : clTeams}
           maxScore={maxScore}
+          decisions={decisions}
+          onDecide={decide}
           onNavigate={setSlide}
           onExit={stopPresenting}
         />
@@ -1382,9 +1455,54 @@ interface PresentationViewProps {
   layer: PresentLayer;
   teams: TeamEntry[];
   maxScore: number;
+  decisions: CallDecisionMap;
+  onDecide: (eipId: number, decision: CallDecision) => void;
   onNavigate: (index: number) => void;
   onExit: () => void;
 }
+
+/**
+ * A slide row's logged outcome, sized against the same row height as everything else.
+ * The caller's `minWidth` holds every outcome to the width of the longest label, so the
+ * column is one stack of equal tags and a row's mark doesn't resize as it is decided.
+ */
+const DecisionMark: React.FC<{
+  decision: CallDecision | undefined;
+  /** Set only for the row just decided: a mark already on a slide stays still. */
+  animate: boolean;
+  stage: CallDecision | null;
+  style: React.CSSProperties;
+}> = ({ decision, animate, stage, style }) => {
+  if (decision) {
+    return (
+      <span
+        className={`inline-flex items-center justify-center font-medium ${DECISION_STYLE[decision]} ${animate ? DECISION_ANIMATION[decision] : ''}`}
+        style={style}
+      >
+        {CALL_DECISION_LABEL[decision]}
+      </span>
+    );
+  }
+  if (stage) {
+    return (
+      <span
+        className={`inline-flex items-center justify-center font-medium ${DECISION_STAGE_STYLE[stage]}`}
+        style={style}
+      >
+        {CALL_DECISION_LABEL[stage]}
+      </span>
+    );
+  }
+  // Plain slate-400 both ways: the darker slates drop under 4:1 on a slide's near-black.
+  return (
+    <span
+      className="inline-flex items-center justify-center text-slate-400"
+      style={{ fontSize: style.fontSize, minWidth: style.minWidth }}
+    >
+      &mdash;
+    </span>
+  );
+};
 
 /**
  * One category per screen, for walking one layer's proposals on a call. Everything is
@@ -1399,6 +1517,8 @@ const PresentationView: React.FC<PresentationViewProps> = ({
   layer,
   teams,
   maxScore,
+  decisions,
+  onDecide,
   onNavigate,
   onExit,
 }) => {
@@ -1424,6 +1544,42 @@ const PresentationView: React.FC<PresentationViewProps> = ({
           ...subgroup.items.map(eipRow),
         ])
       : group.items.map(eipRow);
+
+  /** Only proposals can carry a decision, so the cursor walks those and skips subheads. */
+  const eipIds = rows.flatMap((row) => (row.kind === 'eip' ? [row.agg.eipId] : []));
+  const [cursor, setCursor] = useState(0);
+  // A new category starts at its top rather than wherever the last one was left.
+  useEffect(() => setCursor(0), [index]);
+  const cursorEipId = eipIds[Math.min(cursor, eipIds.length - 1)];
+
+  /**
+   * The keypress just made, so only it animates. Rows remount on every slide change, so
+   * without this a marked slide would replay its whole column each time it came back up.
+   * The counter makes repeat presses on one row distinct, which is what replays the entrance.
+   */
+  const [justDecided, setJustDecided] = useState<{ eipId: number; nth: number } | null>(null);
+  useEffect(() => setJustDecided(null), [index]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowDown') {
+        setCursor((prev) => Math.min(prev + 1, eipIds.length - 1));
+      } else if (event.key === 'ArrowUp') {
+        setCursor((prev) => Math.max(prev - 1, 0));
+      } else {
+        const decision = decisionForKey(event.key);
+        if (decision === null || cursorEipId === undefined) return;
+        onDecide(cursorEipId, decision);
+        setJustDecided((prev) => ({
+          eipId: cursorEipId,
+          nth: prev && prev.eipId === cursorEipId ? prev.nth + 1 : 0,
+        }));
+      }
+      event.preventDefault();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [eipIds.length, cursorEipId, onDecide]);
 
   // The vertical budget the table gets, once the heading and footer have theirs.
   const rowH = Math.min(6.7, 76 / (rows.length + 1));
@@ -1465,6 +1621,8 @@ const PresentationView: React.FC<PresentationViewProps> = ({
             <col />
             {teams.length > 0 && <col style={{ width: badgesWidth(teams.length) }} />}
             <col style={{ width: '10vh' }} />
+            {/* Holds the longest tag plus the cell's own padding, so it never runs to the edge. */}
+            <col style={{ width: '15vh' }} />
           </colgroup>
           <thead>
             <tr className="border-b border-slate-200 dark:border-slate-700">
@@ -1482,8 +1640,11 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                   {layer} Clients
                 </th>
               )}
-              <th className="text-right font-medium text-slate-500 dark:text-slate-400" style={header}>
+              <th className="text-center font-medium text-slate-500 dark:text-slate-400" style={header}>
                 Avg
+              </th>
+              <th className="text-center font-medium text-slate-500 dark:text-slate-400" style={header}>
+                Decision
               </th>
             </tr>
           </thead>
@@ -1492,7 +1653,7 @@ const PresentationView: React.FC<PresentationViewProps> = ({
               row.kind === 'subhead' ? (
                 <tr key={row.key}>
                   <td
-                    colSpan={teams.length > 0 ? 4 : 3}
+                    colSpan={teams.length > 0 ? 5 : 4}
                     className="align-bottom font-medium uppercase tracking-wide text-slate-400"
                     style={{ ...cell, height: vh(0.63), fontSize: vh(0.22) }}
                   >
@@ -1500,7 +1661,14 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                   </td>
                 </tr>
               ) : (
-                <tr key={row.key} className="border-b border-slate-100 dark:border-slate-800">
+                <tr
+                  key={row.key}
+                  className={`border-b border-slate-100 dark:border-slate-800 ${
+                    row.agg.eipId === cursorEipId
+                      ? 'bg-purple-100 dark:bg-purple-400/25'
+                      : ''
+                  }`}
+                >
                   <td
                     className="font-mono text-purple-600 dark:text-purple-400 whitespace-nowrap"
                     style={cell}
@@ -1523,7 +1691,7 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                       />
                     </td>
                   )}
-                  <td className="text-right" style={cell}>
+                  <td className="text-center" style={cell}>
                     {layerAverage(row.agg) !== null ? (
                       <span
                         className={`inline-flex items-center font-medium rounded ${getScoreColor(Math.round(layerAverage(row.agg)!), true, maxScore)}`}
@@ -1532,10 +1700,27 @@ const PresentationView: React.FC<PresentationViewProps> = ({
                         {layerAverage(row.agg)!.toFixed(1)}
                       </span>
                     ) : (
-                      <span className="text-slate-300 dark:text-slate-500" style={{ fontSize: vh(0.3) }}>
+                      <span className="text-slate-400" style={{ fontSize: vh(0.3) }}>
                         —
                       </span>
                     )}
+                  </td>
+                  <td className="text-center" style={cell}>
+                    {/* Keyed on the press so re-deciding a row replays the entrance. */}
+                    <DecisionMark
+                      key={
+                        justDecided?.eipId === row.agg.eipId ? `press-${justDecided.nth}` : 'held'
+                      }
+                      decision={decisions[row.agg.eipId]}
+                      animate={justDecided?.eipId === row.agg.eipId}
+                      stage={decisionForStage(row.agg.inclusionStage)}
+                      style={{
+                        fontSize: vh(0.3),
+                        padding: `${vh(0.07)} ${vh(0.17)}`,
+                        borderRadius: vh(0.09),
+                        minWidth: vh(1.6),
+                      }}
+                    />
                   </td>
                 </tr>
               )
@@ -1548,7 +1733,10 @@ const PresentationView: React.FC<PresentationViewProps> = ({
         className="shrink-0 flex items-center justify-between px-[4vw] pb-[2vh] text-slate-400"
         style={{ fontSize: '1.6vh' }}
       >
-        <span>&larr; &rarr; to navigate &middot; Esc to exit</span>
+        <span>
+          &larr; &rarr; slides &middot; &uarr; &darr; rows &middot; C/F/D to log CFI/Defer/DFI &middot; dashed
+          = current stage &middot; Esc to exit
+        </span>
         <div className="flex items-center gap-4">
           <button
             onClick={() => onNavigate(Math.max(index - 1, 0))}

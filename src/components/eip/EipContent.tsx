@@ -417,10 +417,6 @@ export const EipContent: React.FC<EipContentProps> = ({
           </div>
 
           {/* Description */}
-          {notices.map((notice, index) => (
-            <EipNotice key={index} notice={notice} className="mt-4" />
-          ))}
-
           <p className="mt-4 text-slate-700 dark:text-slate-300 leading-relaxed">
             {parseMarkdownLinks(eip.description)}
           </p>
@@ -581,6 +577,10 @@ export const EipContent: React.FC<EipContentProps> = ({
         <div className="p-6 space-y-8">
           {viewMode === 'analysis' && (
             <>
+              {notices.map((notice, index) => (
+                <EipNotice key={index} notice={notice} />
+              ))}
+
               {/* Timeline */}
               <EipTimeline eip={eip} />
 

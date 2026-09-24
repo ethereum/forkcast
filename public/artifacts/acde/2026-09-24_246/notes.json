@@ -1,0 +1,71 @@
+{
+  "meeting": "ACDE #246 - 2026-09-24",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet Status",
+      "summary": "Devnet 8 fork transition testing with Lido and Optimism was successful; Besu investigating performance; Frames devnet for Hegota launched.",
+      "timestamp": "00:11:23",
+      "body": "- Gloas fork transition testing on devnet 8 with Lido and Optimism completed successfully; devnet has been torn down.\n- Besu still investigating a performance issue; improvements recently tested and being pushed.\n- Frames devnet for Hegota launched yesterday.\n- Geth found a bug on devnet 8 related to catchup full sync, now fixed \u2014 catching up to head will be faster."
+    },
+    {
+      "heading": "Sepolia Fork Client Releases",
+      "summary": "Sepolia fork confirmed for October 6; most client releases expected by early next week.",
+      "timestamp": "00:13:02",
+      "body": "- Sepolia fork date: October 6, confirmed on ACDC last week; already merged into client specs.\n- Client release status:\n  - Nethermind 2.0: released.\n  - Geth: released.\n  - Besu: ETA tomorrow.\n  - Reth: release coming next week (likely Monday).\n  - ethrex: release candidate being tested; release today or tomorrow."
+    },
+    {
+      "heading": "Glamsterdam Gas Limit \u2014 200M at Fork",
+      "summary": "Agreement to signal 200M gas limit at the Glamsterdam fork for Sepolia despite a new JUMPDEST attack raising execution-time concerns.",
+      "timestamp": "00:14:17",
+      "body": "- Justin Traglia raised that the gas limit schedule was missing from Sepolia configs and proposed immediately signaling 200M at fork. PR: [eth-clients/sepolia#130](https://github.com/eth-clients/sepolia/pull/130).\n- potuz flagged a JUMPDEST analysis attack deployed by Pawe\u0142 on devnet 8 producing valid blocks taking 8\u201314 seconds to execute across multiple clients, well above the 6-second safety budget.\n  - Attack exploits Glamsterdam's state-gas repricing making CREATE costs cheaper to pre-pay, updating an old benchmark that was found to be wrong.\n  - Relevant PRs: [execution-specs#3631](https://github.com/ethereum/execution-specs/pull/3631) and [execution-specs#3637](https://github.com/ethereum/execution-specs/pull/3637).\n  - Nico Flaig confirmed geth took 9 seconds on his server; next proposer got reorged because it couldn't process the block in time.\n- potuz clarified the attack is expensive and cannot persist, but it can reorg the next proposer \u2014 a serious but bounded risk.\n- Maria Silva argued the gas limit should be set at the fork because state-byte cost repricing (EIP-8037) makes the minimum usable gas limit ~150M; delaying the increase would cause base-fee volatility. Analysis shared: [ethresear.ch post](https://ethresear.ch/t/from-60m-to-200m-simulating-glamsterdam-s-fee-market/25957).\n- Csaba opposed doing the increase simultaneously with the fork, preferring to separate signals, but acknowledged the reasoning.\n- Ansgar Dietrichs argued testnets should be used for aggressive stress testing \u2014 being gentle on testnets risks mainnet.\n- Devnet 8 machines: 8-core, 32 GB RAM, one EL+CL per machine \u2014 described as representative or slightly over-provisioned.\n- Agreement: signal 200M gas limit at the Glamsterdam fork for Sepolia. Gas will still ramp up via the 1/1024 voting mechanism (~4 hours to reach target).\n- Action item: write benchmark tests for the JUMPDEST attack vector before mainnet; clients (especially Nethermind) investigating optimizations."
+    },
+    {
+      "heading": "CL Block and BAL Retention Windows",
+      "summary": "BAL retention should match CL block retention; exact window reduction deferred for async discussion on Discord.",
+      "timestamp": "00:31:01",
+      "body": "- Jihoon raised three related questions: (1) reduce CL block retention period per EIP-8061's WSP change, (2) align EL history retention to match, (3) increase BAL retention to match CL block retention per Nico's PR [EIP-12347](https://github.com/ethereum/EIPs/pull/12347).\n- Current CL block retention is 33,024 epochs (~5 months); EIP-8061 would roughly halve it to ~14,000 epochs (~2 months). The 33k value was a worst-case WSP estimate pre-8061, now considered a bug/oversight.\n- BAL retention is currently ~3,000 epochs (~10x smaller than CL block retention).\n- Agreement: BAL retention window should equal the CL block retention window \u2014 no dissent.\n- Marius (Geth) strongly argued for a long BAL retention window: nodes offline for days need BALs to do parallel execution during catchup; without BALs, sequential execution takes 9\u201310 seconds per block, making catchup impossible at higher gas limits.\n- potuz noted CL must serve complete blocks including BALs; if EL doesn't keep them, CL must, causing duplication \u2014 at least two CL clients currently drop EL data from their DB.\n- \u0141ukasz (Nethermind) cautioned that reducing the network retention window to ~1 month requires fully automated ERA file hosting; currently manual.\n- Toni estimated storage at ~300 GiB for 33k epochs at 200M gas and 300 KiB BALs; considered overly conservative.\n- potuz and Kevaundray noted CL doesn't need anything beyond the WSP; the retention should be the max of both layers.\n- Decision deferred to async discussion on an ETH R&D Discord thread, owned by Kev, Jihoon, or Toni. Not blocking for Glamsterdam or testnets."
+    },
+    {
+      "heading": "EIP-8304: Trustless Log Index \u2014 DFI",
+      "summary": "EIP-8304 confirmed DFI for Hegota; Besu and Reth unchanged; author will continue work independently.",
+      "timestamp": "00:48:03",
+      "body": "- EIP-8304 (Trustless Log Index) was a default DFI candidate; Besu and Reth (Dragan) confirmed no change in their positions.\n- Zsolt (author) acknowledged the decision but stated he will continue working on the project regardless, citing future synergy with trustless API use cases.\n- Decision: DFI for Hegota."
+    },
+    {
+      "heading": "EIP-7979: Call and Return Opcodes \u2014 CFI",
+      "summary": "EIP-7979 moved to CFI for Hegota with broad client support and endorsement from Solidity.",
+      "timestamp": "00:50:13",
+      "body": "- Greg Colvin summarized performance measurements: interpreter with register-code compilation yields ~2x speedup; machine-code compilation ~5x; with 64-bit ops and RISC-V compilation ~50x, including ZK proving.\n  - End-to-end prototype tested with Solidity, Geth, and EVM1 \u2014 all Solidity tests pass through compilation and validation.\n  - EIP-8337 proposed as a natural follow-up for static code validation.\n- Solidity (Radek): supportive; will implement when delivered; posted opinion on [ETH Magicians thread](https://ethereum-magicians.org/t/eip-7979-call-and-return-opcodes-for-the-evm/24615/35). Strongly favors EIP-8337 as follow-up.\n- Vyper (Charles Cooper): not on call; Greg relayed he would definitely use the opcodes and sees better code generation potential.\n- Reth (Dragan): supports inclusion; wants JUMPDEST analysis removed.\n- Nethermind (Ben Adams): strongly supports; argues it's been deferred for ~9 years and should finally ship.\n- Besu (Justin Florentine): moved from B to open to A after Solidity's endorsement.\n- Geth: no representative spoke; assumed unchanged at B.\n- ethrex: weak DFI, but okay if majority wants to proceed.\n- Ansgar suggested leaving as PFI until strong-CFI candidates are handled, but no strong objection.\n- Decision: CFI for Hegota. No opposition raised."
+    },
+    {
+      "heading": "EIP-8163: Reserve EXTENSION Opcode \u2014 CFI",
+      "summary": "EIP-8163 moved to CFI for Hegota as a trivial no-op reservation with L2 demand from Tron, Rootstock, and Arbitrum Nitro.",
+      "timestamp": "01:03:02",
+      "body": "- Piotr (Mononaut Foundation) presented evidence of demand: custom opcode experiments from Tron and Rootstock; message of support from Arbitrum Nitro team.\n- The EIP reserves opcode 0xAE as a no-op on L1, guaranteeing it won't be assigned to a different function in the future.\n- Besu promoted it to S tier.\n- Erigon promoted it to B tier.\n- Reth (Dragan): should not be DFI; C or B \u2014 easy to do, friendly to other chains.\n- ethrex: C tier.\n- Nethermind (\u0141ukasz): noted the shrinking pool of 1-byte opcodes but no objection.\n- Decision: CFI for Hegota."
+    },
+    {
+      "heading": "EIP-8360: TCREATE Opcode \u2014 Deferred",
+      "summary": "TCREATE decision deferred; champions asked to engage clients before next call, with discussion tied to self-destruct deprecation.",
+      "timestamp": "01:06:22",
+      "body": "- Milos (enso.build) presented TCREATE: a new opcode for ephemeral/disposable contracts (single-transaction lifetime), used by payment flows, cross-chain intents, limit orders.\n  - Currently achieved via self-destruct in the same transaction, but Glamsterdam removes the gas refund, effectively making the feature ~6x more expensive.\n  - ~1,000\u20132,000 transactions/day on Ethereum; ~10x more on BNB Chain.\n- Jochem clarified: standalone EIP, no dependencies needed for Hegota; SSTORE/SLOAD behave as TSTORE/TLOAD within TCREATE context.\n- Jochem argued Ethereum is effectively deprecating this feature without providing an alternative \u2014 should have been addressed in Glamsterdam.\n- Marius (Geth) opposed TCREATE for Hegota: creates many new code paths for little gain.\n- Ben Adams noted some self-destruct use cases covered by SETCODEFROM but not all; TCREATE could enable full self-destruct removal.\n- Reth (Dragan): reasoning for DFI was similar \u2014 alternative to self-destruct needed; may be fine for Hegota but edge cases around gas/storage need examination.\n- Maria Silva: decision should be coupled with self-destruct deprecation discussion; should not be DFI'd prematurely.\n- Decision deferred: Milos asked to engage clients before next call; not DFI'd."
+    },
+    {
+      "heading": "EIP-8368 and EIP-8372: Gas Recalibration \u2014 Left as PFI",
+      "summary": "Both EIPs left as PFI pending at least 30 days of mainnet Glamsterdam data before a decision.",
+      "timestamp": "01:16:05",
+      "body": "- EIP-8368 (CPSB Recalibration) and EIP-8372 (Normalized State Gas Limit) are alternatives requiring mainnet Glamsterdam data.\n- Maria confirmed at least 30 days of post-fork data needed.\n- No objections to leaving both in PFI status with a note they may be revisited after Glamsterdam mainnet launch."
+    },
+    {
+      "heading": "Highest-Rated Hegota EIPs \u2014 Batch CFI",
+      "summary": "Seven EIPs moved to CFI: 7906, 8250, 8272, 7668, 8253, 3298, 8131, plus the block access list byte floor EIP bundled with 8131.",
+      "timestamp": "01:17:37",
+      "body": "- EIP-7906 (Transaction Assertions via State Diff Opcode): highest-rated; strong recommendation from hardware signer community (Firmware). CFI'd with no opposition.\n  - Ansgar noted concern about nuanced edge cases during implementation, but agreed it's worth it.\n- EIP-8250 (Keyed Nonces for Frame Transactions): no concerns raised. CFI'd.\n- EIP-8272 (Recent Roots for Frame Transactions): no concerns raised. CFI'd as a batch with 8250.\n- EIP-7668 (Remove Bloom Filters): Ben Adams described it as removing technical debt \u2014 calculations nobody uses, sent across the network. CFI'd.\n- EIP-8253 (Bump Nonce of Zero-Nonce Storage Accounts): replacement for EIP-7610 which was DFI'd last-minute from Glamsterdam. CFI'd.\n- EIP-3298 (Remove Storage-Clear Refund and Refund Cap): Erigon and ethrex had lower tiers (lower priority, not opposition). CFI'd.\n- EIP-8131 (Unified Transaction Content Floor): all A or B ratings. CFI'd.\n- Ansgar and Toni proposed also CFI-ing the block access list byte floor EIP (the companion data-pricing EIP), arguing both should be bundled \u2014 doing only one leaves worst-case block size unchanged.\n  - Reth (Dragan): CFI appropriate; marked C due to complexity of measuring BAL items but supports the idea.\n  - Decision: CFI'd."
+    },
+    {
+      "heading": "SETCODEFROM (EIP-8298) \u2014 Punted to Next Call",
+      "summary": "SETCODEFROM discussion showed broad interest but Besu requested more time; decision deferred to next call.",
+      "timestamp": "01:25:47",
+      "body": "- lightclient flagged SETCODEFROM as important; Kevaundray requested a temp check.\n- CPerezz (author) explained: SETCODEFROM allows migrating an EOA to a full code/smart/post-quantum account, superseding EIP-8058. Recent PR added initcode execution support. Explainer: https://cperezz.github.io/articles/setcodefrom-account-modes/\n- Ben Adams highlighted the second benefit: deploying duplicate contracts (e.g., Uniswap liquidity pools) at code-hash cost instead of full deployment cost. SETCODEFROM avoids the consensus-split risk of a hypothetical SETCODEHASH (code DB differs between snap-synced and full-synced nodes).\n- Reth (Dragan): DFI reasoning was to delay code-change decisions until after frames ship, but acknowledged it's not a strong opinion and the change is small.\n- Nico warned that delaying to ISTAR risks collision with post-quantum transition timeline (~end of 2028); could become an emergency fork.\n- ethrex: wants SETCODEFROM CFI'd.\n- Besu (Justin Florentine): currently at C tier; finding arguments compelling but requested more time.\n- Decision deferred to next call per Besu's request. 10 remaining EIPs to be reviewed by clients before then.\n- Nico raised EIP-8151 (related); nixo confirmed no discussion or decision on it today."
+    }
+  ]
+}

@@ -109,6 +109,7 @@ export function buildDevnetSeries(
       links: meta.links,
       activeKeys: active.map((a) => a.key),
       latestActiveVersion: latest?.version ?? null,
+      highestKnownVersion: findHighestVersion(categoryKey, source.networks),
       serviceUrls: latest?.serviceUrls ?? null,
     });
   }

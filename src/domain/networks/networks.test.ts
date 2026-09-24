@@ -49,6 +49,24 @@ describe('buildDevnetSeries', () => {
     expect(activeSeries[0].serviceUrls).toEqual({ faucet: 'f3' });
   });
 
+  it('reports a highest known version beyond the latest active one', () => {
+    // A series routinely runs past the devnet that stays up: glamsterdam-devnet-8
+    // is Platåberget, still live, while devnets 9-11 launched and were torn down.
+    // Only highestKnownVersion tells the index those later devnets already ran.
+    const source: NetworksJsonResponse = {
+      networkMetadata: { glamsterdam: meta('Glamsterdam', 1) },
+      networks: {
+        'glamsterdam-devnet-8': net('active'),
+        'glamsterdam-devnet-11': net('inactive'),
+      },
+    };
+
+    const { activeSeries } = buildDevnetSeries(source);
+
+    expect(activeSeries[0].latestActiveVersion).toBe(8);
+    expect(activeSeries[0].highestKnownVersion).toBe(11);
+  });
+
   it('routes a category with zero active networks to inactiveSeries with the highest known version', () => {
     const source: NetworksJsonResponse = {
       networkMetadata: { focil: meta('FOCIL', 0) },

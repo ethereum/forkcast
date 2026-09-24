@@ -14,19 +14,23 @@ import type {
 } from '../types/networks';
 
 const CATEGORY_TEXT_COLORS: Record<string, string> = {
-  // Glamsterdam — active fork, unique colors per series
-  bal: 'text-violet-600 dark:text-violet-400',
-  epbs: 'text-cyan-600 dark:text-cyan-400',
+  // Hegotá — uniform color
+  focil: 'text-teal-600 dark:text-teal-400',
+  frames: 'text-teal-600 dark:text-teal-400',
+  hegota: 'text-teal-600 dark:text-teal-400',
+  // Glamsterdam — uniform color
+  bal: 'text-purple-600 dark:text-purple-400',
+  epbs: 'text-purple-600 dark:text-purple-400',
   glamsterdam: 'text-purple-600 dark:text-purple-400',
-  // Fusaka — deployed, uniform color
+  // Fusaka — uniform color
   berlinterop: 'text-fuchsia-600 dark:text-fuchsia-400',
   eof: 'text-fuchsia-600 dark:text-fuchsia-400',
   fusaka: 'text-fuchsia-600 dark:text-fuchsia-400',
   peerdas: 'text-fuchsia-600 dark:text-fuchsia-400',
-  // Pectra — deployed, uniform color
+  // Pectra — uniform color
   pectra: 'text-indigo-600 dark:text-indigo-400',
   mekong: 'text-indigo-600 dark:text-indigo-400',
-  // Dencun — deployed, uniform color
+  // Dencun — uniform color
   dencun: 'text-lime-600 dark:text-lime-400',
   // Other — unique colors per series
   blob: 'text-amber-600 dark:text-amber-400',
@@ -36,6 +40,7 @@ const CATEGORY_TEXT_COLORS: Record<string, string> = {
 };
 
 const GROUP_ACCENT: Record<string, string> = {
+  hegota: 'border-teal-300 dark:border-teal-700',
   glamsterdam: 'border-purple-300 dark:border-purple-700',
   fusaka: 'border-fuchsia-300 dark:border-fuchsia-700',
   pectra: 'border-indigo-300 dark:border-indigo-700',
@@ -47,6 +52,9 @@ function getCategoryTextColor(key: string): string {
   return CATEGORY_TEXT_COLORS[key] || 'text-slate-500 dark:text-slate-400';
 }
 
+// The headliner series (focil, frames) sit with the fork's own series, since a
+// headliner's feature devnets are how that fork's payload gets tested.
+const HEGOTA_CATEGORIES = new Set(['focil', 'frames', 'hegota']);
 const GLAMSTERDAM_CATEGORIES = new Set(['bal', 'epbs', 'glamsterdam']);
 const FUSAKA_CATEGORIES = new Set(['berlinterop', 'eof', 'fusaka', 'peerdas']);
 const PECTRA_CATEGORIES = new Set(['mekong', 'pectra']);
@@ -59,7 +67,7 @@ interface DevnetCardItem {
   description: string;
   /** All active network keys, sorted by version descending. */
   activeKeys: string[];
-  /** Non-null when there's an upcoming devnet with a spec that's ahead of (or not covered by) the active network data. */
+  /** Non-null when a local spec exists for a version cartographoor has never seen, i.e. one that hasn't launched yet. */
   upcomingSpecId: string | null;
 }
 
@@ -74,13 +82,18 @@ function parseSpecId(id: string): { category: string; version: number } | null {
  * Merge active series from networks.json with upcoming-only specs into one list.
  * - Active series get an upcomingSpecId if a local spec exists with a higher version.
  * - Spec-only series (no active networks at all) are synthesised as upcoming cards.
+ *
+ * Both branches compare against the highest version cartographoor has ever seen,
+ * not the highest currently running: a series routinely has a later devnet that
+ * already ran and was torn down while an earlier one stays up as a public testnet
+ * (glamsterdam-devnet-8 is Platåberget, but the series reached devnet-11).
  */
 function buildCardItems(activeSeries: ActiveDevnetSeries[], inactiveSeries: InactiveDevnetSeries[]): DevnetCardItem[] {
   const allSpecIds = getAllDevnetSpecIds();
 
   // Start with a copy of every active series, enriched with upcoming spec info
   const items: DevnetCardItem[] = activeSeries.map((s) => {
-    const upcomingSpec = findUpcomingSpec(allSpecIds, s.categoryKey, s.latestActiveVersion ?? -1);
+    const upcomingSpec = findUpcomingSpec(allSpecIds, s.categoryKey, s.highestKnownVersion ?? -1);
     return {
       categoryKey: s.categoryKey,
       displayName: s.displayName,
@@ -108,14 +121,14 @@ function buildCardItems(activeSeries: ActiveDevnetSeries[], inactiveSeries: Inac
   return items;
 }
 
-/** Find the highest-version local spec that's ahead of the latest active version for a category. */
-function findUpcomingSpec(allSpecIds: string[], categoryKey: string, latestActiveVersion: number) {
+/** Find the highest-version local spec that's ahead of every version cartographoor knows for a category. */
+function findUpcomingSpec(allSpecIds: string[], categoryKey: string, highestKnownVersion: number) {
   let best: { id: string; version: number } | null = null;
 
   for (const specId of allSpecIds) {
     const parsed = parseSpecId(specId);
     if (!parsed || parsed.category !== categoryKey) continue;
-    if (parsed.version <= latestActiveVersion) continue;
+    if (parsed.version <= highestKnownVersion) continue;
     if (best === null || parsed.version > best.version) {
       best = { id: specId, version: parsed.version };
     }
@@ -268,7 +281,8 @@ const NetworksIndexPage: React.FC = () => {
   const [showRetired, setShowRetired] = useState(true);
   const cardItems = buildCardItems(activeSeries, inactiveSeries);
   const isForkAffiliated = (key: string) =>
-    GLAMSTERDAM_CATEGORIES.has(key) || FUSAKA_CATEGORIES.has(key) || PECTRA_CATEGORIES.has(key) || DENCUN_CATEGORIES.has(key);
+    HEGOTA_CATEGORIES.has(key) || GLAMSTERDAM_CATEGORIES.has(key) || FUSAKA_CATEGORIES.has(key) || PECTRA_CATEGORIES.has(key) || DENCUN_CATEGORIES.has(key);
+  const hegotaCards = cardItems.filter((c) => HEGOTA_CATEGORIES.has(c.categoryKey));
   const glamsterdamCards = cardItems.filter((c) => GLAMSTERDAM_CATEGORIES.has(c.categoryKey));
   const fusakaCards = cardItems.filter((c) => FUSAKA_CATEGORIES.has(c.categoryKey));
   const pectraCards = cardItems.filter((c) => PECTRA_CATEGORIES.has(c.categoryKey));
@@ -276,6 +290,7 @@ const NetworksIndexPage: React.FC = () => {
   const generalCards = cardItems.filter((c) => !isForkAffiliated(c.categoryKey));
   const promotedKeys = new Set(cardItems.filter((c) => c.activeKeys.length === 0).map((c) => c.categoryKey));
   const remainingInactive = inactiveSeries.filter((c) => !promotedKeys.has(c.categoryKey));
+  const hegotaInactive = remainingInactive.filter((c) => HEGOTA_CATEGORIES.has(c.categoryKey));
   const glamsterdamInactive = remainingInactive.filter((c) => GLAMSTERDAM_CATEGORIES.has(c.categoryKey));
   const fusakaInactive = remainingInactive.filter((c) => FUSAKA_CATEGORIES.has(c.categoryKey));
   const pectraInactive = remainingInactive.filter((c) => PECTRA_CATEGORIES.has(c.categoryKey));
@@ -363,6 +378,7 @@ const NetworksIndexPage: React.FC = () => {
           ) : (
             <div className="space-y-6">
               {([
+                { label: 'Hegotá', accent: GROUP_ACCENT.hegota, active: hegotaCards, inactive: hegotaInactive },
                 { label: 'Glamsterdam', accent: GROUP_ACCENT.glamsterdam, active: glamsterdamCards, inactive: glamsterdamInactive },
                 { label: 'Fusaka', accent: GROUP_ACCENT.fusaka, active: fusakaCards, inactive: fusakaInactive },
                 { label: 'Pectra', accent: GROUP_ACCENT.pectra, active: pectraCards, inactive: pectraInactive },

@@ -10,9 +10,9 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'devnets',
     title: 'Devnets',
-    dateRange: 'Ongoing',
-    description: 'Client teams implement and test Glamsterdam changes on internal development networks. Devnet-11 is live alongside the public testnets.',
-    status: 'in-progress'
+    dateRange: 'Feb – Sep 2026',
+    description: 'Client teams implemented and tested Glamsterdam changes on internal development networks. Devnet-11, the last of the series, ran Sep 9 and has been shut down.',
+    status: 'completed'
   },
   {
     id: 'plataberget',
@@ -244,9 +244,10 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'development',
-      status: 'in-progress',
+      status: 'completed',
       actualStartDate: 'Feb 2026',
-      progressNotes: 'Devnet-11 is live alongside the public testnets',
+      actualEndDate: 'Sep 2026',
+      progressNotes: 'Devnet-11 ran Sep 9 and has been shut down',
       // Only the planned devnets are declared here. Once one launches,
       // enrichDevnetDates takes over its date and status from
       // devnet-launches.json. Devnet-8 doubles as the Platåberget public testnet.

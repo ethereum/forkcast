@@ -112,6 +112,8 @@ export interface ActiveDevnetSeries {
   activeKeys: string[];
   /** Version number of the latest active devnet, or null if none active. */
   latestActiveVersion: number | null;
+  /** Highest version number ever seen for this category (active or inactive), or null. */
+  highestKnownVersion: number | null;
   serviceUrls: NetworkServiceUrls | null;
 }
 

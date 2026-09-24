@@ -14,7 +14,7 @@ import {
   SortDirection,
 } from '../../utils/prioritization';
 import { getInclusionStageColor } from '../../utils/colors';
-import { getProposalPrefix, getStageAbbreviation } from '../../utils';
+import { getInclusionStageSortRank, getProposalPrefix, getStageAbbreviation } from '../../utils';
 import { eipsData } from '../../data/eips';
 import { buildDisplayGroups, groupByCategory, CategoryGroup } from '../../domain/eips/eipCategories';
 import { RANK_FORK } from '../../domain/eips/rankableEips';
@@ -25,17 +25,18 @@ import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
 import { useCallDecisions } from '../../hooks/useCallDecisions';
 import {
+  CALL_DECISIONS,
   CALL_DECISION_LABEL,
   CallDecision,
   CallDecisionMap,
   decisionForKey,
   decisionForStage,
   formatDecisions,
+  isFacilitatorHotkey,
 } from '../../domain/prioritization/callDecisions';
 
 type FilterLayer = 'all' | 'EL' | 'CL';
 type PresentLayer = 'EL' | 'CL';
-type FilterStance = 'all' | 'support' | 'divergent' | 'oppose' | 'rejected' | 'none';
 
 /** Fork-specific caveat about when the linked perspectives were written. */
 const VINTAGE_NOTE: Record<string, string> = {
@@ -59,7 +60,6 @@ const SORT_FIELDS: SortField[] = [
   'stage',
 ];
 const FILTER_LAYERS: FilterLayer[] = ['EL', 'CL'];
-const FILTER_STANCES: FilterStance[] = ['support', 'divergent', 'oppose', 'rejected', 'none'];
 const PRESENT_LAYERS: PresentLayer[] = ['EL', 'CL'];
 const LAYER_NAME: Record<PresentLayer, string> = { EL: 'execution layer', CL: 'consensus layer' };
 /** The table's order is the EL board's, so only the CL deck departs from it. */
@@ -96,13 +96,6 @@ const DECISION_ANIMATION: Record<CallDecision, string> = {
   dfi: 'animate-decision-drop',
 };
 
-/**
- * Far enough apart that the mean is hiding a disagreement rather than reporting a
- * consensus — the rows a call should stop on.
- */
-const isDivergent = (agg: EipAggregateStance) =>
-  agg.spread !== null && agg.spread >= DISCUSSION_SPREAD;
-
 /** Query values are user input, so anything off the known list falls back to the default. */
 const readEnum = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
   allowed.includes(value as T) ? (value as T) : null;
@@ -110,6 +103,13 @@ const readEnum = <T extends string>(value: string | null, allowed: readonly T[])
 /** The layer shorthand reads as `?quick=cl`, but layers are uppercase everywhere else. */
 const readQuick = (params: URLSearchParams): PresentLayer | null =>
   readEnum((params.get('quick') ?? '').toUpperCase(), PRESENT_LAYERS);
+
+/**
+ * The stage a call is convened to decide on, and so what facilitator view opens to. Held as
+ * the abbreviation the `stage` param is written in.
+ */
+const PFI_STAGE = 'Proposed for Inclusion';
+const PFI_STAGE_KEY = getStageAbbreviation(PFI_STAGE).toLowerCase();
 
 /** The parts of a view the layer shorthand stands for. */
 const QUICK_KEYS = ['layer', 'team', 'only'] as const;
@@ -123,9 +123,22 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const sortField = readEnum(searchParams.get('sort'), SORT_FIELDS) ?? 'average';
   const sortDirection: SortDirection = searchParams.get('dir') === 'asc' ? 'asc' : 'desc';
-  const filterStance = readEnum(searchParams.get('stance'), FILTER_STANCES) ?? 'all';
   const hideExcluded = searchParams.get('excluded') !== 'show';
+  /** Stages are picked by abbreviation, so a shared view reads `?stage=pfi,cfi`. */
+  const filterStages = useMemo(() => {
+    const raw = searchParams.get('stage');
+    return new Set(
+      raw
+        ? raw
+            .split(',')
+            .map((value) => value.trim().toLowerCase())
+            .filter(Boolean)
+        : []
+    );
+  }, [searchParams]);
   const groupedByCategory = searchParams.get('group') === 'category';
+  /** Adds the Decisions column, for running a call off the table rather than the deck. */
+  const facilitatorMode = searchParams.get('facilitator') === '1';
   /**
    * Shorthand for a whole layer: the layer filter, every one of its clients and column
    * focus, which spelled out is most of the query string. Read here rather than written
@@ -219,10 +232,37 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const { aggregates: deckAggregates } = usePrioritizationData(fork);
   const { decisions, decide, clear: clearDecisions } = useCallDecisions(fork);
 
+  /** A fork whose payload is settled has nothing at PFI, so there is no default to apply. */
+  const hasPfiStage = useMemo(
+    () => aggregates.some((agg) => agg.inclusionStage === PFI_STAGE),
+    [aggregates]
+  );
+
+  /**
+   * Opens on the proposals the call is there to decide. It only fills an empty Stage filter,
+   * so a facilitator who has already narrowed the board keeps their own selection, and leaving
+   * clears the default only while it is still untouched.
+   */
+  const toggleFacilitator = useCallback(() => {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (facilitatorMode) {
+          next.delete('facilitator');
+          if (next.get('stage') === PFI_STAGE_KEY) next.delete('stage');
+        } else {
+          next.set('facilitator', '1');
+          if (!next.get('stage') && hasPfiStage) next.set('stage', PFI_STAGE_KEY);
+        }
+        return next;
+      },
+      { replace: true }
+    );
+  }, [setSearchParams, facilitatorMode, hasPfiStage]);
+
   // The fork's scale drives the legend, the badge colors and the "high support" cutoff.
   const scoreLegend = getScoreScale(fork);
   const maxScore = getMaxScore(fork);
-  const supportFloor = maxScore - 1;
 
   // Lock body scroll while a modal or the presentation is open
   useEffect(() => {
@@ -269,7 +309,13 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const filteredAggregates = useMemo(() => {
     let result = aggregates;
 
-    if (hideExcluded) {
+    // "Active only" is itself a stage rule, so naming stages outright replaces it rather
+    // than intersecting with it — otherwise asking for DFI while it is ticked returns nothing.
+    if (filterStages.size > 0) {
+      result = result.filter((agg) =>
+        filterStages.has(getStageAbbreviation(agg.inclusionStage).toLowerCase())
+      );
+    } else if (hideExcluded) {
       result = result.filter(isActive);
     }
 
@@ -287,20 +333,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       result = result.filter((agg) => agg.layer === filterLayer);
     }
 
-    if (filterStance === 'support') {
-      result = result.filter((agg) => agg.averageScore !== null && agg.averageScore >= supportFloor);
-    } else if (filterStance === 'oppose') {
-      result = result.filter((agg) => agg.opposeCount > agg.supportCount);
-    } else if (filterStance === 'divergent') {
-      result = result.filter(isDivergent);
-    } else if (filterStance === 'rejected') {
-      result = result.filter((agg) => agg.rejectCount > 0);
-    } else if (filterStance === 'none') {
-      result = result.filter((agg) => agg.stanceCount === 0);
-    }
-
     return result;
-  }, [aggregates, filterLayer, filterStance, filterClients, hideExcluded, isActive, supportFloor]);
+  }, [aggregates, filterLayer, filterClients, filterStages, hideExcluded, isActive]);
 
   const isShown = (team: TeamEntry) => !focusOnly || filterClients.has(team.name);
   const shownElTeams = elTeams.filter(isShown);
@@ -310,12 +344,21 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   // Roster-level, so the toolbar and the filter modal keep every team reachable while focused.
   const showOtherTeams = otherTeams.length > 0;
   const showOtherColumn = shownOtherTeams.length > 0;
-  // EIP, Title, Stage, Avg and Spread, plus a column for each team group that has a team.
+  // EIP, Title, Stage, Avg and Spread, plus a column for each team group that has a team,
+  // plus Decisions while a call is being run off the table.
   const columnCount =
-    5 + [shownElTeams, shownClTeams, shownOtherTeams].filter((teams) => teams.length > 0).length;
+    5 +
+    (facilitatorMode ? 1 : 0) +
+    [shownElTeams, shownClTeams, shownOtherTeams].filter((teams) => teams.length > 0).length;
   // The team columns outgrow the prose column on every fork. Focusing drops most of them,
   // at which point the table fits again and can sit back on the page's left edge.
   const wideTable = !focusOnly;
+  /**
+   * Focusing normally hands the width back, but facilitator view puts a column where those
+   * went — and focusing on a layer is exactly what a facilitator does, so it holds the
+   * table's full width throughout rather than collapsing to the prose column.
+   */
+  const breakout = facilitatorMode || wideTable ? BREAKOUT : '';
 
   // Apply sorting
   const sortedAggregates = useMemo(() => {
@@ -442,12 +485,30 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     };
   }, [slide, slideCount, stopPresenting]);
 
-  // Gates the ⚑ flag and the "Has Rejections" filter, so both stay reachable no
-  // matter how the current view is narrowed.
-  const hasRejections = useMemo(
-    () => aggregates.some((a) => a.rejectCount > 0),
-    [aggregates]
-  );
+  /**
+   * Unlike the deck's two handlers this one is live on an ordinary page, so it has to stand
+   * aside for anything that has a better claim on the key: the deck itself, where `f` logs a
+   * deferral, whatever is over the page, and any field being typed into.
+   */
+  useEffect(() => {
+    if (slide !== null || filtersModalOpen || avgModalOpen || drawerEipId !== null) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (
+        target?.isContentEditable ||
+        ['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName ?? '')
+      ) {
+        return;
+      }
+      if (!isFacilitatorHotkey(event)) return;
+      event.preventDefault();
+      toggleFacilitator();
+    };
+
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [slide, filtersModalOpen, avgModalOpen, drawerEipId, toggleFacilitator]);
 
   const hasNonStandardsTrack = useMemo(
     () =>
@@ -458,13 +519,9 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     [aggregates]
   );
 
-  // Both sit beside the EIP count in the toolbar, so they share that count's basis.
+  // Sits beside the EIP count in the toolbar, so it shares that count's basis.
   const rejectedInView = useMemo(
     () => filteredAggregates.filter((a) => a.rejectCount > 0).length,
-    [filteredAggregates]
-  );
-  const divergentInView = useMemo(
-    () => filteredAggregates.filter(isDivergent).length,
     [filteredAggregates]
   );
 
@@ -537,19 +594,36 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     setParam('avg', ordered.length > 0 ? ordered.join(',') : null);
   };
 
-  const stanceFilterOptions: { value: FilterStance; label: string }[] = [
-    { value: 'all', label: 'All Stances' },
-    { value: 'support', label: 'High Support' },
-    { value: 'divergent', label: 'Worth Discussing' },
-    { value: 'oppose', label: 'More Opposition' },
-    ...(hasRejections ? [{ value: 'rejected' as const, label: 'Has Rejections' }] : []),
-    { value: 'none', label: 'No Stances' },
-  ];
+  /**
+   * Only the stages this fork's board actually holds, in the running order the rest of the
+   * site uses. A fork whose payload is settled has no PFI chip to offer.
+   */
+  const stageFilterOptions = useMemo(() => {
+    const byAbbreviation = new Map<string, string>();
+    for (const agg of aggregates) {
+      const abbreviation = getStageAbbreviation(agg.inclusionStage);
+      if (!byAbbreviation.has(abbreviation)) byAbbreviation.set(abbreviation, agg.inclusionStage);
+    }
+    return [...byAbbreviation]
+      .sort(([, a], [, b]) => getInclusionStageSortRank(a) - getInclusionStageSortRank(b))
+      .map(([abbreviation, stage]) => ({ abbreviation, stage }));
+  }, [aggregates]);
+
+  const toggleStage = (abbreviation: string) => {
+    const key = abbreviation.toLowerCase();
+    const next = new Set(filterStages);
+    if (!next.delete(key)) next.add(key);
+    // Board order, so the same selection always produces the same URL.
+    const ordered = stageFilterOptions
+      .map((option) => option.abbreviation.toLowerCase())
+      .filter((value) => next.has(value));
+    setParam('stage', ordered.length > 0 ? ordered.join(',') : null);
+  };
 
   const activeFilterCount = [
     filterLayer !== 'all',
     filterClients.size > 0,
-    filterStance !== 'all',
+    filterStages.size > 0,
   ].filter(Boolean).length;
 
   const toggleClient = (name: string) => {
@@ -599,7 +673,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        [...QUICK_KEYS, 'quick', 'stance'].forEach((key) => next.delete(key));
+        [...QUICK_KEYS, 'quick', 'stage'].forEach((key) => next.delete(key));
         return next;
       },
       { replace: true }
@@ -695,6 +769,8 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       otherTeamsAsBadges={focusOnly}
       maxScore={maxScore}
       columnCount={columnCount}
+      decision={decisions[agg.eipId]}
+      onDecide={facilitatorMode ? (decision) => decide(agg.eipId, decision) : null}
       isExpanded={expandedEip === agg.eipId}
       onToggle={() => setExpandedEip(expandedEip === agg.eipId ? null : agg.eipId)}
       onOpenDrawer={openDrawer(agg.eipId)}
@@ -715,7 +791,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       )}
 
       {/* Toolbar */}
-      <div className={`mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 ${wideTable ? BREAKOUT : ''}`}>
+      <div className={`mb-6 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-4 ${breakout}`}>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
           {/* Filters button */}
           <button
@@ -757,11 +833,21 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
             </button>
           )}
 
-          {/* Active only toggle */}
-          <label className="flex items-center gap-2 cursor-pointer select-none">
+          {/* Active only toggle — superseded while the Stage filter names stages outright. */}
+          <label
+            className={`flex items-center gap-2 select-none ${
+              filterStages.size > 0 ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+            }`}
+            title={
+              filterStages.size > 0
+                ? 'The Stage filter is choosing the stages shown'
+                : undefined
+            }
+          >
             <input
               type="checkbox"
               checked={hideExcluded}
+              disabled={filterStages.size > 0}
               onChange={(e) => setParam('excluded', e.target.checked ? null : 'show')}
               className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-purple-600 focus:ring-purple-500"
             />
@@ -786,12 +872,6 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
             <span className="text-slate-500 dark:text-slate-400">
               {sortedAggregates.length} EIPs
             </span>
-            {divergentInView > 0 && (
-              <span className="hidden md:flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                <span className="text-slate-600 dark:text-slate-300">{divergentInView} worth discussing</span>
-              </span>
-            )}
             {rejectedInView > 0 && (
               <span className="hidden md:flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-red-500"></span>
@@ -863,20 +943,24 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               </div>
             </div>
 
-            <div>
-              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stance</h3>
-              <div className="flex flex-wrap gap-2">
-                {stanceFilterOptions.map(({ value, label }) => (
-                  <FilterChip
-                    key={value}
-                    selected={filterStance === value}
-                    onClick={() => setParam('stance', value === 'all' ? null : value)}
-                  >
-                    {label}
-                  </FilterChip>
-                ))}
+            {stageFilterOptions.length > 1 && (
+              <div>
+                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
+                  Stage
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {stageFilterOptions.map(({ abbreviation, stage }) => (
+                    <FilterChip
+                      key={abbreviation}
+                      selected={filterStages.has(abbreviation.toLowerCase())}
+                      onClick={() => toggleStage(abbreviation)}
+                    >
+                      <span title={stage}>{abbreviation}</span>
+                    </FilterChip>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             <TeamFilterGroup
               heading="EL Clients"
@@ -1014,7 +1098,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       {/* Scrolls rather than clips: the columns grow as more teams publish rankings. */}
       <div
         className={`hidden lg:block bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded overflow-x-auto ${
-          wideTable ? BREAKOUT : ''
+          breakout
         }`}
       >
         <table className="w-full">
@@ -1041,6 +1125,15 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                   <SortIcon field="stage" />
                 </div>
               </th>
+              {/* Next to the stage it may change, and clear of the cell the chevron rides in. */}
+              {facilitatorMode && (
+                <th
+                  className="px-2 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300"
+                  title="Logged on this call, kept on this machine"
+                >
+                  Decisions
+                </th>
+              )}
               {shownElTeams.length > 0 && (
                 <th className="px-4 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300">
                   <div className="flex items-center justify-center gap-1">
@@ -1140,7 +1233,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       </div>
 
       {/* Legend */}
-      <div className={`mt-6 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg ${wideTable ? BREAKOUT : ''}`}>
+      <div className={`mt-6 p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg ${breakout}`}>
         <div className="flex items-center justify-between gap-3 mb-3">
           <h3 className="text-sm font-medium text-slate-700 dark:text-slate-300">Score Legend</h3>
           {/* Desktop only: a slide is sized to a projector, not a phone. */}
@@ -1164,6 +1257,19 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                 </button>
               </>
             )}
+            {/* A column on the page, not a deck: nothing here goes fullscreen. */}
+            <button
+              onClick={toggleFacilitator}
+              aria-pressed={facilitatorMode}
+              title="Log this call's decisions in the table (f)"
+              className={`px-2.5 py-1 text-xs font-medium rounded ${
+                facilitatorMode
+                  ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-900/50'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600'
+              }`}
+            >
+              Facilitator
+            </button>
             {PRESENT_LAYERS.map((layer) =>
               decks[layer] ? (
                 <button
@@ -1194,9 +1300,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
         <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
           Spread is the gap between the highest and lowest rating, in tiers, darkening as it
           widens. At {DISCUSSION_SPREAD} or more the mean is hiding a disagreement rather than
-          reporting a consensus, which is what{' '}
-          <span className="font-medium">Worth Discussing</span> filters for. A dash means only
-          one team has rated it.
+          reporting a consensus. A dash means only one team has rated it.
         </p>
 
         {hasNonStandardsTrack && (
@@ -1247,6 +1351,9 @@ interface TableRowProps {
   otherTeams: TeamEntry[] | null;
   /** A count is useless once the column is narrowed to the teams you asked for. */
   otherTeamsAsBadges: boolean;
+  decision: CallDecision | undefined;
+  /** null outside facilitator view, so the column is omitted entirely. */
+  onDecide: ((decision: CallDecision) => void) | null;
   maxScore: number;
   columnCount: number;
   isExpanded: boolean;
@@ -1262,6 +1369,8 @@ const TableRow: React.FC<TableRowProps> = ({
   otherTeamsAsBadges,
   maxScore,
   columnCount,
+  decision,
+  onDecide,
   isExpanded,
   onToggle,
   onOpenDrawer,
@@ -1339,6 +1448,15 @@ const TableRow: React.FC<TableRowProps> = ({
             {shortStage}
           </span>
         </td>
+        {onDecide && (
+          <td className="px-2 py-3">
+            <DecisionButtons
+              decision={decision}
+              stage={decisionForStage(agg.inclusionStage)}
+              onDecide={onDecide}
+            />
+          </td>
+        )}
         {elTeams.length > 0 && (
           <td className="px-4 py-3">
             <ClientStanceBadges stances={agg.stances} teams={elTeams} maxScore={maxScore} />
@@ -1550,6 +1668,41 @@ interface PresentationViewProps {
   onNavigate: (index: number) => void;
   onExit: () => void;
 }
+
+/**
+ * The three outcomes a call reaches, as toggles on a table row. The outcome a proposal
+ * already carries into the call is drawn dashed until it is actually taken, so a facilitator
+ * can tell what this call resolved from what was true before it. Clicking the outcome a row
+ * already holds clears it, so a misfire is undone with the same button.
+ */
+const DecisionButtons: React.FC<{
+  decision: CallDecision | undefined;
+  stage: CallDecision | null;
+  onDecide: (decision: CallDecision) => void;
+}> = ({ decision, stage, onDecide }) => (
+  <div className="flex items-center justify-center gap-0.5">
+    {CALL_DECISIONS.map((option) => {
+      const taken = decision === option;
+      return (
+        <button
+          key={option}
+          onClick={() => onDecide(option)}
+          aria-pressed={taken}
+          title={`${taken ? 'Clear' : 'Log'} ${CALL_DECISION_LABEL[option]}`}
+          className={`px-1 py-0.5 text-[11px] font-medium rounded whitespace-nowrap ${
+            taken
+              ? DECISION_STYLE[option]
+              : stage === option
+                ? DECISION_STAGE_STYLE[option]
+                : 'border border-transparent text-slate-400 hover:bg-slate-100 dark:text-slate-500 dark:hover:bg-slate-700'
+          }`}
+        >
+          {CALL_DECISION_LABEL[option]}
+        </button>
+      );
+    })}
+  </div>
+);
 
 /**
  * A slide row's logged outcome, sized against the same row height as everything else.

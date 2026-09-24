@@ -5,6 +5,7 @@ import {
   CallDecisionMap,
   decisionForKey,
   decisionForStage,
+  isFacilitatorHotkey,
   formatDecisions,
   parseDecisions,
   toggleDecision,
@@ -115,5 +116,32 @@ describe('formatDecisions', () => {
     expect(formatDecisions({ 9999: 'deferred' }, () => undefined)).toContain(
       '- EIP-9999: Untitled'
     );
+  });
+});
+
+describe('isFacilitatorHotkey', () => {
+  const press = (key: string, modifiers: Partial<KeyboardEvent> = {}) => ({
+    key,
+    metaKey: false,
+    ctrlKey: false,
+    altKey: false,
+    ...modifiers,
+  });
+
+  it('takes a bare f, in either case', () => {
+    expect(isFacilitatorHotkey(press('f'))).toBe(true);
+    expect(isFacilitatorHotkey(press('F'))).toBe(true);
+  });
+
+  it('leaves find-in-page to the browser', () => {
+    expect(isFacilitatorHotkey(press('f', { metaKey: true }))).toBe(false);
+    expect(isFacilitatorHotkey(press('f', { ctrlKey: true }))).toBe(false);
+    expect(isFacilitatorHotkey(press('f', { altKey: true }))).toBe(false);
+  });
+
+  it('ignores every other key, the deck decision keys included', () => {
+    for (const key of ['c', 'd', 'Escape', 'ArrowRight', ' ']) {
+      expect(isFacilitatorHotkey(press(key))).toBe(false);
+    }
   });
 });

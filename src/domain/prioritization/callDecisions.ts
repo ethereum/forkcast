@@ -34,6 +34,19 @@ export const decisionForKey = (key: string): CallDecision | null =>
   KEY_TO_DECISION.get(key.toLowerCase()) ?? null;
 
 /**
+ * Enters and leaves the facilitator view. A bare `f` only, so find-in-page still reaches the
+ * browser. It doubles as the deferral key, which never contends because the deck takes the
+ * keyboard for itself while it is up.
+ */
+export const isFacilitatorHotkey = (event: {
+  key: string;
+  metaKey: boolean;
+  ctrlKey: boolean;
+  altKey: boolean;
+}): boolean =>
+  !event.metaKey && !event.ctrlKey && !event.altKey && event.key.toLowerCase() === 'f';
+
+/**
  * The outcome a proposal already carries into the call, for the two stages that are the
  * same resolutions a call reaches. Deferral has no stage of its own, and PFI is simply
  * where everything on the board starts, so neither maps to anything.

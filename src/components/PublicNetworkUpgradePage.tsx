@@ -9,8 +9,6 @@ import {
   isHeadliner,
   getLaymanTitle,
   getProposalPrefix,
-  getSpecificationUrl,
-  getSummaryDescription,
   wasHeadlinerCandidate,
   isUnselectedHeadlinerCandidate,
   sortByLayer,
@@ -24,6 +22,7 @@ import {
 } from '../utils/colors';
 import { ActivationDetails } from '../data/upgrades';
 import { Tooltip, CopyLinkButton } from './ui';
+import { EipDrawer } from './eip/EipDrawer';
 import {
   NetworkUpgradeTimeline,
   FusakaTimeline,
@@ -128,7 +127,10 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   const [eips, setEips] = useState<EIP[]>([]);
   const [activeSection, setActiveSection] = useState<string>('overview');
   const [isDeclinedExpanded, setIsDeclinedExpanded] = useState(false);
+  const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
   const lastScrolledHashRef = useRef<string | null>(null);
+  /** Ids the contents list currently offers, read by the scroll handler. */
+  const tocIdsRef = useRef<Set<string>>(new Set());
   // In headlinerSelection mode, expand by default since it's the main content
   const [isHeadlinerProposalsExpanded, setIsHeadlinerProposalsExpanded] = useState(pageMode === 'headlinerSelection');
 
@@ -244,58 +246,49 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     lastScrolledHashRef.current = scrollKey;
   }, [location.pathname, location.search, location.hash, eips, isAnchorExpansionApplied]);
 
-  // Intersection Observer for TOC
+  // Highlight the contents entry for whatever section the reader has scrolled to.
+  // Only ids the table of contents actually lists count: collapsed-section rows and
+  // headliner cards are anchor targets without an entry of their own, and picking one
+  // would leave nothing highlighted.
   useEffect(() => {
-    // Track all currently visible sections
-    const visibleSections = new Set<string>();
+    let frame = 0;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            visibleSections.add(entry.target.id);
-          } else {
-            visibleSections.delete(entry.target.id);
-          }
-        });
+    const update = () => {
+      frame = 0;
+      const tocIds = tocIdsRef.current;
+      const line = getAnchorScrollOffset();
+      const viewportHeight = window.innerHeight;
+      // The last sections can never be scrolled up past the line, so once the page
+      // bottoms out, accept whatever is still on screen.
+      const atBottom =
+        window.scrollY + viewportHeight >= document.documentElement.scrollHeight - 2;
 
-        // Find the visible section closest to the top of the viewport
-        if (visibleSections.size > 0) {
-          let closestSection: string | null = null;
-          let closestDistance = Infinity;
-
-          visibleSections.forEach((id) => {
-            const element = document.getElementById(id);
-            if (element) {
-              const rect = element.getBoundingClientRect();
-              // Use the distance from the top of the viewport
-              const distance = Math.abs(rect.top);
-              if (distance < closestDistance) {
-                closestDistance = distance;
-                closestSection = id;
-              }
-            }
-          });
-
-          if (closestSection) {
-            setActiveSection(closestSection);
-          }
+      let active: string | null = null;
+      document.querySelectorAll<HTMLElement>('[data-section]').forEach((element) => {
+        if (!tocIds.has(element.id)) return;
+        const { top } = element.getBoundingClientRect();
+        if (top <= line || (atBottom && top < viewportHeight)) {
+          active = element.id;
         }
-      },
-      {
-        threshold: 0.1,
-        rootMargin: '-10% 0px -70% 0px'
-      }
-    );
+      });
 
-    // Observe all section elements
-    const sections = document.querySelectorAll('[data-section]');
-    sections.forEach((section) => observer.observe(section));
+      if (active) setActiveSection(active);
+    };
+
+    const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
 
     return () => {
-      sections.forEach((section) => observer.unobserve(section));
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
     };
-  }, [eips]);
+  }, [eips, isDeclinedExpanded, isHeadlinerProposalsExpanded, searchQuery, layerFilter]);
 
   // Filter EIPs by layer
   const filterEipsByLayer = (eipsList: EIP[]) => {
@@ -482,6 +475,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     ...(pageMode !== 'headlinerSelection' && (forkName.toLowerCase() === 'glamsterdam' || forkName.toLowerCase() === 'hegota') ? getHeadlinerProposalsTocItems() : []),
   ];
 
+  tocIdsRef.current = new Set(tocItems.map(item => item.id));
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
@@ -494,6 +489,14 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
     trackLinkClick(linkType, url);
+  };
+
+  // The EIP links stay real anchors, so keep every navigating gesture — modifier
+  // clicks, middle click, "open in new tab" — and only take over the plain click.
+  const openDrawer = (eipId: number) => (event: React.MouseEvent) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
+    event.preventDefault();
+    setDrawerEipId(eipId);
   };
 
   const content = (
@@ -729,89 +732,36 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                           </button>
                         </p>
                       </div>
+                    ) : isDeclinedStage ? (
+                      <ul className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded divide-y divide-slate-200 dark:divide-slate-700">
+                        {sortedStageEips.map(eip => (
+                          <li key={eip.id} id={`eip-${eip.id}`}>
+                            <Link
+                              to={`/eips/${eip.id}`}
+                              onClick={openDrawer(eip.id)}
+                              className="grid grid-cols-[auto_1fr] items-baseline gap-x-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                            >
+                              <span className="text-xs font-mono text-slate-400 dark:text-slate-400">
+                                {getProposalPrefix(eip)}-{eip.id}
+                              </span>
+                              <span className="text-sm text-slate-700 dark:text-slate-300">
+                                {getLaymanTitle(eip)}
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
                     ) : (
                       <div className="space-y-6">
-                        {sortedStageEips.map(eip => {
-                          const eipId = `eip-${eip.id}`;
-
-                          // For declined EIPs, show simplified view
-                          if (isDeclinedStage) {
-                            return (
-                              <article key={eip.id} className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 rounded p-4" id={eipId} data-section>
-                                <div className="flex items-start justify-between">
-                                  <div className="flex-1">
-                                    <h3 className="text-base font-medium text-slate-900 dark:text-slate-100 leading-tight mb-2">
-                                      <span className="text-slate-400 dark:text-slate-400 text-sm font-mono mr-2">{getProposalPrefix(eip)}-{eip.id}</span>
-                                      <span>{eip.title}</span>
-                                    </h3>
-                                    <p className="text-slate-700 dark:text-slate-300 text-sm leading-relaxed">
-                                      {getSummaryDescription(eip)}
-                                    </p>
-                                  </div>
-                                  <div className="flex items-center gap-2 ml-4">
-                                    {eip.discussionLink && (
-                                      <Tooltip text="View discussion">
-                                        <a
-                                          href={eip.discussionLink}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          onClick={() => handleExternalLinkClick('discussion', eip.discussionLink ?? '')}
-                                          className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
-                                        >
-                                          <div className="relative w-7 h-7">
-                                            <img
-                                              src="/eth-mag.png"
-                                              alt="Ethereum Magicians"
-                                              className="w-7 h-7 opacity-90 dark:opacity-70"
-                                            />
-                                            <svg
-                                              className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                              fill="none"
-                                              stroke="currentColor"
-                                              strokeWidth="2"
-                                              viewBox="0 0 24 24"
-                                            >
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                            </svg>
-                                          </div>
-                                        </a>
-                                      </Tooltip>
-                                    )}
-                                    <Tooltip text="View specification">
-                                      <a
-                                        href={getSpecificationUrl(eip)}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        onClick={() => handleExternalLinkClick('specification', getSpecificationUrl(eip))}
-                                        className="text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer relative group"
-                                      >
-                                        <div className="relative w-7 h-7">
-                                          <img
-                                            src="/eth-diamond-black.png"
-                                            alt="Ethereum"
-                                            className="w-7 h-7 opacity-90 dark:opacity-100 dark:invert"
-                                          />
-                                          <svg
-                                            className="absolute -bottom-0.5 -right-0.5 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            strokeWidth="2"
-                                            viewBox="0 0 24 24"
-                                          >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                          </svg>
-                                        </div>
-                                      </a>
-                                    </Tooltip>
-                                  </div>
-                                </div>
-                              </article>
-                            );
-                          }
-
-                          // Full view for non-declined EIPs
-                          return <EipCard key={eip.id} eip={eip} forkName={forkName} handleExternalLinkClick={handleExternalLinkClick} />;
-                        })}
+                        {sortedStageEips.map(eip => (
+                          <EipCard
+                            key={eip.id}
+                            eip={eip}
+                            forkName={forkName}
+                            handleExternalLinkClick={handleExternalLinkClick}
+                            onOpenDrawer={openDrawer(eip.id)}
+                          />
+                        ))}
                       </div>
                     )}
                   </div>
@@ -900,6 +850,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                               handleExternalLinkClick={handleExternalLinkClick}
                               cardId={isDuplicateStageCard ? `headliner-proposal-eip-${eip.id}` : undefined}
                               showCopyLink={!isDuplicateStageCard}
+                              onOpenDrawer={openDrawer(eip.id)}
                             />
                           );
                         })
@@ -983,6 +934,8 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
             )}
           </div>
         </div>
+
+        <EipDrawer eipId={drawerEipId} onClose={() => setDrawerEipId(null)} />
       </div>
   );
 

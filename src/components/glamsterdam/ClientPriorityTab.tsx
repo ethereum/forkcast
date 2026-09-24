@@ -1080,7 +1080,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               <th
                 className="px-3 py-3 text-center text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('spread')}
-                title={`Tiers between the highest and lowest rating. ${DISCUSSION_SPREAD} or more is worth discussing.`}
+                title="Tiers between the highest and lowest rating"
               >
                 <div className="flex items-center justify-center gap-2">
                   Spread

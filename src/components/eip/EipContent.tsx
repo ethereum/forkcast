@@ -360,6 +360,14 @@ export const EipContent: React.FC<EipContentProps> = ({
                 <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-transparent">
                   {eip.status}
                 </span>
+                {eip.type !== 'Standards Track' && (
+                  <span
+                    className="px-2 py-0.5 text-xs font-medium rounded border border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400"
+                    title={`${eip.type}: documents rather than changes the protocol`}
+                  >
+                    {eip.type}
+                  </span>
+                )}
                 {layer && (
                   <span className={`px-2 py-0.5 text-xs font-medium rounded ${
                     layer === 'EL'

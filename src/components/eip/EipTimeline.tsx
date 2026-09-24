@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '../navigation';
-import { EIP } from '../../types';
+import { EIP, ForkRelationship } from '../../types';
 import { networkUpgrades, getUpgradePagePath } from '../../data/upgrades';
 import { formatCallReference } from '../../domain/calls/callReference';
 import { Tooltip } from '../ui';
@@ -9,8 +9,10 @@ interface EipTimelineProps {
   eip: EIP;
 }
 
+type ForkStatus = ForkRelationship['statusHistory'][number]['status'];
+
 interface StatusEntry {
-  status: string;
+  status: ForkStatus;
   date?: string | null;
   call?: string | null;
   timestamp?: number;
@@ -41,7 +43,9 @@ interface ForkGroup {
   presentations: PresentationEntry[];
 }
 
-const statusColors: Record<string, { dot: string; text: string }> = {
+// Keyed by every fork status, so a new one cannot slip through as an unstyled,
+// unlabelled dot. `created` is the synthetic node for the EIP's own creation date.
+const statusColors: Record<ForkStatus | 'created', { dot: string; text: string }> = {
   Included: {
     dot: 'bg-emerald-500',
     text: 'text-emerald-700 dark:text-emerald-400',
@@ -70,13 +74,17 @@ const statusColors: Record<string, { dot: string; text: string }> = {
     dot: 'bg-emerald-500',
     text: 'text-emerald-700 dark:text-emerald-400',
   },
+  Informational: {
+    dot: 'bg-emerald-500',
+    text: 'text-emerald-700 dark:text-emerald-400',
+  },
   created: {
     dot: 'bg-indigo-500',
     text: 'text-indigo-700 dark:text-indigo-400',
   },
 };
 
-const statusLabels: Record<string, string> = {
+const statusLabels: Record<ForkStatus, string> = {
   Proposed: 'Proposed',
   Considered: 'Considered for Inclusion',
   Scheduled: 'Scheduled for Inclusion',
@@ -84,6 +92,7 @@ const statusLabels: Record<string, string> = {
   Included: 'Included',
   Withdrawn: 'Withdrawn',
   Networking: 'Scheduled for Inclusion (Networking)',
+  Informational: 'Scheduled for Inclusion (Informational)',
 };
 
 function formatDate(dateString: string): string {
@@ -252,7 +261,7 @@ export const EipTimeline: React.FC<EipTimelineProps> = ({ eip }) => {
 
                           if (item.type === 'status') {
                             const entry = item.entry;
-                            const entryColors = statusColors[entry.status] || statusColors.Proposed;
+                            const entryColors = statusColors[entry.status];
                             return (
                               <div key={`status-${idx}`} className={`relative flex items-start gap-2.5 ${isLastChild ? '' : 'pb-2.5'}`}>
                                 <div className="relative mt-1 w-2 shrink-0 self-stretch">

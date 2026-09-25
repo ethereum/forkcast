@@ -134,7 +134,14 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               >
                 Platåberget
               </Link>
-              , went live on August 13, 2026.
+              , went live on August 13, 2026.{' '}
+              <Link
+                to="/networks/sepolia"
+                className="font-semibold underline decoration-1 underline-offset-2 hover:text-purple-900 dark:hover:text-purple-100"
+              >
+                Sepolia
+              </Link>
+              {' '}forks next, on October 6, 2026. Hoodi is proposed for October 27, to be confirmed on October 8.
             </p>
           </div>
         </div>

@@ -35,6 +35,8 @@ export interface TestnetDetail {
   proposedDate?: string;
   /** Where the slot was put forward, linked from the `~` badge. */
   proposedSource?: string;
+  /** Where a settled `date` was agreed, linked from the `○` badge. */
+  dateSource?: string;
 }
 
 export interface SubstepDetail {

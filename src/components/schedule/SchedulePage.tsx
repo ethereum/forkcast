@@ -181,6 +181,9 @@ const SchedulePage: React.FC = () => {
         // stays overridable in the sandbox.
         const withProposals = phase.testnets.map(testnet => {
           const proposal = staticTestnets?.find(t => t.name === testnet.name);
+          if (proposal?.date) {
+            return { ...testnet, date: proposal.date, dateSource: proposal.dateSource };
+          }
           return proposal?.proposedDate
             ? { ...testnet, proposedDate: proposal.proposedDate, proposedSource: proposal.proposedSource }
             : testnet;
@@ -1037,6 +1040,8 @@ const SchedulePage: React.FC = () => {
                                       gapType="fixed"
                                       isProposed={!glamTestnet.date && !!glamTestnet.proposedDate}
                                       proposedSource={glamTestnet.proposedSource}
+                                      isSourceLocked={glamTestnet.status !== 'completed' && !!glamTestnet.date}
+                                      dateSource={glamTestnet.dateSource}
                                       isLive={glamTestnet.status === 'in-progress'}
                                     />
                                   );

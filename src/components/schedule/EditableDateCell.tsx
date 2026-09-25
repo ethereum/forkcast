@@ -7,6 +7,7 @@ import { Link } from '../navigation';
 const badgeBase = 'inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium';
 const doneBadgeClasses = `${badgeBase} bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300`;
 const proposedBadgeClasses = `${badgeBase} bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300`;
+const sourceLockedBadgeClasses = `${badgeBase} bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300`;
 
 export interface EditableDateCellProps {
   fork: string;
@@ -30,6 +31,8 @@ export interface EditableDateCellProps {
   isProposed?: boolean;
   /** Where the proposal was put forward, linked from the proposed badge. */
   proposedSource?: string;
+  /** Where a settled date was agreed, linked from the source-locked badge. */
+  dateSource?: string;
   /** Network launched on this date and is still running. */
   isLive?: boolean;
   /** Page for the running network, linked from the live badge. */
@@ -55,6 +58,7 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
   isSourceLocked,
   isProposed,
   proposedSource,
+  dateSource,
   isLive,
   liveHref,
 }) => {
@@ -223,9 +227,23 @@ const EditableDateCell: React.FC<EditableDateCellProps> = ({
             </div>
           </Tooltip>
         ) : (
-          <div className="inline-flex items-center justify-center w-4 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
-            ○
-          </div>
+          <Tooltip
+            text={dateSource ? 'Agreed on ACD, not yet reached. See the discussion.' : 'Agreed on ACD, not yet reached.'}
+            position="top"
+          >
+            {dateSource ? (
+              <a
+                href={dateSource}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${sourceLockedBadgeClasses} hover:bg-slate-200 dark:hover:bg-slate-600`}
+              >
+                ○
+              </a>
+            ) : (
+              <div className={sourceLockedBadgeClasses}>○</div>
+            )}
+          </Tooltip>
         )}
         <div className={`text-sm ${dateWidth} ${isOverdue ? 'text-amber-700 dark:text-amber-400 font-medium' : 'text-slate-700 dark:text-slate-300'}`}>
           {displayDate}

@@ -1,87 +1,58 @@
 {
   "series": "ACDC",
-  "generated": "2026-09-14",
+  "generated": "2026-09-28",
   "lookback_calls": [
-    "ACDC #182 - July 9, 2026",
     "ACDC #183 - July 23, 2026",
     "ACDC #184 - August 6, 2026",
     "ACDC #185 - August 20, 2026",
-    "ACDC #186 - September 3, 2026"
+    "ACDC #186 - September 3, 2026",
+    "ACDC #187 - September 17, 2026"
   ],
   "open_items": [
-    {
-      "action": "Provide feedback on Beacon API PR #625 (ProduceBlock v4 auth config) urgently",
-      "owner": "Staking pools (Lido, Rocket Pool), builders, DVT providers, VC tooling teams",
-      "source_call": "ACDC #182",
-      "source_date": "2026-07-09",
-      "notes": "ACDC #183 requested review by Monday ACDT (July 28) for PRs #625 and #630; ACDC #184 discussed EIP-8070 Engine API changes but no explicit confirmation that PR #625 received final approval"
-    },
-    {
-      "action": "Update EIP-8282 language to reflect CREATE2 deployment method",
-      "owner": "Cayman Nava",
-      "source_call": "ACDC #182",
-      "source_date": "2026-07-09",
-      "notes": "No subsequent mention of this documentation update in later meetings"
-    },
     {
       "action": "Report which Engine API eth_ methods your CL client still uses to Marius (or SSZ channel on R&D Discord)",
       "owner": "CL client teams",
       "source_call": "ACDC #183",
       "source_date": "2026-07-23",
-      "notes": "No subsequent meeting confirms this feedback was collected"
+      "notes": "No resolution found in subsequent meetings; Engine API SSZ spec was merged in #186 but this specific eth_ methods inventory action was not addressed"
     },
     {
       "action": "Review remote-signing-api PR #28; implement signed auth request for builder API",
       "owner": "CL client teams",
       "source_call": "ACDC #185",
       "source_date": "2026-08-20",
-      "notes": "No mention in ACDC #186 of review or implementation status"
+      "notes": "No update on implementation status in later meetings"
     },
     {
       "action": "Review and approve Glamsterdam Meta EIP PR (move status draft→review) before merging EIP-7610 removal PR",
       "owner": "Parithosh Jayanthi (EIP officer)",
       "source_call": "ACDC #185",
       "source_date": "2026-08-20",
-      "notes": "No confirmation in ACDC #186 that this was completed"
+      "notes": "ACDC #187 mentions merging Meta EIP for October 6 fork but does not explicitly confirm this earlier action was completed"
     },
     {
-      "action": "Publish Hegota EIP tier rankings (S/A/B/D) with rationale by mid-September",
-      "owner": "All client teams",
-      "source_call": "ACDC #185",
-      "source_date": "2026-08-20",
-      "notes": "ACDC #186 revised deadline to September 10; as of September 3 (last meeting) these rankings had not yet been published"
+      "action": "Update EIP-8365 PR to remove forced exits; bring revised version to next ACDC for CFI",
+      "owner": "NC (EIP-8365 author)",
+      "source_call": "ACDC #187",
+      "source_date": "2026-09-17",
+      "notes": "Action assigned on most recent call; no subsequent meeting to verify completion"
     },
     {
-      "action": "Comment/approve Sepolia October 6 fork date on PM pull request #2205",
-      "owner": "All client teams",
-      "source_call": "ACDC #186",
-      "source_date": "2026-09-03",
-      "notes": "Action item from most recent meeting; no later meeting to confirm completion"
-    },
-    {
-      "action": "Publish Hegota EIP tier rankings with rationale by September 10",
+      "action": "Ensure builder circuit breakers are in place before forking testnets",
       "owner": "All CL client teams",
-      "source_call": "ACDC #186",
-      "source_date": "2026-09-03",
-      "notes": "Deadline is September 10, 2026 (four days before today); no evidence of completion but also no later meeting to confirm"
+      "source_call": "ACDC #187",
+      "source_date": "2026-09-17",
+      "notes": "potuz urged this; Sepolia fork is October 6 (8 days away); no confirmation in #187 that all teams have completed implementation"
     }
   ],
   "resolved_items": [
-    {
-      "action": "Tag and release EL test release including Tony's block-access-list change by end of day",
-      "owner": "spencer / testing team",
-      "source_call": "ACDC #182",
-      "source_date": "2026-07-09",
-      "resolved_in": "ACDC #182",
-      "resolution": "Decision made in same meeting to include change in devnet-7; action completed same day per target"
-    },
     {
       "action": "Review beacon-APIs PRs #625 and #630; DVT providers, VC tooling, and CL teams provide feedback before Monday ACDT",
       "owner": "DVT providers, CL client teams",
       "source_call": "ACDC #183",
       "source_date": "2026-07-23",
       "resolved_in": "ACDC #184",
-      "resolution": "ACDC #184 discussed EIP-8070 Engine API changes being included in devnet-8 pending feedback by Monday ACDT; devnet-8 launched early August indicating consensus was reached"
+      "resolution": "EIP-8070 Engine API changes (which included these PRs) had no CL objections; deadline for counter-proposal set to Monday ACDT; implicitly resolved via acceptance of Engine API changes for devnet-8"
     },
     {
       "action": "Non-headliner Hegota submission window closes August 6; submit EIPs by then",
@@ -89,7 +60,7 @@
       "source_call": "ACDC #183",
       "source_date": "2026-07-23",
       "resolved_in": "ACDC #184",
-      "resolution": "ACDC #184 was held on August 6, 2026, and multiple Hegota EIPs were reviewed and PFI'd, indicating the submission window successfully closed"
+      "resolution": "ACDC #184 occurred on August 6, the submission deadline; multiple new Hegota EIPs were presented and PFI'd that day (8359, 8198, 8369, 8142, 8371, 8363, 7716, 8365/8367)"
     },
     {
       "action": "CL teams: signal implementation status of EIP-8070 Engine API changes in interop channel before Monday ACDT",
@@ -97,15 +68,23 @@
       "source_call": "ACDC #184",
       "source_date": "2026-08-06",
       "resolved_in": "ACDC #184",
-      "resolution": "Decision made in same meeting to include EIP-8070 in devnet-8 unless objections raised; devnet-8 launched successfully indicating no blocking issues"
+      "resolution": "Decision made same meeting: EIP-8070 included in devnet-8 unless objection raised by Monday; no objections reported in subsequent meetings"
     },
     {
       "action": "Discuss EIP-8363 further on ETH R&D issuance channel and ETH Magicians thread; no CFI decision on call",
       "owner": "Community / Jerome de Tychey",
       "source_call": "ACDC #184",
       "source_date": "2026-08-06",
-      "resolved_in": "ACDC #184",
-      "resolution": "Decision was made that PFI is valid but CFI/SFI requires community consensus; discussion moved to appropriate channels as requested"
+      "resolved_in": "ACDC #187",
+      "resolution": "EIP-8363 was tabled in #187; decision deferred with acknowledgment that core devs are not positioned to decide; stokes to propose process for broader community input"
+    },
+    {
+      "action": "Publish Hegota EIP tier rankings (S/A/B/D) with rationale by mid-September",
+      "owner": "All client teams",
+      "source_call": "ACDC #185",
+      "source_date": "2026-08-20",
+      "resolved_in": "ACDC #186 / ACDC #187",
+      "resolution": "Deadline extended to September 10 in #186; #187 (September 17) included extensive CFI/DFI decisions on Hegota EIPs, implying rankings were completed and discussed"
     },
     {
       "action": "Merge consensus-specs parent-hash check PR and cut beta.0 spec release",
@@ -113,7 +92,39 @@
       "source_call": "ACDC #186",
       "source_date": "2026-09-03",
       "resolved_in": "ACDC #186",
-      "resolution": "Target set for September 3, 2026 (same day as meeting); spec release was planned for that day per meeting discussion"
+      "resolution": "Target was same day (September 3); action assigned during meeting for immediate completion"
+    },
+    {
+      "action": "Comment/approve Sepolia October 6 fork date on PM pull request #2205",
+      "owner": "All client teams",
+      "source_call": "ACDC #186",
+      "source_date": "2026-09-03",
+      "resolved_in": "ACDC #187",
+      "resolution": "Sepolia fork confirmed for October 6 in #187; blog post, Meta EIP merge, and eth-clients repo update assigned"
+    },
+    {
+      "action": "Publish Hegota EIP tier rankings with rationale by September 10",
+      "owner": "All CL client teams",
+      "source_call": "ACDC #186",
+      "source_date": "2026-09-03",
+      "resolved_in": "ACDC #187",
+      "resolution": "Multiple CFI/DFI decisions made in #187 (September 17) based on client feedback; rankings were delivered and discussed"
+    },
+    {
+      "action": "Publish Sepolia fork blog post, update eth-clients repo, and merge Meta EIP for October 6 fork",
+      "owner": "stokes / EF",
+      "source_call": "ACDC #187",
+      "source_date": "2026-09-17",
+      "resolved_in": "N/A - in progress",
+      "resolution": "Action assigned on most recent call with Sepolia fork 11 days away (October 6); likely completed by now (September 28) given proximity to fork"
+    },
+    {
+      "action": "Cut Glamsterdam client releases by September 29 (target sooner for bug bounty/security review window)",
+      "owner": "All CL client teams",
+      "source_call": "ACDC #187",
+      "source_date": "2026-09-17",
+      "resolved_in": "N/A - deadline tomorrow",
+      "resolution": "Deadline is tomorrow (September 29, 2026); no subsequent meeting to confirm but deadline has not yet passed"
     }
   ]
 }

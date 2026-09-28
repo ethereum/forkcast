@@ -26,15 +26,15 @@
       },
       {
         "timestamp": "00:17:41",
-        "highlight": "200M gas limit assessed safe: Pavel's attack peaks at 2.5s execution; Jochem's slow blocks were compounded by debug tracing running simultaneously"
+        "highlight": "200M gas limit assessed safe: Pawe\u0142's attack peaks at 2.5s execution; Jochem's slow blocks were compounded by debug tracing running simultaneously"
       },
       {
         "timestamp": "00:46:00",
-        "highlight": "Significant gap between Benchmarker (~2.5s worst case) and devnet (~5s) for JUMPDEST analysis on 100M gas block; cloud-attached disks and active debug tracing are suspected causes"
+        "highlight": "Significant gap between Benchmark Core (~2.5s worst case on a 200M block) and devnet (~5s on a 100M gas block) for JUMPDEST analysis; cloud-attached disks and active debug tracing are suspected causes"
       },
       {
         "timestamp": "00:57:08",
-        "highlight": "Plan: disable debug tracing on devnet-8, then rerun Pavel's and Jochem's attacks; Besu requests trunk branch be used instead of release for this test"
+        "highlight": "Plan: disable debug tracing on devnet-8, then rerun Pawe\u0142's and Jochem's attacks; Besu and Nethermind ask for trunk branches instead of the Sepolia releases for this test"
       }
     ],
     "critical_infrastructure": [
@@ -44,13 +44,13 @@
       },
       {
         "timestamp": "00:39:46",
-        "highlight": "ELOC keys missing 0x prefix in JSON genesis file; Nethermind fails without it \u2014 PR open in eth-clients/mainnet for client approval"
+        "highlight": "alloc keys missing 0x prefix in JSON genesis file; Nethermind fails without it \u2014 PR open in eth-clients/mainnet for client approval"
       }
     ],
     "fast_confirmation_rule_fcr": [
       {
         "timestamp": "00:24:11",
-        "highlight": "Proposal: add a new 'confirmed' block tag (not repurpose 'safe') to enable FCR adoption; backwards-compat concerns from RPCs are blocking uptake"
+        "highlight": "Proposal: add a new block tag (not repurpose 'safe') to enable FCR adoption; backwards-compat concerns from RPCs are blocking uptake"
       },
       {
         "timestamp": "00:25:42",
@@ -65,8 +65,8 @@
   "action_items": [
     {
       "timestamp": "00:57:18",
-      "action": "Disable debug tracing on devnet-8 and rerun JUMPDEST attacks (Pavel's and Jochem's) to isolate tracing overhead; use Besu trunk branch",
-      "owner": "EthPandaOps (Stefan) + Pavel"
+      "action": "Disable debug tracing on devnet-8 and rerun JUMPDEST attacks (Pawe\u0142's and Jochem's) to isolate tracing overhead; use Besu and Nethermind trunk branches",
+      "owner": "EthPandaOps (Stefan) + Pawe\u0142"
     },
     {
       "timestamp": "00:31:23",
@@ -95,7 +95,7 @@
     },
     {
       "timestamp": "00:23:40",
-      "target": "~1.5\u20132 weeks \u2014 Sepolia mainnet fork"
+      "target": "~1.5\u20132 weeks \u2014 mainnet shadow fork (Sepolia itself forks in ~1 week)"
     }
   ]
 }

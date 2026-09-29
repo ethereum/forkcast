@@ -1,0 +1,35 @@
+{
+  "meeting": "FOCIL #043 - 2026-09-29",
+  "sections": [
+    {
+      "heading": "FOCIL Devnet 0 Client Readiness",
+      "summary": "All clients are close to devnet 0 readiness; minor Hive test failures remain but teams agreed to proceed with launch.",
+      "timestamp": "00:05:16",
+      "body": "- ethrex (EL): Updated branch with latest spec tests; execution spec PRs merged and new 0.3.0 release is sufficient. Currently failing 3 Hive tests, expected to be fixed within hours.\n- Lodestar (CL): Rebased FOCIL branch on top of beta.2 release. Gossip validation spec tests are all passing.\n- Teku (CL): Fixed two issues raised by EthPandaOps; discovered a third issue being fixed. New Docker image for devnet 0 expected shortly after the call.\n- Nethermind (EL): Ready for devnet. Working on small fixes and thinking about FOCIL and Frames interaction.\n- Lighthouse (CL): Close to having a devnet 0-ready branch. Still working through gossip verification and new payload v6 request. Branch expected to be ready this week.\n- Besu (EL): Ready for devnet; some Hive tests still failing and under review.\n- Agreement: despite EL clients failing some Hive tests, teams agreed to proceed with devnet 0 launch.\n- Lighthouse to share devnet 0-ready branch in the chat once available."
+    },
+    {
+      "heading": "Beacon API Status",
+      "summary": "Most FOCIL Beacon API endpoints are implemented across clients; inclusion list bits missing from payload attributes event stream noted as an oversight.",
+      "timestamp": "00:09:37",
+      "body": "- The Heze Beacon API spec ([beacon-APIs PR #490](https://github.com/ethereum/beacon-APIs/pull/490)) should not be merged yet; Glamsterdam Beacon APIs need to be merged into the next release first.\n- Oversight identified: inclusion list bits were not included in the payload attributes event stream. Lodestar does not currently implement this.\n- Teku reported most endpoints are implemented, including an event stream. Needs to double-check for any remaining gaps.\n- Lighthouse reported endpoints should be implemented but needs to verify event stream support.\n- NC noted the PR needs more feedback from other client teams before merging."
+    },
+    {
+      "heading": "FOCIL and Frames Interaction Specs",
+      "summary": "ethrex is nearly done with FOCIL-plus-Frames execution specs; CL-side changes for index-based mechanism to be presented at the next breakout.",
+      "timestamp": "00:12:18",
+      "body": "- ethrex reported the FOCIL + Frames execution specs are almost complete, expected to be done by tomorrow or later in the week.\n- Plan to present them at the Frames breakout next week and at the next FOCIL breakout (in two weeks).\n- soispoke raised in chat the need to present what changes on the FOCIL side for the index-based mechanism, specifically how the builder sends the object.\n- Jihoon or soispoke to prepare material so teams are aware of the CL-side changes needed to support FOCIL and Frames interaction.\n- Discussion of these CL changes is planned for the next FOCIL breakout in two weeks."
+    },
+    {
+      "heading": "CFI Features and Heze Devnet Inclusion Timeline",
+      "summary": "EIP-8015 and EIP-8365 may target devnet 1 or 2; teams agreed it is too early to decide before devnet 0 results are in.",
+      "timestamp": "00:15:21",
+      "body": "- Justin Traglia asked when simple CFI'd features should be included in Heze specs, referencing [EIP-8015 consensus-specs PR #5655](https://github.com/ethereum/consensus-specs/pull/5655).\n- EIP-8365 (without exit feature) also mentioned as a candidate.\n- NC said it is still too early to decide; depends on outcome of devnet 0.\n- Justin Traglia advocated including them as soon as possible, targeting devnet 1 or devnet 2.\n- Understanding confirmed: features need to be included in a devnet once CFI'd, and can only move toward SFI after stabilizing in a devnet.\n- Plan: open PRs adding CFI features (EIP-8015, EIP-8365) and decide inclusion timing based on devnet 0 results.\n- ACDC call this week may CFI additional EIPs, which will inform next steps."
+    },
+    {
+      "heading": "Shorter Slots Devnet",
+      "summary": "Barnabas is pushing a shorter-slots devnet on top of Heze; it is not CFI'd, so it waits on devnet 0.",
+      "timestamp": "00:18:38",
+      "body": "- NC noted Barnabas is pushing to get a devnet up for shorter slots, which would sit on top of Heze.\n- Shorter slots is not yet CFI'd, so no decisions can be made on its devnet timing.\n- Justin Traglia advised not to worry about it right now, and agreed the timing depends on Heze.\n- Jihoon suggested focusing on FOCIL devnet 0 launch first and revisiting after ACDC."
+    }
+  ]
+}

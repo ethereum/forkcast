@@ -115,7 +115,14 @@ export type RowAction =
   | { kind: 'expand-section'; sectionId: SectionId; scope: SearchScope; label: string }
   | { kind: 'activate-transcripts'; label: string };
 
+/**
+ * The block a row renders under. Search results group by their `SectionId`; the
+ * zero-query launcher groups by intent instead. Only used to key the rendered
+ * rows — nothing branches on it.
+ */
+export type RowGroupId = SectionId | 'recent' | 'jump';
+
 export type FlatRow =
-  | { type: 'header'; sectionId: SectionId; label: string; total: number }
-  | { type: 'result'; sectionId: SectionId; result: GlobalResult }
+  | { type: 'header'; sectionId: RowGroupId; label: string; total: number }
+  | { type: 'result'; sectionId: RowGroupId; result: GlobalResult }
   | { type: 'action'; action: RowAction };

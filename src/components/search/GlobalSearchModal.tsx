@@ -33,6 +33,8 @@ import {
   type SummaryFilters,
 } from '../../domain/search/lightCorpusSearch';
 import { firstSelectableIndex, moveIndex } from '../../domain/search/keyboardNav';
+import { buildLauncherRows } from '../../domain/search/launcher';
+import { readRecentHrefs, recordRecentHref } from '../../domain/search/recentSearches';
 import { SECTION_SCOPE, capSections, flattenSections, orderSections } from '../../domain/search/ranking';
 import { buildSiteEntities, searchSiteEntities } from '../../domain/search/siteSearch';
 import type {
@@ -88,6 +90,7 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
   const [transcriptsOn, setTranscriptsOn] = useState(false);
   const [transcripts, setTranscripts] = useState<TranscriptResult[]>([]);
   const [transcriptsLoading, setTranscriptsLoading] = useState(false);
+  const [recentHrefs, setRecentHrefs] = useState<string[]>([]);
 
   const [activeIndex, setActiveIndex] = useState(0);
   // Mouse movement over a row only takes over the selection when the user isn't
@@ -115,6 +118,9 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
     if (!isOpen) return;
     loadEips().then(setEips, () => {});
     loadLightCorpus().then(setEntries, () => {});
+    // Re-read per open: another tab, or this modal's own last navigation, may have
+    // added to the list since it was mounted.
+    setRecentHrefs(readRecentHrefs());
   }, [isOpen]);
 
   // Self-cancelling rather than a `debounce` helper: closing mid-flight has to
@@ -216,13 +222,35 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
     return capSections(orderSections(inScope), scope === 'all');
   }, [debouncedQuery, siteEntities, eipResults, entries, summaryFilters, transcripts, scope]);
 
-  const rows = useMemo(() => {
+  const hasInput = query.trim().length > 0;
+  const hasQuery = debouncedQuery.trim().length > 0;
+
+  const launcherRows = useMemo(
+    () =>
+      buildLauncherRows({
+        recentHrefs,
+        calls: protocolCalls,
+        entities: siteEntities,
+        eipById: eips?.eipById ?? null,
+        scope,
+      }),
+    [recentHrefs, siteEntities, eips, scope],
+  );
+
+  const searchRows = useMemo(() => {
     const offerTranscripts =
       !transcriptsOn && debouncedQuery.trim().length >= 2 && (scope === 'all' || scope === 'transcripts');
     return flattenSections(sections, {
       transcriptAction: offerTranscripts ? 'Search call transcripts and chat' : undefined,
     });
   }, [sections, transcriptsOn, debouncedQuery, scope]);
+
+  // The launcher only stands in for a search that has nothing to show and wasn't
+  // asked anything — an EIP filter with no query still produces rows of its own.
+  // It stands down on the live input rather than the debounced one, so Enter
+  // during that window can't land on a suggestion the reader has typed past.
+  // Both sides are memoized, so `rows` keeps a stable identity either way.
+  const rows = hasInput || searchRows.length > 0 ? searchRows : launcherRows;
 
   useEffect(() => {
     setActiveIndex(firstSelectableIndex(rows));
@@ -241,6 +269,9 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
 
   const go = useCallback(
     (href: string) => {
+      // Only a plain activation lands here — `RowShell` lets a modified click
+      // through to the anchor, which doesn't leave the page and isn't history.
+      recordRecentHref(href);
       navigate(href);
       close();
     },
@@ -306,8 +337,6 @@ export default function GlobalSearchModal({ isOpen, initialScope, initialQuery =
     }
     setActiveIndex(index);
   }, []);
-
-  const hasQuery = debouncedQuery.trim().length > 0;
 
   return (
     <SearchDialog isOpen={isOpen} onClose={close} query={query} maxWidthClassName="max-w-3xl">

@@ -22,6 +22,20 @@ const callLabel = (call: Call): string =>
     ? getCallDisplayName(call)
     : `${call.type.toUpperCase()} #${stripLeadingZeros(call.number)}`;
 
+/**
+ * How a call is named and linked wherever it appears as a jump-to result, so the
+ * launcher's fixed rows and a searched one are the same row.
+ */
+export const toCallEntityResult = (call: Call, score = 0, identity = 0): CallEntityResult => ({
+  kind: 'call',
+  call,
+  label: callLabel(call),
+  seriesName: getCallDisplayName(call),
+  score,
+  identity,
+  href: `/calls/${call.path}`,
+});
+
 export function searchCallEntities(query: string, calls: Call[]): CallEntityResult[] {
   const normalized = query.toLowerCase().trim();
   if (!normalized) return [];
@@ -58,15 +72,7 @@ export function searchCallEntities(query: string, calls: Call[]): CallEntityResu
 
     if (score === 0) continue;
 
-    results.push({
-      kind: 'call',
-      call,
-      label: callLabel(call),
-      seriesName,
-      score,
-      identity,
-      href: `/calls/${call.path}`,
-    });
+    results.push(toCallEntityResult(call, score, identity));
   }
 
   results.sort((a, b) => b.score - a.score || b.call.date.localeCompare(a.call.date));

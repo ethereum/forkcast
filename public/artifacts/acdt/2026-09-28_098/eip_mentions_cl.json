@@ -1,0 +1,49 @@
+{
+  "meeting": "ACDT #098 - 2026-09-28 (CL Breakout)",
+  "eips": [
+    {
+      "eip": 7732,
+      "title": "Enshrined Proposer-Builder Separation",
+      "weight": "discussed",
+      "summary": "Builder payment edge case was the main topic; fix must land before Hoodi, but no reason to delay Sepolia.",
+      "moments": [
+        {
+          "timestamp": "00:00:50",
+          "context": "Justin Traglia opened the breakout on an edge case regarding builder payments, asking to discuss it without covering how it could be exploited."
+        },
+        {
+          "timestamp": "00:01:27",
+          "context": "Potuz explained that since the partial state transition on payload import was removed (spec change 5094), a block building on a full payload processes the previous payload's requests first — so a request containing a builder exit is processed unconditionally, before that payload's builder payments."
+        },
+        {
+          "timestamp": "00:09:20",
+          "context": "Justin Traglia confirmed there was no reason to delay Sepolia over it; Potuz noted it cannot be triggered there anyway."
+        }
+      ]
+    },
+    {
+      "eip": 8061,
+      "title": "Increase exit and consolidation churn",
+      "weight": "mentioned",
+      "summary": "Referenced as the basis for reducing epoch retention to 14K epochs, with general client agreement.",
+      "moments": [
+        {
+          "timestamp": "00:29:00",
+          "context": "Kevaundray noted that everyone seems okay with modifying retention given EIP-8061, setting it to 14K epochs, with clients free to keep more data if they wish."
+        }
+      ]
+    },
+    {
+      "eip": 8198,
+      "title": "Quick Slots",
+      "weight": "discussed",
+      "summary": "Shorter slots feature spec discussed regarding testing approach, FOCIL prerequisites, and tooling implications.",
+      "moments": [
+        {
+          "timestamp": "00:30:14",
+          "context": "Barnabas asked if anyone started work on shorter slots. Nico said Lodestar has a working branch but not on the latest spec. Discussion covered whether it should be tested on top of FOCIL since timing interactions matter, and that it is a feature spec based on Heze. Justin confirmed the PR was merged."
+        }
+      ]
+    }
+  ]
+}

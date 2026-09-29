@@ -1,0 +1,461 @@
+{
+  "meeting": "ACDE #246 - 2026-09-24",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "State creation gas cost increase cited as the reason the gas limit needs to reach at least 150M at the Glamsterdam fork.",
+      "moments": [
+        {
+          "timestamp": "00:21:00",
+          "context": "Maria explained that 8037's cost-per-state-byte increase means some transactions require much more gas, making a gas limit below 150M problematic."
+        },
+        {
+          "timestamp": "01:25:50",
+          "context": "Helkomine noted that 8037 would massively drive up deployment costs without a discount like SETCODEFROM or 8058."
+        }
+      ]
+    },
+    {
+      "eip": 3860,
+      "title": "Limit and meter initcode",
+      "weight": "mentioned",
+      "summary": "Referenced as the initcode pricing EIP that should have already addressed the JUMPDEST analysis attack vector.",
+      "moments": [
+        {
+          "timestamp": "00:21:24",
+          "context": "Jochem noted the attack involves CREATE initcode and should have been fixed by EIP-3860's 2 gas/word pricing."
+        }
+      ]
+    },
+    {
+      "eip": 8261,
+      "title": "Gas Limit Schedule",
+      "weight": "mentioned",
+      "summary": "Jochem linked Barnabas's gas limit schedule EIP in chat during the gas limit discussion.",
+      "moments": [
+        {
+          "timestamp": "00:26:48",
+          "context": "Jochem shared the link to EIP-8261 in chat when discussing whether a gas limit schedule mechanism exists."
+        }
+      ]
+    },
+    {
+      "eip": 8061,
+      "title": "Increase exit and consolidation churn",
+      "weight": "discussed",
+      "summary": "Increase exit and consolidation churn was discussed as the cause of the CL block retention window needing adjustment.",
+      "moments": [
+        {
+          "timestamp": "00:32:00",
+          "context": "danceratopz explained that 8061 changed a key CL parameter but the block retention window was not updated to reflect it."
+        },
+        {
+          "timestamp": "00:34:55",
+          "context": "Kev asked whether the CL window should be reduced according to 8061, which would roughly halve it."
+        },
+        {
+          "timestamp": "00:43:11",
+          "context": "Kev noted the current 33k epoch window could be reduced to about 2 months if adjusted per 8061."
+        }
+      ]
+    },
+    {
+      "eip": 8383,
+      "title": "Reduce CL Block Retention Window",
+      "weight": "mentioned",
+      "summary": "Referenced as a Hegota PFI EIP that would further reduce the CL block retention window.",
+      "moments": [
+        {
+          "timestamp": "00:32:29",
+          "context": "danceratopz mentioned EIP-8383 as a related Hegota PFI that reduces the CL block retention window further."
+        }
+      ]
+    },
+    {
+      "eip": 4444,
+      "title": "Bound Historical Data in Execution Clients",
+      "weight": "mentioned",
+      "summary": "Kev noted that EIP-4444's history bound was changed to 33,024 epochs to match the CL retention window.",
+      "moments": [
+        {
+          "timestamp": "00:34:43",
+          "context": "Kev said EIP-4444 was changed to 33,024 to match the CL retention window, and reducing the CL window per 8061 would roughly halve it."
+        }
+      ]
+    },
+    {
+      "eip": 8237,
+      "title": "Independent CL/EL Sync",
+      "weight": "mentioned",
+      "summary": "Potuz repeatedly noted that independent CL/EL sync would have made the BAL retention discussion moot.",
+      "moments": [
+        {
+          "timestamp": "00:46:08",
+          "context": "Potuz said they should not have DFI'd 8237 because it would make all BAL and payload retention questions irrelevant."
+        }
+      ]
+    },
+    {
+      "eip": 8304,
+      "title": "Trustless log and transaction index",
+      "weight": "discussed",
+      "summary": "Trustless log and transaction index was DFI'd for Hegota after Besu and Reth confirmed no change in their positions.",
+      "moments": [
+        {
+          "timestamp": "00:48:03",
+          "context": "nixo raised 8304 as a DFI candidate from the previous call, asking Besu and Reth if they had adjusted their recommendations."
+        },
+        {
+          "timestamp": "00:49:13",
+          "context": "Zsolt said he would continue working on the project regardless of the DFI decision and invited interested parties to reach out."
+        }
+      ]
+    },
+    {
+      "eip": 7979,
+      "title": "Call and Return Opcodes for the EVM",
+      "weight": "discussed",
+      "summary": "Call and return opcodes for the EVM received broad client support and was moved to CFI for Hegota.",
+      "moments": [
+        {
+          "timestamp": "00:50:21",
+          "context": "Greg Colvin summarized performance measurements and end-to-end testing with Solidity showing all tests pass with the new opcodes."
+        },
+        {
+          "timestamp": "00:54:57",
+          "context": "Solidity representative confirmed they would implement it when delivered and shared their opinion in the ETH Magicians thread."
+        },
+        {
+          "timestamp": "00:57:51",
+          "context": "Dragan confirmed Reth support, noting their SOLAR compiler team would like to use it, upgrading from a C."
+        },
+        {
+          "timestamp": "00:58:37",
+          "context": "Ben Adams from Nethermind strongly supported it, saying it has been considered a good idea for nine years and should ship now."
+        },
+        {
+          "timestamp": "00:59:11",
+          "context": "Besu said Solidity's support changed their opinion and they are open to moving it from B to A."
+        },
+        {
+          "timestamp": "01:00:34",
+          "context": "nixo proposed moving 7979 to CFI with no strong opposition; multiple clients confirmed support in chat."
+        }
+      ]
+    },
+    {
+      "eip": 8173,
+      "title": "Foundations of EVM Control Flow",
+      "weight": "mentioned",
+      "summary": "Greg Colvin referenced it as the foundations of EVM control flow document linked from the 7979 proposal.",
+      "moments": [
+        {
+          "timestamp": "00:51:10",
+          "context": "Greg mentioned 8173 on foundations of control flow as background reading for understanding the 7979 proposal."
+        }
+      ]
+    },
+    {
+      "eip": 8337,
+      "title": "Validated EVM Code",
+      "weight": "mentioned",
+      "summary": "Referenced by Greg Colvin as a validated EVM code proposal that is a natural follow-up to 7979.",
+      "moments": [
+        {
+          "timestamp": "00:52:14",
+          "context": "Greg described 8337 as a proposal for showing code is valid with five criteria, and Solidity said they would be more in favor if it followed 7979."
+        }
+      ]
+    },
+    {
+      "eip": 2315,
+      "title": "Simple Subroutines for the EVM",
+      "weight": "mentioned",
+      "summary": "Greg noted that Charles from Vyper prefers 2315 over 7979 but would still use the new opcodes.",
+      "moments": [
+        {
+          "timestamp": "00:56:47",
+          "context": "Greg relayed that Charles would say he likes 2315 better but would definitely use the 7979 opcodes."
+        }
+      ]
+    },
+    {
+      "eip": 8163,
+      "title": "Reserve `EXTENSION (0xae)` opcode",
+      "weight": "discussed",
+      "summary": "Reserve EXTENSION opcode was moved to CFI after L2 demand evidence and client support as a trivial no-op on L1.",
+      "moments": [
+        {
+          "timestamp": "01:03:02",
+          "context": "nixo raised 8163 as a DFI candidate and asked for L2/EVM chain feedback."
+        },
+        {
+          "timestamp": "01:03:24",
+          "context": "Piotr from Mononaut Foundation presented evidence of demand from Tron, Rootstock, and Arbitrum Nitro."
+        },
+        {
+          "timestamp": "01:04:48",
+          "context": "Besu promoted it to S tier, Erigon to B, Reth said C or B, ethrex said C. No opposition; moved to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 8360,
+      "title": "TCREATE Opcode",
+      "weight": "discussed",
+      "summary": "TCREATE opcode was discussed as covering ephemeral contract use cases but not decided; deferred to next call.",
+      "moments": [
+        {
+          "timestamp": "01:06:55",
+          "context": "Milos presented TCREATE for disposable contracts, arguing Glamsterdam's refund removal effectively breaks this use case."
+        },
+        {
+          "timestamp": "01:11:25",
+          "context": "Jochem argued the EVM is effectively deprecating this feature without an alternative and should schedule one for Hegota."
+        },
+        {
+          "timestamp": "01:12:10",
+          "context": "Ben Adams said some use cases could be covered by SETCODEFROM but not all, and TCREATE would let them fully remove self-destruct."
+        },
+        {
+          "timestamp": "01:15:05",
+          "context": "Maria said the discussion should be coupled with the self-destruct deprecation decision; nixo deferred to next call."
+        }
+      ]
+    },
+    {
+      "eip": 7928,
+      "title": "Block-Level Access Lists",
+      "weight": "mentioned",
+      "summary": "Block-level access lists noted as already included when checking TCREATE dependencies.",
+      "moments": [
+        {
+          "timestamp": "01:10:23",
+          "context": "nixo checked TCREATE's dependencies and noted 7928 is already included."
+        }
+      ]
+    },
+    {
+      "eip": 1153,
+      "title": "Transient storage opcodes",
+      "weight": "mentioned",
+      "summary": "Referenced as already part of the chain when explaining that TCREATE's SSTORE/SLOAD behaves like TSTORE/TLOAD.",
+      "moments": [
+        {
+          "timestamp": "01:11:10",
+          "context": "Jochem clarified that SSTORE behaves as TSTORE in TCREATE contracts, referencing EIP-1153 as already deployed."
+        }
+      ]
+    },
+    {
+      "eip": 8368,
+      "title": "CPSB Recalibration for New Gas Limit",
+      "weight": "discussed",
+      "summary": "CPSB recalibration left in PFI along with 8372 pending mainnet data after Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "01:16:18",
+          "context": "nixo noted both 8368 and 8372 need at least 30 days of mainnet data post-Glamsterdam before a decision; left as PFI."
+        }
+      ]
+    },
+    {
+      "eip": 8372,
+      "title": "Normalized state gas limit",
+      "weight": "discussed",
+      "summary": "Normalized state gas limit left in PFI alongside 8368 pending post-Glamsterdam mainnet data.",
+      "moments": [
+        {
+          "timestamp": "01:16:18",
+          "context": "nixo proposed leaving both 8368 and 8372 in PFI since neither can be decided until mainnet data is available."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Transaction assertions via state diff opcode was the highest rated PFI and moved to CFI with no opposition.",
+      "moments": [
+        {
+          "timestamp": "01:18:04",
+          "context": "nixo presented 7906 as the highest rated EIP and asked for concerns; Suyash from Firmware strongly recommended it for hardware signers."
+        },
+        {
+          "timestamp": "01:19:07",
+          "context": "No opposition raised; moved to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 8250,
+      "title": "Keyed Nonces for Frame Transactions",
+      "weight": "discussed",
+      "summary": "Keyed nonces for frame transactions moved to CFI with no concerns raised.",
+      "moments": [
+        {
+          "timestamp": "01:19:15",
+          "context": "nixo asked for concerns on 8250; none raised, moved to CFI as part of the account abstraction batch."
+        }
+      ]
+    },
+    {
+      "eip": 8272,
+      "title": "Recent Roots for Frame Transactions",
+      "weight": "discussed",
+      "summary": "Recent roots for frame transactions moved to CFI alongside 8250 as a frame transactions bundle.",
+      "moments": [
+        {
+          "timestamp": "01:19:58",
+          "context": "nixo grouped 8272 with 8250 as frame transaction EIPs and moved it to CFI with no opposition."
+        }
+      ]
+    },
+    {
+      "eip": 7668,
+      "title": "Remove bloom filters",
+      "weight": "discussed",
+      "summary": "Remove bloom filters moved to CFI; Ben Adams noted they are computed and sent but nobody uses them.",
+      "moments": [
+        {
+          "timestamp": "01:20:44",
+          "context": "nixo raised 7668 noting it has been proposed for three forks; Ben Adams called it technical debt removal since nobody uses bloom filters."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "discussed",
+      "summary": "Bump nonce of zero-nonce storage accounts moved to CFI as the replacement for EIP-7610.",
+      "moments": [
+        {
+          "timestamp": "01:22:37",
+          "context": "Jochem explained 8253 is the EIP-7610 replacement that was SFI'd then last-minute DFI'd for Glamsterdam; moved to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 7610,
+      "title": "Revert creation in case of non-empty storage",
+      "weight": "mentioned",
+      "summary": "Referenced as the EIP that 8253 replaces after being DFI'd last minute from Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "01:23:05",
+          "context": "Jochem stated 8253 is the EIP-7610 replacement, noting 7610 was SFI'd for Glamsterdam then DFI'd at the last minute."
+        }
+      ]
+    },
+    {
+      "eip": 3298,
+      "title": "Remove storage-clear refund and refund cap",
+      "weight": "discussed",
+      "summary": "Remove storage-clear refund and refund cap moved to CFI despite lower priority ratings from Erigon and ethrex.",
+      "moments": [
+        {
+          "timestamp": "01:23:28",
+          "context": "nixo asked about the lower tier ratings from Erigon and ethrex; Andrew from Erigon said it was just lower priority, no specific concern. Moved to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 8131,
+      "title": "Unified Transaction Content Floor",
+      "weight": "discussed",
+      "summary": "Unified transaction content floor moved to CFI with all client ratings at A or B and no concerns.",
+      "moments": [
+        {
+          "timestamp": "01:24:26",
+          "context": "nixo presented 8131 as the last easy CFI; all ratings were A or B with no flags raised."
+        },
+        {
+          "timestamp": "01:26:28",
+          "context": "Ansgar and Toni argued 8131 should be bundled with the block access list byte floor (8279), since doing only one leaves the worst-case block size unchanged."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "discussed",
+      "summary": "SETCODEFROM code reuse instruction discussed for CFI; Besu asked for more time, deferred to next call.",
+      "moments": [
+        {
+          "timestamp": "01:26:11",
+          "context": "Lightclient said SETCODEFROM is important; CPerezz shared a walkthrough article and offered to help client teams."
+        },
+        {
+          "timestamp": "01:29:16",
+          "context": "CPerezz explained how SETCODEFROM enables migration from EOA to smart accounts and post-quantum readiness."
+        },
+        {
+          "timestamp": "01:31:33",
+          "context": "Dragan explained Reth's DFI was not a strong opinion, just wanting to delay code-change decisions until after frames. Nico argued timing risks with post-quantum concerns make Hegota inclusion important."
+        },
+        {
+          "timestamp": "01:35:00",
+          "context": "Besu said they find arguments compelling but need more time; nixo deferred the decision to next call."
+        }
+      ]
+    },
+    {
+      "eip": 8279,
+      "title": "Block Access List Byte Floor",
+      "weight": "discussed",
+      "summary": "Raised as the bundle partner to 8131 for unified data pricing; clients were not asked to decide on the call.",
+      "moments": [
+        {
+          "timestamp": "01:26:17",
+          "context": "Ansgar named the block access list byte floor as the other data-pricing EIP and said it and 8131 go hand-in-hand toward a more unified approach to data pricing, adding it was only a suggestion and that clients not ready to decide today was fine."
+        },
+        {
+          "timestamp": "01:27:01",
+          "context": "Toni agreed the two should be seen as a bundle, because doing only one of them leaves the worst-case block size unchanged."
+        }
+      ]
+    },
+    {
+      "eip": 8058,
+      "title": "Contract Bytecode Deduplication Discount",
+      "weight": "mentioned",
+      "summary": "Contract bytecode deduplication discount mentioned as related to but superseded by SETCODEFROM.",
+      "moments": [
+        {
+          "timestamp": "01:28:23",
+          "context": "Helkomine and CPerezz discussed 8058; CPerezz said SETCODEFROM is a superset of 8058 and he is the author of both."
+        },
+        {
+          "timestamp": "01:35:48",
+          "context": "Helkomine argued that 8058 and 8298 should be able to coexist since Uniswap factory sub-contracts have identical code."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "mentioned",
+      "summary": "Account code restricted ecRecover was mentioned as related to SETCODEFROM but had no discussion or decision.",
+      "moments": [
+        {
+          "timestamp": "01:29:25",
+          "context": "Nico asked if 8151 was discussed; nixo confirmed no discussion or decision on it today."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "mentioned",
+      "summary": "Referenced in SETCODEFROM discussion as the alternative for users who want to keep EOA functionality.",
+      "moments": [
+        {
+          "timestamp": "01:29:48",
+          "context": "CPerezz explained that SETCODEFROM migrates to a full code account while 7702 keeps EOA natively for those who don't want to fully migrate."
+        }
+      ]
+    }
+  ]
+}

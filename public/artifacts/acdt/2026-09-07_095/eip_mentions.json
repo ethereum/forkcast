@@ -1,0 +1,157 @@
+{
+  "meeting": "ACDT #095 - 2026-09-07",
+  "eips": [
+    {
+      "eip": 7870,
+      "title": "Hardware and Bandwidth Recommendations",
+      "weight": "mentioned",
+      "summary": "CPerezz linked it in chat asking whether devnet-8 node hardware was below the recommended specs.",
+      "moments": [
+        {
+          "timestamp": "00:09:49",
+          "context": "After Stefan said nodes run on 8 cores and 16 GB RAM, CPerezz noted this seems below the hardware specs recommended by EIP-7870."
+        }
+      ]
+    },
+    {
+      "eip": 7610,
+      "title": "Revert creation in case of non-empty storage",
+      "weight": "discussed",
+      "summary": "Removed from Glamsterdam tests; its removal is the reason EIP-8253 was proposed as a companion fix.",
+      "moments": [
+        {
+          "timestamp": "00:23:42",
+          "context": "Danceratopz noted that EIP-7610 was removed in tests-glamsterdam-devnet v8.1.3 and tests v20.0.2."
+        },
+        {
+          "timestamp": "00:30:00",
+          "context": "Jochem referenced EIP-684's collision check only covering nonce and code, not storage, which EIP-7610's removal exposed as an issue for BALs."
+        },
+        {
+          "timestamp": "00:34:42",
+          "context": "Spencer described EIP-8253 as a wrap-up after de-CFI'ing EIP-7610, noting clients ended up differing again."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "State gas merge-time repayment included in latest test release; debug trace representation to be discussed on RPC standards call.",
+      "moments": [
+        {
+          "timestamp": "00:23:42",
+          "context": "Danceratopz noted EIP-8037 merge-time state-gas repayment was included in tests-glamsterdam-devnet v8.1.4."
+        },
+        {
+          "timestamp": "00:56:25",
+          "context": "Stefan gave a heads-up that state gas in debug traces for EIP-8037 would be discussed on the RPC standards call starting in seven minutes."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "discussed",
+      "summary": "Debated whether to ship with Glamsterdam or defer to Hegota; rough consensus was to defer, with final decision on Thursday.",
+      "moments": [
+        {
+          "timestamp": "00:29:07",
+          "context": "Danceratopz introduced the topic of shipping EIP-8253 with Glamsterdam as a companion to the EIP-7610 removal and BAL edge case."
+        },
+        {
+          "timestamp": "00:29:26",
+          "context": "Jochem explained the BAL incompatibility with the yellow paper's Formula 99 for accounts with zero nonce but non-empty storage, affecting 28 accounts."
+        },
+        {
+          "timestamp": "00:31:47",
+          "context": "Toni asked what goes wrong without it; Jochem explained that BAL state diffs would produce a different state root than re-executing transactions for these accounts."
+        },
+        {
+          "timestamp": "00:34:17",
+          "context": "Toni said the EIP makes sense but advocated for Hegota rather than including it this late in the Glamsterdam process."
+        },
+        {
+          "timestamp": "00:35:07",
+          "context": "Spencer noted this is a wrap-up after de-CFI'ing 7610, said it's easy to test, and asked client teams for their preference."
+        },
+        {
+          "timestamp": "00:35:56",
+          "context": "Dragan from Reth said he wants it done as fast as possible and is fine with either Glamsterdam or Hegota."
+        },
+        {
+          "timestamp": "00:37:00",
+          "context": "FLCL from Nethermind said it seems too late for Glamsterdam due to insufficient transition testing time, preferring Hegota."
+        },
+        {
+          "timestamp": "00:37:37",
+          "context": "Marius from Geth said he's fine deferring unless it creates tech debt by requiring different BAL mechanisms between Glamsterdam and Hegota."
+        },
+        {
+          "timestamp": "00:43:44",
+          "context": "Toni suggested delaying the final decision until Thursday's ACD call to allow async coordination among client teams."
+        }
+      ]
+    },
+    {
+      "eip": 684,
+      "title": "Revert creation in case of collision",
+      "weight": "mentioned",
+      "summary": "Referenced as the contract collision check that only verifies nonce and code, not storage, relevant to the EIP-8253 discussion.",
+      "moments": [
+        {
+          "timestamp": "00:30:55",
+          "context": "Jochem cited EIP-684's collision test as only checking nonce zero and empty code, not storage, explaining why these 28 accounts are problematic."
+        }
+      ]
+    },
+    {
+      "eip": 8360,
+      "title": "TCREATE Opcode",
+      "weight": "mentioned",
+      "summary": "Jochem mentioned the TCREATE opcode as an alternative being explored for users of the self-destruct-create pattern.",
+      "moments": [
+        {
+          "timestamp": "00:47:08",
+          "context": "Jochem said he requested an ephemeral accounts channel on EF R&D to help users transition to EIP-8360's TCREATE opcode instead of self-destruct patterns."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-access gas cost update",
+      "weight": "mentioned",
+      "summary": "Carlos noted the benchmarking numbers for 8038 are unlikely to change based on jochemnet vs State Actor snapshot findings.",
+      "moments": [
+        {
+          "timestamp": "00:48:12",
+          "context": "Carlos said he does not think the numbers of 8038 will change but the benchmarking team will likely switch to the State Actor snapshot going forward."
+        }
+      ]
+    },
+    {
+      "eip": 8252,
+      "title": "Execution-Layer Reorg State Retention Window",
+      "weight": "mentioned",
+      "summary": "Toni linked it in chat as related work for the reorg state retention window discussion.",
+      "moments": [
+        {
+          "timestamp": "00:51:01",
+          "context": "Toni shared the EIP-8252 link in chat, noting they wanted to work towards this reorg window, relevant to CPerezz's reorg testing topic."
+        }
+      ]
+    },
+    {
+      "eip": 8070,
+      "title": "eth/72 - Sparse Blobpool",
+      "weight": "discussed",
+      "summary": "Transaction size ambiguity for type-3 transactions in eth/72 carried over from last call; Stefan summarized fixes and a spec PR.",
+      "moments": [
+        {
+          "timestamp": "00:54:09",
+          "context": "Stefan summarized that most clients have fixed the eth/72 tx-size ambiguity for type-3 blob transactions and a devp2p PR is open to clarify the specification."
+        }
+      ]
+    }
+  ]
+}

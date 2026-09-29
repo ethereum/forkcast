@@ -1,7 +1,9 @@
 import generatedCalls from './protocol-calls.generated.json';
 import { getTodayDateString } from '../utils/localDate';
+import { getCallTypeName, type CallType } from './callSeries';
 
-export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr' | 'aa' | 'p2p' | 'ssz' | 'ethproofs';
+export { callTypeNames, getCallTypeName } from './callSeries';
+export type { CallType } from './callSeries';
 
 export interface Call {
   type: string;
@@ -14,29 +16,6 @@ export interface Call {
   issue?: number;
 }
 
-// Full names for call types (used in tooltips)
-export const callTypeNames: Record<CallType, string> = {
-  acdc: 'AllCoreDevs - Consensus',
-  acde: 'AllCoreDevs - Execution',
-  acdt: 'AllCoreDevs - Testing',
-  epbs: 'ePBS Breakout',
-  bal: 'BAL Breakout',
-  focil: 'FOCIL Breakout',
-  price: 'Glamsterdam Repricings',
-  tli: 'Trustless Log Index',
-  pqts: 'Post Quantum Transaction Signatures',
-  rpc: 'RPC Standards',
-  zkevm: 'L1-zkEVM Breakout',
-  etm: 'Encrypt The Mempool',
-  awd: 'AllWalletDevs',
-  pqi: 'PQ Interop',
-  fcr: 'Fast Confirmation Rule',
-  aa: 'Frame Transaction Breakout',
-  p2p: 'P2P Networking',
-  ssz: 'SSZ Engine API',
-  ethproofs: 'Ethproofs',
-};
-
 // Badge text for series whose slug is too long for the badge pill.
 const callTypeBadgeLabels: Partial<Record<CallType, string>> = {
   ethproofs: 'EP',
@@ -48,10 +27,6 @@ export const getCallTypeBadgeLabel = (type: string): string =>
 export const protocolCalls: Call[] = generatedCalls as Call[];
 
 export const isOneOffCall = (type: string): boolean => type.startsWith('one-off-');
-
-/** Display name for a call type, falling back to the raw type slug. */
-export const getCallTypeName = (type: string): string =>
-  callTypeNames[type as CallType] || type;
 
 export const getCallDisplayName = (call: Call): string =>
   call.name || getCallTypeName(call.type);

@@ -1,0 +1,117 @@
+{
+  "meeting": "ACDC #185 - 2026-08-20",
+  "eips": [
+    {
+      "eip": 7610,
+      "title": "Revert creation in case of non-empty storage",
+      "weight": "discussed",
+      "summary": "Formally removed from Glamsterdam as it specifies behavior that can never occur and impacts client performance unnecessarily.",
+      "moments": [
+        {
+          "timestamp": "00:30:12",
+          "context": "Jochem explained that EIP-7610 was discussed at ACDE on Monday and decided to be removed from Glamsterdam because implementing it affects client performance for a scenario that can never happen."
+        },
+        {
+          "timestamp": "00:31:13",
+          "context": "Jochem confirmed it is not postponed but cancelled, because EIP-8253 CFI'd for Hegota directly solves the problem by ensuring no accounts of the targeted type exist in the state tree. He said he would ask authors to formally withdraw it."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "discussed",
+      "summary": "Cited as the Hegota CFI replacement for EIP-7610, solving the same problem by bumping nonces of zero-nonce storage accounts.",
+      "moments": [
+        {
+          "timestamp": "00:31:27",
+          "context": "Jochem stated EIP-8253 is CFI for Hegota and directly solves the problem that EIP-7610 targeted, making 7610's removal possible."
+        }
+      ]
+    },
+    {
+      "eip": 8333,
+      "title": "Align Checkpoint with Epoch Boundary Block",
+      "weight": "discussed",
+      "summary": "Presented by cayman as a Hegota proposal to align checkpoint root calculation with the epoch boundary block instead of the first block.",
+      "moments": [
+        {
+          "timestamp": "00:33:34",
+          "context": "Parithosh introduced EIP-8333 from WeMeetAgain. Cayman presented it as fixing a long-standing off-by-one error in checkpoint calculation, noting it improves target vote accuracy and pairs well with quicker slots by relaxing timing for target voting."
+        }
+      ]
+    },
+    {
+      "eip": 8379,
+      "title": "Top-up Sync",
+      "weight": "discussed",
+      "summary": "Dustin presented this Engine API sync status EIP for Hegota, discussing CL-driven sync, devp2p simplification, and whether it could be optional.",
+      "moments": [
+        {
+          "timestamp": "00:38:42",
+          "context": "Barnabas asked in chat if EIP-8379 could be an optional EIP."
+        },
+        {
+          "timestamp": "00:42:08",
+          "context": "Parithosh introduced EIP-8379, and Dustin presented it as enabling the CL to be the sole source of truth for sync, improving recovery on unstable networks, reducing duplicative block gossip, and opening a path to narrow devp2p scope."
+        },
+        {
+          "timestamp": "00:44:51",
+          "context": "Jochem asked for the EIP-8379 PR link; Parithosh shared the commit and jochem confirmed the EIP number via the EIPs pull request."
+        },
+        {
+          "timestamp": "00:49:51",
+          "context": "Dustin argued against making EIP-8379 optional, saying Engine API endpoints need to be mandatory to be useful, and that by Hegota deployment the SSZ Engine API will likely be in use."
+        }
+      ]
+    },
+    {
+      "eip": 8383,
+      "title": "Reduce CL Block Retention Window",
+      "weight": "discussed",
+      "summary": "PFI'd for Hegota after debate over whether one constant or two should govern retention.",
+      "moments": [
+        {
+          "timestamp": "00:42:28",
+          "context": "Kevaundray explained the original retention constant was derived from max safety decay, and that following that derivation faithfully means halving the CL block retention window; he noted client behaviour already varies."
+        },
+        {
+          "timestamp": "00:47:35",
+          "context": "Dustin argued a conservative retention period buys not having to care about edge cases; Kevaundray said he was fine with having two constants, one for a long retention window."
+        },
+        {
+          "timestamp": "00:51:37",
+          "context": "Kevaundray noted ELs copy the CL block retention window because some CLs do not store the execution payload, so the two cannot be reasoned about separately."
+        }
+      ]
+    },
+    {
+      "eip": 8061,
+      "title": "Increase exit and consolidation churn",
+      "weight": "discussed",
+      "summary": "Referenced as causing the CL block retention window constant to need halving since it was introduced in Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "00:42:42",
+          "context": "Kev explained that if the CL block retention window derivation is followed faithfully, 8061's introduction in Glamsterdam means the window must be halved."
+        },
+        {
+          "timestamp": "00:48:17",
+          "context": "Kev reiterated that the 4-month retention window gets halved due to 8061, arguing the safety decay of 100 no longer makes sense."
+        }
+      ]
+    },
+    {
+      "eip": 8252,
+      "title": "Execution-Layer Reorg State Retention Window",
+      "weight": "mentioned",
+      "summary": "Kev noted the proposed CL block retention epoch number matches the reorg retention window defined in EIP-8252.",
+      "moments": [
+        {
+          "timestamp": "00:43:39",
+          "context": "Kev said the epoch number in his proposal matches the reorg retention window from EIP-8252."
+        }
+      ]
+    }
+  ]
+}

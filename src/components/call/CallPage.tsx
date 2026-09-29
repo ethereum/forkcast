@@ -4,6 +4,7 @@ import YouTube, { YouTubeProps } from 'react-youtube';
 import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';
 import CallNotes, { type NotesData } from './CallNotes';
+import CallEipMentions, { type EipMentionsData } from './CallEipMentions';
 import CallSearch from './CallSearch';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
@@ -42,6 +43,7 @@ interface CallData {
   videoUrl?: string;
   tldrData?: TldrData;
   notesData?: NotesData;
+  eipMentions?: EipMentionsData;
   keyDecisions?: KeyDecision[];
 }
 
@@ -85,6 +87,14 @@ const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(28rem, calc(100svh - 13.75rem),
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
 const SURFACE_DEEP_LINK_QUERY_KEYS = ['search', 'timestamp', 'type', 'text', 'chat', 'summary'] as const;
 const SUMMARY_CONTENT_ID = 'call-summary-content';
+// Declaration order is the tab order, and the first tab a call actually has is
+// its default — so a call with no tldr.json opens on whatever it does have.
+const SUMMARY_TABS = [
+  { key: 'tldr', label: 'TL;DR' },
+  { key: 'notes', label: 'Detailed Notes' },
+  { key: 'eips', label: 'EIPs' },
+] as const;
+type SummaryTab = (typeof SUMMARY_TABS)[number]['key'];
 const TRANSCRIPT_CONTENT_ID = 'call-transcript-content';
 const CHAT_CONTENT_ID = 'call-chat-content';
 
@@ -295,6 +305,10 @@ const loadBundledBreakoutCallData = async (
   const transcriptContent = await readTextArtifact(`${artifactPath}/transcript_${kind}.vtt`, isVttArtifact);
   const tldrData = await readJsonArtifact<TldrData>(`${artifactPath}/tldr_${kind}.json`, `tldr_${kind}.json`);
   const notesData = await readJsonArtifact<NotesData>(`${artifactPath}/notes_${kind}.json`, `notes_${kind}.json`);
+  const eipMentions = await readJsonArtifact<EipMentionsData>(
+    `${artifactPath}/eip_mentions_${kind}.json`,
+    `eip_mentions_${kind}.json`,
+  );
   const keyDecisionsData = await readJsonArtifact<{ key_decisions?: KeyDecision[] }>(
     `${artifactPath}/key_decisions_${kind}.json`,
     `key_decisions_${kind}.json`,
@@ -310,6 +324,7 @@ const loadBundledBreakoutCallData = async (
       videoUrl: breakoutConfig.videoUrl,
       tldrData,
       notesData,
+      eipMentions,
       keyDecisions: keyDecisionsData?.key_decisions,
     },
     callConfig: { videoUrl: breakoutConfig.videoUrl, issue, sync: breakoutConfig.sync },
@@ -344,6 +359,10 @@ const loadMainCallData = async (
     await readTextArtifact(`${artifactPath}/transcript.vtt`, isVttArtifact);
   const tldrData = await readJsonArtifact<TldrData>(`${artifactPath}/tldr.json`, 'tldr.json');
   const notesData = await readJsonArtifact<NotesData>(`${artifactPath}/notes.json`, 'notes.json');
+  const eipMentions = await readJsonArtifact<EipMentionsData>(
+    `${artifactPath}/eip_mentions.json`,
+    'eip_mentions.json',
+  );
   const keyDecisionsData = await readJsonArtifact<{ key_decisions?: KeyDecision[] }>(
     `${artifactPath}/key_decisions.json`,
     'key_decisions.json',
@@ -363,6 +382,7 @@ const loadMainCallData = async (
       videoUrl: config?.videoUrl ?? videoText?.trim() ?? 'https://www.youtube.com/watch?v=wF0gWBHZdu8',
       tldrData,
       notesData,
+      eipMentions,
       keyDecisions: keyDecisionsData?.key_decisions,
     },
     callConfig: config,
@@ -646,14 +666,17 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     }
   }, [location.search]);
 
-  // A ?summary=notes deep link should land on the notes, but the summary card is
+  // A ?summary= deep link should land on that tab, but the summary card is
   // collapsed by default. Fires once, so clicking the tab later doesn't re-scroll.
-  const hasHandledNotesDeepLink = useRef(false);
+  const hasHandledSummaryDeepLink = useRef(false);
   useEffect(() => {
-    if (hasHandledNotesDeepLink.current) return;
-    if (searchParams.get('summary') !== 'notes' || !callData?.notesData) return;
+    if (hasHandledSummaryDeepLink.current) return;
+    const requested = searchParams.get('summary');
+    const target =
+      requested === 'notes' ? callData?.notesData : requested === 'eips' ? callData?.eipMentions : null;
+    if (!target) return;
 
-    hasHandledNotesDeepLink.current = true;
+    hasHandledSummaryDeepLink.current = true;
     setSummaryExpanded(true);
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
@@ -1250,17 +1273,23 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
 
   const hasTldr = Boolean(callData.tldrData);
   const hasNotes = Boolean(callData.notesData?.sections?.length);
-  const hasSummary = hasTldr || hasNotes;
-  const showSummaryTabs = hasTldr && hasNotes;
+  const hasEipMentions = Boolean(callData.eipMentions?.eips?.length);
+  const hasSummary = hasTldr || hasNotes || hasEipMentions;
+  const availableSummaryTabs = SUMMARY_TABS.filter(
+    tab => ({ tldr: hasTldr, notes: hasNotes, eips: hasEipMentions })[tab.key],
+  );
+  const showSummaryTabs = availableSummaryTabs.length > 1;
   // ?type=agenda|action deep links scroll to anchors that only exist in the TL;DR view.
   const forceTldr = hasTldr && (selectedSearchResult?.type === 'agenda' || selectedSearchResult?.type === 'action');
-  const wantsNotes = !hasTldr || (!forceTldr && searchParams.get('summary') === 'notes');
-  const summaryTab: 'tldr' | 'notes' = hasNotes && wantsNotes ? 'notes' : 'tldr';
+  const requestedTab = availableSummaryTabs.find(tab => tab.key === searchParams.get('summary'));
+  const summaryTab: SummaryTab =
+    (!forceTldr && requestedTab?.key) || availableSummaryTabs[0]?.key || 'tldr';
 
-  const setSummaryTab = (tab: 'tldr' | 'notes') => {
+  const setSummaryTab = (tab: SummaryTab) => {
     const next = new URLSearchParams(searchParams);
-    if (tab === 'notes') next.set('summary', 'notes');
-    else next.delete('summary');
+    // TL;DR is the default view, so it leaves the URL clean.
+    if (tab === 'tldr') next.delete('summary');
+    else next.set('summary', tab);
     setSearchParams(next, { replace: true });
   };
 
@@ -1283,6 +1312,8 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
       <span className="text-xs text-slate-500 dark:text-slate-400">
         {summaryTab === 'notes'
           ? `${callData.notesData!.sections.length} sections`
+          : summaryTab === 'eips'
+          ? `${callData.eipMentions!.eips.length} EIPs`
           : `${Object.values(callData.tldrData!.highlights).flat().length} highlights${callData.keyDecisions?.length ? ` • ${callData.keyDecisions.length} decisions` : ''} • ${callData.tldrData!.action_items?.length || 0} action items`}
       </span>
     </div>
@@ -1295,20 +1326,16 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     const tabInactive = 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300';
     return (
       <div className={`flex overflow-x-auto border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 ${showSummaryInColumn ? 'sticky top-0 z-10' : ''}`}>
-        <button
-          type="button"
-          onClick={() => setSummaryTab('tldr')}
-          className={`${tabBase} ${summaryTab === 'tldr' ? tabActive : tabInactive}`}
-        >
-          TL;DR
-        </button>
-        <button
-          type="button"
-          onClick={() => setSummaryTab('notes')}
-          className={`${tabBase} ${summaryTab === 'notes' ? tabActive : tabInactive}`}
-        >
-          Detailed Notes
-        </button>
+        {availableSummaryTabs.map(tab => (
+          <button
+            key={tab.key}
+            type="button"
+            onClick={() => setSummaryTab(tab.key)}
+            className={`${tabBase} ${summaryTab === tab.key ? tabActive : tabInactive}`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
     );
   };
@@ -1323,6 +1350,12 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             onTimestampClick={handleTranscriptClick}
             syncConfig={callConfig?.sync}
             currentVideoTime={currentVideoTime}
+          />
+        ) : summaryTab === 'eips' ? (
+          <CallEipMentions
+            data={callData.eipMentions!}
+            onTimestampClick={handleTranscriptClick}
+            syncConfig={callConfig?.sync}
           />
         ) : (
           <TldrSummary

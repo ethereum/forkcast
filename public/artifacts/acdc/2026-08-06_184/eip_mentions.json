@@ -1,0 +1,225 @@
+{
+  "meeting": "ACDC #184 - 2026-08-06",
+  "eips": [
+    {
+      "eip": 8070,
+      "title": "eth/72 - Sparse Blobpool",
+      "weight": "discussed",
+      "summary": "Sparse blobpool engine API changes revisited for devnet 8 inclusion, pending CL client feedback by ACDT Monday.",
+      "moments": [
+        {
+          "timestamp": "00:11:28",
+          "context": "Bosul raised EIP-8070 engine API updates discussed at last ACDT, noting most EL clients did not object but Lighthouse raised concerns about piggybacking the custody field on purchase update. Asked for CL client signals."
+        },
+        {
+          "timestamp": "00:13:46",
+          "context": "Parithosh said if no counter-objection is raised by ACDT on Monday, EIP-8070 should be added to devnet 8 scope."
+        }
+      ]
+    },
+    {
+      "eip": 8359,
+      "title": "Beacon Block Reporting Field",
+      "weight": "discussed",
+      "summary": "Beacon block reporting field proposed to provide better client diversity data than graffiti watermarks.",
+      "moments": [
+        {
+          "timestamp": "00:18:44",
+          "context": "Hanniabu presented EIP-8359, a 32-byte BeaconBlockBody field for reporting CL/EL client, validator setup type, and agreement threshold, noting it is not consensus-impacting."
+        },
+        {
+          "timestamp": "00:21:30",
+          "context": "Pari asked why stronger graffiti guarantees couldn't suffice; hanniabu explained space limitations and that 40% of blocks have watermarks overridden by user graffiti."
+        }
+      ]
+    },
+    {
+      "eip": 8198,
+      "title": "Quick Slots",
+      "weight": "discussed",
+      "summary": "Quick Slots proposal presented targeting 10-second slots in Hegota to deliver faster ethereum incrementally.",
+      "moments": [
+        {
+          "timestamp": "00:23:17",
+          "context": "Barnabé presented EIP-8198 Quick Slots, arguing for removing the hard-coded 12-second slot assumption and a moderate decrease to 10 seconds for Hegota, with value delivered immediately upon going live."
+        },
+        {
+          "timestamp": "00:34:46",
+          "context": "Dustin questioned whether 12 to 10 seconds is worth the disruption. Barnabé responded that incremental steps toward 6 seconds are more realistic than a single large jump and the first change opens the path for future reductions."
+        }
+      ]
+    },
+    {
+      "eip": 4788,
+      "title": "Beacon block root in the EVM",
+      "weight": "mentioned",
+      "summary": "Referenced in chat as a way contracts could prove slot number against the beacon block root on the EL.",
+      "moments": [
+        {
+          "timestamp": "00:39:32",
+          "context": "Toni noted in chat that before the SLOTNUM opcode ships in Glamsterdam, proving exact time on the EL was possible via EIP-4788 beacon block root, relevant to backward compatibility analysis of slot time changes."
+        }
+      ]
+    },
+    {
+      "eip": 8369,
+      "title": "VOPS Profiles for FOCIL Eligibility",
+      "weight": "discussed",
+      "summary": "Presented by soispoke as a way to define which frame transactions can benefit from FOCIL inclusion guarantees; PFI'd for Hegota.",
+      "moments": [
+        {
+          "timestamp": "00:40:38",
+          "context": "Parithosh introduced VOPS profiles for FOCIL eligibility as the next agenda item, with soispoke presenting."
+        },
+        {
+          "timestamp": "00:41:42",
+          "context": "soispoke explained the profile determines which frame transactions can benefit from FOCIL and will keep doing so even in a post-zkEVM future, since frames touching arbitrary state in verification fall outside FOCIL enforcement."
+        },
+        {
+          "timestamp": "00:42:21",
+          "context": "soispoke argued applications, especially those with immutable contracts, need that boundary defined up front."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "mentioned",
+      "summary": "Referenced as compatible with FOCIL eligibility when discussing WAP profiles for frame transactions.",
+      "moments": [
+        {
+          "timestamp": "00:41:29",
+          "context": "Soispoke mentioned that FOCIL works fine with 7702 delegated account transactions when presenting the WAP profile EIP for FOCIL eligibility."
+        }
+      ]
+    },
+    {
+      "eip": 8142,
+      "title": "Block-in-Blobs (BiB)",
+      "weight": "discussed",
+      "summary": "Block-in-Blobs proposal presented to propagate execution payloads via PeerDAS columns using cell-level deltas.",
+      "moments": [
+        {
+          "timestamp": "00:43:17",
+          "context": "Kamil presented EIP-8142 proposing to put execution payloads into blobs and reuse PeerDAS column machinery for faster payload propagation, planned in two phases."
+        },
+        {
+          "timestamp": "00:48:36",
+          "context": "Potuz raised concerns about mixing payload and blob data in columns conflicting with EPBS timelines, specifically PTC attestation deadlines at 6 vs 9 seconds. Terence added that blob and payload markets must remain separate."
+        }
+      ]
+    },
+    {
+      "eip": 8371,
+      "title": "RowDAS - Distributed Blob Reconstruction",
+      "weight": "discussed",
+      "summary": "RowDAS proposed to distribute blob reconstruction load across nodes instead of relying solely on supernodes.",
+      "moments": [
+        {
+          "timestamp": "00:52:22",
+          "context": "Csaba presented EIP-8371 RowDAS, targeting the CPU-intensive reconstruction bottleneck in PeerDAS supernodes by distributing row reconstruction via notification-based low topics with rotating job allocation."
+        }
+      ]
+    },
+    {
+      "eip": 8363,
+      "title": "Tapered Issuance Burn",
+      "weight": "discussed",
+      "summary": "Tapered Issuance Burn proposed to reduce net staking yield to zero at 50% stake ratio, sparking extensive debate.",
+      "moments": [
+        {
+          "timestamp": "00:57:50",
+          "context": "Jerome presented EIP-8363, a tapered burn on validator rewards above 50% staking ratio, arguing the window for reform closes as more ETH stakes. Proof-of-concept is about 300 lines in Prysm."
+        },
+        {
+          "timestamp": "01:04:26",
+          "context": "Barnabas asked whether the goal is tapering issuance or preventing 50% stake, suggesting a hard stop instead. Jerome responded that capping entry introduces first-mover advantage and attack vectors."
+        },
+        {
+          "timestamp": "01:06:57",
+          "context": "Oisin raised Nakamoto coefficient concerns, arguing the curve could reduce operator diversity by creating a price competition favoring large operators."
+        },
+        {
+          "timestamp": "01:13:45",
+          "context": "Greg from Lido requested the authors withdraw the PFI for Hegota, arguing a full issuance redesign arriving 48 hours before deadline is too late for constructive review and crowds out other proposals."
+        },
+        {
+          "timestamp": "01:19:19",
+          "context": "Ansgar emphasized that a contentious change like this could never be pushed through against clear community opposition and that community acceptance is a prerequisite."
+        }
+      ]
+    },
+    {
+      "eip": 1559,
+      "title": "Fee market change for ETH 1.0 chain",
+      "weight": "mentioned",
+      "summary": "Referenced as a historical precedent where community sentiment was initially against the change.",
+      "moments": [
+        {
+          "timestamp": "01:26:08",
+          "context": "Trent noted in chat that community sentiment was also initially against EIP-1559, drawing a parallel to the issuance debate and arguing core devs must sometimes make difficult but necessary decisions."
+        }
+      ]
+    },
+    {
+      "eip": 7716,
+      "title": "Anti-correlation attestation penalties",
+      "weight": "discussed",
+      "summary": "Anti-correlation attestation penalties update presented with adjusted parameters to make correlated failures more costly.",
+      "moments": [
+        {
+          "timestamp": "01:30:02",
+          "context": "Oisin presented an update to EIP-7716, noting the original parameters were a rounding error and proposing increased penalties focused on source and target votes only, removing head vote to avoid EPBS-related unfairness."
+        },
+        {
+          "timestamp": "01:34:29",
+          "context": "Terence asked how the penalty interacts with the inactivity leak; Oisin confirmed it is cumulative but much smaller and caps at 33% offline."
+        }
+      ]
+    },
+    {
+      "eip": 8333,
+      "title": "Align Checkpoint with Epoch Boundary Block",
+      "weight": "mentioned",
+      "summary": "Deferred to the next ACDC call along with Engine API sync status discussion.",
+      "moments": [
+        {
+          "timestamp": "01:40:23",
+          "context": "Parithosh announced EIP-8333 and Engine API sync status would be covered at the next ACDC due to time constraints. Cayman confirmed readiness to present it then."
+        }
+      ]
+    },
+    {
+      "eip": 8365,
+      "title": "BLS withdrawal credential retirement",
+      "weight": "discussed",
+      "summary": "NC presented retiring 0x00 validators by force-exiting them, since BLS execution changes are not post-quantum safe; PFI'd for Hegota, with pushback on the added complexity.",
+      "moments": [
+        {
+          "timestamp": "01:40:39",
+          "context": "NC explained 0x01 and 0x02 credentials can be safely ejected with ETH swept to the EL side, but 0x00 has no clean path, and doing nothing would freeze those funds forever because the BLS execution change is not PQ safe."
+        },
+        {
+          "timestamp": "01:42:31",
+          "context": "NC proposed force-exiting all 0x00 validators so their funds remain on the consensus side earning no rewards, from where a BLS execution change can still unfreeze them."
+        },
+        {
+          "timestamp": "01:44:44",
+          "context": "potuz questioned what the proposal gains, arguing the forced exit and churn add complexity without changing that the money is lost either way."
+        }
+      ]
+    },
+    {
+      "eip": 8367,
+      "title": "Balance sunset for retired BLS validators",
+      "weight": "discussed",
+      "summary": "The second step of NC's proposal: drain retired validator balances to zero before the PQ transition; PFI'd for Hegota.",
+      "moments": [
+        {
+          "timestamp": "01:43:00",
+          "context": "NC described the second step as draining the balance slowly over time, so all retired validators reach zero by the PQ transition rather than dropping from 32 ETH to 0 at a cliff."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,272 @@
+{
+  "meeting": "ACDE #242 - 2026-07-30",
+  "eips": [
+    {
+      "eip": 2780,
+      "title": "Resource-based intrinsic transaction gas",
+      "weight": "mentioned",
+      "summary": "Maria posted a link to the EIP-2780 repricing analysis dashboard for client teams to review.",
+      "moments": [
+        {
+          "timestamp": "00:22:00",
+          "context": "Maria shared a link in chat to the EIP-2780 repricing analysis page as a key resource for clients to check."
+        }
+      ]
+    },
+    {
+      "eip": 7928,
+      "title": "Block-Level Access Lists",
+      "weight": "mentioned",
+      "summary": "Stefan flagged in chat that hivechain is blocked by client disagreement on EIP-7928 block-level access list contents.",
+      "moments": [
+        {
+          "timestamp": "00:32:57",
+          "context": "Stefan posted in chat that the hivechain PR for Glamsterdam is blocked because clients disagree on EIP-7928 BAL contents at block 57."
+        }
+      ]
+    },
+    {
+      "eip": 8115,
+      "title": "Batch priority fees at end of block",
+      "weight": "discussed",
+      "summary": "Etan proposed batching priority fees to end of block for parallelism and UX, noting the tradeoff that fees become spendable only next block.",
+      "moments": [
+        {
+          "timestamp": "00:36:44",
+          "context": "Etan presented EIP-8115, proposing to collect all priority fees and credit the fee recipient once at end of block instead of per-transaction, improving parallel execution and UX but making priority fees spendable only in the next block."
+        }
+      ]
+    },
+    {
+      "eip": 8116,
+      "title": "Replace cumulative receipt fields",
+      "weight": "discussed",
+      "summary": "Etan proposed replacing cumulative gas used in receipts with per-transaction gas used for trust-minimized verifiability.",
+      "moments": [
+        {
+          "timestamp": "00:38:14",
+          "context": "Etan presented EIP-8116, explaining that replacing the cumulative gas used field with individual transaction gas used enables trust-minimized Merkle proof verification without needing two receipts."
+        },
+        {
+          "timestamp": "00:42:20",
+          "context": "Jochem raised that the EIP must account for EIP-8037's dual gas dimensions; Etan agreed the EIP can be updated to include both gas values."
+        }
+      ]
+    },
+    {
+      "eip": 7807,
+      "title": "SSZ execution blocks",
+      "weight": "discussed",
+      "summary": "Etan proposed the scoped-down SSZ execution block hash EIP for Hegota, enabling CL-side block hash verification and field proofs.",
+      "moments": [
+        {
+          "timestamp": "00:39:19",
+          "context": "Etan presented EIP-7807 as a non-headliner proposal to change block hash computation to SSZ, enabling the CL to compute block hashes locally and improving sync. He noted it also removes the logs bloom from the block header."
+        }
+      ]
+    },
+    {
+      "eip": 7778,
+      "title": "Block Gas Accounting without Refunds",
+      "weight": "mentioned",
+      "summary": "Toni raised in chat that the gas-used field in receipts should clarify interaction with EIP-7778 refund accounting.",
+      "moments": [
+        {
+          "timestamp": "00:42:02",
+          "context": "Etan read out Toni's chat comment about EIP-7778's interaction with gas_used in receipts, noting it should clarify that gas used is the user-facing value after refunds."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "mentioned",
+      "summary": "Jochem noted that EIP-8037 introduces two gas dimensions which EIP-8116 receipt changes must account for.",
+      "moments": [
+        {
+          "timestamp": "00:42:20",
+          "context": "Jochem explained that EIP-8037 creates state gas and execution gas dimensions, so EIP-8116's receipt changes need to specify which gas value is recorded."
+        }
+      ]
+    },
+    {
+      "eip": 7819,
+      "title": "SETDELEGATE instruction",
+      "weight": "discussed",
+      "summary": "Derek and Hadrien proposed the SETDELEGATE opcode for Hegota to enable cheap native proxy creation for account abstraction.",
+      "moments": [
+        {
+          "timestamp": "00:44:28",
+          "context": "Derek presented EIP-7819, explaining that it introduces a SETDELEGATE opcode allowing contracts to create 23-byte delegate pointers on-chain, making proxy account creation much cheaper especially given Glamsterdam's increased state creation costs."
+        },
+        {
+          "timestamp": "00:48:10",
+          "context": "Hadrien explained the difference from DELEGATECALL: SETDELEGATE avoids deploying proxy bytecode and avoids SLOAD for upgradeability, acting as a factory opcode like CREATE and CREATE2."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "discussed",
+      "summary": "Referenced as the origin of the delegate pointer concept that EIP-7819 extends to be composable on-chain.",
+      "moments": [
+        {
+          "timestamp": "00:46:17",
+          "context": "Derek explained that EIP-7819 reuses the delegate concept introduced in EIP-7702, making native proxies composable on-chain via a new opcode rather than requiring a special transaction type."
+        },
+        {
+          "timestamp": "00:51:16",
+          "context": "Chat discussion about mempool validation differences between EIP-7702 explicit authorization lists and contract-based authorization via SETDELEGATE, with Gary raising concerns about detecting authorizations without execution."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Alex proposed transaction assertions via TXDIFF/TXTRACE opcodes for Hegota; strong user safety interest but Marius raised complexity concerns.",
+      "moments": [
+        {
+          "timestamp": "00:49:44",
+          "context": "Alex presented EIP-7906 for transaction assertions, explaining three opcodes (TXTRACE, TXDIFF, EVENTDATACOPY) that expose state changes in a post-transaction frame, enabling on-chain enforcement of transaction outcome policies."
+        },
+        {
+          "timestamp": "00:52:01",
+          "context": "Lightclient emphasized in chat that 7906 assertions are extremely valuable based on extensive user and enterprise feedback about feeling safer transacting on Ethereum."
+        },
+        {
+          "timestamp": "00:54:53",
+          "context": "Marius expressed in chat that he dislikes EIP-7906, preferring simpler journal access; subsequent discussion debated whether TXDIFF alone would suffice versus the full TXTRACE suite, with lightclient agreeing TXTRACE may be unnecessary."
+        },
+        {
+          "timestamp": "01:02:04",
+          "context": "Alex shared links showing ethrex has implemented the EIP with a public devnet running it, and a playground demo."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Alex cited frame transactions as the mechanism enabling EIP-7906 assertion opcodes to run in a post-transaction static frame.",
+      "moments": [
+        {
+          "timestamp": "00:50:52",
+          "context": "Alex explained that EIP-8141 frame transactions provide the controlled environment for the post-transaction assertion frame, limiting the opcodes to a revert-or-accept decision."
+        },
+        {
+          "timestamp": "01:01:28",
+          "context": "Alex stated that with EIP-8141 implemented, EIP-7906 is simple because the state diff nodes already collect just needs to be exposed via the frame."
+        }
+      ]
+    },
+    {
+      "eip": 7730,
+      "weight": "mentioned",
+      "summary": "Alex referenced the clear-signing registry standard as part of the off-chain tooling ecosystem supporting EIP-7906.",
+      "moments": [
+        {
+          "timestamp": "00:59:19",
+          "context": "Alex mentioned ERC-7730 as the clear-signing work group's registry of known contracts and metadata descriptions, relevant to the transaction assertion tooling."
+        }
+      ]
+    },
+    {
+      "eip": 7668,
+      "title": "Remove bloom filters",
+      "weight": "discussed",
+      "summary": "Jochem proposed removing bloom filters for Hegota, noting overlap with EIP-7807 but wanting it as a standalone fallback.",
+      "moments": [
+        {
+          "timestamp": "01:04:49",
+          "context": "Jochem presented EIP-7668 to remove log bloom filters, arguing they are no longer useful and waste computation; he noted it overlaps with EIP-7807 but should stand independently in case 7807 does not ship."
+        },
+        {
+          "timestamp": "01:06:03",
+          "context": "Jochem linked EIP-8304 as a complementary proposal that works well together with bloom filter removal."
+        }
+      ]
+    },
+    {
+      "eip": 8304,
+      "title": "Trustless log and transaction index",
+      "weight": "mentioned",
+      "summary": "Jochem cited the trustless log and transaction index EIP as complementary to bloom filter removal.",
+      "moments": [
+        {
+          "timestamp": "01:06:03",
+          "context": "Jochem noted EIP-8304 does not itself remove bloom filters but works well together with EIP-7668 for that purpose."
+        }
+      ]
+    },
+    {
+      "eip": 8200,
+      "title": "EVMification",
+      "weight": "discussed",
+      "summary": "Kev proposed EVMifying barely-used precompiles for Hegota, reducing ZKVM circuit complexity; debated repricing-only alternative with Toni.",
+      "moments": [
+        {
+          "timestamp": "01:07:02",
+          "context": "Kev presented EIP-8200, proposing to replace barely-used precompiles with EVM bytecode to reduce ZKVM attack surface. He shared usage data showing around 50% of precompiles are barely used."
+        },
+        {
+          "timestamp": "01:08:34",
+          "context": "Toni asked why not just reprice precompiles based on EVM code cost instead of replacing them; Kev explained that dynamic input-dependent gas costs make simple repricing insufficient."
+        },
+        {
+          "timestamp": "01:14:02",
+          "context": "Kev clarified the EIP is scoped only to precompiles that won't break users; BLS12 precompiles were removed from scope due to potential breakage despite low usage."
+        }
+      ]
+    },
+    {
+      "eip": 7666,
+      "title": "EVM-ify the identity precompile",
+      "weight": "mentioned",
+      "summary": "Jochem suggested PFI-ing the identity precompile EVMification EIP for Hegota alongside EIP-8200.",
+      "moments": [
+        {
+          "timestamp": "01:09:22",
+          "context": "Jochem posted in chat that EIP-7666 (EVMify IDENTITY precompile) should also be proposed for inclusion in Hegota, together with EIP-8200."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-access gas cost update",
+      "weight": "mentioned",
+      "summary": "Pooja noted EIP-8038 is the last core EIP still awaiting promotion to review status for Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "01:19:10",
+          "context": "Pooja said the Glamsterdam EIP status updates are pending author approval for EIP-8038 to be promoted to review, blocking the meta EIP's progress."
+        }
+      ]
+    },
+    {
+      "eip": 8070,
+      "title": "eth/72 - Sparse Blobpool",
+      "weight": "mentioned",
+      "summary": "Pooja noted EIP-8070 has received author approval for its review-status PR.",
+      "moments": [
+        {
+          "timestamp": "01:19:44",
+          "context": "Pooja mentioned that EIP-8070 is one of the non-core EIPs listed in the meta EIP, and its review-status PR has been approved by the author."
+        }
+      ]
+    },
+    {
+      "eip": 7773,
+      "title": "Hardfork Meta - Glamsterdam",
+      "weight": "mentioned",
+      "summary": "Pooja noted the Glamsterdam meta EIP will be moved to review status once all listed EIPs reach review.",
+      "moments": [
+        {
+          "timestamp": "01:20:11",
+          "context": "Pooja explained that EIP-7773, the Glamsterdam meta EIP, will have a PR to move to review status at the next ACD meeting once all constituent EIPs are in review."
+        }
+      ]
+    }
+  ]
+}

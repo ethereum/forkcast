@@ -1,0 +1,149 @@
+{
+  "meeting": "ACDC #183 - 2026-07-23",
+  "eips": [
+    {
+      "eip": 7997,
+      "title": "Deterministic Factory Contract",
+      "weight": "mentioned",
+      "summary": "Toni noted the deterministic factory contract 7997 change should be discussed on ACDT Monday for devnet 8.",
+      "moments": [
+        {
+          "timestamp": "00:24:02",
+          "context": "In chat, Toni mentioned there should be the 7997 change for devnet 8 depending on the client, and that it would be discussed on ACDT Monday."
+        }
+      ]
+    },
+    {
+      "eip": 8334,
+      "title": "Bundled Attestation Propagation",
+      "weight": "discussed",
+      "summary": "PFI'd for Hegota; fully backwards compatible, so it needs no fork, but will be made required at the fork anyway.",
+      "moments": [
+        {
+          "timestamp": "00:24:49",
+          "context": "Sukun highlighted the change is fully backwards compatible so it does not need to be fork-gated, and a client shipping it early would be fine — following the same path as the data columns work."
+        },
+        {
+          "timestamp": "00:25:37",
+          "context": "Parithosh agreed it need not ship at a fork, but said it can be made required for Hegota if the intent is to ship it."
+        },
+        {
+          "timestamp": "00:26:24",
+          "context": "Daniel Knopik asked whether it supersedes the earlier batching-attestations-at-source proposal; Sukun said that is an orthogonal change."
+        }
+      ]
+    },
+    {
+      "eip": 8341,
+      "title": "Partial Execution Payload Commitments",
+      "weight": "discussed",
+      "summary": "Presented by Toni as a new EIP and an alternative to the earlier late-state-root approach; PFI'd for Hegota.",
+      "moments": [
+        {
+          "timestamp": "00:27:49",
+          "context": "Parithosh introduced partial execution payload commitments as the next agenda item, from Toni."
+        },
+        {
+          "timestamp": "00:28:03",
+          "context": "Toni presented it as a new EIP and an alternative to the late-state-root idea he had presented on an earlier ACDE, noting the earlier EIP was 7862."
+        },
+        {
+          "timestamp": "00:28:53",
+          "context": "Toni explained that where the ePBS bid today commits to the block hash, this proposal changes what the bid commits to."
+        }
+      ]
+    },
+    {
+      "eip": 7862,
+      "title": "Delayed State Root",
+      "weight": "discussed",
+      "summary": "Toni presented a new alternative to the delayed state root EIP 7862 and compared the two proposals' trade-offs.",
+      "moments": [
+        {
+          "timestamp": "00:28:08",
+          "context": "Toni introduced the new partial execution payload commitments EIP as an alternative to 7862, the original delayed state root proposal."
+        },
+        {
+          "timestamp": "00:31:50",
+          "context": "Toni explained 7862 replaced the post-state root with a pre-state root, whereas the new proposal unbundles the block hash and commits to all EL header fields except the state root."
+        },
+        {
+          "timestamp": "00:33:01",
+          "context": "Toni compared the two proposals, noting 7862 gives an extra slot for ZKVM state proof generation but adds reorg complexity, while the new one avoids light client delays but provides less proving time."
+        }
+      ]
+    },
+    {
+      "eip": 7807,
+      "title": "SSZ execution blocks",
+      "weight": "mentioned",
+      "summary": "Etan noted that SSZ execution blocks via 7807 is PFI for next week as a non-headliner.",
+      "moments": [
+        {
+          "timestamp": "00:32:31",
+          "context": "In chat, Etan mentioned that the SSZ root question relates to 7807, which is PFI next week as a non-headliner."
+        }
+      ]
+    },
+    {
+      "eip": 8321,
+      "title": "Hash-Chain RANDAO",
+      "weight": "discussed",
+      "summary": "Kevaundray presented EIP-8321 Hash-Chain RANDAO for post-quantum safety; discussion covered timing, state overhead, and iterative vs all-at-once PQ strategy.",
+      "moments": [
+        {
+          "timestamp": "00:41:07",
+          "context": "Kevaundray introduced EIP-8321, replacing BLS RANDAO contributions with pre-images of a hash chain, as a simple PQ upgrade for RANDAO."
+        },
+        {
+          "timestamp": "00:43:35",
+          "context": "Enrico raised concerns about adding 32MB to state for one million validators and questioned whether the mechanism could be reused across multiple domains."
+        },
+        {
+          "timestamp": "00:47:48",
+          "context": "Potuz argued the change is premature since BLS validator keys remain vulnerable and rotating BLS keys could make RANDAO PQ-safe without this change."
+        },
+        {
+          "timestamp": "00:52:10",
+          "context": "Kevaundray asked whether iterative PQ changes or an all-at-once approach is preferred; Dustin and others favored iterative but cautioned about enshrining a first iteration before the final approach is decided."
+        },
+        {
+          "timestamp": "00:54:38",
+          "context": "Kevaundray outlined an iterative PQ roadmap: hash-chain RANDAO in Hegota, PQ public key registry in I-Star, PQ heartbeat in J-Star, and PQ attestations in K or L-Star."
+        }
+      ]
+    },
+    {
+      "eip": 8015,
+      "title": "Remove `deposit` and `eth1data` fields",
+      "weight": "discussed",
+      "summary": "Etan presented EIP-8015 to remove legacy deposit and eth1data fields from beacon state, enabled by progressive containers.",
+      "moments": [
+        {
+          "timestamp": "01:01:23",
+          "context": "Etan introduced EIP-8015, originally Terence's, rebased on Glamsterdam, proposing removal of the old eth1 deposit mechanism remnants from the beacon state."
+        },
+        {
+          "timestamp": "01:02:40",
+          "context": "Justin asked whether this reduces state growth; Etan clarified it removes fixed-size fields so it reduces state size but not ongoing growth."
+        },
+        {
+          "timestamp": "01:07:07",
+          "context": "Etan connected EIP-8015 to Marius's REST-SSZ discussion, noting that retiring the eth1 deposit path on the engine API aligns with removing those fields."
+        }
+      ]
+    },
+    {
+      "eip": 7773,
+      "title": "Hardfork Meta - Glamsterdam",
+      "weight": "mentioned",
+      "summary": "Pooja asked authors to approve PRs so all EIPs in the Glamsterdam Meta EIP 7773 can be moved to Review status.",
+      "moments": [
+        {
+          "timestamp": "01:11:12",
+          "context": "Pooja referenced Meta EIP 7773 while asking authors to add approvals so that all listed Glamsterdam EIPs can be updated to Review/SFI status."
+        }
+      ]
+    }
+  ]
+}

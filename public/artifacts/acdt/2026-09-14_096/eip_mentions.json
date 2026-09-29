@@ -1,0 +1,89 @@
+{
+  "meeting": "ACDT #096 - 2026-09-14",
+  "eips": [
+    {
+      "eip": 7610,
+      "title": "Revert creation in case of non-empty storage",
+      "weight": "discussed",
+      "summary": "Legacy tests need reverting to pre-EIP-7610 expectations; collision behavior and block access list implications debated extensively.",
+      "moments": [
+        {
+          "timestamp": "00:30:02",
+          "context": "Maria Silva raised restoring pre-EIP-7610 legacy test expectations via legacytests PR #18."
+        },
+        {
+          "timestamp": "00:32:27",
+          "context": "Milen from Erigon explained the PR reverts tests to their state before EIP-7610, covering yellow paper plus EIP-684 behavior, and that restoring them caught a regression in Erigon."
+        },
+        {
+          "timestamp": "00:37:08",
+          "context": "Jochem noted that EIP-7610's conclusion arose partly because collision behavior had flip-flopped historically between reusing storage and clearing it."
+        }
+      ]
+    },
+    {
+      "eip": 684,
+      "title": "Revert creation in case of collision",
+      "weight": "discussed",
+      "summary": "Reverting legacy tests to align with yellow paper plus EIP-684 collision behavior was proposed as the path forward.",
+      "moments": [
+        {
+          "timestamp": "00:32:38",
+          "context": "Milen said the reverted legacy tests cover yellow paper plus EIP-684, which nullifies storage slots on collision, representing pre-existing behavior."
+        },
+        {
+          "timestamp": "00:40:04",
+          "context": "Spencer endorsed aligning undefined collision behavior with the yellow paper plus EIP-684 as an interim step before EIP-8253."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "discussed",
+      "summary": "Bumping nonce of zero-nonce storage accounts proposed to eliminate the collision edge case; Jochem wants it CFI'd for Hagota.",
+      "moments": [
+        {
+          "timestamp": "00:34:51",
+          "context": "Milen listed EIP-8253 as option 3 to get rid of the undefined BAL collision issue entirely."
+        },
+        {
+          "timestamp": "00:37:40",
+          "context": "Jochem noted EIP-8253 is PFI for Hagota, said he wanted to CFI it at the last ACD but that did not happen, and that it remains the plan."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-access gas cost update",
+      "weight": "discussed",
+      "summary": "A text clarification on EIP-8038 regarding self-destruct beneficiary gas charging was reviewed and approved as a non-spec change.",
+      "moments": [
+        {
+          "timestamp": "00:47:42",
+          "context": "FLCL from Nethermind explained the EIP text incorrectly assumes a 100 gas warm access charge for the former beneficiary in self-destruct, but no client does this; it is just a text clarification."
+        },
+        {
+          "timestamp": "00:49:04",
+          "context": "Jochem confirmed this is a text change, not a spec change; chat participants agreed."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "A PR adding a formal total state gas limit per transaction was merged; small spec update needed but no client behavior change.",
+      "moments": [
+        {
+          "timestamp": "00:49:28",
+          "context": "Jochem raised that Peville opened a PR to limit total gas for EIP-8037. Maria confirmed she merged it today, noting it formalizes an implicit limit without changing behavior."
+        },
+        {
+          "timestamp": "00:50:37",
+          "context": "Spencer confirmed it requires a small spec addition and said a test will be included in the upcoming official testnet release."
+        }
+      ]
+    }
+  ]
+}

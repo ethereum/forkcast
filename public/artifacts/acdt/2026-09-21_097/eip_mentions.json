@@ -1,0 +1,165 @@
+{
+  "meeting": "ACDT #097 - 2026-09-21",
+  "eips": [
+    {
+      "eip": 8061,
+      "title": "Increase exit and consolidation churn",
+      "weight": "discussed",
+      "summary": "Discussed how its reduced weak subjectivity period should affect the CL block retention window, potentially lowering it from 33024 to ~14299 epochs.",
+      "moments": [
+        {
+          "timestamp": "00:06:37",
+          "context": "Danceratopz introduced the topic: EIP-8061 changed the churn assumptions underlying the 33024-epoch serving window, but the window itself was not updated."
+        },
+        {
+          "timestamp": "00:07:43",
+          "context": "Jihoon explained that EIP-8061 reduces the weak subjectivity period, so the block retention period could be reduced to ~14K epochs, saving roughly 144 GB of BAL storage."
+        },
+        {
+          "timestamp": "00:13:02",
+          "context": "Kev framed the three questions, noting that given EIP-8061 has reduced the max weak subjectivity period, the second question is whether the CL retention window should be updated to match."
+        }
+      ]
+    },
+    {
+      "eip": 8383,
+      "title": "Reduce CL Block Retention Window",
+      "weight": "discussed",
+      "summary": "Mentioned as an alternative that would reduce CL block retention to a fixed 8192 epochs, but it is PFI for Hegota so considered premature for Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "00:07:05",
+          "context": "Danceratopz noted that reducing the retention window to ~8K epochs comes from EIP-8383, which is PFI for Hegota, so it would be getting ahead of ourselves."
+        },
+        {
+          "timestamp": "00:13:22",
+          "context": "Kev identified the third question as whether to change the CL retention window to match EIP-8383, which he noted people want to defer."
+        }
+      ]
+    },
+    {
+      "eip": 7928,
+      "title": "Block-Level Access Lists",
+      "weight": "discussed",
+      "summary": "BAL retention period alignment with the CL history expiry window was discussed, including a PR to increase BAL retention from 3533 to 33024 epochs.",
+      "moments": [
+        {
+          "timestamp": "00:12:44",
+          "context": "Danceratopz introduced the related topic of aligning EIP-7928 BAL retention with the history expiry window, referencing an EIPs PR for this change."
+        },
+        {
+          "timestamp": "00:13:02",
+          "context": "Kev asked whether the BAL retention should match the CL block retention window, framing it as the easiest of the three questions to resolve."
+        }
+      ]
+    },
+    {
+      "eip": 4444,
+      "title": "Bound Historical Data in Execution Clients",
+      "weight": "mentioned",
+      "summary": "Referenced for comparison of its HISTORY_PRUNE_EPOCHS parameter in the context of aligning BAL retention periods.",
+      "moments": [
+        {
+          "timestamp": "00:12:44",
+          "context": "Danceratopz listed EIP-4444's HISTORY_PRUNE_EPOCHS as a reference point when introducing the BAL retention alignment discussion."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "mentioned",
+      "summary": "Spencer cited it as an example of underestimating complexity in Glamsterdam that informed the Hegota devnet planning approach.",
+      "moments": [
+        {
+          "timestamp": "00:35:53",
+          "context": "Spencer said one mistake in Glamsterdam was underestimating the complexity of EIP-8037, so the Hegota devnet plan should include complex EIPs earlier in the cycle."
+        },
+        {
+          "timestamp": "00:36:37",
+          "context": "Dragan commented in chat that EIP-8037 was worth it."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "mentioned",
+      "summary": "Jochem asked in chat whether EIP-8253 should be included in devnet-0.",
+      "moments": [
+        {
+          "timestamp": "00:37:35",
+          "context": "Jochem asked in chat whether EIP-8253 (bump nonce of zero-nonce storage accounts) should be on devnet-0."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Devnet strategy: run it on its own devnet first, then merge into a combined Hegota devnet.",
+      "moments": [
+        {
+          "timestamp": "00:43:22",
+          "context": "Jihoon argued for running Frames-only and FOCIL-only devnets at the start and letting them mature before combining."
+        },
+        {
+          "timestamp": "00:44:38",
+          "context": "danceratopz summarised the agreement: start FOCIL and Frames separately before combining them, with the details to be picked up on later ACDT calls."
+        }
+      ]
+    },
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "Devnet strategy: run it on its own devnet first, then merge into a combined Hegota devnet.",
+      "moments": [
+        {
+          "timestamp": "00:43:32",
+          "context": "Jihoon noted a FOCIL-only devnet needs changes on the EL side too, since the EL has to produce inclusion lists; he proposed starting FOCIL-only and Frames-only separately and merging once each stabilizes."
+        },
+        {
+          "timestamp": "00:44:38",
+          "context": "danceratopz summarised the agreement: start FOCIL and Frames separately before combining them, with the details to be picked up on later ACDT calls."
+        }
+      ]
+    },
+    {
+      "eip": 8142,
+      "title": "Block-in-Blobs (BiB)",
+      "weight": "discussed",
+      "summary": "Announced as withdrawn/DFI by its champion; replaced by EIP-8411 for fast execution payload broadcast.",
+      "moments": [
+        {
+          "timestamp": "00:45:05",
+          "context": "Danceratopz announced that EIP-8142 (Block-in-Blobs) was withdrawn by its champion Kamilsa, and EIP-8411 replaces it, requiring CL team ratings ahead of next ACDC."
+        }
+      ]
+    },
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "discussed",
+      "summary": "Introduced as the replacement for withdrawn EIP-8142; CL teams asked to add ratings ahead of the next ACDC.",
+      "moments": [
+        {
+          "timestamp": "00:45:05",
+          "context": "Danceratopz announced that EIP-8411 (fast execution broadcast) replaces the withdrawn EIP-8142 and requested CL team ratings before next ACDC."
+        }
+      ]
+    },
+    {
+      "eip": 7870,
+      "title": "Hardware and Bandwidth Recommendations",
+      "weight": "mentioned",
+      "summary": "Ben Adams noted benchmarking currently tests against EIP-7870 hardware recommendations and questioned whether attester-grade hardware should also be tested.",
+      "moments": [
+        {
+          "timestamp": "00:51:19",
+          "context": "Ben Adams said benchmarking tests a weekend full node on EIP-7870 specs and asked whether they should also test an attester node with double the hardware."
+        }
+      ]
+    }
+  ]
+}

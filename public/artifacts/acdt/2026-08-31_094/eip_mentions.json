@@ -1,0 +1,96 @@
+{
+  "meeting": "ACDT #094 - 2026-08-31",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "Two potential spec changes were debated: a self-destruct refill issue and a cross-frame gas laundering bug, with decisions deferred to ACDC.",
+      "moments": [
+        {
+          "timestamp": "00:23:13",
+          "context": "Maria raised that the EL breakout would discuss potential updates to EIP-8037, two of which require spec changes, and asked about impact on fork timings."
+        },
+        {
+          "timestamp": "00:37:10",
+          "context": "Pawel explained the self-destruct sandwich pattern where users are charged for creating a contract but do not get the state gas refill back under current EIP-8037 spec."
+        },
+        {
+          "timestamp": "00:39:48",
+          "context": "Maria explained the April decision to drop ephemeral deployment refills for simplicity and to avoid incentivizing continued self-destruct usage."
+        },
+        {
+          "timestamp": "01:02:06",
+          "context": "Discussion of the cross-frame gas refill bug where state gas freed in a child frame does not properly refill gas left in the parent, allowing gas laundering from execution gas to state gas."
+        },
+        {
+          "timestamp": "01:07:01",
+          "context": "Gary from Geth said the change is semantically correct but needs complexity evaluation and preferred deferring to ACDC."
+        },
+        {
+          "timestamp": "01:10:34",
+          "context": "Luis from Besu asked about security implications and whether this introduces new behavior versus existing pre-8037 behavior."
+        }
+      ]
+    },
+    {
+      "eip": 8246,
+      "title": "Remove SELFDESTRUCT Burn",
+      "weight": "mentioned",
+      "summary": "Pawel referenced it as the EIP that removed the self-destruct burn event, noting the refill logic could be placed in the same end-of-transaction location.",
+      "moments": [
+        {
+          "timestamp": "00:38:50",
+          "context": "Pawel mentioned EIP-8246, the one that removed the burn event, as the place where the self-destruct refill logic could be implemented."
+        }
+      ]
+    },
+    {
+      "eip": 8047,
+      "weight": "mentioned",
+      "summary": "Pawel referenced it as one of many EIPs that tries to incentivize transactions that do not increase state size.",
+      "moments": [
+        {
+          "timestamp": "00:46:35",
+          "context": "Pawel argued that the ephemeral contract pattern is compatible with the intent of state gas, noting EIP-8047 as one of many proposals trying to incentivize not increasing state."
+        }
+      ]
+    },
+    {
+      "eip": 2780,
+      "title": "Resource-based intrinsic transaction gas",
+      "weight": "mentioned",
+      "summary": "Guru cited it as an example where authorization set-and-clear in the same transaction already does not get a state gas refill.",
+      "moments": [
+        {
+          "timestamp": "00:50:02",
+          "context": "Guru noted that under the EIP-2780 spec, setting and clearing an authorization on a new account in the same transaction does not produce a refill, showing asymmetry already exists."
+        }
+      ]
+    },
+    {
+      "eip": 3298,
+      "title": "Remove storage-clear refund and refund cap",
+      "weight": "mentioned",
+      "summary": "Kevaundray asked in chat whether EIP-3298 (refund removal) was also planned for the next fork.",
+      "moments": [
+        {
+          "timestamp": "00:57:33",
+          "context": "Kevaundray asked in chat if EIP-3298 was included in the next fork, and Guru clarified it was about refund removal."
+        }
+      ]
+    },
+    {
+      "eip": 6049,
+      "title": "Deprecate SELFDESTRUCT",
+      "weight": "mentioned",
+      "summary": "Mario shared the EIP link noting it was the EIP that deprecated SELFDESTRUCT in Shanghai.",
+      "moments": [
+        {
+          "timestamp": "00:58:54",
+          "context": "Mario shared the link to EIP-6049 as the EIP that deprecated SELFDESTRUCT, in the context of discussing whether deprecation was done properly."
+        }
+      ]
+    }
+  ]
+}

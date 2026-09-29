@@ -1,0 +1,45 @@
+{
+  "meeting": "ACDT #094 - 2026-08-31 (CL Breakout)",
+  "eips": [
+    {
+      "eip": 7732,
+      "title": "Enshrined Proposer-Builder Separation",
+      "weight": "discussed",
+      "summary": "Builder exit edge case in bid gossip: agreement to ignore bids from builders with an exit in the parent payload.",
+      "moments": [
+        {
+          "timestamp": "00:01:23",
+          "context": "Justin Traglia walked through a PR adding a check for a builder with an exit in the previous slot's payload, noting Nico's suggestion to simply ignore bids where a builder exit exists."
+        },
+        {
+          "timestamp": "00:02:25",
+          "context": "Nico Flaig said Lodestar runs the state transition on both blocks and would determine the builder block invalid that way."
+        },
+        {
+          "timestamp": "00:02:53",
+          "context": "Justin asked whether ignoring bids from exited builders would let someone submit an exit to prevent another builder being selected."
+        }
+      ]
+    },
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "FOCIL gossip rule gains a non-empty transaction assertion, starting with a 4112 inclusion list size limit.",
+      "moments": [
+        {
+          "timestamp": "00:15:26",
+          "context": "Justin Traglia asked whether the updated inclusion list max size variable needed more discussion."
+        },
+        {
+          "timestamp": "00:15:53",
+          "context": "Jihoon said adding the non-empty assertion is not a big deal and they can start with the 4112 limit, and that he would clean up the spec PR and open a new engine API PR."
+        },
+        {
+          "timestamp": "00:16:41",
+          "context": "Justin asked about the fork-choice assertion; Jihoon said he was fine keeping it alongside the non-empty check and the peer-to-peer rule."
+        }
+      ]
+    }
+  ]
+}

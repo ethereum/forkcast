@@ -1,0 +1,217 @@
+{
+  "meeting": "ACDE #244 - 2026-08-27",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "A request to restore the self-destruct gas refund in 8037 was raised by Milos but declined as too late for Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "00:26:35",
+          "context": "Milos raised that 8037 removed the gas refill for self-destruct and argued ephemeral contracts used for intents and routing need it, citing a 7x gas increase per transaction."
+        },
+        {
+          "timestamp": "00:28:09",
+          "context": "Maria explained the rationale for removing the refill: complexity in testing and going against the direction of deprecating self-destruct, and noted only about 1500 accounts per day use the pattern."
+        },
+        {
+          "timestamp": "00:35:11",
+          "context": "Nixo proposed taking the issue offline for a Hegota solution rather than changing 8037 this late in Glamsterdam, and suggested PFI'ing a related opcode as a placeholder."
+        }
+      ]
+    },
+    {
+      "eip": 8360,
+      "title": "TCREATE Opcode",
+      "weight": "discussed",
+      "summary": "TCREATE opcode noted as a PFI candidate and potential solution for ephemeral contracts to replace self-destruct use cases in Hegota.",
+      "moments": [
+        {
+          "timestamp": "00:40:00",
+          "context": "Nixo mentioned 8360 (TCREATE) as one of the PFIs proposed by the deadline, and connected it to the self-destruct refund discussion as a possible placeholder solution for Hegota."
+        }
+      ]
+    },
+    {
+      "eip": 7609,
+      "title": "Decrease base cost of TLOAD/TSTORE",
+      "weight": "discussed",
+      "summary": "Decreased base cost of TLOAD/TSTORE was dropped from PFI status because no one spoke for it on the call.",
+      "moments": [
+        {
+          "timestamp": "00:40:23",
+          "context": "Nixo listed 7609 as a PFI proposed by the deadline that had not been spoken for, and noted it would be dropped if no champion appeared. No one spoke for it."
+        }
+      ]
+    },
+    {
+      "eip": 8058,
+      "title": "Contract Bytecode Deduplication Discount",
+      "weight": "discussed",
+      "summary": "Contract bytecode deduplication discount was noted as superseded by SETCODEFROM and dropped from PFI.",
+      "moments": [
+        {
+          "timestamp": "00:40:23",
+          "context": "Nixo listed 8058 as a PFI that had not been spoken for. Ben Adams noted the contract code deduplication goal was achieved more generally by SETCODEFROM (8298)."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "mentioned",
+      "summary": "SETCODEFROM referenced as achieving the same goal as 8058 in a more general way.",
+      "moments": [
+        {
+          "timestamp": "00:40:57",
+          "context": "Ben Adams said SETCODEFROM (8298) achieves the same code deduplication goal as 8058 but more generally, also noted in chat as avoiding deploy cost for code already on-chain."
+        }
+      ]
+    },
+    {
+      "eip": 8304,
+      "title": "Trustless log and transaction index",
+      "weight": "discussed",
+      "summary": "Zsolt presented a demo of the Trustless Log and Transaction Index API built on EIP-8304 and urged clients to consider it for Hegota.",
+      "moments": [
+        {
+          "timestamp": "00:42:30",
+          "context": "Zsolt began presenting EIP-8304, the redesigned trustless log index, showing the REST API spec, log query patterns, and live proof examples from a mainnet test node."
+        },
+        {
+          "timestamp": "00:56:39",
+          "context": "Zsolt concluded by asking clients to review the EIP and consider ranking it as preferred for Hegota, saying results on proof sizes and speed exceeded expectations."
+        }
+      ]
+    },
+    {
+      "eip": 7745,
+      "title": "Trustless log and transaction index",
+      "weight": "mentioned",
+      "summary": "Referenced as the previous, more complex design that 8304 replaced for trustless log indexing.",
+      "moments": [
+        {
+          "timestamp": "00:44:01",
+          "context": "Zsolt noted that 8304 is a different and much cleaner design than 7745, which was very complex, and also more efficient."
+        }
+      ]
+    },
+    {
+      "eip": 6049,
+      "title": "Deprecate SELFDESTRUCT",
+      "weight": "mentioned",
+      "summary": "Referenced in chat as the EIP that deprecated SELFDESTRUCT in Shanghai almost four years ago.",
+      "moments": [
+        {
+          "timestamp": "00:48:29",
+          "context": "Danno Ferrin cited EIP-6049 in chat noting SELFDESTRUCT was deprecated in Shanghai and warned against accommodating new uses."
+        }
+      ]
+    },
+    {
+      "eip": 7773,
+      "title": "Hardfork Meta - Glamsterdam",
+      "weight": "mentioned",
+      "summary": "Glamsterdam meta EIP cited among open PRs needing author approvals to keep upgrade metadata current.",
+      "moments": [
+        {
+          "timestamp": "00:58:48",
+          "context": "Pooja asked authors of meta EIPs 7773 and 8081 to review and approve open PRs to keep canonical upgrade information up to date."
+        }
+      ]
+    },
+    {
+      "eip": 8081,
+      "title": "Hardfork Meta - Hegotá",
+      "weight": "mentioned",
+      "summary": "Hegota meta EIP cited among open PRs needing author approvals to keep upgrade metadata current.",
+      "moments": [
+        {
+          "timestamp": "00:58:48",
+          "context": "Pooja asked authors of meta EIPs 7773 and 8081 to review and approve open PRs to keep canonical upgrade information up to date."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame Transaction was moved from CFI to SFI for Hegota after strong client support, with caveat that spec may still change.",
+      "moments": [
+        {
+          "timestamp": "01:02:02",
+          "context": "Nixo recapped that 8141 was CFI'd as a placeholder for AA in Hegota and noted ongoing collaboration between 8141 and 8130 authors."
+        },
+        {
+          "timestamp": "01:03:05",
+          "context": "Derek gave an update on 8141-8130 collaboration, saying they are working toward either a shared transaction type or interoperability between two types, timeboxed to two to four weeks."
+        },
+        {
+          "timestamp": "01:12:10",
+          "context": "Kevaundray asked what hard blockers remain before 8141 can be set as a headliner for Hegota."
+        },
+        {
+          "timestamp": "01:13:17",
+          "context": "Chris from Base explained that 8141 was designed around L1 goals and there are things in it Base does not want, so they are trying to align on the right shape of the frame transaction type."
+        },
+        {
+          "timestamp": "01:16:46",
+          "context": "Vitalik described multiple design dimensions where 8141 and 8130 can converge and said it is reasonable to agree on 8141 and keep refining the spec after."
+        },
+        {
+          "timestamp": "01:25:16",
+          "context": "Vitalik explained how 8141 enables post-quantum signature adoption via Sphinx Minus and pure function signatures without new precompiles."
+        },
+        {
+          "timestamp": "01:29:02",
+          "context": "Tomás from Ethrex voiced support for 8141 over 8130, arguing frames provide building blocks without enshrining a particular application-level approach."
+        },
+        {
+          "timestamp": "01:31:38",
+          "context": "Stavros from Nethermind asked why 8141 has not been decided as a headliner yet, since both L1 and L2 participants seem to agree frames are a better mechanism."
+        },
+        {
+          "timestamp": "01:34:19",
+          "context": "Multiple clients voiced SFI support: Ethrex, Nethermind, Geth, Besu all confirmed for 8141. Nixo confirmed SFI status with the caveat that spec and EIP number may still change."
+        },
+        {
+          "timestamp": "01:36:30",
+          "context": "Ansgar stressed that SFI status should not be used as an argument against making radical spec changes going forward; Stavros agreed."
+        }
+      ]
+    },
+    {
+      "eip": 8130,
+      "title": "Keystore Accounts",
+      "weight": "discussed",
+      "summary": "Keystore Accounts discussed as the L2-preferred AA standard being reconciled with 8141 through ongoing collaboration.",
+      "moments": [
+        {
+          "timestamp": "01:02:02",
+          "context": "Nixo noted productive conversation between the 8141 and 8130 authors about converging on AA."
+        },
+        {
+          "timestamp": "01:03:05",
+          "context": "Derek described the 8130-8141 collaboration effort, saying the second-best outcome is two transaction types where the same account at the same address works across chains."
+        },
+        {
+          "timestamp": "01:13:17",
+          "context": "Chris from Base explained that 8130 is designed for how L2s want to operate, with a fixed ordering of keystore-validate-execute, whereas frames are more general."
+        },
+        {
+          "timestamp": "01:16:46",
+          "context": "Vitalik discussed multiple axes of convergence between 8130 and 8141, including keystore placement in headers vs contracts and splitting authenticator code."
+        },
+        {
+          "timestamp": "01:24:35",
+          "context": "Justin Florentine asked which of 8130 or 8141 gets to post-quantum adoption faster."
+        },
+        {
+          "timestamp": "01:29:02",
+          "context": "Tomás said Ethrex considers 8130 more opinionated and enshrining something very particular compared to 8141's building-block approach."
+        }
+      ]
+    }
+  ]
+}

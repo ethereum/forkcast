@@ -148,3 +148,28 @@ export interface EipSpecHistory {
   commits: EipSpecCommit[];
   openPrs?: EipOpenPr[];
 }
+
+/** One point in a call where an EIP came up. `timestamp` is transcript time. */
+export interface EipMentionMoment {
+  timestamp: string;
+  context: string;
+}
+
+/**
+ * Every mention of one EIP on one call, as stored in that call's
+ * `eip_mentions.json`. `weight` is salience, not approval: `discussed` means the
+ * call engaged with the EIP, `mentioned` a passing or dependency reference.
+ */
+export interface EipMention {
+  eip: number;
+  /** Absent for EIPs the local corpus doesn't carry — usually brand-new proposals. */
+  title?: string;
+  weight: 'discussed' | 'mentioned';
+  summary: string;
+  moments: EipMentionMoment[];
+}
+
+export interface EipMentionsData {
+  meeting: string;
+  eips: EipMention[];
+}

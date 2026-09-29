@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useCallback, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from '../navigation';
 import { eipsData } from '../../data/eips';
+import { mentionCallsForEip } from '../../data/eipMentions';
 import { useAnalytics } from '../../hooks/useAnalytics';
 import {
   getProposalPrefix,
@@ -43,16 +44,17 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   const dependents = dependentsMap.get(eipId) || [];
   const hasDependents = dependents.length > 0;
   const hasFaq = Boolean(eip?.faq?.length);
+  const hasMentions = mentionCallsForEip(eipId).length > 0;
 
   // View mode derived from URL ?tab= param
-  const validTabs = ['analysis', 'spec', 'dependents', 'history', 'faq'] as const;
+  const validTabs = ['analysis', 'spec', 'dependents', 'history', 'faq', 'mentions'] as const;
   type ViewMode = typeof validTabs[number];
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
   const tabParam = searchParams.get('tab') as ViewMode | null;
   const hasHash = typeof window !== 'undefined' && window.location.hash.length > 1;
   const hasQParam = searchParams.has('q');
   const hasFaqQuestionParam = tabParam === 'faq' && hasQParam && hasFaq;
-  const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents) && (tabParam !== 'faq' || hasFaq);
+  const isValidTab = tabParam && validTabs.includes(tabParam) && (tabParam !== 'dependents' || hasDependents) && (tabParam !== 'faq' || hasFaq) && (tabParam !== 'mentions' || hasMentions);
   const initialTab: ViewMode = hasFaqQuestionParam ? 'faq' : isValidTab ? tabParam : hasHash ? 'spec' : defaultTab;
 
   const handleTabChange = useCallback((mode: EipContentTab) => {

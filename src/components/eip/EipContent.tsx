@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, lazy, Suspense } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useNavigate } from '../navigation';
 import { EIP } from '../../types/eip';
@@ -21,7 +21,10 @@ import { EipNotice } from './EipNotice';
 import { EipSpecHistory } from './EipSpecHistory';
 import { EipDependents } from './EipDependents';
 import { EipFaq } from './EipFaq';
+import EipMentions from './EipMentions';
 import { useEipHistory } from '../../hooks/useEipHistory';
+import { useEipMentions } from '../../hooks/useEipMentions';
+import { mentionCallsForEip } from '../../data/eipMentions';
 import { resolveEipMarkdownLink } from '../../domain/eips/eipMarkdownLinks';
 
 function slugify(text: string) {
@@ -254,7 +257,7 @@ const dependentsMap = buildDependentsMap(eipsData);
 const requiredEipSpecUrl = (eipId: number): string => `https://eips.ethereum.org/EIPS/eip-${eipId}`;
 const requiredEipLinkClassName = 'font-mono hover:text-slate-700 dark:hover:text-slate-200 transition-colors';
 
-export type EipContentTab = 'analysis' | 'spec' | 'history' | 'faq' | 'dependents';
+export type EipContentTab = 'analysis' | 'spec' | 'history' | 'faq' | 'dependents' | 'mentions';
 
 interface EipContentProps {
   eip: EIP;
@@ -298,6 +301,10 @@ export const EipContent: React.FC<EipContentProps> = ({
   const dependents = dependentsMap.get(eipId) || [];
   const hasDependents = dependents.length > 0;
   const hasFaq = Boolean(eip.faq?.length);
+  // Synchronous, like every other conditional tab: the bundled index says which
+  // calls mentioned this EIP, so the tab and its count are known before paint.
+  const mentionCalls = useMemo(() => mentionCallsForEip(eipId), [eipId]);
+  const hasMentions = mentionCalls.length > 0;
 
   type ViewMode = EipContentTab;
   const defaultTab: ViewMode = hasAnalysis ? 'analysis' : 'spec';
@@ -310,6 +317,7 @@ export const EipContent: React.FC<EipContentProps> = ({
 
   const { content: specContent, loading: specLoading, error: specError } = useEipMarkdown(eipId, viewMode === 'spec');
   const { history, loading: historyLoading, error: historyError } = useEipHistory(eipId, true);
+  const { mentions, loading: mentionsLoading, failed: mentionsFailed } = useEipMentions(eipId, mentionCalls, viewMode === 'mentions');
 
   // Deep links like /eips/7702#rationale land on the spec tab; scroll to the
   // heading once the lazily-loaded markdown renderer has painted it.
@@ -579,6 +587,23 @@ export const EipContent: React.FC<EipContentProps> = ({
               }`}>{dependents.length}</span>
             </button>
           )}
+          {hasMentions && (
+            <button
+              onClick={() => setViewMode('mentions')}
+              className={`shrink-0 px-6 py-3 text-sm font-medium transition-colors ${
+                viewMode === 'mentions'
+                  ? 'text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300'
+              }`}
+            >
+              Mentions
+              <span className={`ml-1.5 px-1.5 py-0.5 text-xs font-medium rounded-full ${
+                viewMode === 'mentions'
+                  ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300'
+                  : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+              }`}>{mentionCalls.length}</span>
+            </button>
+          )}
         </div>
 
         {/* Body Content */}
@@ -662,6 +687,10 @@ export const EipContent: React.FC<EipContentProps> = ({
 
           {viewMode === 'faq' && (
             <EipFaq items={eip.faq ?? []} />
+          )}
+
+          {viewMode === 'mentions' && (
+            <EipMentions mentions={mentions} loading={mentionsLoading} failed={mentionsFailed} />
           )}
         </div>
       </article>

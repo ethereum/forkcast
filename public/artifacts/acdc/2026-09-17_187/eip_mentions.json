@@ -1,0 +1,293 @@
+{
+  "meeting": "ACDC #187 - 2026-09-17",
+  "eips": [
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "discussed",
+      "summary": "PFI'd for Hegota consideration as a fast execution payload broadcast EIP replacing Block-in-Blobs.",
+      "moments": [
+        {
+          "timestamp": "00:36:04",
+          "context": "Kamil introduced 8411 as a new EIP focused on chunked gossip for faster payload propagation, requesting PFI for Hegota."
+        },
+        {
+          "timestamp": "00:39:50",
+          "context": "Kamil presented simulation results showing P95 latency dropping from about 6 seconds to about 2 seconds for 1MB payloads with 4000 hosts."
+        },
+        {
+          "timestamp": "00:42:04",
+          "context": "Stokes asked about forward compatibility with erasure coding; Kamil said additions would need a separate future EIP."
+        },
+        {
+          "timestamp": "00:43:06",
+          "context": "Toni said it is a simpler subset of Block-in-Blobs; Ansgar suggested making the CFI decision more towards the end of scoping to allow analysis time."
+        },
+        {
+          "timestamp": "00:45:22",
+          "context": "Stokes confirmed PFI with no objections; asked client teams to incorporate 8411 into their rankings."
+        },
+        {
+          "timestamp": "00:52:57",
+          "context": "In chat, potuz asked for the client-priority list to be redone with 8411 PFI'd, saying both Prysm and Lighthouse had put it up and it was the only S-tier EIP for Prysm."
+        }
+      ]
+    },
+    {
+      "eip": 8142,
+      "title": "Block-in-Blobs (BiB)",
+      "weight": "mentioned",
+      "summary": "Referenced as the predecessor Block-in-Blobs EIP being effectively replaced by 8411.",
+      "moments": [
+        {
+          "timestamp": "00:37:05",
+          "context": "Kamil explained that 8142 originally proposed reusing data column subnets but iterating led to a dedicated new EIP 8411 instead."
+        },
+        {
+          "timestamp": "00:54:45",
+          "context": "Ethdreamer noted Lighthouse said no on 8142, creating confusion about whether that vote applied to 8411."
+        }
+      ]
+    },
+    {
+      "eip": 8146,
+      "title": "Block Access List Sidecars",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota; Toni noted 8411 largely subsumes its benefits.",
+      "moments": [
+        {
+          "timestamp": "00:40:33",
+          "context": "Toni said 8411 consumes much of Block Access List Sidecars, especially if shipped with an earlier BAL deadline."
+        },
+        {
+          "timestamp": "01:19:18",
+          "context": "Stokes included 8146 in the batch of DFI'd EIPs."
+        }
+      ]
+    },
+    {
+      "eip": 8365,
+      "title": "BLS withdrawal credential retirement",
+      "weight": "discussed",
+      "summary": "Lean toward CFI with reduced scope removing forced exits of 0x00 validators; final CFI deferred to next call pending EIP update.",
+      "moments": [
+        {
+          "timestamp": "00:49:08",
+          "context": "Terence flagged that Prysm's A-tier ranking was conditional on removing the forced exit part; with exits included it would be DFI."
+        },
+        {
+          "timestamp": "00:55:28",
+          "context": "Stokes opened discussion on 8365 scope; NC asked if any client team objects to removing the exit component."
+        },
+        {
+          "timestamp": "00:56:28",
+          "context": "Potuz said Prysm would DFI if forced exits remain, strongly opposing them; Lighthouse shares this view."
+        },
+        {
+          "timestamp": "01:00:06",
+          "context": "NC explained deposit guard mechanics: new 0x00 validators would be dropped but top-ups to existing ones still processed."
+        },
+        {
+          "timestamp": "01:04:02",
+          "context": "Matthew Keil proposed writing a two-fork EIP with deposit closure in Hegota and forced exits in I-Star."
+        },
+        {
+          "timestamp": "01:06:16",
+          "context": "Potuz suggested hardcoding an epoch a year after Hegota for forced exits to avoid backtracking concerns."
+        },
+        {
+          "timestamp": "01:08:08",
+          "context": "Stokes summarized alignment on CFI with reduced scope; asked NC to get the updated PR merged before next call."
+        }
+      ]
+    },
+    {
+      "eip": 8015,
+      "title": "Remove `deposit` and `eth1data` fields",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota as it removes unused deposit and eth1data fields with strong client support.",
+      "moments": [
+        {
+          "timestamp": "00:54:21",
+          "context": "Stokes proposed CFI for 8015 given strong client rankings; no objections were raised."
+        },
+        {
+          "timestamp": "00:55:17",
+          "context": "Justin Traglia urged CFI now; Stokes confirmed CFI, calling it pretty straightforward."
+        }
+      ]
+    },
+    {
+      "eip": 8321,
+      "title": "Hash-Chain RANDAO",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota but acknowledged as important PQ preparatory work that should continue toward I-Star.",
+      "moments": [
+        {
+          "timestamp": "01:10:52",
+          "context": "Kevaundray argued Hash-Chain RANDAO work should continue during Hegota to be ready for I-Star PQ plans, even though DFI'd."
+        },
+        {
+          "timestamp": "01:14:24",
+          "context": "Stokes confirmed DFI for 8321 with the caveat that PQ legwork should start well before I-Star."
+        },
+        {
+          "timestamp": "01:16:56",
+          "context": "Dustin noted 8321 is feasible later and not rate-limiting, supporting DFI but acknowledging its necessity eventually."
+        }
+      ]
+    },
+    {
+      "eip": 8363,
+      "title": "Tapered Issuance Burn",
+      "weight": "discussed",
+      "summary": "Issuance burn EIP tabled for today; discussion highlighted that client teams feel unqualified to decide and broader community input is needed.",
+      "moments": [
+        {
+          "timestamp": "01:11:37",
+          "context": "Stokes proposed pulling out 8363 from the DFI batch, saying issuance needs separate consideration given community impact."
+        },
+        {
+          "timestamp": "01:20:03",
+          "context": "Stokes reiterated tabling issuance; noted 3 teams ranked DFI and 3 abstained, reflecting difficulty of the decision."
+        },
+        {
+          "timestamp": "01:23:25",
+          "context": "Potuz argued the community affected is overwhelmingly against and called for outside experts on monetary policy to weigh in."
+        },
+        {
+          "timestamp": "01:31:24",
+          "context": "Ansgar emphasized this is not a conspiracy to delay; the governance process for issuance decisions needs to be defined."
+        },
+        {
+          "timestamp": "01:34:50",
+          "context": "Lightclient asked why not DFI now and separately figure out governance; Stokes said they've run out of time and it could be DFI'd next call."
+        }
+      ]
+    },
+    {
+      "eip": 8369,
+      "title": "VOPS Profiles for FOCIL Eligibility",
+      "weight": "discussed",
+      "summary": "No formal decision taken; informational EIP for FOCIL-Frames interaction left to breakout calls to resolve.",
+      "moments": [
+        {
+          "timestamp": "01:12:15",
+          "context": "Soispoke explained 8369 is informational, intended to align specs for FOCIL and Frames interactions."
+        },
+        {
+          "timestamp": "01:14:50",
+          "context": "Multiple participants debated whether it belongs on ACDC or ACDE; Stokes concluded no action needed today, it's orthogonal to scoping."
+        }
+      ]
+    },
+    {
+      "eip": 7904,
+      "title": "Compute Gas Cost Analysis",
+      "weight": "mentioned",
+      "summary": "Noted as an informational EIP already included in Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "01:17:45",
+          "context": "Marc mentioned Glamsterdam is including a couple informational EIPs: 7904 and 8261."
+        }
+      ]
+    },
+    {
+      "eip": 8261,
+      "title": "Gas Limit Schedule",
+      "weight": "mentioned",
+      "summary": "Noted as an informational EIP already included in Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "01:17:45",
+          "context": "Marc mentioned Glamsterdam is including a couple informational EIPs: 7904 and 8261."
+        }
+      ]
+    },
+    {
+      "eip": 8237,
+      "title": "Independent CL/EL Sync",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota along with several other low-ranked EIPs.",
+      "moments": [
+        {
+          "timestamp": "01:19:18",
+          "context": "Stokes listed 8237 among the batch of EIPs to DFI based on low client ranking scores; no objections raised."
+        }
+      ]
+    },
+    {
+      "eip": 8341,
+      "title": "Partial Execution Payload Commitments",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota as part of batch of low-ranked EIPs.",
+      "moments": [
+        {
+          "timestamp": "01:19:18",
+          "context": "Stokes included 8341 in the batch of DFI'd EIPs with no objections."
+        }
+      ]
+    },
+    {
+      "eip": 8367,
+      "title": "Balance sunset for retired BLS validators",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota as part of batch of low-ranked EIPs.",
+      "moments": [
+        {
+          "timestamp": "01:19:18",
+          "context": "Stokes included 8367 in the batch of DFI'd EIPs with no objections."
+        }
+      ]
+    },
+    {
+      "eip": 8243,
+      "title": "Batching Attestations at Source",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota as part of batch of low-ranked EIPs.",
+      "moments": [
+        {
+          "timestamp": "01:19:18",
+          "context": "Stokes included 8243 in the batch of DFI'd EIPs with no objections."
+        }
+      ]
+    },
+    {
+      "eip": 8375,
+      "title": "ePBS Mandatory Burn of Execution Rewards",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota as part of batch of low-ranked EIPs.",
+      "moments": [
+        {
+          "timestamp": "01:19:18",
+          "context": "Stokes included 8375 in the batch of DFI'd EIPs with no objections."
+        }
+      ]
+    },
+    {
+      "eip": 1559,
+      "title": "Fee market change for ETH 1.0 chain",
+      "weight": "mentioned",
+      "summary": "Referenced as an analogy for how fee-burning proposals would face criticism if proposed today.",
+      "moments": [
+        {
+          "timestamp": "01:26:44",
+          "context": "Trent Van Epps said 1559 would face similar criticisms for income reductions to solo stakers if proposed today, drawing a parallel to issuance."
+        }
+      ]
+    },
+    {
+      "eip": 8333,
+      "title": "Align Checkpoint with Epoch Boundary Block",
+      "weight": "mentioned",
+      "summary": "Matthew Keil raised whether it should be DFI'd given decoupled consensus makes it irrelevant; Ben Edgington agreed but deferred to next call.",
+      "moments": [
+        {
+          "timestamp": "01:34:10",
+          "context": "Kevaundray and Matthew Keil asked about DFI'ing 8333; Ben Edgington agreed it becomes irrelevant with decoupled consensus but said to decide next call."
+        }
+      ]
+    }
+  ]
+}

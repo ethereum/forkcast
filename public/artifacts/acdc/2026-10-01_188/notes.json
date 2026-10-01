@@ -1,0 +1,59 @@
+{
+  "meeting": "ACDC #188 - 2026-10-01",
+  "sections": [
+    {
+      "heading": "Glamsterdam Devnet and Sepolia Shadow Fork",
+      "summary": "Sepolia Shadow Fork launching imminently; CL side has been stable; shadow fork expected to run a day or two before Sepolia upgrade.",
+      "timestamp": "00:07:19",
+      "body": "- A Sepolia Shadow Fork was being prepared during the call, with launch expected within the hour.\n  - Shadow fork expected to remain live for a day or two, shutting down before the weekend.\n  - Goal is to verify everything works as expected before the Sepolia fork.\n- CL side reported as relatively stable with no issues flagged.\n- Potuz requested a small non-finalizing devnet (or reusing devnet-8) to test incident response scenarios such as unfinalized checkpoint syncing.\n  - Parithosh agreed to coordinate stopping some nodes on devnet-8 for this purpose, noting resource constraints with multiple devnets already running."
+    },
+    {
+      "heading": "Sepolia Upgrade and Hoodi Timeline",
+      "summary": "Sepolia forks to Glamsterdam on October 6 at ~13:53 UTC; Hoodi date tentatively the week before Devcon, pending Sepolia outcome.",
+      "timestamp": "00:08:22",
+      "body": "- Sepolia will fork to Glamsterdam on October 6th at approximately 13:53 UTC.\n- Hoodi date has not been formally set yet; proposed for around October 27th (the week before Devcon), contingent on Sepolia going well.\n  - Formal Hoodi date decision expected at ACDE next week.\n- Barnabas confirmed willingness to schedule Hoodi one week before Devcon."
+    },
+    {
+      "heading": "Incident Response Plan and Coordinator Nominations",
+      "summary": "Client teams asked to nominate incident response coordinators for Sepolia; Will Corcoran is the communications coordinator.",
+      "timestamp": "00:09:25",
+      "body": "- The [incident response plan](https://github.com/ethereum/pm/blob/master/processes/protocol-upgrade.md#incident-response-plan) document was highlighted, encoding postures for handling problems during network upgrades.\n- Will Corcoran introduced as communications coordinator; a signal channel was created with EF security, DevOps, and testing teams.\n- Parithosh and Barnabas confirmed as DevOps coordinators.\n- Justin Traglia and Mario Vega nominated for testing roles (Mario as primary, Justin as backup).\n  - Mario noted he can assist with generating test cases on the fly for issues found during the upgrade.\n- Client teams asked to nominate their coordinators via PR to the [mainnet plan document](https://github.com/ethereum/pm/blob/master/glamsterdam-mainnet-plan.md) by end of Monday.\n  - Barnabas warned he would pick coordinators for teams that don't self-nominate by Monday."
+    },
+    {
+      "heading": "Hegotá Scoping: Withdrawn EIPs",
+      "summary": "EIP-8333 (Align Checkpoint with Epoch Boundary Block) and EIP-8363 (Tapered Issuance Burn) both withdrawn from Hegotá consideration.",
+      "timestamp": "00:16:47",
+      "body": "- EIP-8333 withdrawn by Lodestar/lodekeeper; Cayman explained they looked further at decoupled consensus and decided it's not worth addressing now.\n- EIP-8363 withdrawn by its champions; Jerome posted on [ETH Magicians](https://ethereum-magicians.org/t/eip-8363-tapered-issuance-burn/29263/271) explaining the desire for a broader community-driven process rather than shoehorning a policy change into ACD scoping.\n  - A timeline for an alternative approach is included in the post."
+    },
+    {
+      "heading": "EIP-8365 Deposit Guard Update and CFI",
+      "summary": "EIP-8365 updated to keep only the deposit guard; forced exit split into a standalone future-fork EIP; CFI'd for Hegotá with broad support.",
+      "timestamp": "00:21:45",
+      "body": "- NC presented the update: the deposit guard portion remains in EIP-8365; the forced exit part has been separated into a standalone EIP not proposed for Hegotá.\n- This update was the condition set on the previous call for CFI.\n- Agreement: EIP-8365 CFI'd for Hegotá with broad support in chat.\n- Barnabas raised whether new 0x01 withdrawal credentials should be disallowed in a future fork.\n  - Potuz noted that if EIP-8148 (lowering the compounding threshold) gets in, 0x01 should be disabled in the same fork since there would be no reason not to use 0x02 with a 32 ETH threshold."
+    },
+    {
+      "heading": "Quick Slots (EIP-8198) Discussion and CFI",
+      "summary": "Quick slots CFI'd for Hegotá after extensive debate; concerns around PQ timeline and testing noted, with understanding it can be pulled before SFI.",
+      "timestamp": "00:25:30",
+      "body": "- Ryan Berckmans (community guest) spoke in support: L2 and app-layer teams want quick slots included; beginning the system of reducing slot time now reduces risk of 12-second slots persisting for 3-4 more years.\n- Barnabé Monnot presented [slides](https://docs.google.com/presentation/d/1e8oYeHZ-E4qKplWsL28xt3fpQTNehY_90ENwxh_29N0/edit?usp=sharing) making the case for CFI:\n  - Value: better UX, faster confirmation, less MEV leakage, faster finality, more censorship resistance.\n  - Specs merged (PR 5592); EIP in review; Prysm prototype implementation ongoing.\n  - Ecosystem outreach via Sourcify smart contract analysis underway; ~100 contracts identified as needing review; key teams (Lido, Offchain, EFFI) already confirmed feasibility of adapting.\n  - 10 seconds is confident to not block PQ transition given decoupled consensus design (512-validator subcommittee, no aggregation in critical path).\n  - Target is 10 seconds for Hegotá (EIP being updated from earlier 8-second figure).\n- Lodestar (Nico Flaig) reported having a branch with shorter slots; described as trivial from a code perspective.\n- Teku (Enrico Del Fante) rated it S tier; Paul's POC feedback was that it isn't complicated.\n- Prysm (Terence) rated it A tier; prototype updated against latest spec; several weeks of detailed audit completed; team considers the trade-off worth it.\n- Lighthouse (kingy) did a rough implementation to scope difficulty; mechanically not hard; testing will take time; personally very in favor.\n- **Concerns raised:**\n  - Lodestar (Matthew Keil / ChainSafe): tuning clients for CPU scheduling under shorter slots is hard; PQ is existential and should have priority; 10 seconds is somewhat arbitrary; work may be wasted when decoupled consensus reworks slot mechanics. However, team is open to adding the machinery to adjust slot times without actually reducing them yet.\n  - Grandine (Saulius): not in support; suggested other teams push it and share experience first, similar to stable containers path.\n  - Fredrik: concerned about impact on PQ timeline acceleration; supportive of the value but worried about delays to Hegotá.\n  - Justin Traglia: initially opposed for Hegotá due to PQ concerns, but softened to supporting CFI after discussion clarified that DC mitigates PQ-related slot time concerns.\n  - Lightclient noted it seems contentious and that deciding slot time before implementing the new consensus protocol seems premature.\n- **Key counterarguments to PQ concern:**\n  - Potuz and Francesco D'Amato: PQ cannot happen without DC anyway; DC removes signature aggregation from the critical path, making slot time largely orthogonal to PQ.\n  - Ansgar Dietrichs: if not in Hegotá, likely not in I* (DC too big), J* (PQ focus), so K* in 2029 at earliest.\n  - Barnabas: protocol shouldn't be kneecapped today out of fear of future PQ requirements; slot time can always be increased later if needed.\n- Łukasz Rozmej (Nethermind): EL tail block processing is 50-200ms P95; CPU not a problem from EL side; zkVMs shouldn't hold protocol hostage; Nethermind pro-CFI.\n- Decision: Quick slots (EIP-8198) CFI'd for Hegotá.\n  - Understanding: more data needed to validate the 12-to-10 change; opportunity to revisit before SFI; CFI is not a commitment to ship.\n  - Forkcast view: [client priority page](https://forkcast.org/upgrade/hegota/client-priority/?quick=cl)."
+    },
+    {
+      "heading": "EIP-8379 Top Up Sync",
+      "summary": "Top Up Sync DFI'd for Hegotá after limited support; proponents encouraged to experiment with optional engine API endpoints outside the fork.",
+      "timestamp": "01:03:54",
+      "body": "- Dustin (champion) presented the EIP: adds an engine API endpoint (engine_getSyncStatus) so the CL can query the EL's sync state and drive sync from the right point.\n  - Enables resilience (CL can sync EL after incidents like Holesky/Pectra where both layers got stuck simultaneously).\n  - Reduces duplicate gossip traffic; ELs can optionally stop listening to certain gossip.\n  - Reduces attack surface; enables flexible storage deduplication between CL and EL.\n  - Not intended to replace snap sync; complementary for serial top-up after snapshot.\n- Łukasz Rozmej (Nethermind) initially expressed concern about losing control over EL sync optimization, but after clarification acknowledged the EIP only adds an informational endpoint and doesn't mandate behavioral changes.\n- Enrico Del Fante (Teku) argued that without deciding the end-game vision for CL/EL responsibility separation, adding optional capabilities in both directions doesn't address the core issue; real deduplication requires picking a direction.\n- Cayman (Lodestar) voiced support, viewing it as a minor engine API tweak that unlocks optional flexibility.\n- ethDreamer (Lighthouse) supported it in principle as an engine API change but wanted more time to assess implementation effort; would have preferred deferral over DFI.\n- Marius Van Der Wijden questioned whether it's worth implementing across 5+ clients at this stage.\n- Decision: DFI'd for Hegotá, with understanding that teams interested in the functionality can experiment with it outside the fork cadence."
+    },
+    {
+      "heading": "EIP-8383 Reduce CL Block Retention Window",
+      "summary": "Deferred to next ACDC call; client teams asked to review the EIP before then.",
+      "timestamp": "01:27:32",
+      "body": "- Kevaundray Wedderburn (champion) noted there have been many conversations about retention windows, but acknowledged clients may not have reviewed the EIP yet.\n- Barnabas suggested deferring to the next call.\n- Agreement: deferred; client teams have homework to review EIP-8383 before the next ACDC."
+    },
+    {
+      "heading": "EIP-8025 Optional Execution Proofs",
+      "summary": "Discussion began but deferred to next call due to time; Nethermind raised concerns about shipping non-production-ready features and zkVM pairing governance.",
+      "timestamp": "01:28:43",
+      "body": "- Ignacio (ethrex / champion) proposed CFI for EIP-8025, emphasizing it defines specs for optional proofs without committing to any specific zkVM pairing or proof system.\n  - Key motivation: upstreaming work into a shared repository to de-risk analysis of how zkVMs interact with other protocol changes (e.g., PVD); maintaining separate zkVM and PVD spec branches is increasingly inefficient.\n- Łukasz Rozmej (Nethermind) raised two objections despite loving execution proofs generally:\n  - Historically, fork-shipped features are production-ready; optional proofs won't be secure enough without gas repricing, sending mixed signals to the community.\n  - The current solution involves committee-selected guest program / zkVM pairings, breaking the culture of open client competition.\n- Ignacio responded that these concerns are more relevant to mandatory proofs, not EIP-8025's optional proofs, which don't enshrine any proof system.\n- Decision deferred to next ACDC call due to time constraints."
+    }
+  ]
+}

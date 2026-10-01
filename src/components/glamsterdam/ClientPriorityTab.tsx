@@ -14,7 +14,7 @@ import {
   SortDirection,
 } from '../../utils/prioritization';
 import { getInclusionStageColor } from '../../utils/colors';
-import { getInclusionStageSortRank, getProposalPrefix, getStageAbbreviation } from '../../utils';
+import { getInclusionStageSortRank, getProposalPrefix, getStageAbbreviation, isHeadliner } from '../../utils';
 import { eipsData } from '../../data/eips';
 import { buildDisplayGroups, groupByCategory, CategoryGroup } from '../../domain/eips/eipCategories';
 import { RANK_FORK } from '../../domain/eips/rankableEips';
@@ -755,6 +755,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       isExpanded={expandedEip === agg.eipId}
       onToggle={() => setExpandedEip(expandedEip === agg.eipId ? null : agg.eipId)}
       onOpenDrawer={openDrawer(agg.eipId)}
+      fork={fork}
     />
   );
 
@@ -1340,6 +1341,8 @@ interface TableRowProps {
   isExpanded: boolean;
   onToggle: () => void;
   onOpenDrawer: (event: React.MouseEvent) => void;
+  /** `isHeadliner` is per fork relationship, so the row has to know which fork it is in. */
+  fork: string;
 }
 
 const TableRow: React.FC<TableRowProps> = ({
@@ -1355,6 +1358,7 @@ const TableRow: React.FC<TableRowProps> = ({
   isExpanded,
   onToggle,
   onOpenDrawer,
+  fork,
 }) => {
   const eip = eipsData.find((e) => e.id === agg.eipId);
   const shortStage = getStageAbbreviation(agg.inclusionStage);
@@ -1421,6 +1425,11 @@ const TableRow: React.FC<TableRowProps> = ({
             onClick={eip ? onOpenDrawer : undefined}
             className="text-sm text-slate-900 dark:text-slate-100 hover:text-purple-600 dark:hover:text-purple-400 line-clamp-1"
           >
+            {eip && isHeadliner(eip, fork) && (
+              <span className="text-slate-700 dark:text-slate-300" title="Selected headliner">
+                {'\u2605 '}
+              </span>
+            )}
             {agg.eipTitle}
           </Link>
         </td>

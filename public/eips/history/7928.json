@@ -2,6 +2,16 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "943f8d14e39ef91d96f79b0dde32ccafdd58e7db",
+      "date": "2026-10-01T12:35:00Z",
+      "message": "Update EIP-7928: Update size numbers",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -528,28 +528,28 @@ This design variant was chosen for several key reasons:\n \n 2. **Storage values for writes**: Post-execution values enable state reconstruction during sync without individual proofs against state root.\n \n-3. **Overhead analysis**: Historical data shows ~70 KiB average BAL size.\n+3. **Overhead analysis**: Historical data shows ~90 KiB average BAL size.\n \n 4. **Transaction independence**: 60-80% of transactions access disjoint storage slots, enabling effective parallelization. The remaining 20-40% can be parallelized by having post-transaction state diffs.\n \n 5. **RLP encoding**: Native Ethereum encoding format, maintains compatibility with existing infrastructure.\n \n ### BAL Size Considerations (60m block gas limit)\n \n-**Average BAL size**: ~72.4 KiB (compressed)\n+**Average BAL size**: ~92.1 KiB (compressed)\n \n-- Storage writes: ~29.2 KiB (40.3%)\n-- Storage reads: ~18.7 KiB (25.8%)\n-- Balance diffs: ~6.7 KiB (9.2%)\n-- Nonce diffs: ~1.1 KiB (1.5%)\n-- Code diffs: ~1.2 KiB (1.6%)\n-- Account addresses (with diffs): ~7.7 KiB (10.7%)\n-- Touched-only addresses: ~3.5 KiB (4.8%)\n-- RLP encoding overhead: ~4.4 KiB (6.1%)\n+- Storage writes: ~36.1 KiB (39.2%)\n+- Storage reads: ~25.8 KiB (28.0%)\n+- Balance diffs: ~9.2 KiB (10.0%)\n+- Nonce diffs: ~1.9 KiB (2.1%)\n+- Code diffs: ~1.4 KiB (1.5%)\n+- Account addresses (with diffs): ~12.5 KiB (13.6%)\n+- Touched-only addresses: ~3.3 KiB (3.6%)\n+- RLP encoding overhead: ~1.8 KiB (1.9%)\n \n Smaller than current worst-case calldata blocks.\n \n-An empirical analysis has been done [here](../assets/eip-7928/bal_size_analysis.md). An updated analysis for a 60 million block gas limit can be found [here](../assets/eip-7928/bal_size_analysis_60m.md).\n+An empirical analysis has been done [here](../assets/eip-7928/bal_size_analysis.md). An updated analysis for a 60 million block gas limit can be found [here](../assets/eip-7928/bal_size_analysis_60m.md), and a refreshed one over more recent blocks (October 2026) [here](../assets/eip-7928/bal_size_analysis_60m_2026_10.md).\n \n ### Asynchronous Validation\n ",
+      "additions": 11,
+      "deletions": 11
+    },
+    {
       "sha": "d2a64c2d4cc44f2f507577d0ebfb110dcc21d358",
       "date": "2026-09-09T15:17:05Z",
       "message": "Update EIP-7928: Amend storage-read gas-feasibility check",
@@ -646,6 +656,14 @@
     }
   ],
   "openPrs": [
+    {
+      "number": 12408,
+      "title": "Update EIP-7928: clarify warm `SELFDESTRUCT` beneficiary access cost",
+      "author": "colinlyguo",
+      "updatedAt": "2026-10-01T17:41:14Z",
+      "additions": 1,
+      "deletions": 1
+    },
     {
       "number": 12347,
       "title": "Update EIP-7928: align BAL retention with the history expiry window",

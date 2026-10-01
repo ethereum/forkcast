@@ -1,40 +1,85 @@
 {
   "series": "ACDT",
-  "generated": "2026-09-24",
+  "generated": "2026-10-01",
   "lookback_calls": [
-    "ACDT #93",
     "ACDT #94",
     "ACDT #95",
     "ACDT #96",
-    "ACDT #97"
+    "ACDT #97",
+    "ACDT #98"
   ],
   "deferred": [
     {
-      "topic": "EIP-8037 cross-frame state gas bug decision (PR #12265)",
+      "topic": "EIP-8037 cross-frame state gas bug fix (EIPs/PR#12265)",
       "deferred_in": "ACDT #94",
       "deferred_date": "2026-08-31",
       "expected_revisit": "ACDC call, September 4, 2026",
-      "revisited": false,
-      "revisited_in": null,
-      "outcome": "No follow-up in subsequent ACDT calls; decision explicitly deferred to ACDC"
+      "revisited": true,
+      "revisited_in": "Not documented in ACDT calls (deferred to ACDC)",
+      "outcome": "Decision was made in ACDC (not visible in these ACDT summaries); fix was eventually merged as referenced in later calls"
     },
     {
-      "topic": "EIP-8253 (bump nonce of zero-nonce storage accounts) - Glamsterdam vs Hegota decision",
+      "topic": "EIP-8253 inclusion in Glamsterdam fork",
       "deferred_in": "ACDT #95",
       "deferred_date": "2026-09-07",
       "expected_revisit": "Thursday's ACDE",
       "revisited": true,
       "revisited_in": "ACDT #96",
-      "outcome": "BAL collision behavior left undefined pending EIP-8253 in Hegota (confirmed deferred to Hegota)"
+      "outcome": "Confirmed deferred to Hegota fork; too late for Glamsterdam. BAL collision behavior left undefined pending EIP-8253 in Hegota"
     },
     {
-      "topic": "Serving window / BAL retention alignment",
-      "deferred_in": "ACDT #97",
-      "deferred_date": "2026-09-21",
-      "expected_revisit": "async thread and next ACDE",
+      "topic": "FOCIL signed inclusion list P2P message size bound (8 KB to 41 KB)",
+      "deferred_in": "ACDT #94",
+      "deferred_date": "2026-08-31",
+      "expected_revisit": "CL breakout",
       "revisited": false,
       "revisited_in": null,
-      "outcome": "Not blocking testnet launch; to be continued async and brought to ACDE"
+      "outcome": null
+    },
+    {
+      "topic": "FOCIL gossip rule rejecting inclusion lists with empty transactions",
+      "deferred_in": "ACDT #94",
+      "deferred_date": "2026-08-31",
+      "expected_revisit": "CL breakout",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": null
+    },
+    {
+      "topic": "BAL retention alignment with CL serving window",
+      "deferred_in": "ACDT #97",
+      "deferred_date": "2026-09-21",
+      "expected_revisit": "ACDE before next call",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": "Not blocking testnet launch; async discussion to continue"
+    },
+    {
+      "topic": "Serving window / CL block-serving duration for Glamsterdam",
+      "deferred_in": "ACDT #97",
+      "deferred_date": "2026-09-21",
+      "expected_revisit": "async thread and ACDE",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": "Three options tabled (33,024 epochs, ~14,299 epochs per EIP-8061, or 8,192 per EIP-8383); not blocking testnet launch"
+    },
+    {
+      "topic": "FCR block tag implementation approach",
+      "deferred_in": "ACDT #98",
+      "deferred_date": "2026-09-28",
+      "expected_revisit": "async thread (EF R&D Discord or EF Magicians)",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": "New block tag name 'confirmed' preferred; opt-in via compatible CL+EL pairs; implementation details still to be investigated"
+    },
+    {
+      "topic": "Gas repricing decision based on JUMPDEST attack results",
+      "deferred_in": "ACDT #98",
+      "deferred_date": "2026-09-28",
+      "expected_revisit": "After devnet-8 retest without debug tracing and mainnet shadow fork",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": "200M gas deemed safe; repricing left open pending measurement with tracing disabled"
     }
   ]
 }

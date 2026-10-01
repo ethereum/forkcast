@@ -100,6 +100,16 @@ const DECISION_ANIMATION: Record<CallDecision, string> = {
 const readEnum = <T extends string>(value: string | null, allowed: readonly T[]): T | null =>
   allowed.includes(value as T) ? (value as T) : null;
 
+/**
+ * What the "Active only" view keeps: every EIP still attached to the fork. An SFI'd EIP
+ * stays — it is part of the payload the teams are reporting on, and a fork well into
+ * scheduling would otherwise empty out the table it is the record of.
+ */
+const isActive = (agg: EipAggregateStance): boolean =>
+  agg.inclusionStage !== 'Declined for Inclusion' &&
+  agg.inclusionStage !== 'Withdrawn' &&
+  agg.inclusionStage !== 'Unknown';
+
 /** The layer shorthand reads as `?quick=cl`, but layers are uppercase everywhere else. */
 const readQuick = (params: URLSearchParams): PresentLayer | null =>
   readEnum((params.get('quick') ?? '').toUpperCase(), PRESENT_LAYERS);
@@ -276,35 +286,6 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     };
   }, [filtersModalOpen, avgModalOpen, slide]);
 
-  /**
-   * Whether SFI'd EIPs still count as settled. Only true while the fork is choosing its
-   * payload — a fork whose EIPs are all Scheduled or Declined (Glamsterdam) would
-   * otherwise render an empty table instead of its record.
-   */
-  const forkIsUndecided = useMemo(
-    () =>
-      aggregates.some(
-        (agg) =>
-          agg.inclusionStage === 'Proposed for Inclusion' ||
-          agg.inclusionStage === 'Considered for Inclusion'
-      ),
-    [aggregates]
-  );
-
-  /** What the "Active only" view keeps: the EIPs this fork still has a decision to make about. */
-  const isActive = useCallback(
-    (agg: EipAggregateStance) => {
-      const stage = agg.inclusionStage;
-      if (stage === 'Declined for Inclusion' || stage === 'Withdrawn' || stage === 'Unknown') {
-        return false;
-      }
-      // An SFI'd EIP is locked into the fork, so there is no inclusion decision left for
-      // this table to support — the same reason the rank page won't put it on the board.
-      return !(forkIsUndecided && stage === 'Scheduled for Inclusion');
-    },
-    [forkIsUndecided]
-  );
-
   // Apply filtering
   const filteredAggregates = useMemo(() => {
     let result = aggregates;
@@ -334,7 +315,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     }
 
     return result;
-  }, [aggregates, filterLayer, filterClients, filterStages, hideExcluded, isActive]);
+  }, [aggregates, filterLayer, filterClients, filterStages, hideExcluded]);
 
   const isShown = (team: TeamEntry) => !focusOnly || filterClients.has(team.name);
   const shownElTeams = elTeams.filter(isShown);
@@ -428,7 +409,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       return groupAndSort(ofLayer, DECK_ORDER[layer], LAYER_SORT[layer], 'desc');
     };
     return { EL: deckFor('EL'), CL: deckFor('CL') };
-  }, [canGroupByCategory, deckAggregates, isActive, groupAndSort]);
+  }, [canGroupByCategory, deckAggregates, groupAndSort]);
 
   const slides = decks[slideLayer];
   const slideCount = slides?.length ?? 0;

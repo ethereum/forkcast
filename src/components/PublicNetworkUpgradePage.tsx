@@ -21,7 +21,7 @@ import {
   getUpgradeStatusColor
 } from '../utils/colors';
 import { ActivationDetails } from '../data/upgrades';
-import { Tooltip, CopyLinkButton } from './ui';
+import { Tooltip, CopyLinkButton, UpgradeMascot } from './ui';
 import { EipDrawer } from './eip/EipDrawer';
 import {
   NetworkUpgradeTimeline,
@@ -94,6 +94,8 @@ interface PublicNetworkUpgradePageProps {
   metaEipLink?: string;
   clientTeamPerspectives?: ClientTeamPerspective[];
   activationDetails?: ActivationDetails;
+  /** Id in `networkUpgrades`, to show that upgrade's mascot beside the title. */
+  mascotUpgradeId?: string;
   /** When true, omit the standalone "All Network Upgrades" back-link for embedding inside a layout. */
   embedded?: boolean;
   /** When true, also omit the header section (title, description, meta-eip link). */
@@ -109,6 +111,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
   metaEipLink,
   clientTeamPerspectives,
   activationDetails,
+  mascotUpgradeId,
   embedded = false,
   skipHeader = false
 }) => {
@@ -517,16 +520,11 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                   <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
                     <span className="lg:hidden">{displayName.replace(/ Upgrade$/, '')}</span>
                     <span className="hidden lg:inline">{displayName}</span>
+                    {mascotUpgradeId && <UpgradeMascot upgradeId={mascotUpgradeId} className="ml-2" />}
                   </h1>
                   <span className={`lg:hidden px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(status)}`}>
                     {status}
                   </span>
-                  <div className="hidden lg:flex items-center">
-                    <CopyLinkButton
-                      sectionId="upgrade"
-                      title="Copy link to this upgrade"
-                    />
-                  </div>
                 </div>
                 <p className="text-base text-slate-600 dark:text-slate-300 mb-2 leading-relaxed max-w-2xl">{description}</p>
                 {metaEipLink && (

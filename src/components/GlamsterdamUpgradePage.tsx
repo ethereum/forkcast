@@ -7,6 +7,7 @@ import TestComplexityTab from './glamsterdam/TestComplexityTab';
 import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
 import { canonicalHref } from '../utils/path';
+import { UpgradeMascot } from './ui';
 
 const upgrade = getUpgradeById('glamsterdam')!;
 
@@ -74,6 +75,7 @@ const GlamsterdamUpgradePage: React.FC<GlamsterdamUpgradePageProps> = ({ activeT
                   <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
                     <span className="lg:hidden">Glamsterdam</span>
                     <span className="hidden lg:inline">{upgrade.name}</span>
+                    <UpgradeMascot upgradeId="glamsterdam" className="ml-2" />
                   </h1>
                   <span className={`lg:hidden px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(upgrade.status)}`}>
                     {upgrade.status}

@@ -3,6 +3,7 @@ import { Link } from './navigation';
 import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
 import { parseShortDate } from './schedule/forkDateCalculator';
 import UpgradeCard from './ui/UpgradeCard';
+import { UpgradeMascot } from './ui';
 
 const isInProgress = (u: NetworkUpgrade) => !u.disabled && u.status !== 'Live';
 
@@ -50,6 +51,7 @@ const UpgradeRow: React.FC<UpgradeRowProps> = ({ upgrade }) => {
           >
             {upgrade.name}
           </span>
+          <UpgradeMascot upgradeId={upgrade.id} size="text-base" linked={false} />
           {upgrade.activationDate && (
             <span className="sm:hidden text-xs text-slate-500 dark:text-slate-400">
               · {upgrade.activationDate}

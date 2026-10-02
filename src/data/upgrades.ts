@@ -7,6 +7,23 @@ export interface ActivationDetails {
   slotNumber: number;
 }
 
+/**
+ * The upgrade's mascot, per the EIP-8066 process. `name` is the animal, which
+ * is not always the emoji's own — Dencun's blobfish has no emoji of its own.
+ *
+ * The forks predating EIP-8066 were picked informally. The panda and the owl
+ * come from the naming-schemes thread that started the convention:
+ * https://ethereum-magicians.org/t/rfc-post-merge-network-upgrade-naming-schemes/11977
+ */
+export interface UpgradeMascot {
+  emoji: string;
+  name: string;
+  /** Where the animal came from, when it isn't self-evident. */
+  note?: string;
+  /** What `note` is drawn from. The mascot links here instead of to EIP-8066. */
+  source?: { url: string; label: string };
+}
+
 export interface NetworkUpgrade {
   id: string;
   path: string;
@@ -30,6 +47,7 @@ export interface NetworkUpgrade {
   highlights?: string;
   externalLink?: string;
   hideProgressBar?: boolean;
+  mascot?: UpgradeMascot;
 }
 
 export const networkUpgrades: NetworkUpgrade[] = [
@@ -53,7 +71,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     status: 'Live',
     activationDate: 'Sep 15, 2022',
     disabled: true,
-    externalLink: 'https://ethereum.org/roadmap/merge/'
+    externalLink: 'https://ethereum.org/roadmap/merge/',
+    mascot: { emoji: '🐼', name: 'Panda', note: 'From the fusion-dance meme: a black bear (execution) and a white bear (consensus) merging into one.' }
   },
   {
     id: 'shapella',
@@ -65,7 +84,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     activationDate: 'Apr 12, 2023',
     disabled: true,
     highlights: 'Staking withdrawals (EIP-4895)',
-    externalLink: 'https://eips.ethereum.org/EIPS/eip-7568'
+    externalLink: 'https://eips.ethereum.org/EIPS/eip-7568',
+    mascot: { emoji: '🦉', name: 'Owl', note: 'A pun on the headline feature: withdrawals → withdrOWLs.' }
   },
   {
     id: 'dencun',
@@ -77,7 +97,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     activationDate: 'Mar 13, 2024',
     disabled: true,
     highlights: 'Proto-danksharding / blobs (EIP-4844)',
-    externalLink: 'https://eips.ethereum.org/EIPS/eip-7569'
+    externalLink: 'https://eips.ethereum.org/EIPS/eip-7569',
+    mascot: { emoji: '🐡', name: 'Blobfish', note: 'For the blobs. Unicode has no blobfish, so the blowfish stands in.' }
   },
   {
     id: 'pectra',
@@ -94,7 +115,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
       blockNumber: 22431084,
       epochNumber: 364032,
       slotNumber: 11649024
-    }
+    },
+    mascot: { emoji: '🦒', name: 'Giraffe', note: 'Adopted at the Nyota interop week in Kenya.', source: { url: 'https://blog.ethereum.org/2024/05/22/nyota-interop-recap', label: 'Interop recap' } }
   },
   {
     id: 'fusaka',
@@ -110,7 +132,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
       blockNumber: 23935694,
       epochNumber: 411392,
       slotNumber: 13164544
-    }
+    },
+    mascot: { emoji: '🦓', name: 'Zebra', note: "Stripes for PeerDAS's data columns." }
   },
   {
     id: 'glamsterdam',
@@ -123,6 +146,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     projectedActivation: '2026-12-02',
     disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',
+    // The only mascot written into a hardfork meta EIP so far: EIP-7773#mascot.
+    mascot: { emoji: '🐻‍❄️', name: 'Polar bear', note: 'From the Soldøgn interop, held in Longyearbyen, Svalbard, above the Arctic Circle.', source: { url: 'https://blog.ethereum.org/2026/05/02/soldogn-interop-recap', label: 'Interop recap' } },
     clientTeamPerspectives: [
       {
         teamName: 'Besu',

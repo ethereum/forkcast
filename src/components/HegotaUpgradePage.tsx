@@ -5,6 +5,7 @@ import { canonicalHref } from '../utils/path';
 import ClientPriorityTab from './glamsterdam/ClientPriorityTab';
 import TestComplexityTab from './glamsterdam/TestComplexityTab';
 import OverviewTab from './hegota/OverviewTab';
+import { UpgradeMascot } from './ui';
 
 const upgrade = getUpgradeById('hegota')!;
 
@@ -61,6 +62,7 @@ const HegotaUpgradePage: React.FC<HegotaUpgradePageProps> = ({ activeTab }) => {
                   <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
                     <span className="lg:hidden">Hegotá</span>
                     <span className="hidden lg:inline">{upgrade.name}</span>
+                    <UpgradeMascot upgradeId="hegota" className="ml-2" />
                   </h1>
                   <span className={`lg:hidden px-3 py-1 text-xs font-medium rounded ${getUpgradeStatusColor(upgrade.status)}`}>
                     {upgrade.status}

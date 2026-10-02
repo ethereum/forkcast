@@ -32,6 +32,8 @@ export const GET: APIRoute = () => {
       metaEipLink: u.metaEipLink,
       externalLink: u.externalLink,
       highlights: u.highlights,
+      /** The upgrade's mascot, per the EIP-8066 process. Absent until one is chosen. */
+      mascot: u.mascot,
       clientTeamPerspectives: u.clientTeamPerspectives,
       // Only upgrades with a Forkcast page of their own are linkable.
       url: u.disabled ? undefined : u.path,

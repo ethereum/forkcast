@@ -4,6 +4,7 @@ import { NetworkUpgrade } from '../../data/upgrades';
 import { FORK_PROGRESS_MAP } from '../../constants/timeline-phases';
 import { getMacroPhaseForUpgrade, getMacroPhaseSummary } from '../../utils/macroPhase';
 import MacroPhaseBar from './MacroPhaseBar';
+import { UpgradeMascot } from './UpgradeMascot';
 
 interface UpgradeCardProps {
   upgrade: NetworkUpgrade;
@@ -27,6 +28,7 @@ const UpgradeCard: React.FC<UpgradeCardProps> = ({ upgrade, className = '' }) =>
           }`}
         >
           {upgrade.name}
+          <UpgradeMascot upgradeId={upgrade.id} size="text-xl" linked={false} className="ml-2" />
         </h2>
         {upgrade.externalLink && (
           <svg className="w-4 h-4 shrink-0 mt-0.5 ml-2 text-slate-400 dark:text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

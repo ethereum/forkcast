@@ -2,6 +2,16 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "ac912ca6a9685590345dd8e5736cda75976d0131",
+      "date": "2026-10-02T10:32:54Z",
+      "message": "Update EIP-7928: Clarify storage key ordering",
+      "author": "nerolation",
+      "prNumber": null,
+      "patch": "@@ -177,8 +177,8 @@ Note: Delegated accounts cannot be empty, so `GAS_NEW_ACCOUNT` never applies whe\n The following ordering rules MUST apply:\n \n - **Accounts**: Lexicographic by address\n-- **storage_changes**: Slots lexicographic by storage key; within each slot, changes by block access index (ascending)\n-- **storage_reads**: Lexicographic by storage key\n+- **storage_changes**: Slots by storage key value (ascending); within each slot, changes by block access index (ascending)\n+- **storage_reads**: By storage key value (ascending)\n - **balance_changes, nonce_changes, code_changes**: By block access index (ascending)\n \n The following uniqueness constraints MUST hold:",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
       "sha": "356a0046e9e7ae4afcdd0cf2507698e04d7f9a37",
       "date": "2026-10-02T02:33:16Z",
       "message": "Update EIP-7928: clarify empty BAL conditions",
@@ -676,14 +686,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12415,
-      "title": "Update EIP-7928: Clarify storage key ordering",
-      "author": "nerolation",
-      "updatedAt": "2026-10-01T20:53:45Z",
-      "additions": 2,
-      "deletions": 2
-    },
     {
       "number": 12347,
       "title": "Update EIP-7928: align BAL retention with the history expiry window",

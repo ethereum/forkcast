@@ -2,6 +2,26 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "356a0046e9e7ae4afcdd0cf2507698e04d7f9a37",
+      "date": "2026-10-02T02:33:16Z",
+      "message": "Update EIP-7928: clarify empty BAL conditions",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "patch": "@@ -29,7 +29,7 @@ This proposal enforces access lists at the block level, enabling:\n \n ### Block Structure Modification\n \n-We introduce a new field to the block header, `block_access_list_hash`, which contains the Keccak-256 hash of the RLP-encoded block access list. When no state changes are present, this field is the hash of an empty RLP list `0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347`, i.e. `keccak256(rlp.encode([]))`.\n+We introduce a new field to the block header, `block_access_list_hash`, which contains the Keccak-256 hash of the RLP-encoded block access list. For an empty block access list, this is `keccak256(rlp.encode([])) = 0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347`.\n \n ```python\n class Header:\n@@ -39,7 +39,7 @@ class Header:\n     block_access_list_hash: Hash32 = keccak256(rlp.encode(block_access_list))\n ```\n \n-The `BlockAccessList` is not included in the block body. The EL stores BALs separately and transmits them as a field in the `ExecutionPayload` via the engine API. The BAL is RLP-encoded as a list of `AccountChanges`. When no state changes are present, this field is the empty RLP list `0xc0`, i.e. `rlp.encode([])`.\n+The `BlockAccessList` is not included in the block body. The EL stores BALs separately and transmits them as a field in the `ExecutionPayload` via the engine API. The BAL is RLP-encoded as a list of `AccountChanges`. An empty block access list encodes as `0xc0`, i.e. `rlp.encode([])`.\n \n ### RLP Data Structures\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "c304610716ce55e457333e1d09074e4acb54c66f",
+      "date": "2026-10-01T23:41:39Z",
+      "message": "Update EIP-7928: clarify warm `SELFDESTRUCT` beneficiary access cost",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "patch": "@@ -157,7 +157,7 @@ The following table specifies pre-state validation costs in addition to the base\n \n Where:\n \n-- `access_cost`: For account-accessing opcodes: `COLD_ACCOUNT_ACCESS_COST` if cold, `WARM_STORAGE_READ_COST` if warm. For storage-accessing opcodes (`SLOAD` and `SSTORE`): `COLD_SLOAD_COST` if cold, `WARM_STORAGE_READ_COST` if warm.\n+- `access_cost`: For account-accessing opcodes, `COLD_ACCOUNT_ACCESS_COST` if cold and `WARM_STORAGE_READ_COST` if warm, except for a warm `SELFDESTRUCT` beneficiary, which has zero access cost as specified by [EIP-2929](./eip-2929.md). For storage-accessing opcodes (`SLOAD` and `SSTORE`), `COLD_SLOAD_COST` if cold and `WARM_STORAGE_READ_COST` if warm.\n - `memory_expansion`: Gas cost to expand memory for input/output regions\n \n Post-state costs (e.g., `GAS_NEW_ACCOUNT` for calls to empty accounts, `GAS_SELF_DESTRUCT_NEW_ACCOUNT` if beneficiary does not exist) do not affect BAL inclusion since the target has already been accessed.",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "943f8d14e39ef91d96f79b0dde32ccafdd58e7db",
       "date": "2026-10-01T12:35:00Z",
       "message": "Update EIP-7928: Update size numbers",
@@ -657,12 +677,12 @@
   ],
   "openPrs": [
     {
-      "number": 12408,
-      "title": "Update EIP-7928: clarify warm `SELFDESTRUCT` beneficiary access cost",
-      "author": "colinlyguo",
-      "updatedAt": "2026-10-01T17:41:14Z",
-      "additions": 1,
-      "deletions": 1
+      "number": 12415,
+      "title": "Update EIP-7928: Clarify storage key ordering",
+      "author": "nerolation",
+      "updatedAt": "2026-10-01T20:53:45Z",
+      "additions": 2,
+      "deletions": 2
     },
     {
       "number": 12347,

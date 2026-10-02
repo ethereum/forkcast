@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from './navigation';
-import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
+import { networkUpgrades, NetworkUpgrade, shortUpgradeName } from '../data/upgrades';
 import { parseShortDate } from './schedule/forkDateCalculator';
 import UpgradeCard from './ui/UpgradeCard';
 import { UpgradeMascot } from './ui';
@@ -49,7 +49,7 @@ const UpgradeRow: React.FC<UpgradeRowProps> = ({ upgrade }) => {
                 : 'text-slate-900 dark:text-slate-100'
             }`}
           >
-            {upgrade.name}
+            {shortUpgradeName(upgrade.name)}
           </span>
           <UpgradeMascot upgradeId={upgrade.id} size="text-base" linked={false} />
           {upgrade.activationDate && (

@@ -20,7 +20,7 @@ import {
   getInclusionStageColor,
   getUpgradeStatusColor
 } from '../utils/colors';
-import { ActivationDetails } from '../data/upgrades';
+import { ActivationDetails, shortUpgradeName } from '../data/upgrades';
 import { Tooltip, CopyLinkButton, UpgradeMascot } from './ui';
 import { EipDrawer } from './eip/EipDrawer';
 import {
@@ -518,7 +518,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
               <div className="flex-1">
                 <div className="flex items-center justify-between lg:justify-start gap-3 mb-3">
                   <h1 className="text-3xl font-light text-slate-900 dark:text-slate-100 tracking-tight">
-                    <span className="lg:hidden">{displayName.replace(/ Upgrade$/, '')}</span>
+                    <span className="lg:hidden">{shortUpgradeName(displayName)}</span>
                     <span className="hidden lg:inline">{displayName}</span>
                     {mascotUpgradeId && <UpgradeMascot upgradeId={mascotUpgradeId} className="ml-2" />}
                   </h1>

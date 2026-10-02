@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '../navigation';
-import { NetworkUpgrade } from '../../data/upgrades';
+import { NetworkUpgrade, shortUpgradeName } from '../../data/upgrades';
 import { FORK_PROGRESS_MAP } from '../../constants/timeline-phases';
 import { getMacroPhaseForUpgrade, getMacroPhaseSummary } from '../../utils/macroPhase';
 import MacroPhaseBar from './MacroPhaseBar';
@@ -27,7 +27,7 @@ const UpgradeCard: React.FC<UpgradeCardProps> = ({ upgrade, className = '' }) =>
               : 'text-slate-900 dark:text-slate-100'
           }`}
         >
-          {upgrade.name}
+          {shortUpgradeName(upgrade.name)}
           <UpgradeMascot upgradeId={upgrade.id} size="text-xl" linked={false} className="ml-2" />
         </h2>
         {upgrade.externalLink && (

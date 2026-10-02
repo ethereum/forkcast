@@ -236,6 +236,13 @@ export const getUpgradeById = (id: string): NetworkUpgrade | undefined => {
   return networkUpgrades.find(upgrade => upgrade.id === id);
 };
 
+/**
+ * The name without its trailing "Upgrade", for lists and timelines that already
+ * sit under a heading saying these are upgrades. `name` itself stays intact for
+ * page titles and share cards, where the word is the only context a reader has.
+ */
+export const shortUpgradeName = (name: string): string => name.replace(/ Upgrade$/, '');
+
 // Forks that have a public `/upgrade/{id}` page. Historical forks (e.g. Dencun,
 // Shapella) have no page, so link sites should render them as plain text rather
 // than linking to a route the static build doesn't emit (which would 404).

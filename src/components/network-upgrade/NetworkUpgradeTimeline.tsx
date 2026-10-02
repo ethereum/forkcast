@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from '../navigation';
-import { networkUpgrades } from '../../data/upgrades';
+import { networkUpgrades, shortUpgradeName } from '../../data/upgrades';
 import { calculateTimelineMarkerPosition } from '../../utils/timeline';
 
 interface NetworkUpgradeTimelineProps {
@@ -55,7 +55,7 @@ export const NetworkUpgradeTimeline: React.FC<NetworkUpgradeTimelineProps> = ({ 
                   : ''
               }`} style={{ position: 'relative', zIndex: 2 }}>
                   <span className={`${labelClass} text-xs mb-0.5 leading-tight`}>
-                    {upgrade.name.replace(/ Upgrade$/, '')}
+                    {shortUpgradeName(upgrade.name)}
                   </span>
                   <span className={`text-xs ${dateClass}`}>{upgrade.activationDate}</span>
                 </div>

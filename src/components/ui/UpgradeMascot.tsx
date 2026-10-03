@@ -36,7 +36,7 @@ export const UpgradeMascot: React.FC<UpgradeMascotProps> = ({
 
   return (
     <Tooltip
-      className={`align-middle ${className}`}
+      className={`align-baseline ${className}`}
       content={
         <span className="block">
           <span className="font-medium">{mascot.name}</span>

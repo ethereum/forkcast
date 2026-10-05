@@ -6,6 +6,7 @@ import {
   parseChatTranscript,
   type ChatMessage,
 } from '../../domain/chat/zoomChat';
+import { TextWithLinks } from './TextWithLinks';
 
 interface ChatLogProps {
   content: string;
@@ -18,6 +19,8 @@ interface ChatLogProps {
   selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
   onTimestampClick?: (timestamp: string) => void;
   allowTimestampNavigation?: boolean;
+  onOpenEip?: (eipId: number) => void;
+  allowedIds: Set<number>;
 }
 
 const ChatLog: React.FC<ChatLogProps> = ({
@@ -26,6 +29,8 @@ const ChatLog: React.FC<ChatLogProps> = ({
   selectedSearchResult,
   onTimestampClick,
   allowTimestampNavigation = true,
+  onOpenEip,
+  allowedIds,
 }) => {
   const [copiedTimestamp, setCopiedTimestamp] = useState<string | null>(null);
 
@@ -58,29 +63,6 @@ const ChatLog: React.FC<ChatLogProps> = ({
     if (allowTimestampNavigation && onTimestampClick && timestamp !== '00:00:00') {
       onTimestampClick(timestamp);
     }
-  };
-
-  // --- Helper function to render text with links ---
-  const renderTextWithLinks = (text: string) => {
-    const urlRegex = /(https?:\/\/[^\s]+)/g;
-    const parts = text.split(urlRegex);
-
-    return parts.map((part, index) => {
-      if (part.match(urlRegex)) {
-        return (
-          <a
-            key={index}
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 dark:text-blue-400 hover:underline"
-          >
-            {part}
-          </a>
-        );
-      }
-      return part;
-    });
   };
 
   // --- Timestamp conversion helpers ---
@@ -259,7 +241,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                     {message.message.split(/\r\n|\r|\n/).map((line, index) => (
                       <React.Fragment key={index}>
                         {index > 0 && <br />}
-                        {renderTextWithLinks(line)}
+                        {<TextWithLinks text={line} allowedIds={allowedIds} onOpenEip={onOpenEip} />}
                       </React.Fragment>
                     ))}
                   </span>
@@ -370,7 +352,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                           {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
                             <React.Fragment key={index}>
                               {index > 0 && <br />}
-                              {renderTextWithLinks(line)}
+                              {<TextWithLinks text={line} allowedIds={allowedIds} onOpenEip={onOpenEip} />}
                             </React.Fragment>
                           ))}
                         </span>

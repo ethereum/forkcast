@@ -1,0 +1,29 @@
+{
+  "meeting": "RPC #036 - 2026-10-05",
+  "sections": [
+    {
+      "heading": "Error Code Unification with Simulate V1",
+      "summary": "New positive error code groups will apply to all methods except simulate V1, which keeps its legacy negative codes until a future V2.",
+      "timestamp": "00:14:38",
+      "body": "- The proposed error code catalog uses positive values with grouping, but `eth_simulateV1` already shipped with negative error codes (−38010 to −38014) in a flat range.\n  - Sims posted a comparison of the proposed catalog values vs. what simulate V1 currently uses ([issue #817](https://github.com/ethereum/execution-apis/issues/817)).\n- The main blocker has been how to unify the two schemes; conversations across multiple PRs (from Chase and Sina) have not reached a conclusion.\n  - Sims attempted to reach Felix for input but received no response.\n- Agreement: lightclient confirmed that changing V1's error codes retroactively does not make sense; the practical path is a sign-based check—positive codes use the new grouped scheme, negative codes use the legacy scheme.\n  - This aligns with what lightclient and Felix discussed roughly two to three months ago.\n  - A simulate V2 would be the proper place to adopt the new error code scheme for that endpoint.\n- lightclient noted the check is simple for library implementers: positive → new handling, negative → legacy handling.\n- Sims agreed and will proceed to create a PR codifying this approach; further discussion can happen in the PR itself."
+    },
+    {
+      "heading": "Meta-Tracking Release Blockers (Geth PRs)",
+      "summary": "Go Ethereum PRs required for the release remain unmerged despite approvals on one or two; no progress since the last call.",
+      "timestamp": "00:20:03",
+      "body": "- The meta-tracking release issue has been blocked for the past two calls by pending Geth PRs and a Hive PR.\n- Chase reported no change: one or two Geth PRs have approval but are not merged.\n  - He raised this at ACDT as well, for the same reason.\n- Boma confirmed the group is effectively stuck on everything in the release list."
+    },
+    {
+      "heading": "Tracing API Specification Progress",
+      "summary": "Tracing spec is close but blocked on full client agreement, Geth fixture generation, and Felix's validation script PR needing minor fixes.",
+      "timestamp": "00:21:09",
+      "body": "- Banteg has been driving the tracing API work; all client teams except Geth are actively merging fixes.\n  - Besu currently has the most open PRs, but Chase noted that is not necessarily meaningful.\n  - Banteg has a draft PR in Go Ethereum to implement tracing, but is waiting for all clients to reach 100% agreement before finalizing.\n- lightclient stressed that tests must live in the execution-APIs repo, not only in Banteg's external repo, and that this was a prerequisite for merging the spec.\n- Test fixture generation depends on Go Ethereum: once clients agree, Banteg will update the Geth reference to point to his fork/PR branch and generate fixtures.\n- A validation script PR from Felix (one in execution-APIs, one in Hive) is 99% done.\n  - Chase left feedback with a couple of small issues; once Felix addresses them, both PRs can be merged.\n- No EIP is required for the tracing API; Chase confirmed many existing APIs lack EIPs and this should not be a blocker.\n  - The question was raised on a recent Besu call; Chase's position is that anyone can write one if desired, but it is not necessary.\n- A dedicated Telegram group exists for tracing coordination; Chase offered to add Boma."
+    },
+    {
+      "heading": "Nimbus EL Coverage",
+      "summary": "Nimbus EL is not tracked in the tracing work and currently fails roughly 70% of RPC tests; Chase will raise this with the tracing group.",
+      "timestamp": "00:28:01",
+      "body": "- Boma noted that Nimbus EL appears absent from the tracing API conversations and related PRs.\n- Chase confirmed Banteg does not appear to be tracking Nimbus EL.\n- Chase reported Nimbus EL currently fails approximately 70% of existing RPC tests.\n- Follow-up: Chase will bring up Nimbus EL inclusion with the tracing coordination group."
+    }
+  ]
+}

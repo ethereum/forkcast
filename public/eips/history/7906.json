@@ -2,6 +2,16 @@
   "eipId": 7906,
   "commits": [
     {
+      "sha": "bcdb27e330c3ba01a20c3fd1e2e592e0d04d2d47",
+      "date": "2026-10-04T21:53:47Z",
+      "message": "Update EIP-7906: assertion inputs controlled by the transaction",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -367,6 +367,17 @@ function requirePostTx() internal view {\n }\n ```\n \n+### Assertion Inputs Controlled by the Transaction\n+\n+The execution body runs before any `POST_TX` frame. Any state the body can write is therefore chosen by whoever built the execution frames at the moment the assertion reads it. An assertion that takes its reference values from such state can be steered to accept a harmful outcome, even though it reads the real post-execution state.\n+\n+This applies to two sources of reference values:\n+\n+- Calls from the `POST_TX` frame's call subtree to other contracts, such as a price oracle, a token's `balanceOf`, a registry, or a proxy. The execution body can move an oracle price, edit a registry entry, or upgrade a proxy before the assertion runs. A called contract can also detect that its caller is inside a `POST_TX` frame, for example by executing `TXTRACE` in a sub-call that halts in any other context, and answer the assertion differently from other callers.\n+- `after` values of accounts and slots that the transaction was able to modify, when they are used as a threshold or a price rather than as the outcome being checked. They report what the execution body left behind and carry no more trust than the body itself.\n+\n+Assertions should take the reference values they compare the outcome against, such as minimum amounts received, permitted spenders, and prices, from data fixed at signing time, for example the `POST_TX` frame's `data` committed by the canonical signature hash, or from `before` values, which the transaction cannot modify. `before` values reflect the transaction prestate, so earlier transactions in the same block can still move them; a price read from the prestate keeps the usual oracle manipulation risk.\n+\n ### Assertion Gas Exhaustion\n \n Assertion contracts that enumerate `TXTRACE` results may run out of gas.",
+      "additions": 11,
+      "deletions": 0
+    },
+    {
       "sha": "666fb5ebc712bef2179af03317fffabf15a2f563",
       "date": "2026-10-03T09:17:03Z",
       "message": "Update EIP-7906: add Daniil Ankushin as author",
@@ -234,14 +244,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12391,
-      "title": "Update EIP-7906: assertion inputs controlled by the transaction",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-09-29T11:00:00Z",
-      "additions": 11,
-      "deletions": 0
-    },
     {
       "number": 12304,
       "title": "Update EIP-7906: add POST_TX_EXEMPT frame flag",

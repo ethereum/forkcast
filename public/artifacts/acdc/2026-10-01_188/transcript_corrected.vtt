@@ -1905,942 +1905,942 @@ Dustin: In Pectra, in Holesky, one of the things that went wrong, right, is that
 Dustin: And
 
 477
-01:05:51.530 --> 01:06:08.249
+01:05:51.530 --> 01:05:58.249
 Dustin: both found it difficult for the same forked chain reasons, but both at the same time was even more unlikely, and that made it more likely to get stuck, so therefore, this would enable… only the CL has to stay synced, the EL can
 
 478
-01:06:08.410 --> 01:06:14.839
+01:05:58.410 --> 01:06:04.839
 Dustin: sort of follow along with this CL much more directly. So that sort of enables resilience there. So that's the point one.
 
 479
-01:06:14.850 --> 01:06:33.729
+01:06:04.850 --> 01:06:23.729
 Dustin: Point two is it enables, it reduces duplicate and inefficient gossip traffic, in a much more, systematic way. The ELs can simply stop listening if they… if they choose, right? This is a… it adds flexibility. This is all optional, right? But… but they can… they can…
 
 480
-01:06:33.730 --> 01:06:42.810
+01:06:23.730 --> 01:06:32.810
 Dustin: Avoid, listening to certain, on certain things they have to listen to today, without actually losing functionality, and
 
 481
-01:06:42.810 --> 01:07:05.319
+01:06:32.810 --> 01:06:55.319
 Dustin: this reduces all sorts of surface, attack surface as well on the ELs, potentially, as well as, in a longer term, potentially we can look at a sort of less-protocol reliance on our ethereum overall. And finally, the third or fourth, depending on how you're counting, I'll wrap up here, and then we can, you know.
 
 482
-01:07:05.320 --> 01:07:23.529
+01:06:55.320 --> 01:07:13.529
 Dustin: So try to be quickish about this, is it enables a broad concept of a flexible delineation between exactly how and where storage is deduplicated.
 
 483
-01:07:23.600 --> 01:07:35.769
+01:07:13.600 --> 01:07:25.769
 Dustin: Between CLs and ELs. Now, right now, this is, something that some CLs and ELs already do, obviously. Some CLs will offload
 
 484
-01:07:35.820 --> 01:07:41.619
+01:07:25.820 --> 01:07:31.619
 Dustin: payloads in the future. I'm sure envelopes say to ELs, things like this.
 
 485
-01:07:41.620 --> 01:07:56.769
+01:07:31.620 --> 01:07:46.769
 Dustin: So, this… this allows for an arbitrary kind of set point to be defined at some level, because you can kind of load up the EL with it, and then the… or the EL can… can drop things, and they can be re-added, and it can… it can be this,
 
 486
-01:07:56.920 --> 01:08:07.999
+01:07:46.920 --> 01:07:57.999
 Dustin: somewhat bidirectional thing that, yeah, can be tuned in a flexible way. So, I'll… there's some other points, but I'll stop there, and then, you know, have some…
 
 487
-01:08:08.400 --> 01:08:09.990
+01:07:58.400 --> 01:07:59.990
 Dustin: Discussion.
 
 488
-01:08:12.400 --> 01:08:13.400
+01:08:02.400 --> 01:08:03.400
 stokes: Marion, thanks.
 
 489
-01:08:14.540 --> 01:08:22.370
+01:08:04.540 --> 01:08:12.370
 stokes: Let's see, I think I can see hands here, and the UI… So, yeah, any comments immediately, Lukash?
 
 490
-01:08:23.109 --> 01:08:33.609
+01:08:13.109 --> 01:08:23.609
 Łukasz Rozmej: So, our concerns with TopUpSync are that we extremely optimize our sync process on the EL side, and this, is.
 
 491
-01:08:33.909 --> 01:08:39.629
+01:08:23.909 --> 01:08:29.629
 Łukasz Rozmej: This EIP… is… Removing…
 
 492
-01:08:40.079 --> 01:08:44.529
+01:08:30.079 --> 01:08:34.529
 Łukasz Rozmej: Our control from us, to some extent, so we are very wary of it, and…
 
 493
-01:08:45.099 --> 01:08:47.409
+01:08:35.099 --> 01:08:37.409
 Łukasz Rozmej: That's our problem with it.
 
 494
-01:08:53.330 --> 01:08:54.259
+01:08:43.330 --> 01:08:44.259
 stokes: How do you lose control?
 
 495
-01:08:54.260 --> 01:08:54.680
+01:08:44.260 --> 01:08:44.680
 Dustin: So.
 
 496
-01:08:54.689 --> 01:08:57.949
+01:08:44.689 --> 01:08:47.949
 stokes: I didn't follow. Or yeah, Dustin, you can jump in.
 
 497
-01:08:58.569 --> 01:08:59.089
+01:08:48.569 --> 01:08:49.089
 stokes: Well…
 
 498
-01:08:59.090 --> 01:09:04.129
+01:08:49.090 --> 01:08:54.129
 Dustin: No, no, I'll, I'll, I'll, I'll, no, if Lukasz wants to, you know, I'll say, I'll.
 
 499
-01:09:04.620 --> 01:09:06.020
+01:08:54.620 --> 01:08:56.020
 Dustin: See, wait for responses.
 
 500
-01:09:06.029 --> 01:09:13.159
+01:08:56.029 --> 01:09:03.159
 Łukasz Rozmej: Or did I, or did I, or did I, confuse the APs? Okay, let me get, get back, actually, sorry.
 
 501
-01:09:13.379 --> 01:09:14.259
+01:09:03.379 --> 01:09:04.259
 Łukasz Rozmej: Maybe…
 
 502
-01:09:15.870 --> 01:09:23.220
+01:09:05.870 --> 01:09:13.220
 Łukasz Rozmej: I confused the EIPs because there are two sync EIPs in proposed. Sorry, I'm not sure. I got confused. Too many things.
 
 503
-01:09:23.229 --> 01:09:24.069
+01:09:13.229 --> 01:09:14.069
 Dustin: Oh, oh, oh.
 
 504
-01:09:24.339 --> 01:09:25.709
+01:09:14.339 --> 01:09:15.709
 Dustin: Oh, okay, okay.
 
 505
-01:09:30.029 --> 01:09:39.559
+01:09:20.029 --> 01:09:29.559
 stokes: Can you tell us Dustin does it? I'm also I haven't had time to look at this too deeply. And it sounds like it's just exposing more information from the EL, which the CL can.
 
 506
-01:09:39.560 --> 01:09:40.000
+01:09:29.560 --> 01:09:30.000
 Dustin: Right.
 
 507
-01:09:40.000 --> 01:09:40.890
+01:09:30.000 --> 01:09:30.890
 stokes: However it wants.
 
 508
-01:09:41.600 --> 01:09:54.900
+01:09:31.600 --> 01:09:44.900
 Dustin: Yes. No, so I would say it removes zero control from ELs. The one thing it qualitatively newly asks from ELs, really, is it has to… so…
 
 509
-01:09:55.280 --> 01:09:57.459
+01:09:45.280 --> 01:09:47.459
 Dustin: This, this end… this,
 
 510
-01:09:57.640 --> 01:10:02.710
+01:09:47.640 --> 01:09:52.710
 Dustin: It's called engine I mean, currently called engine get sync status, but that obviously can be
 
 511
-01:10:02.940 --> 01:10:16.110
+01:09:52.940 --> 01:10:06.110
 Dustin: Bike shedded endlessly. And in fact, I should say in in honesty, it's it's really aimed more at an SSZ world, so it would be renamed anyway. But, yeah, you know, just synchronization of of EIPs in that kind of sense here.
 
 512
-01:10:16.110 --> 01:10:26.290
+01:10:06.110 --> 01:10:16.290
 Dustin: So, but this endpoint, but this is an informational endpoint. This is a reading endpoint more than anything else. This is not, this doesn't ask the EL to do anything.
 
 513
-01:10:26.470 --> 01:10:28.849
+01:10:16.470 --> 01:10:18.849
 Dustin: It gets information from the EL.
 
 514
-01:10:30.690 --> 01:10:39.649
+01:10:20.690 --> 01:10:29.649
 Dustin: And so in that sense and and then what CLs do with this, is then up to the CLs, but the ELs can then
 
 515
-01:10:39.850 --> 01:10:44.709
+01:10:29.850 --> 01:10:34.709
 Dustin: React as they will, but yeah, it does not remove any control, no.
 
 516
-01:10:49.260 --> 01:10:51.729
+01:10:39.260 --> 01:10:41.729
 stokes: Francesco, you had a hand.
 
 517
-01:10:51.870 --> 01:10:53.099
+01:10:41.870 --> 01:10:43.099
 stokes: But it disappeared.
 
 518
-01:10:56.280 --> 01:10:58.200
+01:10:46.280 --> 01:10:48.200
 Francesco D'Amato: No, it was from Guadalupe.
 
 519
-01:10:58.790 --> 01:11:02.310
+01:10:48.790 --> 01:10:52.310
 stokes: Different Francesco, Risitano Tau.
 
 520
-01:11:08.350 --> 01:11:22.509
+01:10:58.350 --> 01:11:12.509
 Francesco Risitano (Tau): Yeah, I was just, gonna touch on the point of, efficiency. I guess I was also confused because, I was of the understanding that, the CL would be feeding blocks to the EL for sync.
 
 521
-01:11:22.580 --> 01:11:41.600
+01:11:12.580 --> 01:11:31.600
 Francesco Risitano (Tau): Which may have also been Lukasz's, point around efficiency, because the ELs have, you know, highly parallelized, pipelines for syncing. You can just, provide the sync target over the engine API, and then, yeah, the ELs can use.
 
 522
-01:11:41.780 --> 01:11:46.250
+01:11:31.780 --> 01:11:36.250
 Francesco Risitano (Tau): Those processes to sync, to the chain tip, essentially.
 
 523
-01:11:46.540 --> 01:11:57.780
+01:11:36.540 --> 01:11:47.780
 Francesco Risitano (Tau): And I believe there's, like, an alternative which was DFI'd, which was 8237, which was more aligned with, kind of, delegating
 
 524
-01:11:57.940 --> 01:12:11.649
+01:11:47.940 --> 01:12:01.649
 Francesco Risitano (Tau): EL sync to the EL, and then just having, like, a binding commitment, once the sync is completed, to kind of ensure, cross-chain consistency.
 
 525
-01:12:11.910 --> 01:12:13.659
+01:12:01.910 --> 01:12:03.659
 Francesco Risitano (Tau): But yeah.
 
 526
-01:12:16.260 --> 01:12:22.639
+01:12:06.260 --> 01:12:12.639
 Dustin: Okay, so… The.
 
 527
-01:12:24.590 --> 01:12:25.530
+01:12:14.590 --> 01:12:15.530
 Dustin: And.
 
 528
-01:12:25.680 --> 01:12:32.839
+01:12:15.680 --> 01:12:22.839
 Dustin: Sorry, so actually, first I want to say, as far as Lukasz's, the
 
 529
-01:12:36.760 --> 01:12:39.360
+01:12:26.760 --> 01:12:29.360
 Dustin: The so I.
 
 530
-01:12:39.740 --> 01:12:44.520
+01:12:29.740 --> 01:12:34.520
 Dustin: Sorry, the, Lukasz's thing about the,
 
 531
-01:12:44.730 --> 01:12:48.860
+01:12:34.730 --> 01:12:38.860
 Dustin: I don't see the loss of control in that so, like, I'll just say.
 
 532
-01:12:50.000 --> 01:12:53.839
+01:12:40.000 --> 01:12:43.839
 Dustin: But anyways, as far as the efficient pipeline,
 
 533
-01:12:53.950 --> 01:13:00.509
+01:12:43.950 --> 01:12:50.509
 Dustin: The, yeah, this is not meant to replace like the snap sync say, like from, from.
 
 534
-01:13:00.860 --> 01:13:01.620
+01:12:50.860 --> 01:12:51.620
 Dustin: From.
 
 535
-01:13:01.720 --> 01:13:03.290
+01:12:51.720 --> 01:12:53.290
 Dustin: To a recent pivot.
 
 536
-01:13:03.520 --> 01:13:06.369
+01:12:53.520 --> 01:12:56.369
 Dustin: Like, it's not going to be efficient at that, because it is serial.
 
 537
-01:13:07.150 --> 01:13:25.700
+01:12:57.150 --> 01:13:15.700
 Dustin: And especially if you're talking about, anything where it has no way to direct the EL to, like, get the state, like what SnapSync can do, and then efficiently build on that, especially as we're going into a sort of, I guess, are we still calling it 4-4s? But the sort of, expiry.
 
 538
-01:13:25.700 --> 01:13:31.769
+01:13:15.700 --> 01:13:21.769
 Dustin: history expiry world where the whole history won't even be available.
 
 539
-01:13:31.960 --> 01:13:35.900
+01:13:21.960 --> 01:13:25.900
 Dustin: Right? So indeed, that it's it's complementary to that.
 
 540
-01:13:36.780 --> 01:13:45.599
+01:13:26.780 --> 01:13:35.599
 Dustin: Right? It it is not the point is not to replace, you know, you're going from Genesis block by block by block by block. That would be generally absurd.
 
 541
-01:13:47.910 --> 01:13:58.299
+01:13:37.910 --> 01:13:48.299
 Łukasz Rozmej: Yes, but even if we have a relatively small gap, we, currently, and I don't know, have to think, let's say…
 
 542
-01:13:58.630 --> 01:14:10.650
+01:13:48.630 --> 01:14:00.650
 Łukasz Rozmej: thousand blocks. We do it very aggressively, in parallel onto multiple peers, and… you know, we spread the load, etc, and get that in.
 
 543
-01:14:10.730 --> 01:14:20.070
+01:14:00.730 --> 01:14:10.070
 Łukasz Rozmej: resolved in a matter of seconds, literally, if you have the bandwidth and CPU, and now we will have to wait for someone to feed those, and…
 
 544
-01:14:20.270 --> 01:14:21.900
+01:14:10.270 --> 01:14:11.900
 Łukasz Rozmej: It's out of our control.
 
 545
-01:14:24.440 --> 01:14:39.229
+01:14:14.440 --> 01:14:29.229
 Dustin: Well, it doesn't require the EL this is it does not require the EL not to do this. Right? The nothing about this EIP requires the only the only specific change that this EIP requires is this new endpoint.
 
 546
-01:14:39.920 --> 01:14:40.780
+01:14:29.920 --> 01:14:30.780
 Dustin: That's it.
 
 547
-01:14:41.580 --> 01:14:44.169
+01:14:31.580 --> 01:14:34.169
 Łukasz Rozmej: Okay, then it needs to be spaced.
 
 548
-01:14:45.040 --> 01:14:52.629
+01:14:35.040 --> 01:14:42.629
 Łukasz Rozmej: yeah, specified, because this read for me like it was okay. Now you don't do anything, and you wait for us to feed you the data.
 
 549
-01:14:52.630 --> 01:15:01.050
+01:14:42.630 --> 01:14:51.050
 Dustin: No, I, I see, I see, no, it, it is that, ok, so that is sketching out possible worlds, possible ways of
 
 550
-01:15:01.140 --> 01:15:15.419
+01:14:51.140 --> 01:15:05.419
 Dustin: one could create an EL, and whether this is a good idea or not is a different question, and I… to your point about the efficiency and getting things in with, you know, enough peers in parallel and doing things in seconds, I understand that. But.
 
 551
-01:15:16.740 --> 01:15:35.430
+01:15:06.740 --> 01:15:25.430
 Dustin: that is a… it basically, it creates the possibility of, for example, kind of the library EL, which can't really exist today, but that there's not… every existing EL or any EL which wants to use the existing, their own sort of sync mechanisms can absolutely continue to do so.
 
 552
-01:15:35.660 --> 01:15:46.599
+01:15:25.660 --> 01:15:36.599
 Dustin: And if that's not clear in the EIP, I can certainly make that clearer. But yes, that's what… part of what I mean by optional with that, what we mean by optional, I guess, three authors.
 
 553
-01:15:49.110 --> 01:15:55.630
+01:15:39.110 --> 01:15:45.630
 stokes: Okay. Let me jump in here. Yeah, Enrico, I wanted to hear from other SEAL teams just while we're here.
 
 554
-01:15:55.630 --> 01:16:15.670
+01:15:45.630 --> 01:16:05.670
 Enrico Del Fante: Just one quick comment. So, this belief… this enables possible ways of thinking, and then there was another EIP that was taking a completely different direction, assuming that CL doesn't want to
 
 555
-01:16:15.690 --> 01:16:24.590
+01:16:05.690 --> 01:16:14.590
 Enrico Del Fante: take care of anything about payloads, and want to fully, fully give up and let the EL do
 
 556
-01:16:24.620 --> 01:16:31.669
+01:16:14.620 --> 01:16:21.669
 Enrico Del Fante: completely its own thinking. So there are two completely different approaches, and I get the fact that this
 
 557
-01:16:31.810 --> 01:16:45.909
+01:16:21.810 --> 01:16:35.909
 Enrico Del Fante: DCIP could enable different approaches, but I believe that the end game is not having multiple possible scenarios. I believe that those two things need to be discussed.
 
 558
-01:16:46.090 --> 01:16:54.240
+01:16:36.090 --> 01:16:44.240
 Enrico Del Fante: So, what… I believe in one of the, meetings that we had, somewhere.
 
 559
-01:16:54.400 --> 01:17:11.230
+01:16:44.400 --> 01:17:01.230
 Enrico Del Fante: we discussed the fact… we need to think about what will be the end… the end deployment of CL and EL, which are… which will be the responsibility, and then when we… when we envision what we… what we want as an end game, then we…
 
 560
-01:17:11.230 --> 01:17:16.619
+01:17:01.230 --> 01:17:06.619
 Enrico Del Fante: We decide to go in one direction or the other. Keep having both
 
 561
-01:17:17.020 --> 01:17:22.690
+01:17:07.020 --> 01:17:12.690
 Enrico Del Fante: possible conditions, I believe, is just not addressing the issue.
 
 562
-01:17:22.950 --> 01:17:26.230
+01:17:12.950 --> 01:17:16.230
 Enrico Del Fante: But we should actually be clear on.
 
 563
-01:17:26.360 --> 01:17:31.540
+01:17:16.360 --> 01:17:21.540
 Enrico Del Fante: On the responsibility, on one side and on the other, and going in one direction.
 
 564
-01:17:43.490 --> 01:17:44.889
+01:17:33.490 --> 01:17:34.889
 stokes: Any response to that, Dustin?
 
 565
-01:17:46.010 --> 01:18:03.100
+01:17:36.010 --> 01:17:53.100
 Dustin: about, what, defining specific areas of responsibility and sort of making that… codifying that? I don't necessarily… I mean, at one level, you can see this EIP as moving that towards the CL side, if you'd like, but at the same time.
 
 566
-01:18:03.100 --> 01:18:14.279
+01:17:53.100 --> 01:18:04.279
 Dustin: it is optional, and so I don't want to emphasize that too much in the sense of saying the ELs can still do everything per Lukasz's question before, etc, that
 
 567
-01:18:14.290 --> 01:18:24.209
+01:18:04.290 --> 01:18:14.209
 Dustin: That they do today, but yeah, I mean, at some level, it envisions a world where it's kind of CL driven in that, in that sense, if you want to frame it that way.
 
 568
-01:18:24.730 --> 01:18:28.889
+01:18:14.730 --> 01:18:18.889
 Dustin: But again, that is optional in that sense. And ELs can just ignore this.
 
 569
-01:18:29.360 --> 01:18:38.590
+01:18:19.360 --> 01:18:28.590
 Enrico Del Fante: Yeah, it seems like we are spending time and effort doing something that, without Without taking the decisions on.
 
 570
-01:18:38.930 --> 01:18:45.140
+01:18:28.930 --> 01:18:35.140
 Enrico Del Fante: what will be the end game. So in some sense we should do some planning first.
 
 571
-01:18:45.400 --> 01:18:48.809
+01:18:35.400 --> 01:18:38.809
 Enrico Del Fante: And then… And then go in one direction.
 
 572
-01:18:52.870 --> 01:18:55.619
+01:18:42.870 --> 01:18:45.619
 stokes: Would it help to take this to ACD next week?
 
 573
-01:18:56.090 --> 01:18:58.439
+01:18:46.090 --> 01:18:48.439
 stokes: Or, I guess, whenever they can get to it.
 
 574
-01:19:05.390 --> 01:19:16.819
+01:18:55.390 --> 01:19:06.819
 Dustin: I mean, I'm wondering, though, in terms of, like, the other thing was, it was DFI'd, so, I mean, One Direction was considered, and that was not taken.
 
 575
-01:19:17.310 --> 01:19:18.120
+01:19:07.310 --> 01:19:08.120
 Dustin: So.
 
 576
-01:19:18.710 --> 01:19:19.490
+01:19:08.710 --> 01:19:09.490
 Dustin: I mean…
 
 577
-01:19:21.260 --> 01:19:26.320
+01:19:11.260 --> 01:19:16.320
 Enrico Del Fante: Which means DFI also this one, and take the argument one.
 
 578
-01:19:27.110 --> 01:19:30.860
+01:19:17.110 --> 01:19:20.860
 Dustin: I… okay, I don't necessarily obviously agree with that.
 
 579
-01:19:30.860 --> 01:19:31.740
+01:19:20.860 --> 01:19:21.740
 Enrico Del Fante: Nice.
 
 580
-01:19:31.740 --> 01:19:43.800
+01:19:21.740 --> 01:19:33.800
 Dustin: or understand it. Well, no, but to say, like, I just say, oh, one thing on one topic is DFI, therefore all things on that topic must be DFI, I think is not sound reasoning, but.
 
 581
-01:19:44.030 --> 01:19:54.229
+01:19:34.030 --> 01:19:44.229
 Dustin: Sure. In any case, I mean, I kind of addressed your question, though, about like, well, it does pick a side to some extent. It says that.
 
 582
-01:19:54.340 --> 01:19:56.740
+01:19:44.340 --> 01:19:46.740
 Dustin: That it offers some.
 
 583
-01:19:56.910 --> 01:20:04.970
+01:19:46.910 --> 01:19:54.970
 Dustin: Visibility in the process from ELs but I also don't necessarily buy your framing, honestly like the idea that we
 
 584
-01:20:05.220 --> 01:20:08.770
+01:19:55.220 --> 01:19:58.770
 Dustin: Have to, like, pick a, like… yeah, I…
 
 585
-01:20:08.930 --> 01:20:13.509
+01:19:58.930 --> 01:20:03.509
 Dustin: The way you're setting this up is not something I necessarily think is.
 
 586
-01:20:13.720 --> 01:20:14.840
+01:20:03.720 --> 01:20:04.840
 Dustin: as.
 
 587
-01:20:14.840 --> 01:20:16.269
+01:20:04.840 --> 01:20:06.269
 Enrico Del Fante: I mean, is…
 
 588
-01:20:16.270 --> 01:20:16.720
+01:20:06.270 --> 01:20:06.720
 Dustin: wired?
 
 589
-01:20:16.720 --> 01:20:19.050
+01:20:06.720 --> 01:20:09.050
 Enrico Del Fante: Network efficiency. So you need to.
 
 590
-01:20:19.050 --> 01:20:19.530
+01:20:09.050 --> 01:20:09.530
 Dustin: Yes.
 
 591
-01:20:19.530 --> 01:20:28.789
+01:20:09.530 --> 01:20:18.789
 Enrico Del Fante: One Direction, because you don't want to have always the duplication of things going on one.
 
 592
-01:20:28.790 --> 01:20:29.140
+01:20:18.790 --> 01:20:19.140
 Dustin: Yes.
 
 593
-01:20:29.140 --> 01:20:40.099
+01:20:19.140 --> 01:20:30.099
 Enrico Del Fante: And on the other. So, at some point, you need to take the decision, so you cannot maintain one approach, because the net… 90% of the network goes into another direction.
 
 594
-01:20:40.430 --> 01:20:51.340
+01:20:30.430 --> 01:20:41.340
 Enrico Del Fante: So, it won't work. If we want to make an efficient and real deduplication, we need to take decisions.
 
 595
-01:20:53.160 --> 01:20:54.250
+01:20:43.160 --> 01:20:44.250
 Dustin: Well, the…
 
 596
-01:20:56.320 --> 01:21:06.250
+01:20:46.320 --> 01:20:56.250
 Dustin: Right now, the status quo is there's a certain amount of duplication, on the gossip side, and I'm putting aside sync, because as we've sort of discussed, like, sync is…
 
 597
-01:21:07.190 --> 01:21:15.639
+01:20:57.190 --> 01:21:05.639
 Dustin: And storage. Yes. Yeah. Gossip and storage. But sync is is look. It's a separate issue. Snap sync, etcetera, we've got it is not gonna replace that.
 
 598
-01:21:15.640 --> 01:21:16.040
+01:21:05.640 --> 01:21:06.040
 Walter Himmelsbach: and.
 
 599
-01:21:16.040 --> 01:21:21.279
+01:21:06.040 --> 01:21:11.279
 Dustin: realistic world for the most part, fine. But for gossip and storage, yes.
 
 600
-01:21:21.320 --> 01:21:24.780
+01:21:11.320 --> 01:21:14.780
 Dustin: And and so in that regard,
 
 601
-01:21:24.780 --> 01:21:43.119
+01:21:14.780 --> 01:21:33.119
 Dustin: Right, the status quo today is we have that inefficiency, and this would allow tools on a node-by-node basis to opt in to reducing that inefficiency. And yes, the way they opt in to reducing that inefficiency, it would be by moving it practically from
 
 602
-01:21:43.250 --> 01:21:50.169
+01:21:33.250 --> 01:21:40.169
 Dustin: toss it from the EL if they choose to do this. If the CL and EL are configured for that node pair to do this.
 
 603
-01:21:50.580 --> 01:22:05.270
+01:21:40.580 --> 01:21:55.270
 Dustin: And so that enables a fairly safe, gradual transition towards that side, if that's what one wants to do. So that is, to the extent you're asking for, like, a side to be picked, it picks that… the CL side.
 
 604
-01:22:07.570 --> 01:22:13.419
+01:21:57.570 --> 01:22:03.419
 stokes: Are there any other CL teams or, I mean, even EL teams here that wanna speak in support of the CIP?
 
 605
-01:22:24.970 --> 01:22:29.040
+01:22:14.970 --> 01:22:19.040
 stokes: Because I'm not hearing a lot of support.
 
 606
-01:22:29.320 --> 01:22:31.479
+01:22:19.320 --> 01:22:21.479
 stokes: There was a comment from…
 
 607
-01:22:31.880 --> 01:22:42.029
+01:22:21.880 --> 01:22:32.029
 stokes: Part of us about essentially just, you know, we could have this we can move ahead with this as an optional thing where it's not necessarily scheduled for the hard fork, but, you know, if
 
 608
-01:22:42.290 --> 01:22:46.349
+01:22:32.290 --> 01:22:36.349
 stokes: You know, a given pair of clients wants to implement this, then they can move forward.
 
 609
-01:22:47.250 --> 01:22:48.950
+01:22:37.250 --> 01:22:38.950
 stokes: Francesco then came in.
 
 610
-01:22:50.820 --> 01:23:06.359
+01:22:40.820 --> 01:22:56.359
 Francesco Risitano (Tau): Yeah, I'm just following on from the vision of having the EL kind of inside the CL as a, library. Would this method, still be required? Because one would assume that, the CL has
 
 611
-01:23:06.360 --> 01:23:14.590
+01:22:56.360 --> 01:23:04.590
 Francesco Risitano (Tau): direct access to state, of the EL library, so to speak, and can, you know, simply query
 
 612
-01:23:14.590 --> 01:23:20.909
+01:23:04.590 --> 01:23:10.909
 Francesco Risitano (Tau): the database or whatever storage mechanism, the CL is using.
 
 613
-01:23:21.070 --> 01:23:26.910
+01:23:11.070 --> 01:23:16.910
 Francesco Risitano (Tau): So, does this still make sense in the, kind of, unified client world?
 
 614
-01:23:28.670 --> 01:23:40.079
+01:23:18.670 --> 01:23:30.079
 Dustin: Full-on unified client, not quite as much, but it does allow for a standardized interface, which still has…
 
 615
-01:23:40.210 --> 01:23:55.780
+01:23:30.210 --> 01:23:45.780
 Dustin: which still has significant value in a case where they are not literally the same thing. So they can communicate through, say, a local RPC, any number of options like that. And whether or not that ends up being the shape of
 
 616
-01:23:55.780 --> 01:24:08.960
+01:23:45.780 --> 01:23:58.960
 Dustin: quote-unquote unified clients people end up wanting is actually not that clear to me. It's not been a well-explored space, let's say, but for certain parts of that design space, it still provides value.
 
 617
-01:24:16.540 --> 01:24:17.250
+01:24:06.540 --> 01:24:07.250
 stokes: Karen?
 
 618
-01:24:20.230 --> 01:24:24.880
+01:24:10.230 --> 01:24:14.880
 cayman: Yeah, just voicing some support for this EIP
 
 619
-01:24:25.080 --> 01:24:28.589
+01:24:15.080 --> 01:24:18.589
 cayman: from, I think, from my perspective, it looks like a minor
 
 620
-01:24:29.050 --> 01:24:32.120
+01:24:19.050 --> 01:24:22.120
 cayman: engine Api tweak that doesn't really mandate any
 
 621
-01:24:32.490 --> 01:24:36.070
+01:24:22.490 --> 01:24:26.070
 cayman: Changing behavior of clients and unlock some flexibility.
 
 622
-01:24:36.400 --> 01:24:37.400
+01:24:26.400 --> 01:24:27.400
 cayman: that…
 
 623
-01:24:37.700 --> 01:24:44.600
+01:24:27.700 --> 01:24:34.600
 cayman: we want to. Some people want to explore. So I I say, let them cook if it's a small thing, but it's optional. So
 
 624
-01:24:44.840 --> 01:24:45.820
+01:24:34.840 --> 01:24:35.820
 cayman: That's it.
 
 625
-01:24:51.790 --> 01:24:53.299
+01:24:41.790 --> 01:24:43.299
 stokes: Mark, you have your hand up?
 
 626
-01:24:53.710 --> 01:25:04.269
+01:24:43.710 --> 01:24:54.269
 ethDreamer (Mark): Yeah, I mean, I need to verify this, but if it is, especially if it is just engine API tweaks, we have, I want to point out that we have the Git capabilities.
 
 627
-01:25:04.430 --> 01:25:12.310
+01:24:54.430 --> 01:25:02.310
 ethDreamer (Mark): Like… Endpoint, and so… We could potentially utilize that to even decouple this upgrade from a hard fork.
 
 628
-01:25:14.160 --> 01:25:29.849
+01:25:04.160 --> 01:25:19.849
 Dustin: So… so the challenge with GET or exchange capabilities, or I believe it's what it's called, but GET capabilities, exchange capabilities, the, is that it's, it's a talk-to. It is simply not reliable over multiplexers. We know people use these.
 
 629
-01:25:30.100 --> 01:25:48.819
+01:25:20.100 --> 01:25:38.819
 Dustin: Sometimes they use them without telling us. But the endpoints are not stable. The endpoint identities on the other end are not stable. So like an EL can get upgraded or downgraded. It can swap to another EL, which may or may not support the same set of things.
 
 630
-01:25:48.820 --> 01:25:50.460
+01:25:38.820 --> 01:25:40.460
 Dustin: You end up having to get into.
 
 631
-01:25:50.940 --> 01:26:01.099
+01:25:40.940 --> 01:25:51.099
 Dustin: Caching, you know, do you cache the answer? Does it get… do you try it optimistically? Etc. So, I mean, without getting into too much of the weeds there, the point is, like, the…
 
 632
-01:26:01.550 --> 01:26:10.060
+01:25:51.550 --> 01:26:00.060
 Dustin: This capabilities discovery is not a great general purpose mechanism, and not something that's ideal to rely on.
 
 633
-01:26:13.790 --> 01:26:14.460
+01:26:03.790 --> 01:26:04.460
 stokes: Okay.
 
 634
-01:26:14.930 --> 01:26:21.000
+01:26:04.930 --> 01:26:11.000
 stokes: Thanks, everyone. I do think, yeah, we should go ahead and wrap up on this topic.
 
 635
-01:26:21.860 --> 01:26:30.650
+01:26:11.860 --> 01:26:20.650
 stokes: again, I'm not hearing a ton of support, I think, from the people who are supporting this. They're very open to it being an optional thing that's outside of the hardcore cadence.
 
 636
-01:26:31.500 --> 01:26:38.079
+01:26:21.500 --> 01:26:28.079
 stokes: So then, you know, with the frame of keeping the works, you know, as light as we can.
 
 637
-01:26:38.670 --> 01:26:45.640
+01:26:28.670 --> 01:26:35.640
 stokes: this feels like a DFI today, but of course, if you want to move ahead with adding these engine API endpoints, you know, you definitely should.
 
 638
-01:26:46.520 --> 01:26:51.319
+01:26:36.520 --> 01:26:41.319
 stokes: So, let's go ahead and DFI this with that understanding.
 
 639
-01:26:51.660 --> 01:26:52.859
+01:26:41.660 --> 01:26:42.859
 stokes: Does that work for everyone?
 
 640
-01:27:05.400 --> 01:27:10.389
+01:26:55.400 --> 01:27:00.389
 stokes: Okay. I'm not getting… any response, so I'll just go ahead and assume.
 
 641
-01:27:10.520 --> 01:27:12.230
+01:27:00.520 --> 01:27:02.230
 stokes: That sounds good. So…
 
 642
-01:27:12.810 --> 01:27:21.539
+01:27:02.810 --> 01:27:11.539
 stokes: Let's go ahead and say DFI this. Although, again, you know, if you wanna experiment with, you know, what this EIP would enable, you definitely can.
 
 643
-01:27:21.920 --> 01:27:23.390
+01:27:11.920 --> 01:27:13.390
 stokes: Yeah.
 
 644
-01:27:24.690 --> 01:27:25.640
+01:27:14.690 --> 01:27:15.640
 stokes: Okay.
 
 645
-01:27:26.110 --> 01:27:31.650
+01:27:16.110 --> 01:27:21.650
 stokes: Then let's go to the next EIP. We just have a few minutes, so let's see what we can do here.
 
 646
-01:27:32.400 --> 01:27:35.339
+01:27:22.400 --> 01:27:25.339
 stokes: The next one here is EIP-8383.
 
 647
-01:27:35.610 --> 01:27:37.940
+01:27:25.610 --> 01:27:27.940
 stokes: Reduce CL block retention window.
 
 648
-01:27:38.700 --> 01:27:48.119
+01:27:28.700 --> 01:27:38.119
 stokes: Let's see, I think this was… yeah, Kev, is Kev on the call? I think it would help if you could walk us through this a bit.
 
 649
-01:27:48.670 --> 01:27:52.709
+01:27:38.670 --> 01:27:42.709
 stokes: I'm not sure clients have had time to get into this one too deeply.
 
 650
-01:27:55.820 --> 01:28:11.059
+01:27:45.820 --> 01:28:01.059
 Kevaundray Wedderburn: Yes, I am here. I think there's been quite a lot of conversations with regard to the retention windows, even in Glamsterdam. If clients haven't looked into it, then I'm okay with skipping it until the next ACDC.
 
 651
-01:28:15.660 --> 01:28:16.200
+01:28:05.660 --> 01:28:06.200
 Kevaundray Wedderburn: And then…
 
 652
-01:28:16.200 --> 01:28:21.039
+01:28:06.200 --> 01:28:11.039
 Barnabas: Maybe we could just defer it for the next call and move on for the other EIPs.
 
 653
-01:28:21.040 --> 01:28:22.320
+01:28:11.040 --> 01:28:12.320
 stokes: Yeah. Okay.
 
 654
-01:28:23.210 --> 01:28:27.829
+01:28:13.210 --> 01:28:17.829
 stokes: Okay, but then can we agree to take a look for the next call?
 
 655
-01:28:28.630 --> 01:28:31.290
+01:28:18.630 --> 01:28:21.290
 stokes: So, everyone, you have a little… little homework.
 
 656
-01:28:32.980 --> 01:28:35.090
+01:28:22.980 --> 01:28:25.090
 stokes: But sure, I'll defer this for today.
 
 657
-01:28:36.450 --> 01:28:43.810
+01:28:26.450 --> 01:28:33.810
 stokes: Okay, next one up, then, is optional execution proofs 8025, and…
 
 658
-01:28:44.490 --> 01:28:48.440
+01:28:34.490 --> 01:28:38.440
 stokes: Let's see, we have Ignacio and then Francesco here.
 
 659
-01:28:48.900 --> 01:28:51.750
+01:28:38.900 --> 01:28:41.750
 stokes: Would either of you like to say something about this?
 
 660
-01:28:54.900 --> 01:28:56.309
+01:28:44.900 --> 01:28:46.309
 ignacio: Yeah, sure.
 
 661
-01:28:56.460 --> 01:29:03.689
+01:28:46.460 --> 01:28:53.689
 ignacio: Well, we actually want to propose CFI in this.
 
 662
-01:29:03.990 --> 01:29:14.260
+01:28:53.990 --> 01:29:04.260
 ignacio: I know I've been talking about with many people around this EIP, And I think the most,
 
 663
-01:29:14.740 --> 01:29:19.280
+01:29:04.740 --> 01:29:09.280
 ignacio: Contentious thing is that it's an optional feature for the network.
 
 664
-01:29:19.610 --> 01:29:28.799
+01:29:09.610 --> 01:29:18.799
 ignacio: I don't know, we will have time, within 6 minutes to fully discuss this, but… Instead of me shilling about.
 
 665
-01:29:28.930 --> 01:29:31.820
+01:29:18.930 --> 01:29:21.820
 ignacio: DCIP, I would also prefer to
 
 666
-01:29:31.930 --> 01:29:42.570
+01:29:21.930 --> 01:29:32.570
 ignacio: hear from CL clients what they think about it, or which are the angles of the proposal that they might have more concerns, and maybe that's more useful.
 
 667
-01:29:45.700 --> 01:29:52.829
+01:29:35.700 --> 01:29:42.829
 stokes: Yeah, so we do only have a few minutes, but also, I think… Any other EIP?
 
 668
-01:29:53.440 --> 01:30:00.139
+01:29:43.440 --> 01:29:50.139
 stokes: It's just gonna take a while. So we could start the conversation today if people want.
 
 669
-01:30:01.000 --> 01:30:06.180
+01:29:51.000 --> 01:29:56.180
 stokes: But yeah, unless we can get to a decision in the next, yeah, 5 minutes, then we'll just defer this until next time.
 
 670
-01:30:06.580 --> 01:30:08.280
+01:29:56.580 --> 01:29:58.280
 stokes: Then we'll pick up with the rest.
 
 671
-01:30:08.920 --> 01:30:10.030
+01:29:58.920 --> 01:30:00.030
 stokes: On the next call.
 
 672
-01:30:10.630 --> 01:30:16.040
+01:30:00.630 --> 01:30:06.040
 stokes: So, yeah, I guess any… any brief comments, for this, or…
 
 673
-01:30:19.390 --> 01:30:21.400
+01:30:09.390 --> 01:30:11.400
 stokes: Lukasz, you can go ahead.
 
 674
-01:30:25.250 --> 01:30:35.210
+01:30:15.250 --> 01:30:25.210
 Łukasz Rozmej: Okay, I have 2 problems with the CIP. So to give a bit more context, I love the idea of execution proofs.
 
 675
-01:30:35.250 --> 01:30:53.879
+01:30:25.250 --> 01:30:43.879
 Łukasz Rozmej: I am working on a Nethermind guest client that would support creating execution proofs in zkVMs. We already have support for 3 different zkVMs, and currently I'm optimizing it, so just to give you the context.
 
 676
-01:30:53.880 --> 01:31:01.399
+01:30:43.880 --> 01:30:51.399
 Łukasz Rozmej: So, I love the whole concept, but I'm… I'm not sure if I can get behind, CFI-ing this.
 
 677
-01:31:01.420 --> 01:31:11.369
+01:30:51.420 --> 01:31:01.369
 Łukasz Rozmej: with 2 to be major problems. One problem is that historically, when we ship something in in the fork, it's ready for productional use.
 
 678
-01:31:11.440 --> 01:31:29.140
+01:31:01.440 --> 01:31:19.140
 Łukasz Rozmej: even if it's optional, this won't be actually secure enough due to, for example, gas repricing that will need to happen for this to actually be secure. So we'll ship something that we know that isn't secure enough, and that users shouldn't actually use it, so
 
 679
-01:31:29.140 --> 01:31:32.350
+01:31:19.140 --> 01:31:22.350
 Łukasz Rozmej: I don't see the point of shipping it in the fork.
 
 680
-01:31:32.490 --> 01:31:46.679
+01:31:22.490 --> 01:31:36.679
 Łukasz Rozmej: That's one thing, right? So, we are giving mixed signals to the community. Okay, we ship something, but it's not really production ready, so this is… this is wrong to me, this is not what's…
 
 681
-01:31:46.710 --> 01:31:50.329
+01:31:36.710 --> 01:31:40.329
 Łukasz Rozmej: We should be putting into the the fork.
 
 682
-01:31:50.360 --> 01:32:10.139
+01:31:40.360 --> 01:32:00.139
 Łukasz Rozmej: And second problem is that I think with the current solution, unless it's changed, the, pairs of guest programs and zkVMs are kind of chosen by committee. So historically, anyone could write.
 
 683
-01:32:10.250 --> 01:32:21.410
+01:32:00.250 --> 01:32:11.410
 Łukasz Rozmej: protocol implementations of clients, and they could compete on their technical prowess, for example, security, stability, and technical prowess.
 
 684
-01:32:21.520 --> 01:32:38.060
+01:32:11.520 --> 01:32:28.060
 Łukasz Rozmej: Here, there will be some decision made up front, and some clients and VM pairs will be embedded into protocol. Which, okay, they can change later, but this is a process, so this kind of.
 
 685
-01:32:38.380 --> 01:32:53.550
+01:32:28.380 --> 01:32:43.550
 Łukasz Rozmej: breaks the current, like, culture of creating Ethereum software that I have a problem with. So those are my two problems with the EIP. And I love execution proofs, so…
 
 686
-01:32:53.700 --> 01:32:55.960
+01:32:43.700 --> 01:32:45.960
 Łukasz Rozmej: Just, just, just saying that.
 
 687
-01:32:58.820 --> 01:33:03.970
+01:32:48.820 --> 01:32:53.970
 stokes: Okay. Yeah. Ignacio, let's just take, your comments, and we'll wrap up.
 
 688
-01:33:04.120 --> 01:33:06.479
+01:32:54.120 --> 01:32:56.479
 stokes: Yeah, just to be clear here.
 
 689
-01:33:06.600 --> 01:33:11.170
+01:32:56.600 --> 01:33:01.170
 stokes: We will pick this one back up. We will not make a decision today. We just are at time.
 
 690
-01:33:12.200 --> 01:33:23.760
+01:33:02.200 --> 01:33:13.760
 ignacio: Yeah, I just wanted to touch on Lukasz's comments. I think many of his concerns are more related to mandatory proofs than to EIP-8025, which is optional proofs.
 
 691
-01:33:23.890 --> 01:33:34.389
+01:33:13.890 --> 01:33:24.389
 ignacio: EIP-8025 is not really committing to any kind of pairing of guest programs on zkVMs or enshrining any kind of proof system or anything like that.
 
 692
-01:33:34.630 --> 01:33:40.809
+01:33:24.630 --> 01:33:30.809
 ignacio: It's mainly about defining the specs and upstreaming this work into.
 
 693
-01:33:41.540 --> 01:34:01.369
+01:33:31.540 --> 01:33:51.369
 ignacio: a repository where we can settle a lot of work that we have done, that we know it is useful, and we can defer all this discussion about, okay, which guest programs, which zkVMs, and all that to mandatory proofs until we have more data, and we know what is safe.
 
 694
-01:34:01.380 --> 01:34:07.329
+01:33:51.380 --> 01:33:57.329
 ignacio: The main idea for us, on why we think EIP-8025 is important to
 
 695
-01:34:07.550 --> 01:34:18.930
+01:33:57.550 --> 01:34:08.930
 ignacio: to be included in the specs is that it will de-risk a lot of analysis on how zkVMs behave on other protocol changes, such as PVD.
 
 696
-01:34:19.070 --> 01:34:20.010
+01:34:09.070 --> 01:34:10.010
 ignacio: Umm.
 
 697
-01:34:20.140 --> 01:34:29.209
+01:34:10.140 --> 01:34:19.209
 ignacio: If we don't do this, we have to maintain, like, a zkVM branch on the specs, PVT branch on the specs, we have to mix both, and this is…
 
 698
-01:34:29.440 --> 01:34:34.109
+01:34:19.440 --> 01:34:24.109
 ignacio: Increasingly inefficient, considering that we have limited resources also to work.
 
 699
-01:34:34.400 --> 01:34:36.890
+01:34:24.400 --> 01:34:26.890
 ignacio: on many other important things for Ethereum.
 
 700
-01:34:37.040 --> 01:34:47.929
+01:34:27.040 --> 01:34:37.929
 ignacio: So that's kind of a short answer to these points, but I'm happy to keep talking about this in the next call, if needed.
 
 701
-01:34:47.930 --> 01:34:54.369
+01:34:37.930 --> 01:34:44.369
 Łukasz Rozmej: So would you consider this an informational EIP? Basically, it's defining the spec, but not shipping anything.
 
 702
-01:34:55.830 --> 01:34:58.920
+01:34:45.830 --> 01:34:48.920
 ignacio: Well, I already know if information on the EIPs means that
 
 703
-01:34:59.140 --> 01:35:03.830
+01:34:49.140 --> 01:34:53.830
 ignacio: will get merged into these specs. Maybe I'm not…
 
 704
-01:35:03.970 --> 01:35:08.229
+01:34:53.970 --> 01:34:58.229
 ignacio: Fully aware how precise the process is on this front.
 
 705
-01:35:10.270 --> 01:35:16.299
+01:35:00.270 --> 01:35:06.299
 stokes: Just to jump in here, we are at time. Are we okay just to hold this conversation until the next call?
 
 706
-01:35:20.200 --> 01:35:21.070
+01:35:10.200 --> 01:35:11.070
 stokes: Okay.
 
 707
-01:35:21.660 --> 01:35:35.259
+01:35:11.660 --> 01:35:25.259
 stokes: Okay. Lots of thumbs up. Okay. Cool. Then, yeah, thanks, everyone. We'll keep working through these EIPs on the Hegota scope, next time. And, yeah, again.
 
 708
-01:35:35.390 --> 01:35:40.399
+01:35:25.390 --> 01:35:30.399
 stokes: Let's all keep an eye on Sepolia. The fork will happen in just a few days.
 
 709
-01:35:40.580 --> 01:35:45.140
+01:35:30.580 --> 01:35:35.140
 stokes: So… Happy forking, and I'll see you next time. Thank you.
 
 710
-01:35:46.180 --> 01:35:47.070
+01:35:36.180 --> 01:35:37.070
 potuz: Bye-bye.
 
 711
-01:35:49.750 --> 01:35:50.460
+01:35:39.750 --> 01:35:40.460
 Barnabas: Okay.
 

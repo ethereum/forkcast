@@ -82,7 +82,7 @@ Luca | Vero: contact builders, and then it would pick a bid, and it would supply
 
 21
 00:02:47.700 --> 00:02:50.909
-Luca | Vero: Use that bit in their block that they're producing.
+Luca | Vero: Use that bid in their block that they're producing.
 
 22
 00:02:52.450 --> 00:03:01.340
@@ -106,7 +106,7 @@ Luca | Vero: I've always imagined it would be useful starting with Hoodi
 
 27
 00:03:27.660 --> 00:03:33.609
-Luca | Vero: I have been testing this endpoint for a few weeks on DevNet 8 as well.
+Luca | Vero: I have been testing this endpoint for a few weeks on devnet-8 as well.
 
 28
 00:03:34.650 --> 00:03:38.540
@@ -138,7 +138,7 @@ Enrico Del Fante: So it seems like the VC should be in charge of selecting
 
 35
 00:04:25.509 --> 00:04:40.459
-Enrico Del Fante: the bin, because this is where the logic of selecting the most valuable thing resides. So, when you have multiple nodes, the VC wants to know about all the bids around and select the one that it likes.
+Enrico Del Fante: the bid, because this is where the logic of selecting the most valuable thing resides. So, when you have multiple nodes, the VC wants to know about all the bids around and select the one that it likes.
 
 36
 00:04:40.849 --> 00:04:46.799
@@ -194,11 +194,11 @@ Luca | Vero: But, like I said, you would need to track
 
 49
 00:05:44.620 --> 00:05:47.309
-Luca | Vero: How all of those beacon notes are doing this.
+Luca | Vero: How all of those beacon nodes are doing this.
 
 50
 00:05:47.510 --> 00:05:51.730
-Luca | Vero: And all of those beacon notes would basically be contacting the same builders.
+Luca | Vero: And all of those beacon nodes would basically be contacting the same builders.
 
 51
 00:05:52.920 --> 00:05:54.519
@@ -226,11 +226,11 @@ Potuz: To the… to the builders. Which, if you just put it… if you put them o
 
 57
 00:06:13.980 --> 00:06:26.130
-Potuz: color might fail, which is the case for the VC. If you have a single color in the VC, that color might fail, and you say, okay, you can have a failover, but you can do the same with a single beacon node.
+Potuz: caller might fail, which is the case for the VC. If you have a single caller in the VC, that caller might fail, and you say, okay, you can have a failover, but you can do the same with a single beacon node.
 
 58
 00:06:26.150 --> 00:06:45.349
-Potuz: You would just say, one of the nodes is going to be this node that is a prism, and if that one fails, you fail to get bids, but okay, so then let's put another prism that is a failover for that prism, and it only acts if that other prism is offline, and then now you only get called once. I don't understand why
+Potuz: You would just say, one of the nodes is going to be this node that is a Prysm, and if that one fails, you fail to get bids, but okay, so then let's put another Prysm that is a failover for that Prysm, and it only acts if that other Prysm is offline, and then now you only get called once. I don't understand why
 
 59
 00:06:45.930 --> 00:06:49.619
@@ -242,7 +242,7 @@ Luca | Vero: I'm not sure what you're proposing here in terms of failover Beacon
 
 61
 00:07:01.960 --> 00:07:10.669
-Potuz: just the usual thing, that you have a Beko node, and if that Beko node is offline, then another Beko node takes its place, which I assume
+Potuz: just the usual thing, that you have a Beacon node, and if that Beacon node is offline, then another Beacon node takes its place, which I assume
 
 62
 00:07:10.880 --> 00:07:15.979
@@ -254,15 +254,15 @@ Luca | Vero: Yeah, well, multi-node validator clients usually work with all of t
 
 64
 00:07:28.940 --> 00:07:31.809
-Luca | Vero: They would ask all of the connected Beaconos to.
+Luca | Vero: They would ask all of the connected Beacon nodes to.
 
 65
 00:07:32.620 --> 00:07:42.499
-Potuz: But if you don't have a failover for the validator client, then you still have a single point of failure to the calls for the bits.
+Potuz: But if you don't have a failover for the validator client, then you still have a single point of failure to the calls for the bids.
 
 66
 00:07:42.730 --> 00:07:51.519
-Potuz: Which you would have, therefore, the same single point of failure if you just put one Beacon node to call for the bits.
+Potuz: Which you would have, therefore, the same single point of failure if you just put one Beacon node to call for the bids.
 
 67
 00:07:54.620 --> 00:07:57.939
@@ -274,7 +274,7 @@ Luca | Vero: Because it's easier to failover in that case.
 
 69
 00:08:06.880 --> 00:08:15.640
-Luca | Vero: You can… if you have a shared splashing protection database among multiple different validated clients, you can, in theory, have them running at the same time.
+Luca | Vero: You can… if you have a shared slashing protection database among multiple different validated clients, you can, in theory, have them running at the same time.
 
 70
 00:08:18.130 --> 00:08:23.140
@@ -290,7 +290,7 @@ Luca | Vero: This endpoint is beneficial.
 
 73
 00:08:31.140 --> 00:08:32.910
-Luca | Vero: Do you have concerns, Fotis?
+Luca | Vero: Do you have concerns, Potuz?
 
 74
 00:08:35.220 --> 00:08:36.899
@@ -314,15 +314,15 @@ Enrico Del Fante: Yeah, I mean, is the…
 
 79
 00:09:03.100 --> 00:09:11.340
-Enrico Del Fante: is the Beacon order should implement that, and Value User Client will be custom Value User Client consuming this API, in my understanding, correct?
+Enrico Del Fante: is the Beacon node should implement that, and Validator Client will be custom Validator Client consuming this API, in my understanding, correct?
 
 80
 00:09:11.340 --> 00:09:16.429
-Luca | Vero: Yes, so the Beakonotes would only need to implement a very small change.
+Luca | Vero: Yes, so the Beacon nodes would only need to implement a very small change.
 
 81
 00:09:16.640 --> 00:09:21.730
-Luca | Vero: very… Small change to the produceBlockB4 endpoint, which we have.
+Luca | Vero: very… Small change to the produceBlockV4 endpoint, which we have.
 
 82
 00:09:21.730 --> 00:09:26.719
@@ -338,7 +338,7 @@ Enrico Del Fante: Yeah, like, fixing the bid, and we probably need to do the val
 
 85
 00:09:41.530 --> 00:09:43.949
-Luca | Vero: Yes, and the Beacon Hour has full.
+Luca | Vero: Yes, and the Beacon node has full.
 
 86
 00:09:44.490 --> 00:09:47.640
@@ -354,7 +354,7 @@ Enrico Del Fante: What are the concerns from Nico? Sorry.
 
 89
 00:09:59.670 --> 00:10:13.199
-Nico Flaig: So mine are really technical, I guess. So the first thing, like, just from an implementation point of view, is that Vero needs the payload attributes to know what bits to request from the builder.
+Nico Flaig: So mine are really technical, I guess. So the first thing, like, just from an implementation point of view, is that Vero needs the payload attributes to know what bids to request from the builder.
 
 90
 00:10:13.200 --> 00:10:28.629
@@ -370,11 +370,11 @@ Nico Flaig: Because it does it after playing the timing game with the builders, 
 
 93
 00:11:03.940 --> 00:11:13.919
-Nico Flaig: At least in Loadstar, we are not optimizing, this to be caught late on the slot yet, but it could be done, it's just an implementation thing.
+Nico Flaig: At least in Lodestar, we are not optimizing, this to be caught late on the slot yet, but it could be done, it's just an implementation thing.
 
 94
 00:11:15.150 --> 00:11:25.510
-Nico Flaig: And then I guess the third concern is more implementation, which is you… Basically, at, I think, 2 or 3 branches in the Broduse Block API.
+Nico Flaig: And then I guess the third concern is more implementation, which is you… Basically, at, I think, 2 or 3 branches in the ProduceBlock API.
 
 95
 00:11:25.820 --> 00:11:33.719
@@ -410,11 +410,11 @@ Potuz: Wouldn't it be the same if we I mean if I operated this
 
 103
 00:12:23.370 --> 00:12:34.070
-Potuz: I can just call different builders with different beacons, and just put those bids directly on the P2P stack within my notes.
+Potuz: I can just call different builders with different beacons, and just put those bids directly on the P2P stack within my nodes.
 
 104
 00:12:34.700 --> 00:12:38.119
-Potuz: Right? I mean, those beats will be accepted over P2P.
+Potuz: Right? I mean, those bids will be accepted over P2P.
 
 105
 00:12:41.870 --> 00:12:42.230
@@ -446,7 +446,7 @@ Nico Flaig: I think the core design is good, but I'm just having, like, the tech
 
 112
 00:13:18.920 --> 00:13:28.099
-Enrico Del Fante: And if the bid is not accepted by the bigger node, everything will fail or… Do you?
+Enrico Del Fante: And if the bid is not accepted by the Beacon node, everything will fail or… Do you?
 
 113
 00:13:28.100 --> 00:13:29.809
@@ -470,7 +470,7 @@ Potuz: say no.
 
 118
 00:13:34.800 --> 00:13:49.310
-Enrico Del Fante: I'm just asking if it's desirable to have defaulting to a bid that the BeagleNode wants, or is just a behavior that is preferred?
+Enrico Del Fante: I'm just asking if it's desirable to have defaulting to a bid that the Beacon node wants, or is just a behavior that is preferred?
 
 119
 00:13:49.490 --> 00:13:56.500
@@ -478,7 +478,7 @@ Enrico Del Fante: To not… to error out, because maybe there is some… there a
 
 120
 00:13:56.970 --> 00:14:08.359
-Luca | Vero: Right now, the idea is that, if the Beiko node doesn't like the bid for any reason, it falls back to either a peer-to-peer bid or a local build.
+Luca | Vero: Right now, the idea is that, if the Beacon node doesn't like the bid for any reason, it falls back to either a peer-to-peer bid or a local build.
 
 121
 00:14:09.160 --> 00:14:12.939
@@ -514,7 +514,7 @@ Miguel Tenorio: We could avoid that.
 
 129
 00:14:55.550 --> 00:15:03.200
-Luca | Vero: Yeah, maybe one more thing. Even today, people use Vouch as a… Sort of, MedBoost.
+Luca | Vero: Yeah, maybe one more thing. Even today, people use Vouch as a… Sort of, MEV-Boost.
 
 130
 00:15:03.540 --> 00:15:10.530
@@ -558,7 +558,7 @@ Jihoon: Or on the Beacon node, or whatever.
 
 140
 00:15:45.870 --> 00:15:49.089
-Jihoon: And perhaps we can have it on the Hoodie.
+Jihoon: And perhaps we can have it on Hoodi.
 
 141
 00:15:53.310 --> 00:15:56.859
@@ -582,7 +582,7 @@ Jihoon: these two PRs is when a builder wins the bid and exits.
 
 146
 00:16:17.380 --> 00:16:19.450
-Jihoon: And at least one EPIC is missed.
+Jihoon: And at least one epoch is missed.
 
 147
 00:16:20.590 --> 00:16:23.269
@@ -602,7 +602,7 @@ Jihoon: Draft the payment to the proposer of the last block before the missed sl
 
 151
 00:16:42.370 --> 00:16:50.230
-Jihoon: So I'll suggest March 5695, but I wonder… If there is any concerns or comments?
+Jihoon: So I'll suggest merging 5695, but I wonder… If there is any concerns or comments?
 
 152
 00:17:19.130 --> 00:17:21.530
@@ -626,7 +626,7 @@ Jihoon: But if not, we can just merge this in.
 
 157
 00:17:46.870 --> 00:17:53.270
-Nico Flaig: Because, yeah, if there's no pushback against my PR, I would favor that over Podus' PR, but…
+Nico Flaig: Because, yeah, if there's no pushback against my PR, I would favor that over Potuz' PR, but…
 
 158
 00:17:57.270 --> 00:18:03.869
@@ -638,7 +638,7 @@ Nico Flaig: At least more people should have looked at yet, so…
 
 160
 00:18:09.760 --> 00:18:16.420
-Nico Flaig: I'm not sure Potus is happy with my PR or neither happy nor unhappy, just neutral, right?
+Nico Flaig: I'm not sure Potuz is happy with my PR or neither happy nor unhappy, just neutral, right?
 
 161
 00:18:16.420 --> 00:18:31.229
@@ -658,7 +658,7 @@ Nico Flaig: I do think it's strictly safer to reorder this as my PR does, consid
 
 165
 00:18:58.980 --> 00:19:13.369
-Pawan Dhananjay: From Lighthouse side, I haven't looked into it personally. Last time I checked, Michael slightly preferred Potus's PR. I'll check with him again today, and maybe we can merge it.
+Pawan Dhananjay: From Lighthouse side, I haven't looked into it personally. Last time I checked, Michael slightly preferred Potuz's PR. I'll check with him again today, and maybe we can merge it.
 
 166
 00:19:13.370 --> 00:19:21.120
@@ -674,7 +674,7 @@ Potuz: And I'm fine with merging Nico. So I don't know how to attack it. And I r
 
 169
 00:19:34.170 --> 00:19:40.379
-Jihoon: Okay, I'm gonna work on merging this, Nico's PR, $56.95.
+Jihoon: Okay, I'm gonna work on merging this, Nico's PR, 5695.
 
 170
 00:19:41.050 --> 00:19:42.140
@@ -690,7 +690,7 @@ Jihoon: Which are these, so I wonder if you want to go over these PRs?
 
 173
 00:20:03.350 --> 00:20:08.930
-Barnabas: They're all gloss related, so I think it would be good to hash out as many as we can.
+Barnabas: They're all Gloas related, so I think it would be good to hash out as many as we can.
 
 174
 00:20:09.040 --> 00:20:10.639
@@ -770,7 +770,7 @@ Jihoon: Do we have anything left to discuss?
 
 193
 00:22:38.240 --> 00:22:39.580
-Barnabas: Are you going to have the CFO?
+Barnabas: Are you going to have the CL spec release?
 
 194
 00:22:39.580 --> 00:22:46.010
@@ -802,7 +802,7 @@ Potuz: without… without a test that actually covers this change. We're gonna a
 
 201
 00:23:25.110 --> 00:23:30.669
-Potuz: We're gonna go without, yeah, okay, anyways. I'll open the PR on Prism for this now.
+Potuz: We're gonna go without, yeah, okay, anyways. I'll open the PR on Prysm for this now.
 
 202
 00:23:39.880 --> 00:23:44.479
@@ -814,7 +814,7 @@ Jihoon: regarding…
 
 204
 00:23:47.100 --> 00:23:55.239
-Jihoon: fossil images in other clients. I believe we have Lothar and Teku, and that's it. Lighthouse is working on it.
+Jihoon: focil images in other clients. I believe we have Lodestar and Teku, and that's it. Lighthouse is working on it.
 
 205
 00:23:56.710 --> 00:23:59.479
@@ -838,7 +838,7 @@ Jihoon: The builder that won the last bid.
 
 210
 00:24:24.660 --> 00:24:29.340
-Jihoon: Request for exit, and we missed at least one EPOC.
+Jihoon: Request for exit, and we missed at least one epoch.
 
 211
 00:24:31.030 --> 00:24:40.169
@@ -862,11 +862,11 @@ Enrico Del Fante: For instance.
 
 216
 00:24:50.440 --> 00:24:59.810
-Nico Flaig: No, I think maybe that was misunderstood. So if you implement this reordering today in your client, you still pass the current beta to vectors.
+Nico Flaig: No, I think maybe that was misunderstood. So if you implement this reordering today in your client, you still pass the current beta 2 vectors.
 
 217
 00:25:00.930 --> 00:25:06.980
-Nico Flaig: Because no test covers that, but in my EPR, there is a new test that would catch if you don't…
+Nico Flaig: Because no test covers that, but in my PR, there is a new test that would catch if you don't…
 
 218
 00:25:07.570 --> 00:25:09.090

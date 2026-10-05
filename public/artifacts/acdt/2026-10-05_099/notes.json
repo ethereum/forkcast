@@ -1,0 +1,47 @@
+{
+  "meeting": "ACDT #099 - 2026-10-05",
+  "sections": [
+    {
+      "heading": "Sepolia Shadow Fork Results",
+      "summary": "Two shadow fork rounds were run; first surfaced Nethermind, Besu, ethrex, and Lighthouse issues, second round went smoothly.",
+      "timestamp": "00:07:39",
+      "body": "- Two rounds of Sepolia shadow forks were run the prior week.\n- First round found issues:\n  - Nethermind's 2.0 release missed some late test additions; fixes were already in their 2.1 release, which shipped before the second shadow fork.\n  - Besu had empty blocks caused by peering issues specific to the shadow fork environment.\n  - ethrex had P2P peering difficulties unique to the shadow fork setup; confirmed these will not affect Sepolia or other networks.\n  - Lighthouse had fork-boundary-related PTC issues and builder onboarding problems, which were investigated and resolved.\n- Second round went smoothly: Nethermind performed well, builder onboarding succeeded, and deposits worked."
+    },
+    {
+      "heading": "FOCIL Devnet 0 Outage",
+      "summary": "FOCIL devnet 0 went down after a misconfigured rollout with too few validators and no supernodes caused irreversible column loss.",
+      "timestamp": "00:11:04",
+      "body": "- Barnabas accidentally killed focil-devnet-0 while rolling out a new image update and enabling QUIC on CL clients.\n- Root cause: no supernodes were online and only 100 validators per host were configured (instead of 128), so reconstruction failed.\n  - Nodes diverged onto different forks and some data columns were permanently lost.\n- Lesson learned: future devnets must ensure enough supernodes are running on the network.\n- Parithosh noted the 100-validator misconfiguration was also partly his fault."
+    },
+    {
+      "heading": "Sepolia Upgrade Readiness (Glamsterdam)",
+      "summary": "Sepolia Glamsterdam fork is scheduled for 6 October 2026 at 13:53 UTC; all clients confirmed readiness or near-readiness.",
+      "timestamp": "00:13:14",
+      "body": "- Fork is less than 24 hours away at time of call.\n- **EL client readiness:**\n  - Geth: has a release ready for Sepolia; a pending fix is planned but not yet out; old version still works for Sepolia.\n  - Nethermind: ready on version 2.1; confirmed by Ben Adams.\n  - Besu: validators on Sepolia all upgraded; confirmed ready by Daniel Lehrner.\n  - ethrex: ready, in a similar position to Geth with a last-minute finding from Nico (Lodestar) being worked on; expected to be resolved before fork.\n  - Reth and Erigon: no representatives present; to be synced via Discord/async.\n- **CL client readiness:**\n  - Prysm: releasing v7.2.1 patch for builder configuration bug fix and enabling partial data columns by default; includes 200M gas limit schedule.\n    - Version number clarified on-call: v7.2.1 (not v7.2.2 as initially posted by Potuz in the validator channel).\n  - Lighthouse: released v8.3.0-rc.0 for Sepolia; a bug found on shadow fork causes incorrect proposal preferences just before fork; fix is on Unstable but may not ship as a new release; worst case is local builds for the first epoch. Has 200M gas limit set.\n  - Teku: v96.9.1 ready for Sepolia; 200M gas limit PR was merged but likely after the release cut, so not included in the release; can be specified via command line. A follow-up release is planned but won't land before Sepolia.\n  - Nimbus: ready with release candidate 26.10.0.\n  - Lodestar: ready with gas schedule set; Nico Flaig plans to run a builder on Sepolia and shared the URL.\n  - Grandine: v3.0.0-rc.0 ready for Sepolia with 200M gas limit set; working on minor fixes.\n- Ben Adams raised concern that many Nethermind nodes on Sepolia are running very old versions without the fork release; Parithosh suggested pushing updates via the validator chat but noted limited coordination options beyond that."
+    },
+    {
+      "heading": "EIP Last Call Status for Glamsterdam Proposals",
+      "summary": "Pooja requested all Glamsterdam EIP authors move their proposals to Last Call status and submit PRs before the next EIP Editing Office Hour.",
+      "timestamp": "00:24:10",
+      "body": "- Pooja Ranjan noted that ideally all Glamsterdam proposals should be in Last Call status now that testnet deployment is imminent.\n- A [comment was added](https://github.com/ethereum/pm/issues/2242#issuecomment-5996049124) listing the needed PRs.\n- Authors asked to submit PRs and add them as comments so they can be merged before the next ACD call."
+    },
+    {
+      "heading": "Builder Onboarding on Sepolia",
+      "summary": "Builders will not be active at the Sepolia fork due to Bepolia token requirements; deposits can be made immediately post-fork with normal Sepolia ETH.",
+      "timestamp": "00:24:59",
+      "body": "- Barnabas explained that the Bepolia token requirement for the special Sepolia deposit contract makes pre-fork builder deposits impractical.\n- Builder deposits were tested successfully on the shadow fork.\n- Post-fork, the builder deposit contract accepts normal Sepolia ETH; deposits can be made immediately.\n  - The deposit contract was already deployed approximately two weeks ago.\n  - Nico noted builder index 0 is already his.\n- Builders wanting to test before mainnet are advised to use Hoodi instead of Sepolia."
+    },
+    {
+      "heading": "Client Release Communication and Versioning Process",
+      "summary": "Spencer asked how version bumps close to fork day are communicated; Parithosh explained it varies by network, relying on validator chats, blogs, and Twitter.",
+      "timestamp": "00:26:30",
+      "body": "- Spencer raised the question of how validators learn about last-minute version bumps, noting new releases are happening within a day of the fork.\n- Barnabas pointed to the [blog post](https://blog.ethereum.org/2026/09/17/glamsterdam-testnet-announcement#client-releases) as the source of truth for client versions.\n- Parithosh explained the communication channels differ by network:\n  - Sepolia and Hoodi: updates posted on the validator chat; most validators are there.\n  - Mainnet: no central coordination location; relies on client release channels, Twitter, and blog posts combined.\n- No formal process change was proposed."
+    },
+    {
+      "heading": "Execution Gas Limit for eth_call after EIP-8037",
+      "summary": "Geth's eth_call was incorrectly capped at the single-transaction gas limit post-EIP-8037; Gary confirmed a fix; behavior to be specified in the execution-APIs repo.",
+      "timestamp": "00:30:05",
+      "body": "- Maria Silva presented the issue: after [EIP-8037](https://ethereum-magicians.org/t/eip-8037-state-creation-gas-cost-increase/25694/47), Geth's `eth_call` enforced the same gas limit as a single on-chain transaction (~16M gas), breaking use cases that simulate high-gas view functions (e.g., SVG renderers, quoters, aggregators).\n  - Before EIP-8037, `eth_call` did not have this single-transaction limit.\n- Gary from Geth confirmed he already has a fix covering `eth_call`, `trace_call`, and `eth_simulate`.\n- Marius suggested the correct place to specify this behavior is the execution-APIs repo, not the EIP itself.\n  - Maria agreed and noted that once Geth merges the fix, it should be reflected in the execution-APIs spec.\n  - Chase Wright confirmed execution-APIs tests have not yet been upgraded for Glamsterdam; they are waiting on 2-3 PRs from go-ethereum to merge so they can bump the reference and hivechain.\n- Jochem raised whether `eth_call` needs separate state-gas and execution-gas parameters; Maria clarified that putting all gas into execution gas is sufficient since execution gas can be used for both state and execution, and this mirrors pre-EIP-8037 behavior.\n- No objections from other clients; Maria will follow up on Eth Magicians and verify the fix is merged."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "meeting": "ACDT #099 - 2026-10-05 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "ProduceBlockV4 with Bid (beacon-APIs#627)",
+      "summary": "No consensus to merge the PR now; discussion to continue async with a goal of inclusion by Hoodi.",
+      "timestamp": "00:00:39",
+      "body": "- Luca (Vero) presented [beacon-APIs#627](https://github.com/ethereum/beacon-APIs/pull/627), which extends the existing `produceBlockV4` endpoint so a validator client can fetch bids directly from builders and supply a chosen bid to connected Beacon nodes for block production.\n  - Primary motivation: multi-Beacon-node setups benefit from deduplicating builder requests and centralizing bid monitoring in the VC rather than tracking each BN independently.\n  - Existing precedent: some node operators already use Vouch in a similar pattern where the VC contacts builders.\n- Potuz (Prysm) raised concerns that this is a significant change, making the VC more fragile, and questioned why the same benefit couldn't be achieved by designating a single Beacon node to contact builders with a failover BN.\n  - Luca argued that VC-level failover is simpler because multi-BN validator clients query all connected BNs simultaneously, and a shared slashing protection database can allow multiple VC instances.\n- Potuz acknowledged there's nothing fundamentally wrong with allowing a user-provided bid on the BN side and that off-protocol markets it might enable cannot be prevented anyway.\n- Nico Flaig (Lodestar) reported he has the endpoint fully implemented and tested end-to-end, but raised three technical concerns:\n  - Payload attributes are emitted in the previous slot based on a prediction; the bid Vero fetches may be incompatible with the proposer head computed at slot start.\n  - Vero calls `produceBlockV4` later in the slot due to builder timing games; Lodestar currently does not optimize for late-slot API calls.\n  - The change adds 2–3 new branches in the `produceBlock` API code path.\n- If the BN rejects the provided bid (incompatible with proposer head, invalid, etc.), the design falls back to a peer-to-peer bid or local block building—bid inclusion is \"best effort.\"\n- Miguel Tenorio noted that if this use case is not standardized, operators may build custom proxies between BN and VC, which is worse.\n- Decision deferred: Jihoon concluded there is not enough consensus to merge. Luca will create a discussion thread; the target is to finalize by Hoodi.\n- Luca confirmed the endpoint has been tested on devnet-8 for several weeks."
+    },
+    {
+      "heading": "Builder Exit and Missed Slots — Consensus Specs PRs 5694 vs 5695",
+      "summary": "Agreement to merge Nico's PR (consensus-specs#5695) for reordering requests when a builder exits and slots are missed.",
+      "timestamp": "00:16:06",
+      "body": "- Two competing consensus-specs PRs address the edge case where a builder wins a bid, exits, and at least one epoch of slots is missed:\n  - [consensus-specs#5694](https://github.com/ethereum/consensus-specs/pull/5694): drafts the payment to the proposer of the last block before the missed-slots gap (Potuz's approach).\n  - [consensus-specs#5695](https://github.com/ethereum/consensus-specs/pull/5695): reorders requests to handle the edge case (Nico's approach), considered a less breaking change.\n- Jihoon noted that 5695 had gathered more client support and proposed merging it.\n- Potuz stated he is not fully happy with 5695 but would be more unhappy if no decision is made; he could not find an attack vector after spending time trying. He noted 5694 is simpler but accepted 5695.\n- Potuz confirmed that Lighthouse's Michael had explicitly stated he prefers Nico's PR (5695).\n- Pawan (Lighthouse) confirmed he would review and approve; after hearing Michael's preference, agreed to proceed.\n- Agreement: Jihoon will work on merging consensus-specs#5695."
+    },
+    {
+      "heading": "Glamsterdam Beacon API PRs",
+      "summary": "Six Glamsterdam-related beacon-APIs PRs need client reviews; Lighthouse and Teku will review, aiming to merge before Sepolia fork.",
+      "timestamp": "00:19:47",
+      "body": "- Barnabas flagged six open Beacon API PRs, all Glamsterdam-related:\n  - [beacon-APIs#638](https://github.com/ethereum/beacon-APIs/pull/638)\n  - [beacon-APIs#641](https://github.com/ethereum/beacon-APIs/pull/641)\n  - [beacon-APIs#655](https://github.com/ethereum/beacon-APIs/pull/655)\n  - [beacon-APIs#657](https://github.com/ethereum/beacon-APIs/pull/657)\n  - [beacon-APIs#659](https://github.com/ethereum/beacon-APIs/pull/659)\n  - [beacon-APIs#615](https://github.com/ethereum/beacon-APIs/pull/615)\n- Nico (Lodestar) confirmed he has approved all of them and has implementations in Lodestar; described them as trivial compared to the bid endpoint.\n- Pawan (Lighthouse) committed to reviewing and commenting today.\n- Enrico (Teku) said he had only reviewed the last one previously but will review the rest and report back.\n- Barnabas asked to aim for merging before the Sepolia fork (Tuesday) and having implementations ready for Hoodi.\n- Nico confirmed the plan is to have everything sorted for Hoodi so users can rely on the endpoints."
+    },
+    {
+      "heading": "CL Spec Release and Test Coverage for Request Reordering",
+      "summary": "No new spec release needed immediately; Nico's PR includes a regression test that catches the reordering change.",
+      "timestamp": "00:22:31",
+      "body": "- Barnabas asked whether a new CL spec release is needed; Potuz initially said yes for the request-ordering change.\n- Nico clarified that implementing the reordering today still passes all current beta-2 spec test vectors—no existing test covers the edge case.\n  - However, consensus-specs#5695 includes a new test that will fail if a client does not implement the reordering.\n- Potuz expressed concern about forking Hoodi with a consensus-breaking change that existing released tests do not cover, but accepted the situation and said he would open the Prysm implementation PR immediately.\n- Enrico (Teku) confirmed the new test in the PR is sufficient to catch non-compliance."
+    },
+    {
+      "heading": "FOCIL Client Images",
+      "summary": "Lodestar and Teku have FOCIL images; Lighthouse is working on theirs.",
+      "timestamp": "00:23:44",
+      "body": "- Jihoon noted that FOCIL CL client images currently exist for Lodestar and Teku.\n- Lighthouse is actively working on a FOCIL image.\n- Pawan suggested reaching out on the Steel channel, noting teammate Eitan may have progress.\n- No other CL client FOCIL images were reported."
+    }
+  ]
+}

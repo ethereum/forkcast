@@ -1,0 +1,37 @@
+{
+  "meeting": "ACDT #099 - 2026-10-05",
+  "eips": [
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "focil-devnet-0 went down during a QUIC image rollout; with no supernodes online and only 100 validators per node, reconstruction failed and some columns were lost permanently.",
+      "moments": [
+        {
+          "timestamp": "00:11:07",
+          "context": "Stefan reported the FOCIL devnet was down, following Barnabas in chat: \"I accidentally killed focil-devnet-0.\""
+        },
+        {
+          "timestamp": "00:11:15",
+          "context": "Barnabas explained he was rolling out a new image and enabling QUIC on each of the CLs. With no supernodes online and only 100 validators per node, reconstruction did not go as planned, nodes ended up on different forks, and some columns are lost forever. He said future devnets need enough supernodes on the network."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "ETH call gas limit behavior discussed in context of EIP-8037's state creation gas cost increase and its impact on simulation RPCs.",
+      "moments": [
+        {
+          "timestamp": "00:30:05",
+          "context": "Maria raised a discussion about ETH call defaulting to the transaction gas limit, which breaks use cases like SVG renderers and quoters after EIP-8037's gas changes. Gary from Geth confirmed a fix is underway."
+        },
+        {
+          "timestamp": "00:35:47",
+          "context": "Maria noted she posted on the EIP-8037 Discord channel and Gary confirmed he already has a fix for ETH call, trace call, and ETH simulate. Jochem then asked whether the API should expose both state gas and execution gas; Maria said all the gas goes into execution gas."
+        }
+      ]
+    }
+  ]
+}

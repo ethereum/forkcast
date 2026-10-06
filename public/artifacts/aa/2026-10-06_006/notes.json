@@ -1,0 +1,47 @@
+{
+  "meeting": "AA #006 - 2026-10-06",
+  "sections": [
+    {
+      "heading": "Frames Devnet 0 Status",
+      "summary": "Frames devnet 0 is running cleanly with roughly 10 frame-type transactions per block from a spamoor instance.",
+      "timestamp": "00:13:44",
+      "body": "- Frames devnet 0 is live and healthy; [Dora explorer](https://dora.frames-devnet-0.ethpandaops.io) looks \"100%\" to EthPandaOps, with no issues raised.\n- A [spamoor instance](https://spamoor.frames-devnet-0.ethpandaops.io) is sending roughly 10 frame-type transactions per block.\n- No issues reported by any client team; no news is good news.\n- Agreement to let devnet 0 continue running while the scope of devnet 1 is determined."
+    },
+    {
+      "heading": "Frames Devnet 1 Scope and Timeline",
+      "summary": "Devnet 1 will add EIPs 8250, 8272, and 7906, targeting launch next Thursday with test releases Monday.",
+      "timestamp": "00:16:16",
+      "body": "- No objections to moving forward with 3 clients (Geth, Nethermind, ethrex) rather than waiting for more client implementations.\n  - Lightclient: \"I think we are good to keep pushing with geth, nethermind, and ethrex.\"\n- [EIP-8250](https://forkcast.org/eips/8250/?tab=spec) (keyed nonces) and [EIP-8272](https://forkcast.org/eips/8272/?tab=spec) (recent roots) confirmed for devnet 1 with no objections.\n- [EIP-7906](https://forkcast.org/eips/7906/?tab=spec) also added after Nethermind confirmed it is already implemented; Geth (lightclient) said implementation is not a concern.\n- EIPs 8253 and 7979 (proposed by Spencer) deferred to a future devnet to keep frames devnet 1 simple.\n- Timeline: test releases targeting Monday, client images by Tuesday, devnet launch aiming for Thursday next week.\n- Barnabas proposed a cadence of a new devnet every two weeks going forward.\n- Two additional spec changes to EIP-8141 proposed by lightclient for devnet 1:\n  - Deploy expiry verifier via Nick's method instead of adding it to state at the fork block ([PR](https://github.com/ethereum/EIPs/pull/12387)): no objections, will be merged after the call.\n  - Bound cost with `max_fee` ([PR](https://github.com/ethereum/EIPs/pull/12414)): deferred to devnet 2 or later because Nethermind and ethrex have not yet reviewed the proposal; lightclient described it as a conceptually big change that needs more time."
+    },
+    {
+      "heading": "EIP-8250 Keyed Nonces Design Concerns",
+      "summary": "Lightclient raised concerns that EIP-8250's system-contract approach is hacky but accepted it as the best option before PBT.",
+      "timestamp": "00:18:48",
+      "body": "- Lightclient expressed dissatisfaction with EIP-8250's use of a precompile/system contract to store user nonce state, calling it a \"hacky\" solution that conflates user state storage with protocol-level transaction uniqueness invariants.\n  - Concern about future migration complexity when the tree structure changes.\n- Soispoke responded that a migration to PBT has been discussed with Carlos and Maria and is feasible; the amount of data to migrate would likely be small.\n- Lightclient acknowledged the alternative is to wait for PBT and forgo private transactions in Hegota, which is not a desirable tradeoff.\n- No objections raised by other participants; consensus to move forward with 8250 despite the design reservations.\n  - Lightclient: \"I'm not gonna block it… this is something I'm not a fan of.\""
+    },
+    {
+      "heading": "Verification Prefix Gas Limit for Devnet 1",
+      "summary": "Agreement to raise the verification prefix gas limit to 500K for devnet 1 to enable more realistic testing of complex frame transactions.",
+      "timestamp": "00:37:41",
+      "body": "- Daniil (Nethermind) asked about changing the verification prefix limit for the next devnet to test more complex scenarios with keyed nonces and recent roots.\n- Soispoke supported a higher limit for testing purposes, noting it helps with real wallet/app workflow feedback when sending private transactions; emphasized it need not be a commitment to a permanent higher limit.\n- Daniil suggested at least 300K; Mo Jahanara noted 250K is enough for privacy protocols but tight.\n- Agreement: 500K for devnet 1, with no objections from any participant.\n- Nethermind also reported partial implementation of [Matcha](https://ethresear.ch/t/mempool-account-transaction-capacity-from-historical-activity-matcha/25949) (mempool account transaction capacity) already merged, expecting full implementation by the next call or devnet."
+    },
+    {
+      "heading": "ETH Magicians Feedback and Frame Transaction Simulation",
+      "summary": "A proposal to relax halting behavior for transaction param 0 was flagged for review; frame transaction simulation via JSON-RPC remains unresolved.",
+      "timestamp": "00:40:30",
+      "body": "- pdobacz posted in the [ETH Magicians thread for EIP-8141](https://ethereum-magicians.org/t/eip-8141-frame-transaction/27617/174) suggesting that the halting behavior for transaction param 0 in non-frame contexts should be relaxed.\n  - No immediate opinions formed on the call; left for async review.\n- Frame transaction simulation via JSON-RPC, raised by jxom (viem author) on the previous call, had no new opinions or decisions.\n  - Topic deferred to the next call.\n- Reminder: 13 open PRs against the frames spec remain; teams encouraged to address any that are blocking devnet 1.\n  - [Forkcast link for EIP-8141 history](https://forkcast.org/eips/8141/?tab=history)"
+    },
+    {
+      "heading": "FOCIL and Frames Devnet Merge Strategy",
+      "summary": "Separate FOCIL and frames devnets will merge into Hegota devnet 0 targeting end of October; scoping discussion to continue Thursday.",
+      "timestamp": "00:41:37",
+      "body": "- Original goal was to merge FOCIL and frames devnets before Devcon.\n- Spencer outlined the expected progression: frames devnet 1 → Hegota devnet 0 (merged FOCIL devnet 1 + frames devnet 1) → only Hegota devnets going forward.\n  - Barnabas confirmed: once the merged Hegota devnet exists, separate FOCIL and frames devnets will be discontinued.\n- Lightclient noted he has not looked deeply into the FOCIL integration; readiness depends on how far along FOCIL is.\n- Marc has started spec work for the integration but is waiting on feedback from the ethrex team to align on details; implementation expected to be modest in size.\n- Soispoke noted Nethermind and ethrex have made significant progress but need alignment on specific implementation details; Geth alignment also needed.\n- Mario Vega (testing team) recommended getting frames and FOCIL interacting as soon as possible to test mempool behavior.\n- Barnabas suggested Hegota devnet 0 could target October 28th.\n  - Would require scoping FOCIL devnet 2 to match that timeline.\n  - Proposed adding the merge-timing decision to this Thursday's ACDE agenda; committed to doing so.\n- Spencer expressed optimism that Hegota could be one of the fastest post-merge forks, potentially under 7 months after Glamsterdam mainnet.\n- Next FOCIL breakout is scheduled for next Tuesday, but Barnabas flagged that may be too late if they want to launch a week after; offline scoping discussions encouraged."
+    },
+    {
+      "heading": "Flexible Verification Floor Proposal",
+      "summary": "Daniil proposed redefining max verification gas as a floor rather than a hard limit; lightclient pushed back on network stress without a peer communication mechanism.",
+      "timestamp": "00:49:32",
+      "body": "- Daniil (Nethermind) proposed redefining `const max_verify_gas` as a shared mempool floor rather than a hard limit ([PR](https://github.com/ethereum/EIPs/pull/12301)).\n  - Nodes meeting the floor would be guaranteed to gossip transactions under that limit; nodes with higher capacity could optionally process heavier verification prefixes.\n  - Transactions above the floor would have fewer nodes able to gossip them, propagating more slowly.\n- Lightclient objected: sending transactions to peers who cannot verify them adds stress to the network and complicates mempool optimization.\n  - Without a protocol-level mechanism for peers to communicate their verification limit, nodes cannot know which transactions peers can accept.\n  - Analogy to storage history communication in existing protocols.\n- No resolution; Daniil acknowledged the feedback. Topic left for async discussion."
+    }
+  ]
+}

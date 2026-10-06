@@ -2,6 +2,16 @@
   "eipId": 8163,
   "commits": [
     {
+      "sha": "6c7f0f20f597f560a3440a981efe8a4f50729752",
+      "date": "2026-10-06T15:02:39Z",
+      "message": "Update EIP-8163: Clarify trailing 0xae behavior in examples",
+      "author": "pdobacz",
+      "prNumber": null,
+      "patch": "@@ -49,6 +49,8 @@ However, in these EVMs which execute `EXTENSION`, the `JUMPDEST` analysis must s\n \n The particular behavior of the `EXTENSION` instruction on non-Ethereum-L1 EVMs adopting it must be determined by bytes following `EXTENSION` as immediate args.\n \n+If `0xae` is the last byte of the bytecode, its execution is expected to result in an exceptional halt. This is contrary to the zero-padding behavior of `PUSHn`, [EIP-8024](./eip-8024.md) opcodes, `CODECOPY`, and `EXTCODECOPY`.\n+\n The non-Ethereum-L1 EVM implementers will coordinate via the discussion thread of this EIP on their specific usage of `EXTENSION`.\n \n ### No effect on `JUMPDEST` analysis\n@@ -70,6 +72,7 @@ It is therefore presumed that a `0xae5b` sequence cannot be a valid extension in\n |-------------------|----------------------------|----------------------------------------------------------------------|\n | `0xae5b...`       | valid                      | Invalid extension                                                  |\n | `0xae015b...`     | valid                      | Valid extension with `0x01` argument                              |\n+| `0xae`            | N/A                        | Invalid extension (truncated)                                      |\n | `0xae60`          | N/A                        | Invalid extension (truncated)                                      |\n | `0xae605b...`     | invalid                    | Valid extension with `0x5b` argument encoded in `PUSH1` data        |\n | `0xae60605b...`   | valid                      | Valid extension with `0x60` argument encoded in `PUSH1` data        |",
+      "additions": 3,
+      "deletions": 0
+    },
+    {
       "sha": "9e24115af7b6ecf492d4e5b7aac84c975fe4f938",
       "date": "2026-09-23T15:02:38Z",
       "message": "Update EIP-8163: move non-L1 usage out of Specification",
@@ -28,16 +38,6 @@
       "author": "pdobacz",
       "prNumber": null,
       "additions": 109,
-      "deletions": 0
-    }
-  ],
-  "openPrs": [
-    {
-      "number": 12424,
-      "title": "Update EIP-8163: Clarify trailing 0xae behavior in examples",
-      "author": "pdobacz",
-      "updatedAt": "2026-10-05T14:44:44Z",
-      "additions": 3,
       "deletions": 0
     }
   ]

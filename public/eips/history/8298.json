@@ -2,6 +2,16 @@
   "eipId": 8298,
   "commits": [
     {
+      "sha": "c2471607ae30f665f2cfd878b7284ba39afeba75",
+      "date": "2026-10-06T09:41:37Z",
+      "message": "Update EIP-8298: Add public mempool rules",
+      "author": "Marchhill",
+      "prNumber": null,
+      "patch": "@@ -147,6 +147,14 @@ If an account's code hash changes in a transaction and its value at the end of t\n \n The bytecode behind `new_code_hash` is in the pre-block state or in the `new_code` of a `code_changes` entry with a lower block access index; no entry refers to bytecode recorded at the same or a higher index.\n \n+### Public Mempool\n+\n+These rules apply only to public mempool validation of [EIP-8141](./eip-8141.md) frame transactions and do not affect consensus.\n+\n+- `SETCODEFROM` should be banned during validation-prefix execution.\n+- A contract reached through `CALL*` or `EXTCODE*` during the validation prefix whose code contains a `SETCODEFROM` instruction, excluding `PUSH` data and other immediates, should be treated like an account with an [EIP-7702](./eip-7702.md) delegation indicator, i.e. as having mutable code.\n+- If such a contract's code instead contains `DELEGATECALL` or `CALLCODE`, it can still reach `SETCODEFROM` through delegated code. Nodes should track its code hash as a validation dependency and limit how many pending transactions may depend on it, so that one code update cannot invalidate an unbounded number of transactions. This keeps proxy-based accounts usable.\n+\n ## Rationale\n \n Using an address rather than a raw code hash avoids depending on client-local code database contents, which may differ across nodes. A newly synced node may have a smaller local code database than a long-running node because it may not keep historical or unreferenced bytecode entries. For this reason, this EIP makes `SETCODEFROM` copy the code hash from a live source account, so the adopted code hash is confirmed by current consensus state. A valid source cannot be deleted, but it can replace its own code hash later in the same block; the bytecode it deposited at creation must then still be persisted for the accounts that adopted it.\n@@ -214,6 +222,8 @@ An account under construction can be called before its initcode returns, for exa\n \n Recording adopted bytecode in the BAL would let one `SETCODEFROM`, at `9300` gas for a warm source, add up to the maximum code size to the BAL, below one gas per byte, where the [EIP-7928](./eip-7928.md) `bal_items` bound assumes small items. An adoption instead adds a 32-byte hash, and because a source created in the current transaction is invalid, the hash always resolves, so no adoption adds bytecode.\n \n+Mempool rules that assume deployed code is immutable must account for `SETCODEFROM`; see [Public Mempool](#public-mempool).\n+\n ## Copyright\n \n Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 10,
+      "deletions": 0
+    },
+    {
       "sha": "9bff5ef1068353888431ca3d0208d85d9e14b99a",
       "date": "2026-10-02T08:35:59Z",
       "message": "Update EIP-8298: record adopted code as a hash in the BAL; reject same-tx-created sources",
@@ -35,16 +45,6 @@
       "author": "colinlyguo",
       "prNumber": null,
       "additions": 162,
-      "deletions": 0
-    }
-  ],
-  "openPrs": [
-    {
-      "number": 12427,
-      "title": "Update EIP-8298: Add public mempool rules",
-      "author": "Marchhill",
-      "updatedAt": "2026-10-06T00:31:33Z",
-      "additions": 10,
       "deletions": 0
     }
   ]

@@ -1,0 +1,221 @@
+{
+  "meeting": "AA #003 - 2026-09-01",
+  "eips": [
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame transaction spec freeze for DevNet 0 discussed; SFI'd for Hegota; collaboration with 8130 on unified transaction type ongoing.",
+      "moments": [
+        {
+          "timestamp": "00:05:04",
+          "context": "Marc recapped that 8141 and 8130 proponents are working towards a single transaction type or coexisting types."
+        },
+        {
+          "timestamp": "00:05:47",
+          "context": "Marc noted 8141 was SFI'd on last Thursday's ACDE call to signal native AA is an absolute priority in the Hegota fork."
+        },
+        {
+          "timestamp": "00:07:04",
+          "context": "Lightclient said no spec updates this week but has been chatting with Chris about improving frames for L1/L2 interoperability."
+        },
+        {
+          "timestamp": "00:07:45",
+          "context": "Lightclient proposed freezing the spec for DevNet 0, with new changes going to DevNet 1; multiple client teams reported readiness."
+        },
+        {
+          "timestamp": "00:26:54",
+          "context": "Chris presented ideas for generalizing the verify frame so that both 8130 and 8141 authority models can use the same transaction envelope."
+        },
+        {
+          "timestamp": "00:56:37",
+          "context": "Marc asked Chris if he was ready to make specific proposals back into 8141; Chris said he would continue contributing ideas."
+        },
+        {
+          "timestamp": "01:03:05",
+          "context": "Lightclient said he will schedule DevNet 0 for Frames next week and asked people to keep discussing ideas in the 8141 R&D Discord channel."
+        }
+      ]
+    },
+    {
+      "eip": 8130,
+      "title": "Keystore Accounts",
+      "weight": "discussed",
+      "summary": "Keystore Accounts authority model compared with 8141; Chris explored how both could share one verify frame and transaction envelope.",
+      "moments": [
+        {
+          "timestamp": "00:05:04",
+          "context": "Marc noted proponents of 8130 and 8141 are searching for common ground on a native AA transaction type."
+        },
+        {
+          "timestamp": "00:26:54",
+          "context": "Chris described 8130's externally-owned-account authority model using keystore-managed authenticators and how it differs from 8141's code-as-authority."
+        },
+        {
+          "timestamp": "00:39:20",
+          "context": "Chris explained how the verify frame data field differs between 8130 chains (defined authenticator interface, no selector needed) and 8141 chains (wallet selector required)."
+        },
+        {
+          "timestamp": "00:57:02",
+          "context": "Chris confirmed 8130 is not a one-way door and can work on L1, and he will keep contributing ideas to 8141."
+        }
+      ]
+    },
+    {
+      "eip": 8250,
+      "title": "Keyed Nonces for Frame Transactions",
+      "weight": "discussed",
+      "summary": "Lightclient proposed dropping keyed nonces in favour of a canonical frame; also running on ethrex's Hegota devnet.",
+      "moments": [
+        {
+          "timestamp": "00:11:36",
+          "context": "Lightclient said in chat he would be interested in dropping EIP-8250 in favour of just a canonical frame, like the one used for expiry."
+        },
+        {
+          "timestamp": "00:14:19",
+          "context": "Toni Wahrstätter corrected in chat that lightclient meant 8272 — 8250 is keyed nonces."
+        },
+        {
+          "timestamp": "00:23:52",
+          "context": "Iván posted that ethrex's closed Hegota devnet includes an EIP-8250 implementation."
+        }
+      ]
+    },
+    {
+      "eip": 8272,
+      "title": "Recent Roots for Frame Transactions",
+      "weight": "discussed",
+      "summary": "Lightclient proposed moving Recent Roots out of the transaction envelope into a canonical frame as an out-of-protocol mempool rule.",
+      "moments": [
+        {
+          "timestamp": "00:13:19",
+          "context": "Lightclient raised the idea of treating 8272 recent roots as out-of-protocol canonical frames rather than envelope changes, citing maintenance and consensus risk."
+        },
+        {
+          "timestamp": "00:15:50",
+          "context": "Toni Wahrstätter said the initial motivation was gas costs and asked if removing it from the envelope changes gas accounting."
+        },
+        {
+          "timestamp": "00:18:27",
+          "context": "Soispoke raised concerns that moving recent roots out of the envelope would consume verify-frame gas, potentially 40k gas for 16 roots."
+        },
+        {
+          "timestamp": "00:21:06",
+          "context": "Toni suggested exempting recent-root gas from the verify-frame limit since the limit is only for the mempool and the behavior is deterministic."
+        },
+        {
+          "timestamp": "00:21:42",
+          "context": "Soispoke asked whether an EIP would still be warranted; lightclient said yes, as a mempool rule spec rather than a protocol change."
+        },
+        {
+          "timestamp": "00:23:52",
+          "context": "Iván posted that ethrex's closed Hegota devnet includes an EIP-8272 implementation."
+        }
+      ]
+    },
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "mentioned",
+      "summary": "Listed as one of the EIPs implemented on the ethrex Hegota devnet.",
+      "moments": [
+        {
+          "timestamp": "00:23:52",
+          "context": "Iván posted in chat that the Hegota devnet includes implementations of EIP-7805 alongside other EIPs."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "mentioned",
+      "summary": "Listed as one of the EIPs implemented on the ethrex Hegota devnet.",
+      "moments": [
+        {
+          "timestamp": "00:23:52",
+          "context": "Iván posted in chat that the Hegota devnet includes an implementation of EIP-7906."
+        }
+      ]
+    },
+    {
+      "eip": 8369,
+      "title": "VOPS Profiles for FOCIL Eligibility",
+      "weight": "mentioned",
+      "summary": "Listed as one of the EIPs implemented on the ethrex Hegota devnet.",
+      "moments": [
+        {
+          "timestamp": "00:23:52",
+          "context": "Iván posted in chat that the Hegota devnet includes an implementation of EIP-8369."
+        }
+      ]
+    },
+    {
+      "eip": 7851,
+      "title": "Code-Controlled EOA Delegation",
+      "weight": "discussed",
+      "summary": "Discussed as the mechanism to remove the K1 key and rotate to code-only authority; lightclient said he prefers EIP-8298 instead.",
+      "moments": [
+        {
+          "timestamp": "00:30:17",
+          "context": "Chris mentioned 7851 as the proposal to remove the K1 key and specify code-only authority, saying it matters for ensuring no one-way doors in authority models."
+        },
+        {
+          "timestamp": "00:31:59",
+          "context": "Lightclient said in chat he hopes for EIP-8298 instead of 7851, noting the principle is similar."
+        },
+        {
+          "timestamp": "00:35:02",
+          "context": "Chris revisited 7851 in the context of an AA precompile that could handle authority rotation."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "mentioned",
+      "summary": "Lightclient mentioned preferring 8298 over 7851 for code reuse delegation in the verify step.",
+      "moments": [
+        {
+          "timestamp": "00:31:59",
+          "context": "Lightclient posted a link to EIP-8298 in chat saying he hopes for this instead of 7851."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "mentioned",
+      "summary": "Referenced as an example of delegation that could be handled via a precompile frame instead of envelope changes.",
+      "moments": [
+        {
+          "timestamp": "00:35:02",
+          "context": "Chris suggested an AA precompile could handle 7702 delegation as a frame call rather than an envelope-level feature."
+        },
+        {
+          "timestamp": "00:45:11",
+          "context": "Derek asked Chris to clarify the AA precompile; Chris confirmed it could serve as a new 7702 delegation path."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "discussed",
+      "summary": "In-mempool signature and proof aggregation discussed in context of post-quantum needs and relationship to LeanVM and Stark-based compression.",
+      "moments": [
+        {
+          "timestamp": "00:50:03",
+          "context": "Luca asked in chat if the signature frame idea is similar to 8288 and whether it could unify with the STARK frame."
+        },
+        {
+          "timestamp": "00:51:47",
+          "context": "Soispoke said 8288 is needed for post-quantum private transactions; lightclient argued native signature aggregation should not wait for ZK EVM readiness."
+        },
+        {
+          "timestamp": "00:53:26",
+          "context": "Lightclient discussed LeanVM as purpose-built for signature aggregation, distinguishing it from general ZK EVM compute that 8288 might rely on."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,291 @@
+{
+  "meeting": "AA #002 - 2026-08-25",
+  "eips": [
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame Transactions debated extensively against 8130 on account model, validation, privacy, and L1 adoption path.",
+      "moments": [
+        {
+          "timestamp": "00:08:04",
+          "context": "Marc introduces the two proposals being compared: 8141 Frame Transactions (CFI'd into Hegota) and 8130 shipping on Base."
+        },
+        {
+          "timestamp": "00:11:27",
+          "context": "Lightclient thanks contributors to the Frame spec including Nethermind, Ethrex, EELS team, and Tomas for recent roots and 2D nonce work."
+        },
+        {
+          "timestamp": "00:12:42",
+          "context": "Lightclient describes two categories of recent changes: clarifications and integrating Glamsterdam changes including 2D state gas support."
+        },
+        {
+          "timestamp": "00:16:54",
+          "context": "Toni describes building privacy protocol proof-of-concepts on top of Frames including a TornadoCash-like withdrawal sponsored by the pool itself."
+        },
+        {
+          "timestamp": "00:27:53",
+          "context": "Lightclient explains in chat that 2D nonce was kept out of 8141 directly because it is controversial on L1 and they did not want to block Frames on that debate."
+        },
+        {
+          "timestamp": "00:30:59",
+          "context": "Chris argues that 8141's coupled account model means dependencies must be discovered via tracing rather than declared, and that Frames enshrines this broken model."
+        },
+        {
+          "timestamp": "00:40:13",
+          "context": "Chris proposes that fixing the account model in Frames and making the transaction declarative would effectively turn it into 8130."
+        },
+        {
+          "timestamp": "00:51:36",
+          "context": "Lightclient states in chat that core devs favor Frames direction and don't support 8130's massive feature set, and that trying to push 8130 onto L1 is divisive."
+        },
+        {
+          "timestamp": "00:57:27",
+          "context": "Ivan from Ethrex says implementing Frames is not complex and they have two testnets running including one with privacy, recent roots, and FOCIL."
+        },
+        {
+          "timestamp": "01:02:07",
+          "context": "Lightclient asks client teams whether they want to enshrine account model logic into the protocol or keep it at the user layer, framing the key decision."
+        },
+        {
+          "timestamp": "01:09:07",
+          "context": "Lightclient argues that 8130's keystore account system can be recreated through contracts in 8141, and Frames allows a superset of behavior."
+        },
+        {
+          "timestamp": "01:32:51",
+          "context": "Lightclient says the obvious next step is for someone to propose adding keystores to Frames to evaluate whether that makes sense on mainnet."
+        },
+        {
+          "timestamp": "01:34:41",
+          "context": "Marc states the default path is 8141 proceeds on mainnet and 8130 proceeds on L2s, and this meeting is an opportunity to hear broader stakeholder feedback."
+        }
+      ]
+    },
+    {
+      "eip": 8130,
+      "title": "Keystore Accounts",
+      "weight": "discussed",
+      "summary": "Keystore Accounts proposal presented by Chris as alternative to Frames, debated on account model, L2 adoption, and L1 fit.",
+      "moments": [
+        {
+          "timestamp": "00:08:04",
+          "context": "Marc introduces 8130 as the account abstraction proposal going live on Base and being adopted by other chains."
+        },
+        {
+          "timestamp": "00:18:44",
+          "context": "Chris begins presenting 8130 thesis: built for the whole EVM, L1 and L2 goals, all accounts can migrate, EOA portability."
+        },
+        {
+          "timestamp": "00:21:06",
+          "context": "Chris explains 8130 keeps decoupled architecture from EOAs but generalizes the authority mapping to be updatable to any contract-defined logic."
+        },
+        {
+          "timestamp": "00:28:14",
+          "context": "Chris explains key concepts: keystore is the mapping layer, authenticators return actor IDs, and authority remains external to the account."
+        },
+        {
+          "timestamp": "00:32:37",
+          "context": "Chris presents recent roots case study showing 8130 needs no envelope change because authenticator dependencies are declared in the transaction."
+        },
+        {
+          "timestamp": "00:34:08",
+          "context": "Chris claims 8130 is the obvious post-quantum choice because authenticators are contracts and old transaction types can migrate."
+        },
+        {
+          "timestamp": "00:38:09",
+          "context": "Chris argues 8130 enables permissionless gas sponsorship for privacy by proving state transition pre-execution via the transaction context precompile."
+        },
+        {
+          "timestamp": "00:51:36",
+          "context": "Lightclient says in chat that 8130 is not open to much change because Base needs to ship next month, and he doesn't see how L1 and L2 ship the same EIP."
+        },
+        {
+          "timestamp": "00:55:21",
+          "context": "Chris says Base would be happy to delay its fork and get feedback from client teams, does not want to move at the speed of half a year though."
+        },
+        {
+          "timestamp": "01:01:35",
+          "context": "Lightclient identifies two main things 8130 does: enshrines wallet logic into protocol and has authenticator-based validation, and asks if L1 wants these."
+        },
+        {
+          "timestamp": "01:07:07",
+          "context": "Chris argues 8130 is more expressive because you can always recouple authority back into the account; lightclient disagrees and they agree to disagree."
+        },
+        {
+          "timestamp": "01:18:06",
+          "context": "Chris concedes that post-execution payment ordering is a real capability 8141 has that 8130 cannot do."
+        },
+        {
+          "timestamp": "01:22:01",
+          "context": "Tsahi Zidenberg argued that because 8130 expresses a signature scheme as a contract address, adding a new scheme needs no cross-chain coordination over scheme numbers."
+        },
+        {
+          "timestamp": "01:26:19",
+          "context": "Derek proposes L1 should seriously consider 8130's authenticator-based validation model but NOT the enshrined account, separating the two concerns."
+        },
+        {
+          "timestamp": "01:33:39",
+          "context": "Chris and lightclient clarify that 8130 is not CFI'd; native AA was CFI'd generically and 8141 is listed on the Hegota meta EIP."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "State creation gas cost increase from Glamsterdam integrated into Frames as a second gas dimension.",
+      "moments": [
+        {
+          "timestamp": "00:14:03",
+          "context": "Lightclient explains that Glamsterdam change 8037 adds a second state gas dimension, and Frames now officially supports it with 2D gas in receipts and transaction objects."
+        }
+      ]
+    },
+    {
+      "eip": 4337,
+      "weight": "mentioned",
+      "summary": "Referenced for 2D nonce design and existing smart accounts needing migration.",
+      "moments": [
+        {
+          "timestamp": "00:20:46",
+          "context": "Chris mentions that existing 4337 accounts need to be able to migrate and that 8130 supports the 2D nonce familiar from 4337, noting issues with state growth from random nonces."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "mentioned",
+      "summary": "Referenced as the prior step toward native AA that 8130 builds upon and that had fragmentation problems.",
+      "moments": [
+        {
+          "timestamp": "00:22:54",
+          "context": "Chris shows 7702 as an intermediate step in the architecture evolution from EOAs to 8130, noting it added code but maintained decoupled authority."
+        },
+        {
+          "timestamp": "00:54:12",
+          "context": "Mislav warns that without neutral default implementations, Frames risks repeating the 7702 fragmentation where every wallet developed its own implementation."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "mentioned",
+      "summary": "In-mempool signature and proof aggregation mentioned as a feature that could be added to Frames.",
+      "moments": [
+        {
+          "timestamp": "00:30:45",
+          "context": "Daniil asks in chat whether pure frames and 8288 can also be added to the list of features kept out of 8141 core to avoid blocking it."
+        }
+      ]
+    },
+    {
+      "eip": 8355,
+      "title": "Precompiles for ML-DSA Verification",
+      "weight": "mentioned",
+      "summary": "ML-DSA verification precompile cited as naturally fitting 8130's authenticator model for post-quantum.",
+      "moments": [
+        {
+          "timestamp": "00:34:18",
+          "context": "Chris mentions 8355 ML-DSA precompile converts naturally to 8130's authenticator shape including aggregation scheme."
+        }
+      ]
+    },
+    {
+      "eip": 1559,
+      "title": "Fee market change for ETH 1.0 chain",
+      "weight": "mentioned",
+      "summary": "Referenced as an old transaction type that can be migrated to post-quantum under 8130.",
+      "moments": [
+        {
+          "timestamp": "00:34:58",
+          "context": "Chris says all old transaction types including 1559 and 4844 can be migrated to post-quantum authentication under 8130."
+        }
+      ]
+    },
+    {
+      "eip": 4844,
+      "title": "Shard Blob Transactions",
+      "weight": "mentioned",
+      "summary": "Referenced as an old transaction type and noted that 8130 does not include blob information as an EVM-wide standard.",
+      "moments": [
+        {
+          "timestamp": "00:34:58",
+          "context": "Chris notes 8130 does not have blob information because it is an EVM standard, not L1-specific, unlike 4844."
+        }
+      ]
+    },
+    {
+      "eip": 8369,
+      "title": "VOPS Profiles for FOCIL Eligibility",
+      "weight": "mentioned",
+      "summary": "VOPS profiles for FOCIL eligibility cited as a mitigation needed by Frames but not by 8130.",
+      "moments": [
+        {
+          "timestamp": "00:35:40",
+          "context": "Chris says EIP 8369 tries to mitigate Frame issues for validation-only partial statelessness and is not needed with 8130's declarative model."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "mentioned",
+      "summary": "Transaction assertions asked about in context of whether 8130 can support them.",
+      "moments": [
+        {
+          "timestamp": "00:52:01",
+          "context": "Marc asks whether something like 7906 transaction assertions is possible in 8130; Chris says the equivalent would be a precompile or viewing events via the transaction context precompile."
+        }
+      ]
+    },
+    {
+      "eip": 5792,
+      "title": "Wallet Call API",
+      "weight": "mentioned",
+      "summary": "Wallet Call API cited as precedent for unifying different chain standards at the SDK/interface level.",
+      "moments": [
+        {
+          "timestamp": "00:54:12",
+          "context": "Mislav suggests that if 8141 and 8130 coexist on different chains, unification can be done at the SDK/interface level similar to 5792."
+        }
+      ]
+    },
+    {
+      "eip": 8081,
+      "title": "Hardfork Meta - Hegotá",
+      "weight": "mentioned",
+      "summary": "Hegota hardfork meta EIP referenced to show that 8130 is not listed as CFI.",
+      "moments": [
+        {
+          "timestamp": "01:34:24",
+          "context": "Lightclient links the Hegota meta EIP 8081 to show that 8130 is not CFI'd, only 8141 is listed there for native AA."
+        }
+      ]
+    },
+    {
+      "eip": 7723,
+      "title": "Network Upgrade Inclusion Stages",
+      "weight": "mentioned",
+      "summary": "Network upgrade inclusion stages process referenced as something L2s should follow for proposing EIPs.",
+      "moments": [
+        {
+          "timestamp": "01:35:50",
+          "context": "Spencer links EIP 7723 suggesting the PFI process should be followed and may not be clear enough to L2s."
+        }
+      ]
+    },
+    {
+      "eip": 7562,
+      "weight": "mentioned",
+      "summary": "Referenced in chat regarding sender mapping access rules for mempool validation.",
+      "moments": [
+        {
+          "timestamp": "01:42:22",
+          "context": "Chris asks in chat whether L1 will ever allow 7562-like sender mapping access for the keystore in mempool rules."
+        }
+      ]
+    }
+  ]
+}

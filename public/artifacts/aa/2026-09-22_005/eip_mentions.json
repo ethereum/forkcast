@@ -1,0 +1,185 @@
+{
+  "meeting": "AA #005 - 2026-09-22",
+  "eips": [
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame Transaction spec PRs, DevNet readiness, gas accounting interaction with multidimensional fees, and tooling gaps were discussed throughout the call.",
+      "moments": [
+        {
+          "timestamp": "00:07:52",
+          "context": "Marc noted 13 open PRs against EIP-8141 and asked whether any need attention before Frames DevNet Zero launches."
+        },
+        {
+          "timestamp": "00:11:04",
+          "context": "Discussion of Frames DevNet Zero launch timing, with clients Geth, Ethrex, and Nethermind ready; waiting on PandaOps availability."
+        },
+        {
+          "timestamp": "00:17:22",
+          "context": "Anders presented how Frame Transactions interact with multidimensional fee markets, noting frames aim to be an enduring format that should harmonize with future fee designs."
+        },
+        {
+          "timestamp": "00:36:53",
+          "context": "Viem maintainer feedback relayed: JSON-RPC for frame transactions feels underspecified, needing gas estimation and simulation support."
+        },
+        {
+          "timestamp": "00:40:06",
+          "context": "Mislav described building an 8130 implementation on top of 8141 and integrating additional standards for wallet and app developer tooling."
+        }
+      ]
+    },
+    {
+      "eip": 8130,
+      "title": "Keystore Accounts",
+      "weight": "discussed",
+      "summary": "Discussed as the keystore accounts standard being built on top of frames, with harmonization efforts and compatibility with ERC-8403.",
+      "moments": [
+        {
+          "timestamp": "00:09:31",
+          "context": "Daniil mentioned a PR to make frames compatible with ERC-8403 and EIP-8130 for keystore reading."
+        },
+        {
+          "timestamp": "00:23:10",
+          "context": "Chris from Base said they are interested in unified max fee for the 8130 transaction type but want parity with frames."
+        },
+        {
+          "timestamp": "00:38:35",
+          "context": "Mislav presented Ethlabs' effort to build an 8130 implementation on top of 8141 with additional developer tooling standards."
+        }
+      ]
+    },
+    {
+      "eip": 8403,
+      "weight": "discussed",
+      "summary": "Discussed as a key management ERC for keystore compatibility with frames and EIP-8130.",
+      "moments": [
+        {
+          "timestamp": "00:09:31",
+          "context": "Daniil mentioned a PR to enable frames to read the keystore, making them compatible with ERC-8403 and EIP-8130."
+        },
+        {
+          "timestamp": "00:46:40",
+          "context": "Daniil asked Mislav whether ERC-8403 was considered for key management; Mislav said he would include it and provide feedback."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "Discussed in the context of state gas metering and how a multidimensional fee market would likely remove its reservoir design.",
+      "moments": [
+        {
+          "timestamp": "00:18:21",
+          "context": "Anders noted that EIP-8037 adds its own metering to state, which a multidimensional fee market would extend with separate base fees."
+        },
+        {
+          "timestamp": "00:33:13",
+          "context": "Anders said that most multidimensional fee market designs under consideration would remove the 8037 reservoir design."
+        },
+        {
+          "timestamp": "00:34:04",
+          "context": "Maria noted the reservoir from 8037 would still be needed for legacy transactions that lack separate gas limits."
+        }
+      ]
+    },
+    {
+      "eip": 7999,
+      "title": "Unified multidimensional fee market",
+      "weight": "discussed",
+      "summary": "Presented by Anders as the unified multidimensional fee market proposal providing a single fungible max fee across resources.",
+      "moments": [
+        {
+          "timestamp": "00:19:03",
+          "context": "Anders explained EIP-7999's single max fee concept, which prevents transaction failure when one resource's base fee drifts above its individual cap."
+        }
+      ]
+    },
+    {
+      "eip": 1559,
+      "title": "Fee market change for ETH 1.0 chain",
+      "weight": "mentioned",
+      "summary": "Chris from Base referenced it when noting that L2 multi-dimensional fees today exist under the 1559 model as a hidden fee.",
+      "moments": [
+        {
+          "timestamp": "00:23:37",
+          "context": "Chris clarified that the hidden L1 data fee on L2 exists under the current 1559 fee structure."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Highlighted as enabling transaction assertions via state diff opcode, important for clear signing and hardware wallet security.",
+      "moments": [
+        {
+          "timestamp": "00:41:52",
+          "context": "Mislav listed EIP-7906 as a key standard to integrate, noting it enables wallets to simulate state changes and encode post-transaction assertions."
+        },
+        {
+          "timestamp": "00:44:53",
+          "context": "Mislav described a mock UI demo where a wallet encodes a transaction assertion with 7906, enabling clear-signed review on hardware wallets."
+        }
+      ]
+    },
+    {
+      "eip": 7715,
+      "weight": "mentioned",
+      "summary": "Mislav proposed adapting EIP-7715 to work with the 8130 sessions system as part of the harmonization effort.",
+      "moments": [
+        {
+          "timestamp": "00:41:58",
+          "context": "Mislav said the idea is to adapt 7715 and 7710 to work with 8130's sessions system, noting he tested the Solidity implementation."
+        }
+      ]
+    },
+    {
+      "eip": 7710,
+      "weight": "mentioned",
+      "summary": "Mislav mentioned adapting EIP-7710 alongside 7715 to work with the 8130 sessions system.",
+      "moments": [
+        {
+          "timestamp": "00:42:16",
+          "context": "Mislav listed 7710 as a standard to adapt for compatibility with 8130 sessions within the harmonization effort."
+        }
+      ]
+    },
+    {
+      "eip": 5792,
+      "title": "Wallet Call API",
+      "weight": "mentioned",
+      "summary": "Mislav mentioned exploring whether the Wallet Call API can be extended to support frame transaction expressiveness.",
+      "moments": [
+        {
+          "timestamp": "00:42:38",
+          "context": "Mislav said they want to explore whether EIP-5792 wallet call API can be extended for batches and new features, or if a new standard is needed."
+        }
+      ]
+    },
+    {
+      "eip": 4337,
+      "weight": "mentioned",
+      "summary": "Listed by Mislav among other account-abstraction efforts the harmonization work has to stay compatible with.",
+      "moments": [
+        {
+          "timestamp": "00:44:06",
+          "context": "Mislav mentioned 4337 alongside 7702 as other relevant efforts in the broader frames and account abstraction landscape."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "mentioned",
+      "summary": "Listed by Mislav among other relevant standards in the context of account abstraction and frames adoption.",
+      "moments": [
+        {
+          "timestamp": "00:44:06",
+          "context": "Mislav mentioned 7702 alongside 4337 as other relevant efforts in the broader frames and account abstraction landscape."
+        }
+      ]
+    }
+  ]
+}

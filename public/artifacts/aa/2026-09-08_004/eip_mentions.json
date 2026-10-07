@@ -1,0 +1,93 @@
+{
+  "meeting": "AA #004 - 2026-09-08",
+  "eips": [
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frames DevNet 0 readiness discussed; spec frozen, open PRs noted, client teams reported passing tests and running kurtosis networks.",
+      "moments": [
+        {
+          "timestamp": "00:07:03",
+          "context": "Lightclient said no spec changes in the last week, DevNet Zero spec is frozen, only clarifications would be added. Open PRs against 8141 noted."
+        },
+        {
+          "timestamp": "00:08:25",
+          "context": "Guru reported v0.3.0 test release for Frames based on frozen DevNet Zero specs, exercising deep EVM code paths via the Frame Transaction Envelope."
+        },
+        {
+          "timestamp": "00:10:46",
+          "context": "Lightclient said Geth passed the EELS test and ran a kurtosis network with ethrex and Nethermind on Frames DevNet 0."
+        },
+        {
+          "timestamp": "00:11:50",
+          "context": "Ethrex confirmed readiness, passing all latest test suites. Nethermind also confirmed readiness with a validator running on ethrex's DevNet."
+        },
+        {
+          "timestamp": "00:15:31",
+          "context": "Raxhvl proposed replacing the expiry verify frame with a native transaction-level expiry field, arguing the current frame-based approach adds unnecessary state dependency and byte overhead."
+        },
+        {
+          "timestamp": "00:26:48",
+          "context": "Toni said the special verify frame approach felt cleaner and questioned whether there are enough use cases to justify generalizing with a features mechanism."
+        },
+        {
+          "timestamp": "00:29:38",
+          "context": "Daniil presented an ERC for key lifecycle management that would work across both 8141 and 8130 account types."
+        },
+        {
+          "timestamp": "00:40:44",
+          "context": "Daniil proposed redefining maxVerifyGas as a mempool floor rather than a hard limit, allowing nodes to optionally handle heavier frame transactions."
+        },
+        {
+          "timestamp": "00:52:37",
+          "context": "Marc said Frames as a Hegota headliner is expected to be ratified on Thursday's ACDE call."
+        }
+      ]
+    },
+    {
+      "eip": 8272,
+      "title": "Recent Roots for Frame Transactions",
+      "weight": "mentioned",
+      "summary": "Soispoke noted that similar discussions about moving from transaction envelope fields to verify frames occurred for recent roots.",
+      "moments": [
+        {
+          "timestamp": "00:26:50",
+          "context": "Soispoke said in chat that the same design discussion about frame versus envelope field happened for EIP-8272 recent roots, and linked the relevant PR."
+        }
+      ]
+    },
+    {
+      "eip": 8130,
+      "title": "Keystore Accounts",
+      "weight": "discussed",
+      "summary": "Discussed in context of Daniil's ERC proposal for a common key lifecycle model spanning both 8130 keystore accounts and 8141 frames.",
+      "moments": [
+        {
+          "timestamp": "00:29:57",
+          "context": "Daniil explained that 8141 and 8130 represent two types of native account abstraction that will coexist, motivating a common key add/rotate/revoke scheme."
+        },
+        {
+          "timestamp": "00:35:04",
+          "context": "Daniil noted that for 8130 there is a freshly introduced checkpointed image hash analogous to the recent roots mechanism used for 8141."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Alex Forshtat sought feedback on transaction assertions via state diff opcodes and its inclusion in Hegota; Toni recommended including it.",
+      "moments": [
+        {
+          "timestamp": "00:46:08",
+          "context": "Alex Forshtat said EIP-7906 was ranked A in a protocol review post, with a one-sentence recommendation to focus on BAL-shaped data and events, and asked for more detailed feedback."
+        },
+        {
+          "timestamp": "00:48:00",
+          "context": "Toni said he sees no incompatibility between transaction assertions and BAL, recommended not commingling the two, and suggested 7906 is worth considering for Hegota to avoid touching frame transactions again later."
+        }
+      ]
+    }
+  ]
+}

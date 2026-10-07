@@ -1,0 +1,203 @@
+{
+  "meeting": "AA #001 - 2026-04-22",
+  "eips": [
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame Transactions was the central proposal discussed, covering its CFI status, spec updates, guarantor change, L2 adoption, and open questions.",
+      "moments": [
+        {
+          "timestamp": "00:07:59",
+          "context": "Marc introduced the call by noting EIP-8141 was recently proposed as a headliner for Hegota, was CFI'd, but ultimately not selected by client teams due to concerns about mempool, statelessness, privacy, and post-quantum."
+        },
+        {
+          "timestamp": "00:12:16",
+          "context": "Ivo from Ambire said frame transactions solve the problem of existing EOAs not being able to use AA features and address the clunkiness of 4337."
+        },
+        {
+          "timestamp": "00:14:08",
+          "context": "Agus from Polygon said they strongly support frame transactions as-is because they allow full flexibility; a more constrained solution would likely not be adopted by their team."
+        },
+        {
+          "timestamp": "00:14:57",
+          "context": "Lightclient described the design philosophy behind 8141, emphasizing post-quantum support, reducing reliance on centralized relayers, and supporting FOCIL compatibility."
+        },
+        {
+          "timestamp": "00:25:20",
+          "context": "Chris aggregated feedback he had gathered on why some teams do not want 8141, citing overhead and complexity carried for future features they may not use."
+        },
+        {
+          "timestamp": "00:27:31",
+          "context": "Derek provided an update on the guarantor concept where a payer frame can precede sender validation, allowing the mempool to skip expensive sender validation if the payer is valid."
+        },
+        {
+          "timestamp": "00:31:24",
+          "context": "Ben Adams noted he tightened up the 8141 spec and it was merged, but also introduced complementary unbundled EIPs as an alternative layering approach."
+        },
+        {
+          "timestamp": "00:44:31",
+          "context": "David from Trust Wallet argued 8141 should be merged to prevent wallets from building proprietary automation solutions, and noted adoption timelines require preparation time."
+        },
+        {
+          "timestamp": "00:48:10",
+          "context": "Derek outlined the three core adoption barriers 8141 addresses: smart contract auditing burden, relayer dependence, and cross-chain reliability."
+        },
+        {
+          "timestamp": "01:03:51",
+          "context": "Prestwich questioned whether 8141 should proceed given that several promised benefits like ERC20 sponsorship and post-quantum support are still in ideation or require follow-on EIPs."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "discussed",
+      "summary": "Referenced repeatedly as the current AA mechanism that frame transactions build upon, with discussion of its adoption trajectory and hardware wallet limitations.",
+      "moments": [
+        {
+          "timestamp": "00:11:41",
+          "context": "Ivo noted that 7702 partially solved EOA upgrade paths but hardware wallets still don't fully support it, limiting practical AA adoption."
+        },
+        {
+          "timestamp": "00:44:44",
+          "context": "David from Trust Wallet pushed back on claims of low 7702 adoption, citing nearly 100 million weekly 7702 transactions and meaningful TrustWallet traffic."
+        }
+      ]
+    },
+    {
+      "eip": 4337,
+      "weight": "discussed",
+      "summary": "Referenced as the existing AA standard that native AA proposals aim to improve upon or replace, described as clunky and bloated.",
+      "moments": [
+        {
+          "timestamp": "00:12:16",
+          "context": "Ivo described 4337 as clunky and bloated, positioning frame transactions as a practical improvement over it."
+        },
+        {
+          "timestamp": "00:48:10",
+          "context": "Derek noted TrustWallet adopted 7702-4337, and discussed how native AA eliminates the relayer dependency that 4337 requires."
+        }
+      ]
+    },
+    {
+      "eip": 8130,
+      "title": "Keystore Accounts",
+      "weight": "discussed",
+      "summary": "Keystore Accounts was described by Chris from Base as a more defined alternative to 8141 that addresses performance concerns with explicit call ordering.",
+      "moments": [
+        {
+          "timestamp": "00:25:39",
+          "context": "Chris summarized 8130 as trying to address performance issues while remaining general, with explicit ordering of operations to reduce DoS risks, though less flexible than 8141."
+        }
+      ]
+    },
+    {
+      "eip": 5189,
+      "weight": "mentioned",
+      "summary": "Agus asked in chat whether the guarantor concept in 8141 is somewhat similar to EIP-5189.",
+      "moments": [
+        {
+          "timestamp": "00:30:28",
+          "context": "Agus asked in chat whether the guarantor idea for frame transactions is similar to 5189."
+        }
+      ]
+    },
+    {
+      "eip": 8223,
+      "title": "Contract Payer Transaction",
+      "weight": "discussed",
+      "summary": "Contract Payer Transaction was presented by Ben Adams as an unbundled alternative approach to gas sponsorship using a one-to-one signer-vault model.",
+      "moments": [
+        {
+          "timestamp": "00:31:48",
+          "context": "Ben Adams described 8223 as allowing a contract vault to accept a specific EOA signer, enabling lightweight mempool validation by checking ETH balance without invoking the EVM."
+        },
+        {
+          "timestamp": "00:33:37",
+          "context": "Ben highlighted the difference from 8141's sponsorship model: 8223 restricts sponsorship to the user's own assets in a different account rather than arbitrary third-party sponsors."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Transaction assertions via state diff opcode was presented as complementary to frame transactions for preventing phishing and drainer attacks.",
+      "moments": [
+        {
+          "timestamp": "00:35:35",
+          "context": "Fredrik described EIP-7906 as enabling users to set revert conditions on transactions if outcomes exceed approved state changes, addressing phishing and drainer attacks."
+        },
+        {
+          "timestamp": "00:39:16",
+          "context": "Fredrik noted the next step is building a proof-of-concept demo, potentially with the Ethrex team, and creating tests for inclusion in a future hard fork."
+        },
+        {
+          "timestamp": "00:41:08",
+          "context": "Alex Forshtat, the author, confirmed 7906 works well with frame transactions but does not require them, and expressed interest in collaborating with Ethrex on a demo."
+        }
+      ]
+    },
+    {
+      "eip": 152,
+      "title": "Add BLAKE2 compression function `F` precompile",
+      "weight": "mentioned",
+      "summary": "Prestwich cited his involvement with EIP-152 as a cautionary example against designing EIPs for not-yet-understood future use cases.",
+      "moments": [
+        {
+          "timestamp": "00:41:24",
+          "context": "Prestwich said in chat that designing EIPs to support future use cases that are not fully understood has typically been a mistake, citing his involvement with EIP-152."
+        }
+      ]
+    },
+    {
+      "eip": 1559,
+      "title": "Fee market change for ETH 1.0 chain",
+      "weight": "mentioned",
+      "summary": "Chris mentioned in chat that legacy and 1559 transaction type deprecation would be needed if using an EOA-based account with 8130.",
+      "moments": [
+        {
+          "timestamp": "00:48:16",
+          "context": "Chris noted in chat that 8130 handles key rotation including ECDSA deprecation, with the caveat that 1559/legacy tx deprecation would also be needed for EOA-based accounts."
+        }
+      ]
+    },
+    {
+      "eip": 7851,
+      "title": "Code-Controlled EOA Delegation",
+      "weight": "mentioned",
+      "summary": "Referenced in chat as a proposal for deactivating a delegated EOA's key, relevant to ECDSA sunset discussions.",
+      "moments": [
+        {
+          "timestamp": "00:50:41",
+          "context": "Nico posted links to EIP-7851 and EIP-8151 in chat as proposals addressing EOA key deactivation and ecRecover awareness, noted as independent from 8141."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "mentioned",
+      "summary": "Referenced in chat alongside EIP-7851 as a proposal for private key deactivation-aware ecRecover.",
+      "moments": [
+        {
+          "timestamp": "00:50:41",
+          "context": "Nico linked EIP-8151 in chat as a companion to EIP-7851 for making ecRecover aware of deactivated private keys."
+        }
+      ]
+    },
+    {
+      "eip": 7819,
+      "title": "SETDELEGATE instruction",
+      "weight": "mentioned",
+      "summary": "Linked in chat by lightclient as one of several proposals addressing ECDSA key management for EOAs.",
+      "moments": [
+        {
+          "timestamp": "00:54:51",
+          "context": "Lightclient shared links to EIP-7819 and EIP-7851 in chat as existing proposals for handling ECDSA key revocation."
+        }
+      ]
+    }
+  ]
+}

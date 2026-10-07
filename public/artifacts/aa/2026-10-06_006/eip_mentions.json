@@ -1,0 +1,145 @@
+{
+  "meeting": "AA #006 - 2026-10-06",
+  "eips": [
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Transaction assertions via state diff opcode added to devnet 1 scope; Nethermind already implemented, Geth not yet but not concerned.",
+      "moments": [
+        {
+          "timestamp": "00:18:16",
+          "context": "marc | wolovim noted that Matt suggested considering 7906 for devnet 1."
+        },
+        {
+          "timestamp": "00:26:00",
+          "context": "marc | wolovim asked whether 7906 should also be included; Daniil gave thumbs up, and Matt supported it."
+        },
+        {
+          "timestamp": "00:27:14",
+          "context": "Daniil confirmed Nethermind has already implemented 7906; lightclient said he has not implemented it but is not worried about doing so within the timeline."
+        },
+        {
+          "timestamp": "00:30:01",
+          "context": "Guru said the testing team is a bit behind on 7906 but will push to complete it during the week."
+        }
+      ]
+    },
+    {
+      "eip": 8250,
+      "title": "Keyed Nonces for Frame Transactions",
+      "weight": "discussed",
+      "summary": "Keyed nonces discussed at length; lightclient called the precompile approach hacky but agreed to move forward for devnet 1.",
+      "moments": [
+        {
+          "timestamp": "00:18:41",
+          "context": "Barnabas stated 8250 and 8272 should be in devnet 1."
+        },
+        {
+          "timestamp": "00:18:54",
+          "context": "Marc (a separate participant) asked in chat whether keyed nonces could still be included in the next devnet even if changes come after."
+        },
+        {
+          "timestamp": "00:19:38",
+          "context": "Lightclient expressed dislike for 8250 from a protocol design perspective, calling the precompile approach ugly and raising concerns about future tree structure migration."
+        },
+        {
+          "timestamp": "00:21:00",
+          "context": "Soispoke responded that migration to PBT has been discussed with Carlos and Maria and would be feasible, and ethrex and Nethermind have already implemented it."
+        },
+        {
+          "timestamp": "00:23:09",
+          "context": "Lightclient clarified he considers the 2D nonce implementation hacky but won't block it since most people support it and there is no better alternative without waiting for PBT."
+        },
+        {
+          "timestamp": "00:25:11",
+          "context": "marc | wolovim confirmed no objections to including 8250 in devnet 1."
+        },
+        {
+          "timestamp": "00:27:57",
+          "context": "marc | wolovim confirmed devnet 1 scope includes 8250, 8272, and 7906, targeting next Thursday."
+        }
+      ]
+    },
+    {
+      "eip": 8272,
+      "title": "Recent Roots for Frame Transactions",
+      "weight": "discussed",
+      "summary": "Recent roots confirmed for inclusion in frames devnet 1 with no objections raised.",
+      "moments": [
+        {
+          "timestamp": "00:18:41",
+          "context": "Barnabas stated 8250 and 8272 should be in devnet 1."
+        },
+        {
+          "timestamp": "00:25:32",
+          "context": "marc | wolovim asked if there were any comments on recent roots; hearing none, confirmed it will be included in devnet 1."
+        },
+        {
+          "timestamp": "00:30:01",
+          "context": "Guru confirmed testing work on 8250 and 8272 is already underway and should be ready by mid-next week."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "mentioned",
+      "summary": "Barnabas noted it was proposed for devnet 1 but Spencer deferred it to a future devnet.",
+      "moments": [
+        {
+          "timestamp": "00:28:03",
+          "context": "Barnabas mentioned 8253 was proposed alongside 7979, but Spencer said he would defer both to keep frames simple for now."
+        }
+      ]
+    },
+    {
+      "eip": 7979,
+      "title": "Call and Return Opcodes for the EVM",
+      "weight": "mentioned",
+      "summary": "Barnabas noted Spencer proposed it for devnet 1 but Spencer deferred it to a future devnet.",
+      "moments": [
+        {
+          "timestamp": "00:28:03",
+          "context": "Barnabas mentioned 7979, proposed by Spencer, as a candidate for devnet 1; Spencer preferred deferring it."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Lightclient proposed two spec changes to the frame transaction EIP for devnet 1: deploying the expiry verifier via Nick's method and bounding cost with max_fee.",
+      "moments": [
+        {
+          "timestamp": "00:32:59",
+          "context": "Lightclient asked to return to devnet 1 discussion to ensure people are okay with his proposed changes to 8141."
+        },
+        {
+          "timestamp": "00:33:17",
+          "context": "Lightclient explained the first change: deploying the expiry verifier using Nick's method instead of adding it at the fork block, and said keyed nonces contract should do the same."
+        },
+        {
+          "timestamp": "00:34:44",
+          "context": "Lightclient described the second change integrating max fee cost bounding from EIP-7999 into frames; decided to defer it to devnet 2 since others haven't reviewed it yet."
+        },
+        {
+          "timestamp": "00:40:30",
+          "context": "marc | wolovim mentioned a comment from pdobacz in the ETH Magicians thread for 8141 about relaxing halting behavior for transaction param of 0."
+        }
+      ]
+    },
+    {
+      "eip": 7999,
+      "title": "Unified multidimensional fee market",
+      "weight": "mentioned",
+      "summary": "Referenced as the source of the max fee cost bounding idea that lightclient integrated into the frames spec.",
+      "moments": [
+        {
+          "timestamp": "00:34:52",
+          "context": "Lightclient said the max fee cost bounding changes were inherited from EIP-7999, with handling only very minorly different."
+        }
+      ]
+    }
+  ]
+}

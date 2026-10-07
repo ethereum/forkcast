@@ -370,7 +370,7 @@ marc | wolovim: Matt, did you want to mention 8250 in chat?
 
 93
 00:13:19.710 --> 00:13:33.719
-lightclient: Yeah, one of the things that I've been looking into a little bit is if it's possible for the changes related to 8250 recent routes, if those could, you know, be treated as
+lightclient: Yeah, one of the things that I've been looking into a little bit is if it's possible for the changes related to 8250 recent roots, if those could, you know, be treated as
 
 94
 00:13:34.050 --> 00:13:36.230
@@ -394,7 +394,7 @@ lightclient: And with Recent Roots, as we looked into it more during, like, our 
 
 99
 00:14:22.670 --> 00:14:42.519
-lightclient: Oh, sorry, yeah, 8272. We just kept coming to this question, like, why does this need to be in a transaction envelope? It doesn't feel like there's anything that's particularly special about the recent routes. The special aspect of it is just that we're basically allowing the, you know, the users to read these routes.
+lightclient: Oh, sorry, yeah, 8272. We just kept coming to this question, like, why does this need to be in a transaction envelope? It doesn't feel like there's anything that's particularly special about the recent roots. The special aspect of it is just that we're basically allowing the, you know, the users to read these roots.
 
 100
 00:14:42.690 --> 00:14:44.730
@@ -450,7 +450,7 @@ Toni Wahrstätter: Or where would you move it? From the Transaction Object to?
 
 113
 00:16:29.070 --> 00:16:35.700
-lightclient: It would basically be in a frame to the recent routes contract, very similar to how it's proposed.
+lightclient: It would basically be in a frame to the recent roots contract, very similar to how it's proposed.
 
 114
 00:16:35.840 --> 00:16:43.010
@@ -462,7 +462,7 @@ lightclient: to the recent Roots contract.
 
 116
 00:16:45.710 --> 00:16:51.679
-lightclient: And so you can statically reason about how the recent route Contract executes.
+lightclient: And so you can statically reason about how the recent root Contract executes.
 
 117
 00:16:52.700 --> 00:16:58.710
@@ -486,7 +486,7 @@ Toni Wahrstätter: Because otherwise, you could have, like, a reorg.
 
 122
 00:17:07.780 --> 00:17:19.279
-Toni Wahrstätter: And if you don't have the root, you could… you wouldn't know if a transaction is actually, still, proving against the correct route on the right chain.
+Toni Wahrstätter: And if you don't have the root, you could… you wouldn't know if a transaction is actually, still, proving against the correct root on the right chain.
 
 123
 00:17:19.869 --> 00:17:24.150
@@ -494,7 +494,7 @@ Toni Wahrstätter: But since the root stays statically available, it should be f
 
 124
 00:17:32.040 --> 00:17:39.859
-lightclient: Okay. Yeah, I mean, nothing necessarily changes about A141 for this, nothing necessarily changes about A272 for this.
+lightclient: Okay. Yeah, I mean, nothing necessarily changes about 8141 for this, nothing necessarily changes about 8272 for this.
 
 125
 00:17:39.980 --> 00:17:48.179
@@ -514,7 +514,7 @@ lightclient: Tomorrow.
 
 129
 00:18:04.110 --> 00:18:14.029
-soispoke: Hi, yeah, I'm sorry, I just joined, but, I think the validation guess I wanted to talk about,
+soispoke: Hi, yeah, I'm sorry, I just joined, but, I think the validation gas I wanted to talk about,
 
 130
 00:18:14.260 --> 00:18:17.530
@@ -526,7 +526,7 @@ soispoke: it needs to somehow become a gas that's part of the verify frame gas y
 
 132
 00:18:27.970 --> 00:18:35.050
-soispoke: And, you know, if you have, like, 16 routes, it actually ends up costing quite a lot, like, 40,000 gas.
+soispoke: And, you know, if you have, like, 16 roots, it actually ends up costing quite a lot, like, 40,000 gas.
 
 133
 00:18:35.170 --> 00:18:39.339
@@ -538,11 +538,11 @@ lightclient: Why would you have 16 roots?
 
 135
 00:18:43.330 --> 00:18:52.080
-soispoke: Like, the EIP defines this as, like, max, you know, max 16 routes, per SLAD.
+soispoke: Like, the EIP defines this as, like, max, you know, max 16 roots, per SLAD.
 
 136
 00:18:54.450 --> 00:19:04.239
-soispoke: Like, if you have, like, 16 different privacy dApps that want to update, like, their routes, then you could have 16 routes.
+soispoke: Like, if you have, like, 16 different privacy dApps that want to update, like, their roots, then you could have 16 roots.
 
 137
 00:19:08.960 --> 00:19:13.410
@@ -558,7 +558,7 @@ soispoke: allow private transactions in the public webpool. So there's a bit of 
 
 140
 00:19:30.920 --> 00:19:34.719
-lightclient: The privacy pools update their recent route in the verify param?
+lightclient: The privacy pools update their recent root in the verify param?
 
 141
 00:19:37.620 --> 00:19:43.570
@@ -570,7 +570,7 @@ soispoke: That gas cost has to be taken into account in the… In… in the veri
 
 143
 00:19:49.800 --> 00:20:02.180
-lightclient: I just thought that… well, I thought that the privacy protocols themselves, whenever you would use the privacy protocol, it would update… it would call the recent routes contract and send an update.
+lightclient: I just thought that… well, I thought that the privacy protocols themselves, whenever you would use the privacy protocol, it would update… it would call the recent roots contract and send an update.
 
 144
 00:20:02.490 --> 00:20:06.829
@@ -598,7 +598,7 @@ soispoke: looked,
 
 150
 00:20:37.910 --> 00:20:46.259
-soispoke: the sort of, like, frame solution for recent routes instead of in the envelope, like, costs a bit more, I guess, in the very first frame. I can just, like, double…
+soispoke: the sort of, like, frame solution for recent roots instead of in the envelope, like, costs a bit more, I guess, in the very first frame. I can just, like, double…
 
 151
 00:20:46.260 --> 00:20:47.630
@@ -618,7 +618,7 @@ soispoke: Yeah, that's fair.
 
 155
 00:21:17.650 --> 00:21:31.969
-soispoke: Maybe another question related to this, and I don't want to take the whole call, but, like, should it still be, like, an EIP, though? Like, I mean, the sort of, like, where we want to have these recent routes
+soispoke: Maybe another question related to this, and I don't want to take the whole call, but, like, should it still be, like, an EIP, though? Like, I mean, the sort of, like, where we want to have these recent roots
 
 156
 00:21:32.580 --> 00:21:42.059
@@ -874,7 +874,7 @@ Chris - Base: what we… what we can agree on, and, like, thinking about this as
 
 219
 00:29:34.940 --> 00:29:46.030
-Chris - Base: a, you know, a defined interface that requires, yeah, basically wallets to use that interface to update that authority mapping, versus A141, which is…
+Chris - Base: a, you know, a defined interface that requires, yeah, basically wallets to use that interface to update that authority mapping, versus 8141, which is…
 
 220
 00:29:46.530 --> 00:29:49.669
@@ -966,7 +966,7 @@ Chris - Base: What chain, what the chain is using, if they were using an 8130 ac
 
 242
 00:33:01.090 --> 00:33:16.339
-Chris - Base: And basically, like, this selector, could be, you know, just unused on the Verify chain, if you're using the AD130 account. Not saying this is the best approach, I think there's actually probably a better way to, like, generalize the frame, sorry, the verify frame, but…
+Chris - Base: And basically, like, this selector, could be, you know, just unused on the Verify chain, if you're using the 8130 account. Not saying this is the best approach, I think there's actually probably a better way to, like, generalize the frame, sorry, the verify frame, but…
 
 243
 00:33:16.480 --> 00:33:20.860
@@ -1270,11 +1270,11 @@ lightclient: Yeah, you had the selector, so then what does the selector do if no
 
 318
 00:40:50.430 --> 00:41:00.650
-Chris - Base: So, if we… if we don't pull the selector out, this is just from a wallet perspective, it then has to know I need to prepend the, wallet selector on an A141G.
+Chris - Base: So, if we… if we don't pull the selector out, this is just from a wallet perspective, it then has to know I need to prepend the, wallet selector on an 8141.
 
 319
 00:41:01.440 --> 00:41:15.349
-Derek Chiang | Ethlabs: Can I ask a question that may be dumb, you know, but why couldn't you just, like, include the selector in the data, and then on the A120 chain, you just ignore the selector? Wouldn't that be the same thing?
+Derek Chiang | Ethlabs: Can I ask a question that may be dumb, you know, but why couldn't you just, like, include the selector in the data, and then on the 8130 chain, you just ignore the selector? Wouldn't that be the same thing?
 
 320
 00:41:15.350 --> 00:41:16.319
@@ -1298,7 +1298,7 @@ Derek Chiang | Ethlabs: Right, so, so just to maybe say it again, to make sure I
 
 325
 00:41:42.060 --> 00:41:55.079
-Derek Chiang | Ethlabs: right, like, either we put the selector out, or we just, like, have the selector in the data, but then on the A130 chain, we just ignore the selector. But then in any case, on the A130 chain, if you see the verified frame, you would just,
+Derek Chiang | Ethlabs: right, like, either we put the selector out, or we just, like, have the selector in the data, but then on the 8130 chain, we just ignore the selector. But then in any case, on the 8130 chain, if you see the verified frame, you would just,
 
 326
 00:41:55.440 --> 00:42:07.059
@@ -1350,7 +1350,7 @@ Chris - Base: Ultimately, I think that's, like, a way that won't need… like, y
 
 338
 00:43:40.830 --> 00:43:59.269
-lightclient: Sure, but I think that there's, like, other… I mean, I feel like you also mentioned in cases around, like, the TX context precompile that you have with AD130, saying, like, okay, it's nice that this is a contract, but, like, we have the ability to make these native features opcodes, and opcodes are…
+lightclient: Sure, but I think that there's, like, other… I mean, I feel like you also mentioned in cases around, like, the TX context precompile that you have with 8130, saying, like, okay, it's nice that this is a contract, but, like, we have the ability to make these native features opcodes, and opcodes are…
 
 339
 00:43:59.470 --> 00:44:03.969
@@ -1558,7 +1558,7 @@ lightclient: But I don't know if anyone has thought more about… This idea at a
 
 390
 00:50:55.710 --> 00:51:00.069
-lightclient: Luca is asking if it's similar to A288,
+lightclient: Luca is asking if it's similar to 8288,
 
 391
 00:51:00.760 --> 00:51:03.360
@@ -1958,7 +1958,7 @@ lightclient: Yeah, let's keep talking about some of the ideas that Chris posted.
 
 490
 01:03:38.530 --> 01:03:46.439
-lightclient: And, yeah, otherwise, let's keep chatting in A141 channel on the R&D Discord. Thank you, Mark, for…
+lightclient: And, yeah, otherwise, let's keep chatting in 8141 channel on the R&D Discord. Thank you, Mark, for…
 
 491
 01:03:46.690 --> 01:03:50.420

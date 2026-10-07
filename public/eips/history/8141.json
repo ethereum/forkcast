@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "6bc5841052ad161b29e21d11dbfb58bc98dac507",
+      "date": "2026-10-07T17:29:00Z",
+      "message": "Update EIP-8141: check frame modes against a set of valid values",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -133,6 +133,8 @@ the purpose of the frame within the execution loop.\n | 1       | `VERIFY` mode  | Frame identifies as transaction validation |\n | 2       | `SENDER` mode  | Execute frame as `sender`                  |\n \n+These are the only valid `mode` values. An EIP that extends frame transactions with a new mode adds its value to this set; it does not change how existing values are checked.\n+\n \n #### Constraints\n \n@@ -169,7 +171,7 @@ for sig in tx.signatures:\n total_frame_gas = 0\n total_frame_execution_gas = 0\n for i, frame in enumerate(tx.frames):\n-    assert frame.mode < 3\n+    assert frame.mode in (DEFAULT, VERIFY, SENDER)\n     assert frame.flags < 8\n     assert frame.target is None or len(frame.target) == 20\n     assert frame.value < 2**256",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
       "sha": "88fa3e4d24efb0dffdbe1fda2765060b870de784",
       "date": "2026-10-06T16:08:49Z",
       "message": "Update EIP-8141: deploy frames expiry verifier as standard contract (#12387)",

@@ -10,10 +10,12 @@ export const GlamsterdamTimeline: React.FC = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const { trackLinkClick } = useAnalytics();
   const { containerRef, lineRef, lastCircleRef } = useTimelineLine(isExpanded);
-  // Devnets and Platåberget run in parallel, so highlight the furthest-along
-  // of the active phases.
+  // Devnets and the public testnets run in parallel, so highlight the
+  // furthest-along of the active phases. Between two deployments nothing is
+  // in-progress, and the next one up is what the reader is waiting on.
   const activeIndex = phases.reduce((last, p, i) => (p.status === 'in-progress' ? i : last), -1);
-  const highlightIndex = activeIndex >= 0 ? activeIndex : phases.length - 1;
+  const nextIndex = phases.findIndex(p => p.status === 'upcoming');
+  const highlightIndex = activeIndex >= 0 ? activeIndex : nextIndex >= 0 ? nextIndex : phases.length - 1;
   const lastPhaseId = phases[phases.length - 1].id;
 
   const handleExternalLinkClick = (linkType: string, url: string) => {

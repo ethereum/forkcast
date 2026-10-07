@@ -182,7 +182,9 @@ const SchedulePage: React.FC = () => {
         const withProposals = phase.testnets.map(testnet => {
           const proposal = staticTestnets?.find(t => t.name === testnet.name);
           if (proposal?.date) {
-            return { ...testnet, date: proposal.date, dateSource: proposal.dateSource };
+            // The status rides along with the date: a testnet that has already
+            // forked must not fall back to the projection's 'upcoming'.
+            return { ...testnet, date: proposal.date, dateSource: proposal.dateSource, status: proposal.status };
           }
           return proposal?.proposedDate
             ? { ...testnet, proposedDate: proposal.proposedDate, proposedSource: proposal.proposedSource }

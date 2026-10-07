@@ -18,15 +18,15 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     id: 'plataberget',
     title: 'Platåberget Testnet Deployment',
     dateRange: 'Aug 13',
-    description: 'Deploy Glamsterdam to a purpose-built public testnet for initial testing. The network launched Aug 13; Gloas activates Aug 20.',
-    status: 'in-progress'
+    description: 'Deploy Glamsterdam to a purpose-built public testnet for initial testing. The network launched Aug 13 and Gloas activated Aug 20.',
+    status: 'completed'
   },
   {
     id: 'sepolia',
     title: 'Sepolia Testnet Deployment',
     dateRange: 'Oct 6',
-    description: 'Deploy Glamsterdam to the permissioned validator testnet. The fork slot is agreed.',
-    status: 'upcoming'
+    description: 'Deploy Glamsterdam to the permissioned validator testnet. The fork activated on schedule Oct 6.',
+    status: 'completed'
   },
   {
     id: 'hoodi',
@@ -275,15 +275,15 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
       status: 'in-progress',
       actualStartDate: 'Aug 13, 2026',
       projectedDate: 'Q3 2026',
-      progressNotes: 'Platåberget is live; Sepolia forks Oct 6, Hoodi slot proposed for Oct 27',
+      progressNotes: 'Platåberget and Sepolia are forked; Hoodi slot proposed for Oct 27',
       // Holešky is deprecated, so Glamsterdam gets a purpose-built public testnet
       // (glamsterdam-devnet-8) in its place.
       testnets: [
         { name: 'Platåberget', status: 'completed', date: 'Aug 13, 2026' },
         {
           name: 'Sepolia',
-          status: 'upcoming',
-          // Agreed on ACDC #187 with no objections.
+          status: 'completed',
+          // Agreed on ACDC #187 with no objections, and forked on that slot.
           date: 'Oct 6, 2026',
           dateSource: 'https://forkcast.org/calls/acdc/187#tt=00:33:10'
         },

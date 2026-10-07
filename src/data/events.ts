@@ -164,6 +164,14 @@ export const timelineEvents: TimelineEvent[] = [
     category: 'mainnet',
     networkId: 'mainnet'
   },
+  {
+    type: 'event',
+    date: '2026-10-06',
+    datetime: '2026-10-06 13:53:36',
+    title: 'Glamsterdam Live on Sepolia Testnet',
+    category: 'testnet',
+    networkId: 'sepolia'
+  },
   ...generatedDevnetEvents,
 ];
 

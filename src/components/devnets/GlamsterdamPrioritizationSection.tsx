@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from '../navigation';
 import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
-import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity/complexity';
+import { ComplexityScoreBadge } from '../ui';
 import type { EipComplexity } from '../../domain/complexity/types';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
 import { getScoreColor } from '../../utils/prioritization';
@@ -482,9 +482,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                   {item.complexity && (
                     <div className="flex items-center gap-1">
                       <span className="text-slate-400 dark:text-slate-400">Complexity:</span>
-                      <span className={`px-1.5 py-0.5 rounded ${getComplexityTierColor(item.complexity.tier)}`}>
-                        {getComplexityTierEmoji(item.complexity.tier)} {item.complexity.totalScore}
-                      </span>
+                      <ComplexityScoreBadge complexity={item.complexity} />
                     </div>
                   )}
                   {item.priority?.averageScore !== null && item.priority?.averageScore !== undefined && (
@@ -661,9 +659,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
                       </td>
                       <td className="px-4 py-3 text-center">
                         {item.complexity ? (
-                          <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded ${getComplexityTierColor(item.complexity.tier)}`}>
-                            {getComplexityTierEmoji(item.complexity.tier)} {item.complexity.totalScore}
-                          </span>
+                          <ComplexityScoreBadge complexity={item.complexity} />
                         ) : (
                           <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
                         )}

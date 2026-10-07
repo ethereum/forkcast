@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from '../navigation';
 import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
-import { getComplexityTierColor, getComplexityTierEmoji } from '../../domain/complexity/complexity';
+import { ComplexityScoreBadge, Tooltip } from '../ui';
 import {
   getInclusionStage,
   getInclusionStageSortRank,
@@ -12,6 +12,7 @@ import {
 } from '../../utils';
 import { getInclusionStageColor } from '../../utils/colors';
 import { InclusionStage } from '../../types';
+import type { ComplexityPullRequest } from '../../domain/complexity/types';
 import {
   compareExecutionSpecTestCounts,
   getExecutionSpecTestCaseCount,
@@ -26,6 +27,21 @@ type FilterTier = 'all' | 'Low' | 'Medium' | 'High' | 'unassessed';
 interface TestComplexityTabProps {
   fork?: string;
 }
+
+const PendingAssessmentNotice: React.FC<{ pullRequest: ComplexityPullRequest }> = ({ pullRequest }) => (
+  <div className="text-xs text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/60 rounded px-2.5 py-1.5">
+    Proposed in{' '}
+    <a
+      href={pullRequest.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="underline font-medium"
+    >
+      {pullRequest.isDraft ? 'draft PR' : 'PR'} #{pullRequest.number}
+    </a>
+    {' '}&mdash; not yet reviewed or merged, so the score may change.
+  </div>
+);
 
 const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterdam' }) => {
   const SELECTED_FORK = fork;
@@ -137,11 +153,13 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
 
     const tierCounts = { Low: 0, Medium: 0, High: 0 };
     let totalScore = 0;
+    let pending = 0;
 
     for (const item of assessed) {
       if (item.complexity) {
         tierCounts[item.complexity.tier]++;
         totalScore += item.complexity.totalScore;
+        if (item.complexity.pullRequest) pending++;
       }
     }
 
@@ -150,6 +168,7 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
       assessed: assessed.length,
       tierCounts,
       totalScore,
+      pending,
     };
   }, [filteredEips]);
 
@@ -184,7 +203,7 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
   return (
     <>
       <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
-        Scores based on 24 anchors from{' '}
+        Scores from{' '}
         <a
           href="https://github.com/ethsteel/pm/tree/main/complexity_assessments/EIPs"
           target="_blank"
@@ -193,10 +212,20 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
         >
           STEEL
         </a>
-        . Tiers:
+        . Two checklist revisions are in use, tagged{' '}
+        <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">v1</span>/
+        <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">v2</span> beside
+        each score. Tiers are comparable across them; raw scores are not.
+      </p>
+      <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">
+        <span className="font-medium">v1</span> (24 anchors):
         <span className="text-emerald-600 dark:text-emerald-400"> Low &lt;10</span>,
         <span className="text-amber-600 dark:text-amber-400"> Medium 10-19</span>,
         <span className="text-red-600 dark:text-red-400"> High &ge;20</span>
+        {' '}&middot; <span className="font-medium">v2</span> (28 anchors):
+        <span className="text-emerald-600 dark:text-emerald-400"> Low &lt;12</span>,
+        <span className="text-amber-600 dark:text-amber-400"> Medium 12-22</span>,
+        <span className="text-red-600 dark:text-red-400"> High &ge;23</span>
       </p>
       <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
         Scores reflect testing effort, not implementation complexity. Early estimations subject to change. Test vector counts vary by EIP scope and parametrization; fewer vectors does not imply poor coverage, and more vectors does not imply greater EIP complexity.
@@ -258,6 +287,15 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
                 <span className="hidden lg:inline text-purple-600 dark:text-purple-400 font-medium">
                   {stats.totalScore} pts
                 </span>
+                {stats.pending > 0 && (
+                  <Tooltip
+                    text={`${stats.pending} of these ${stats.assessed} assessments are still open pull requests in the STEEL repository, counted here but not yet reviewed or merged.`}
+                  >
+                    <span className="hidden lg:inline text-xs text-slate-500 dark:text-slate-400 border border-dashed border-slate-300 dark:border-slate-600 rounded px-1.5 py-0.5 cursor-help">
+                      {stats.pending} in review
+                    </span>
+                  </Tooltip>
+                )}
               </>
             )}
             <button
@@ -422,9 +460,7 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
                       {complexity ? (
                         <>
                           <div className="text-right">
-                            <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded ${getComplexityTierColor(complexity.tier)}`}>
-                              {getComplexityTierEmoji(complexity.tier)} {complexity.totalScore}
-                            </span>
+                            <ComplexityScoreBadge complexity={complexity} />
                           </div>
                           <svg
                             className={`w-4 h-4 text-slate-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -444,6 +480,11 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
 
                 {isExpanded && complexity && (
                   <div className="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700">
+                    {complexity.pullRequest && (
+                      <div className="mt-2 mb-3">
+                        <PendingAssessmentNotice pullRequest={complexity.pullRequest} />
+                      </div>
+                    )}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
                         <span className="text-xs text-slate-500 dark:text-slate-400">
@@ -612,9 +653,7 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
                     </td>
                     <td className="px-3 py-3 text-center">
                       {complexity ? (
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded ${getComplexityTierColor(complexity.tier)}`}>
-                          {getComplexityTierEmoji(complexity.tier)} {complexity.totalScore}
-                        </span>
+                        <ComplexityScoreBadge complexity={complexity} />
                       ) : (
                         <span className="text-xs text-slate-400 dark:text-slate-400">&mdash;</span>
                       )}
@@ -669,6 +708,9 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
                     <tr className="bg-slate-50 dark:bg-slate-800/50">
                       <td colSpan={6} className="px-4 py-4">
                         <div className="space-y-3">
+                          {complexity.pullRequest && (
+                            <PendingAssessmentNotice pullRequest={complexity.pullRequest} />
+                          )}
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                               <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">

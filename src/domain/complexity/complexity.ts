@@ -1,24 +1,72 @@
-import { ComplexityAnchor, EipComplexity, ComplexityTier } from './types';
+import {
+  ChecklistRevision,
+  CHECKLIST_REVISIONS,
+  ComplexityAnchor,
+  ComplexityPullRequest,
+  EipComplexity,
+  ComplexityTier,
+} from './types';
+
+interface ParseComplexityOptions {
+  /** Where the assessment can be read. Defaults to the file on the STEEL main branch. */
+  assessmentUrl?: string;
+  /** The open pull request the assessment came from, when it is not merged yet. */
+  pullRequest?: ComplexityPullRequest;
+}
 
 /**
  * Parse STEEL complexity assessment markdown to extract scores
  */
-export function parseComplexityMarkdown(markdown: string, eipNumber: number): EipComplexity | null {
+export function parseComplexityMarkdown(
+  markdown: string,
+  eipNumber: number,
+  options: ParseComplexityOptions = {}
+): EipComplexity | null {
   try {
     const anchors = parseAnchorsFromTable(markdown);
+    const checklistRevision = parseChecklistRevision(markdown, anchors.length);
     const totalScore = parseTotalScore(markdown);
-    const tier = parseTier(markdown) || calculateTier(totalScore);
+    // The assessment's own Final Assessment table describes the tier as "Computed from total
+    // score", so the score is the source of truth and a stale or mistyped emoji is corrected.
+    const tier = calculateTier(totalScore, checklistRevision);
+    const statedTier = parseTier(markdown);
 
     return {
       eipNumber,
       totalScore,
       tier,
       anchors,
-      assessmentUrl: `https://github.com/ethsteel/pm/blob/main/complexity_assessments/EIPs/EIP-${eipNumber}.md`,
+      checklistRevision,
+      ...(statedTier && statedTier !== tier ? { statedTier } : {}),
+      assessmentUrl:
+        options.assessmentUrl ??
+        `https://github.com/ethsteel/pm/blob/main/complexity_assessments/EIPs/EIP-${eipNumber}.md`,
+      ...(options.pullRequest ? { pullRequest: options.pullRequest } : {}),
     };
   } catch {
     return null;
   }
+}
+
+/**
+ * Parse the checklist revision an assessment was scored against.
+ * Format: Checklist revision: **2** (28 anchors)
+ *
+ * Revision 1 predates the line and does not declare itself, and some revision 2
+ * assessments omit it, so the size of the anchor set decides when it is absent.
+ */
+export function parseChecklistRevision(
+  markdown: string,
+  anchorCount?: number
+): ChecklistRevision {
+  const match = markdown.match(/Checklist revision:\s*\**\s*(\d+)/i);
+  if (match) {
+    const declared = parseInt(match[1], 10);
+    if (declared in CHECKLIST_REVISIONS) return declared as ChecklistRevision;
+  }
+
+  const midpoint = (CHECKLIST_REVISIONS[1].anchorCount + CHECKLIST_REVISIONS[2].anchorCount) / 2;
+  return anchorCount !== undefined && anchorCount >= midpoint ? 2 : 1;
 }
 
 /**
@@ -59,23 +107,29 @@ function parseAnchorsFromTable(markdown: string): ComplexityAnchor[] {
   const checklistMatch = markdown.match(/### Checklist[\s\S]*?\|[\s\S]*?(?=\n\n|\*\*Total|\n###|\n##|$)/i);
   if (!checklistMatch) return anchors;
 
-  const tableContent = checklistMatch[0];
+  // Read one row per line: | **Anchor Name** | score | rationale |
+  // Score can be: single digit, sum like "2 + 2 + 3 + 1", dash, or empty for unscored.
+  // A row is kept within its own line, so a row written without its closing pipe costs only
+  // that row's rationale rather than shifting every row after it by a cell. The name may
+  // carry text outside the bold, as in | **Cross-EIP interactions** (uncapped) |.
+  for (const line of checklistMatch[0].split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith('|')) continue;
 
-  // Match table rows: | **Anchor Name** | score | rationale |
-  // Score can be: single digit, sum like "2 + 2 + 3 + 1", dash, or empty for unscored
-  // Also handles | Anchor Name | score | rationale | (without bold)
-  const rowRegex = /\|\s*\*?\*?([^|*]+)\*?\*?\s*\|\s*([^|]*?)\s*\|\s*([^|]*)\|/g;
-  let match;
+    const cells = trimmed.replace(/\|$/, '').split('|').slice(1);
+    if (cells.length < 2) continue;
 
-  while ((match = rowRegex.exec(tableContent)) !== null) {
-    const name = match[1].trim();
-    const score = parseScore(match[2]);
-    const notes = match[3].trim() || undefined;
+    const name = cells[0].replace(/\*\*/g, '').trim();
 
-    // Skip header rows
-    if (name.toLowerCase() === 'anchor' || name.includes('---')) continue;
+    // Skip header and separator rows
+    if (!name || name.toLowerCase() === 'anchor' || name.includes('---')) continue;
 
-    anchors.push({ name, score, notes });
+    anchors.push({
+      name,
+      score: parseScore(cells[1]),
+      // A rationale may itself contain a pipe, so put the remaining cells back together.
+      notes: cells.slice(2).join('|').trim() || undefined,
+    });
   }
 
   return anchors;
@@ -138,12 +192,15 @@ function parseTier(markdown: string): ComplexityTier | null {
 }
 
 /**
- * Calculate tier from total score
- * Low: <10, Medium: >=10 and <20, High: >=20
+ * Calculate tier from total score, against the thresholds of the revision it was scored on.
  */
-export function calculateTier(totalScore: number): ComplexityTier {
-  if (totalScore < 10) return 'Low';
-  if (totalScore < 20) return 'Medium';
+export function calculateTier(
+  totalScore: number,
+  revision: ChecklistRevision = 1
+): ComplexityTier {
+  const { mediumFrom, highFrom } = CHECKLIST_REVISIONS[revision];
+  if (totalScore < mediumFrom) return 'Low';
+  if (totalScore < highFrom) return 'Medium';
   return 'High';
 }
 

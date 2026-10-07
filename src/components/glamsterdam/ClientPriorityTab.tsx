@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from '../navigation';
 import { forkTeams, usePrioritizationData } from '../../hooks/usePrioritizationData';
 import {
@@ -24,6 +24,8 @@ import { Tooltip } from '../ui/Tooltip';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
 import { useCallDecisions } from '../../hooks/useCallDecisions';
+import { useCallOrder } from '../../hooks/useCallOrder';
+import { applyOrder } from '../../domain/prioritization/callOrder';
 import {
   CALL_DECISIONS,
   CALL_DECISION_LABEL,
@@ -241,6 +243,16 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
    */
   const { aggregates: deckAggregates } = usePrioritizationData(fork);
   const { decisions, decide, clear: clearDecisions } = useCallDecisions(fork);
+  const { order, move: moveEip, nudge: nudgeEip, clear: clearOrder } = useCallOrder(fork);
+  /**
+   * An arrangement only governs the table while a call is being run off it. Outside
+   * facilitator view the stored order is kept but dormant, so the ordinary reader sees
+   * the board under whatever they sorted it by.
+   */
+  const customOrder = facilitatorMode && order.length > 0;
+  /** The row being dragged, with the group it came from — a drop outside that is ignored. */
+  const [dragging, setDragging] = useState<{ eipId: number; group: string } | null>(null);
+  const [dropTarget, setDropTarget] = useState<number | null>(null);
 
   /** A fork whose payload is settled has nothing at PFI, so there is no default to apply. */
   const hasPfiStage = useMemo(
@@ -326,10 +338,10 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const showOtherTeams = otherTeams.length > 0;
   const showOtherColumn = shownOtherTeams.length > 0;
   // EIP, Title, Stage, Avg and Spread, plus a column for each team group that has a team,
-  // plus Decisions while a call is being run off the table.
+  // plus the drag handle and Decisions while a call is being run off the table.
   const columnCount =
     5 +
-    (facilitatorMode ? 1 : 0) +
+    (facilitatorMode ? 2 : 0) +
     [shownElTeams, shownClTeams, shownOtherTeams].filter((teams) => teams.length > 0).length;
   // The team columns outgrow the prose column on every fork. Focusing drops most of them,
   // at which point the table fits again and can sit back on the page's left edge.
@@ -341,10 +353,29 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
    */
   const breakout = facilitatorMode || wideTable ? BREAKOUT : '';
 
+  /**
+   * The sort, with the facilitator's running order laid over it where one applies. The
+   * sort still runs underneath: it decides where rows the arrangement has never placed
+   * go, and it is what the table falls back to the moment the order is reset.
+   */
+  const arrange = useCallback(
+    (
+      items: EipAggregateStance[],
+      field: SortField,
+      direction: SortDirection,
+      custom: boolean
+    ) => {
+      const sorted = sortEipAggregates(items, field, direction);
+      return custom ? applyOrder(sorted, order, (agg) => agg.eipId) : sorted;
+    },
+    [order]
+  );
+
   // Apply sorting
-  const sortedAggregates = useMemo(() => {
-    return sortEipAggregates(filteredAggregates, sortField, sortDirection);
-  }, [filteredAggregates, sortField, sortDirection]);
+  const sortedAggregates = useMemo(
+    () => arrange(filteredAggregates, sortField, sortDirection, customOrder),
+    [arrange, filteredAggregates, sortField, sortDirection, customOrder]
+  );
 
   /**
    * The categories are curated per fork, so grouping is only worth offering once
@@ -365,30 +396,72 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   const groupAndSort = useCallback(
     (
       items: EipAggregateStance[],
-      order: DisplayGroup[] | undefined,
+      groupOrder: DisplayGroup[] | undefined,
       field: SortField,
-      direction: SortDirection
+      direction: SortDirection,
+      custom: boolean
     ) =>
-      buildDisplayGroups(groupByCategory(items, (agg) => agg.eipId), order).map(
+      buildDisplayGroups(groupByCategory(items, (agg) => agg.eipId), groupOrder).map(
         ({ id, name, items: bucket, subgroups }) => ({
           id,
           name,
-          items: sortEipAggregates(bucket, field, direction),
+          items: arrange(bucket, field, direction, custom),
           subgroups: subgroups.map((subgroup) => ({
             name: subgroup.name,
-            items: sortEipAggregates(subgroup.items, field, direction),
+            items: arrange(subgroup.items, field, direction, custom),
           })),
         })
       ),
-    []
+    [arrange]
   );
 
   const categoryGroups = useMemo(
     () =>
       groupedByCategory && canGroupByCategory
-        ? groupAndSort(filteredAggregates, undefined, sortField, sortDirection)
+        ? groupAndSort(filteredAggregates, undefined, sortField, sortDirection, customOrder)
         : null,
-    [groupedByCategory, canGroupByCategory, filteredAggregates, groupAndSort, sortField, sortDirection]
+    [
+      groupedByCategory,
+      canGroupByCategory,
+      filteredAggregates,
+      groupAndSort,
+      sortField,
+      sortDirection,
+      customOrder,
+    ]
+  );
+
+  /**
+   * The rows as the table has them, top to bottom. A move is made against this rather
+   * than against the whole fork, so what the arrangement captures the first time is the
+   * board the facilitator is looking at.
+   */
+  const visibleOrder = useMemo(
+    () =>
+      (categoryGroups
+        ? categoryGroups.flatMap(({ items, subgroups }) =>
+            subgroups.length > 0 ? subgroups.flatMap((subgroup) => subgroup.items) : items
+          )
+        : sortedAggregates
+      ).map((agg) => agg.eipId),
+    [categoryGroups, sortedAggregates]
+  );
+
+  /** Dropping a row on another puts it in that row's place. */
+  const dropOn = useCallback(
+    (targetId: number, group: string) => {
+      // Groups are contiguous blocks, so a row dropped into another one would land at an
+      // end of its own group rather than where it was let go. Those drops do nothing.
+      if (dragging && dragging.group === group) moveEip(dragging.eipId, targetId, visibleOrder);
+      setDragging(null);
+      setDropTarget(null);
+    },
+    [dragging, moveEip, visibleOrder]
+  );
+
+  const nudgeRow = useCallback(
+    (eipId: number, delta: number) => nudgeEip(eipId, delta, visibleOrder),
+    [nudgeEip, visibleOrder]
   );
 
   /**
@@ -406,7 +479,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       if (!canGroupByCategory) return null;
       const ofLayer = active.filter((agg) => agg.layer === layer);
       if (ofLayer.length === 0) return null;
-      return groupAndSort(ofLayer, DECK_ORDER[layer], LAYER_SORT[layer], 'desc');
+      return groupAndSort(ofLayer, DECK_ORDER[layer], LAYER_SORT[layer], 'desc', false);
     };
     return { EL: deckFor('EL'), CL: deckFor('CL') };
   }, [canGroupByCategory, deckAggregates, groupAndSort]);
@@ -521,6 +594,9 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
 
   const handleSort = (field: SortField) => {
     const direction = sortField === field && sortDirection === 'desc' ? 'asc' : 'desc';
+    // A column the table is sorted by and an order moved by hand are the same claim on
+    // the rows, so asking for one drops the other.
+    if (customOrder) clearOrder();
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
@@ -740,7 +816,11 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
     );
   };
 
-  const renderRow = (agg: EipAggregateStance) => (
+  /**
+   * `group` is the heading the row sits under, so a drag stays inside the block it
+   * started in. Ungrouped, the whole table is one block.
+   */
+  const renderRow = (agg: EipAggregateStance, group = '') => (
     <TableRow
       key={agg.eipId}
       agg={agg}
@@ -752,6 +832,27 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
       columnCount={columnCount}
       decision={decisions[agg.eipId]}
       onDecide={facilitatorMode ? (decision) => decide(agg.eipId, decision) : null}
+      reorder={
+        facilitatorMode
+          ? {
+              dragging: dragging?.eipId === agg.eipId,
+              dropTarget: dropTarget === agg.eipId,
+              onDragStart: () => setDragging({ eipId: agg.eipId, group }),
+              onDragEnd: () => {
+                setDragging(null);
+                setDropTarget(null);
+              },
+              onDragOver: () => {
+                const takesIt =
+                  dragging !== null && dragging.group === group && dragging.eipId !== agg.eipId;
+                setDropTarget(takesIt ? agg.eipId : null);
+                return takesIt;
+              },
+              onDrop: () => dropOn(agg.eipId, group),
+              onNudge: (delta: number) => nudgeRow(agg.eipId, delta),
+            }
+          : null
+      }
       isExpanded={expandedEip === agg.eipId}
       onToggle={() => setExpandedEip(expandedEip === agg.eipId ? null : agg.eipId)}
       onOpenDrawer={openDrawer(agg.eipId)}
@@ -1086,6 +1187,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
         <table className="w-full">
           <thead className="bg-slate-50 dark:bg-slate-700/50">
             <tr>
+              {/* Unlabeled: a heading over the grips would read as one more sortable column. */}
+              {facilitatorMode && (
+                <th className="w-8 px-2 py-3">
+                  <span className="sr-only">Running order</span>
+                </th>
+              )}
               <th
                 className="px-4 py-3 text-left text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-600/50"
                 onClick={() => handleSort('eip')}
@@ -1201,14 +1308,14 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                               {subgroup.name}
                             </td>
                           </tr>
-                          {subgroup.items.map(renderRow)}
+                          {subgroup.items.map((agg) => renderRow(agg, subgroup.name))}
                         </React.Fragment>
                       ))
-                    : items.map(renderRow)}
+                    : items.map((agg) => renderRow(agg, name))}
                 </React.Fragment>
               ))
             ) : (
-              sortedAggregates.map(renderRow)
+              sortedAggregates.map((agg) => renderRow(agg))
             )}
           </tbody>
         </table>
@@ -1239,11 +1346,21 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
                 </button>
               </>
             )}
+            {/* Only up once something has been moved, which is what the order governing means. */}
+            {customOrder && (
+              <button
+                onClick={clearOrder}
+                className="px-2.5 py-1 text-xs font-medium rounded text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-slate-200"
+                title="Drop the running order and go back to the sorted table"
+              >
+                Reset order
+              </button>
+            )}
             {/* A column on the page, not a deck: nothing here goes fullscreen. */}
             <button
               onClick={toggleFacilitator}
               aria-pressed={facilitatorMode}
-              title="Log this call's decisions in the table (f)"
+              title="Log this call's decisions and set the running order (f)"
               className={`px-2.5 py-1 text-xs font-medium rounded ${
                 facilitatorMode
                   ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:hover:bg-emerald-900/50'
@@ -1285,6 +1402,15 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
           reporting a consensus. A dash means only one team has rated it.
         </p>
 
+        {facilitatorMode && (
+          <p className="mt-3 text-xs text-slate-500 dark:text-slate-400">
+            Drag a row by its handle, or focus one and press the up and down arrows, to set
+            the order the board is taken in. Grouped by category, a row moves within its own
+            group. The arrangement is kept on this machine, and sorting by a column replaces
+            it.
+          </p>
+        )}
+
         {hasNonStandardsTrack && (
           <p className="mt-3 flex items-start gap-1.5 text-xs text-slate-500 dark:text-slate-400">
             <NonStandardsTrackMark type="Informational or Meta" className="mt-px" />
@@ -1325,6 +1451,22 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
   );
 };
 
+/**
+ * Moving a row around the running order. The row owns the drop, the grip owns the drag:
+ * a draggable row would fight the links and the text selection inside it.
+ */
+interface RowReorder {
+  dragging: boolean;
+  dropTarget: boolean;
+  onDragStart: () => void;
+  onDragEnd: () => void;
+  /** Whether this row will take the drop, which is also what allows it. */
+  onDragOver: () => boolean;
+  onDrop: () => void;
+  /** One row up (-1) or down (+1). */
+  onNudge: (delta: number) => void;
+}
+
 interface TableRowProps {
   agg: EipAggregateStance;
   elTeams: TeamEntry[];
@@ -1336,6 +1478,8 @@ interface TableRowProps {
   decision: CallDecision | undefined;
   /** null outside facilitator view, so the column is omitted entirely. */
   onDecide: ((decision: CallDecision) => void) | null;
+  /** null outside facilitator view, where the table is in its sorted order and fixed. */
+  reorder: RowReorder | null;
   maxScore: number;
   columnCount: number;
   isExpanded: boolean;
@@ -1355,6 +1499,7 @@ const TableRow: React.FC<TableRowProps> = ({
   columnCount,
   decision,
   onDecide,
+  reorder,
   isExpanded,
   onToggle,
   onOpenDrawer,
@@ -1362,6 +1507,8 @@ const TableRow: React.FC<TableRowProps> = ({
 }) => {
   const eip = eipsData.find((e) => e.id === agg.eipId);
   const shortStage = getStageAbbreviation(agg.inclusionStage);
+  // What the drag picks up: the grip is what the pointer is on, but the row is what moves.
+  const rowRef = useRef<HTMLTableRowElement>(null);
 
   // Rides in whichever cell is last, so it stays at the row's edge on both fork layouts.
   const expandButton = (
@@ -1383,7 +1530,68 @@ const TableRow: React.FC<TableRowProps> = ({
 
   return (
     <>
-      <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/30">
+      <tr
+        ref={rowRef}
+        // The landing row is tinted, and keeps the tint while the pointer sits on it.
+        className={
+          reorder?.dropTarget
+            ? 'bg-purple-50 dark:bg-purple-900/25'
+            : `hover:bg-slate-50 dark:hover:bg-slate-700/30 ${reorder?.dragging ? 'opacity-40' : ''}`
+        }
+        onDragOver={
+          reorder
+            ? (event) => {
+                if (!reorder.onDragOver()) return;
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'move';
+              }
+            : undefined
+        }
+        onDrop={
+          reorder
+            ? (event) => {
+                event.preventDefault();
+                reorder.onDrop();
+              }
+            : undefined
+        }
+      >
+        {reorder && (
+          <td className="w-8 px-2 py-3">
+            <span
+              role="button"
+              tabIndex={0}
+              draggable
+              aria-label={`Move EIP-${agg.eipId} in the running order`}
+              title="Drag to reorder, or press the up and down arrows"
+              onDragStart={(event) => {
+                event.dataTransfer.effectAllowed = 'move';
+                // Firefox refuses to start a drag on an empty transfer.
+                event.dataTransfer.setData('text/plain', String(agg.eipId));
+                if (rowRef.current) event.dataTransfer.setDragImage(rowRef.current, 24, 16);
+                reorder.onDragStart();
+              }}
+              onDragEnd={reorder.onDragEnd}
+              onKeyDown={(event) => {
+                const delta = event.key === 'ArrowUp' ? -1 : event.key === 'ArrowDown' ? 1 : 0;
+                if (delta === 0) return;
+                // Otherwise the page scrolls out from under the row being moved.
+                event.preventDefault();
+                reorder.onNudge(delta);
+              }}
+              className="flex cursor-grab text-slate-300 hover:text-slate-500 active:cursor-grabbing dark:text-slate-600 dark:hover:text-slate-400"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <circle cx="7.5" cy="5" r="1.5" />
+                <circle cx="12.5" cy="5" r="1.5" />
+                <circle cx="7.5" cy="10" r="1.5" />
+                <circle cx="12.5" cy="10" r="1.5" />
+                <circle cx="7.5" cy="15" r="1.5" />
+                <circle cx="12.5" cy="15" r="1.5" />
+              </svg>
+            </span>
+          </td>
+        )}
         <td className="px-4 py-3">
           <div className="flex items-center gap-2">
             {eip ? (

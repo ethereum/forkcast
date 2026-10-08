@@ -2,6 +2,16 @@
   "eipId": 7906,
   "commits": [
     {
+      "sha": "25855add6986d5123a043b03999ad5757a2e13d6",
+      "date": "2026-10-07T18:41:42Z",
+      "message": "Update EIP-7906: assign opcode bytes and add POST_TX to the valid frame modes",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -31,7 +31,13 @@ By providing the Wallets and dApps with the ability to observe and restrict the\n \n ## Specification\n \n-The opcode bytes for `TXTRACE`, `TXDIFF`, and `EVENTDATACOPY`, and the `POST_TX` frame mode value, are allocated by the frame-transaction family registry in [EIP-8141](./eip-8141.md), which carries the authoritative opcode and frame-mode assignments for the family. The `TXTRACE` and `TXDIFF` parameter spaces are those opcodes' own operands and are defined here rather than in that registry.\n+This EIP defines the following instructions:\n+\n+| Instruction     | Opcode |\n+|-----------------|--------|\n+| `TXTRACE`       | `0xb6` |\n+| `TXDIFF`        | `0xb7` |\n+| `EVENTDATACOPY` | `0xb8` |\n \n ### Constants\n \n@@ -45,7 +51,7 @@ This EIP requires [EIP-8141](./eip-8141.md) and amends its frame transaction spe\n \n The following rules apply to EIP-8141 frame transactions wherever this EIP is active:\n \n-- The static constraint `assert frame.mode < 3` on each frame is replaced by `assert frame.mode < 4`, admitting `POST_TX` as a valid mode value.\n+- `POST_TX` is added to the set of mode values accepted by EIP-8141's static constraint on `frame.mode`.\n - `POST_TX` frames must form a contiguous trailing suffix of `tx.frames`: once any frame has mode `POST_TX`, every subsequent frame in the transaction must also have mode `POST_TX`. A frame transaction violating this is invalid.\n - As with `DEFAULT` and `VERIFY` frames, the `caller` of a `POST_TX` frame is `ENTRY_POINT`.\n - A `POST_TX` frame is executed as a `STATICCALL`, disallowing all state manipulation. Unlike `VERIFY` frames, `POST_TX` frames are not granted the `APPROVE` exception defined in [EIP-8141](./eip-8141.md#approve-instruction-0xaa): calling `APPROVE` anywhere in a `POST_TX` frame's call subtree is an ordinary `STATICCALL` violation and causes an exceptional halt of that call frame, handled like any other `POST_TX` failure per the rule below.\n@@ -58,7 +64,7 @@ The following rules apply to EIP-8141 frame transactions wherever this EIP is ac\n \n ### Transaction Trace Opcode\n \n-We introduce a new `TXTRACE` opcode.\n+We introduce a new `TXTRACE` opcode (`0xb6`).\n \n `TXTRACE` reads the state diff of the current transaction: the net difference between the transaction prestate and the state as of this call, spanning balance changes, storage changes, deployed contracts, and emitted events. Since `POST_TX` frames cannot write state and form a trailing suffix of the transaction, that diff is the transaction's final outcome. The exact semantics are given under [State Difference Semantics](#state-difference-semantics).\n \n@@ -118,7 +124,7 @@ Logs that the protocol emits on the transaction's behalf, such as [EIP-7708](./e\n \n ### Transaction Diff Lookup Opcode\n \n-`TXTRACE` enumerates the state diff but cannot be asked about one specific entry, so reading a single known value means searching the enumeration. We introduce an additional `TXDIFF` opcode for this purpose.\n+`TXTRACE` enumerates the state diff but cannot be asked about one specific entry, so reading a single known value means searching the enumeration. We introduce an additional `TXDIFF` opcode (`0xb7`) for this purpose.\n \n A single call returns one 256-bit value. Three stack inputs select it: `param` chooses what to read, `in2` is the address the query is keyed on, and `in3` is a storage slot key, a per-address index, or `0`, depending on `param`. Params `0x00` to `0x05` read one account's balance, codehash, or storage slot directly. Params `0x06` to `0x0A` expose per-address views over the diff, mapping into `TXTRACE`'s tables, and a bitmask summarizing an account's changes.\n \n@@ -196,7 +202,7 @@ For params `0x00`–`0x05`, the accessed slot or address is added to the [EIP-29\n \n ### Event Data Copy Opcode\n \n-`TXTRACE` reports an event's topics and the byte length of its non-indexed data, but not the data itself, which is variable-length and so cannot be returned on the stack. We introduce an `EVENTDATACOPY` opcode to copy that data into memory.\n+`TXTRACE` reports an event's topics and the byte length of its non-indexed data, but not the data itself, which is variable-length and so cannot be returned on the stack. We introduce an `EVENTDATACOPY` opcode (`0xb8`) to copy that data into memory.\n \n The gas cost matches `CALLDATACOPY`, i.e. the operation has a fixed cost of 3 and a variable cost that accounts for the memory expansion and copying.\n ",
+      "additions": 11,
+      "deletions": 5
+    },
+    {
       "sha": "260ccd2b2c2d7b5571094d835f24924e19092b58",
       "date": "2026-10-06T23:34:01Z",
       "message": "Update EIP-7906: small clarifications for alignment",
@@ -267,7 +277,7 @@
       "number": 12438,
       "title": "Update EIP-7906: limits of a single-transaction diff",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-10-07T02:40:30Z",
+      "updatedAt": "2026-10-07T08:22:08Z",
       "additions": 10,
       "deletions": 0
     },
@@ -275,9 +285,9 @@
       "number": 12304,
       "title": "Update EIP-7906: add POST_TX_EXEMPT frame flag",
       "author": "chiranjeev13",
-      "updatedAt": "2026-10-07T06:19:00Z",
-      "additions": 96,
-      "deletions": 5
+      "updatedAt": "2026-10-07T07:07:06Z",
+      "additions": 93,
+      "deletions": 6
     },
     {
       "number": 11267,

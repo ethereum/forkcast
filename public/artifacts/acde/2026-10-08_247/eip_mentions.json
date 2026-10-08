@@ -1,0 +1,257 @@
+{
+  "meeting": "ACDE #247 - 2026-10-08",
+  "eips": [
+    {
+      "eip": 7549,
+      "title": "Move committee index outside Attestation",
+      "weight": "mentioned",
+      "summary": "Cited as an example where a simple spec led to surprisingly complex client implementation.",
+      "moments": [
+        {
+          "timestamp": "00:43:11",
+          "context": "Mark (ethDreamer) noted EIP-7549 in Electra was spec-simple but implementation-difficult, questioning whether complexity assessments capture that gap."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "mentioned",
+      "summary": "Referenced as a dependent EIP when discussing spec consistency tooling for frames and keyed nonces.",
+      "moments": [
+        {
+          "timestamp": "00:45:28",
+          "context": "Dan mentioned that if something changes in EIP-8141 (frame transactions), tooling should immediately flag that dependent EIPs like keyed nonces need updating."
+        }
+      ]
+    },
+    {
+      "eip": 7907,
+      "title": "Meter Contract Code Size",
+      "weight": "discussed",
+      "summary": "Added to PFI list for Hegota; full decision deferred to next call as the last scoping item.",
+      "moments": [
+        {
+          "timestamp": "00:58:54",
+          "context": "Ben Adams proposed reintroducing contract-size-based gas metering, noting benchmarking showed contract loading could become a ceiling based on disk speed. Nixo added it to PFI with decision on the next call."
+        },
+        {
+          "timestamp": "01:37:03",
+          "context": "Nixo confirmed 7907 will be discussed on the next call, which is the last scoping call for Hegota."
+        }
+      ]
+    },
+    {
+      "eip": 5920,
+      "title": "PAY opcode",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota after receiving decent ratings from most clients with no strong opposition.",
+      "moments": [
+        {
+          "timestamp": "01:01:14",
+          "context": "Nixo presented 5920 (PAY opcode) as the highest-rated remaining PFI EIP and asked if clients were okay CFI-ing it. No opposition was raised and it was moved to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota alongside EIP-8298 as both are needed for EOA post-quantum migration.",
+      "moments": [
+        {
+          "timestamp": "01:03:06",
+          "context": "Nixo raised 8151 (ecRecover restriction). CPerezz argued it must be paired with SETCODEFROM (8298) as the combination enables post-quantum transition for EOAs. It was CFI'd together with 8298."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota paired with EIP-8151 for post-quantum EOA migration despite Besu and Erigon C-tier ratings.",
+      "moments": [
+        {
+          "timestamp": "01:03:42",
+          "context": "CPerezz argued SETCODEFROM and 8151 should be CFI'd together. Besu said they were a C+ but wouldn't block it. Lightclient called it a critical part of the EOA post-quantum path. Both were CFI'd."
+        }
+      ]
+    },
+    {
+      "eip": 4758,
+      "title": "Deactivate SELFDESTRUCT",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota paired with EIP-8360; referred to throughout only as “self-destruct deactivation”, never by number.",
+      "moments": [
+        {
+          "timestamp": "01:04:16",
+          "context": "Justin Florentine (Besu), while rating SETCODEFROM, said that deactivating self-destruct going in makes SETCODEFROM matter more to them, settling Besu at a “C+”."
+        },
+        {
+          "timestamp": "01:07:13",
+          "context": "Nixo took it and TCREATE as a pair, noting the fix is for something introduced in Glamsterdam that Glamsterdam itself does not address. No opposition to the pairing; both were CFI'd."
+        }
+      ]
+    },
+    {
+      "eip": 7668,
+      "title": "Remove bloom filters",
+      "weight": "discussed",
+      "summary": "Already CFI'd; referenced as higher priority than EIP-8116 for receipt-related cleanup.",
+      "moments": [
+        {
+          "timestamp": "01:07:07",
+          "context": "Mario noted that EIP-7668 text never mentions the Engine API, causing AI implementations to incorrectly assume full bloom should still be passed there."
+        },
+        {
+          "timestamp": "01:36:41",
+          "context": "Ben Adams and Justin Florentine noted bloom filter removal (7668) is more important than cumulative receipt field replacement (8116), and confirmed it was already CFI'd."
+        }
+      ]
+    },
+    {
+      "eip": 8360,
+      "title": "TCREATE Opcode",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota alongside self-destruct deactivation as a paired change.",
+      "moments": [
+        {
+          "timestamp": "01:07:25",
+          "context": "Nixo noted TCREATE and self-destruct deactivation were discussed as paired on the last call. Ethrex gave it a B rating. Both were CFI'd with no opposition."
+        }
+      ]
+    },
+    {
+      "eip": 7709,
+      "title": "Read BLOCKHASH from Storage and Update Cost",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota after Nethermind upgraded its rating to A citing benefits for BAL-based light clients.",
+      "moments": [
+        {
+          "timestamp": "01:10:10",
+          "context": "Nixo proposed DFI-ing 7709 but Ben Adams argued changing BLOCKHASH to read from storage would benefit light clients working off BALs, upgrading Nethermind's vote to A. Ignacio as champion supported it. It was CFI'd."
+        }
+      ]
+    },
+    {
+      "eip": 8077,
+      "title": "eth/XX - announce transactions with nonce",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota despite mixed support after Csaba championed it and Besu expressed future utility interest.",
+      "moments": [
+        {
+          "timestamp": "01:12:24",
+          "context": "Csaba argued this EIP improves mempool networking for increased transaction volume. Łukasz said sender and nonce alone are insufficient and wants fees included. Nixo initially proposed DFI but Besu saw future utility; it was CFI'd with a request for deeper analysis."
+        }
+      ]
+    },
+    {
+      "eip": 2935,
+      "title": "Serve historical block hashes from state",
+      "weight": "mentioned",
+      "summary": "Referenced as the existing contract that EIP-7709 would reuse for BLOCKHASH storage.",
+      "moments": [
+        {
+          "timestamp": "01:13:05",
+          "context": "Jochem noted in chat that 7709 uses the EIP-2935 contract, clarifying it does not introduce a new system contract."
+        }
+      ]
+    },
+    {
+      "eip": 7666,
+      "title": "EVM-ify the identity precompile",
+      "weight": "discussed",
+      "summary": "DFI'd after Felix argued the identity precompile is trivial and Jochem raised gas cost and warm account concerns.",
+      "moments": [
+        {
+          "timestamp": "01:19:23",
+          "context": "Nixo noted mixed ratings. Felix argued strongly against it as pointless signaling since the identity precompile just copies memory. Kevaundray defended it as low-risk proof of the EVMify mechanism."
+        },
+        {
+          "timestamp": "01:26:08",
+          "context": "Jochem pointed out the EIP's security considerations claim is incorrect as some inputs become more expensive, and warm account status is unclear. Łukasz said it's not worth it. Felix reiterated opposition. It was DFI'd."
+        }
+      ]
+    },
+    {
+      "eip": 8355,
+      "title": "Precompiles for ML-DSA Verification",
+      "weight": "discussed",
+      "summary": "DFI'd due to lack of consensus on lattice-based cryptography and concerns about scalability and zkVM compatibility.",
+      "moments": [
+        {
+          "timestamp": "01:27:50",
+          "context": "Kevaundray questioned shipping three ML-DSA variants. Danno argued for cryptographic agility and noted EVM-only costs around 1M gas which locks out AA solutions. Antonio Sanso argued against lattices citing scalability problems, zkVM mispricing, and availability of hash-based alternatives via SPHINCS with aggregation. It was DFI'd."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "mentioned",
+      "summary": "Vitalik suggested accelerating full 8288 as an alternative to shipping lattice-based precompiles.",
+      "moments": [
+        {
+          "timestamp": "01:33:41",
+          "context": "Vitalik wrote in chat that if the argument is choice, one option is to accelerate full 8288 so non-SPHINCS schemes can be STARK-wrapped."
+        }
+      ]
+    },
+    {
+      "eip": 8116,
+      "title": "Replace cumulative receipt fields",
+      "weight": "discussed",
+      "summary": "CFI'd at bottom of priority list as low-complexity technical debt clearing with lukewarm support.",
+      "moments": [
+        {
+          "timestamp": "01:34:33",
+          "context": "Ben Adams called it technical debt removal with low utility. Besu and ethrex agreed it was low priority. Nixo CFI'd it at the bottom of the priority list."
+        }
+      ]
+    },
+    {
+      "eip": 8374,
+      "title": "Persist Warm Access Sets Across Reverts",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota as a deep fork-boundary change with lukewarm support; named only as “persist warm access sets across reverts”.",
+      "moments": [
+        {
+          "timestamp": "01:37:09",
+          "context": "Nixo opened the last decision of the call on persist warm access sets across reverts: ethrex strongly against, Reth and Erigon mildly against, the rest lukewarm — noting it is authored by Dragan yet only a C tier from Reth."
+        },
+        {
+          "timestamp": "01:38:19",
+          "context": "Felix (Geth) explained Geth rated it A tier: nobody on the team could reconstruct why warm access sets are reverted today, and they see no real downside to changing it, though supporting both paths adds client complexity."
+        },
+        {
+          "timestamp": "01:40:09",
+          "context": "Ben Adams leaned DFI because the change is “quite deep at fork boundary”, after saying he had EIP-8037 PTSD and this felt like revisiting that wound. Nixo DFI'd it."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "mentioned",
+      "summary": "Referenced as context for warm access set revert discussion with Ben Adams citing PTSD from its complexity.",
+      "moments": [
+        {
+          "timestamp": "01:38:01",
+          "context": "Ben Adams said he had EIP-8037 PTSD and felt the persist-warm-access-sets EIP was revisiting that wound, contributing to his lean toward DFI."
+        }
+      ]
+    },
+    {
+      "eip": 2929,
+      "title": "Gas cost increases for state access opcodes",
+      "weight": "mentioned",
+      "summary": "Referenced regarding the original design decision to revert warm addresses and slots on reverted frames.",
+      "moments": [
+        {
+          "timestamp": "01:40:22",
+          "context": "Jochem noted in chat that EIP-2929 may have chosen not to carry warm address/slots on reverted frames to prevent obscure gas calculation logic from revealing touched slots."
+        }
+      ]
+    }
+  ]
+}

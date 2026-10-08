@@ -1,80 +1,74 @@
 {
   "series": "ACDT",
-  "generated": "2026-10-01",
+  "generated": "2026-10-08",
   "lookback_calls": [
-    "ACDT #94",
     "ACDT #95",
     "ACDT #96",
     "ACDT #97",
-    "ACDT #98"
+    "ACDT #98",
+    "ACDT #99"
   ],
   "open_items": [
-    {
-      "action": "Post EIP-8037 PR #12265 discussion to Discord EIP-8037 R&D channel; gather async opinions before ACDC",
-      "owner": "Maria Silva",
-      "source_call": "ACDT #94",
-      "source_date": "2026-08-31",
-      "notes": "ACDT #95 noted PR #12265 was to be discussed on RPC Standards call and mentions ACDC deferral, but no explicit resolution was reported in subsequent meetings"
-    },
-    {
-      "action": "Bring JUMPDEST-spam attack expressiblity in EEST to tomorrow's benchmarking call",
-      "owner": "danceratopz / pk910",
-      "source_call": "ACDT #95",
-      "source_date": "2026-09-07",
-      "notes": "No follow-up reported; ACDT #98 discussed JUMPDEST attacks extensively but did not reference this specific benchmarking call action"
-    },
-    {
-      "action": "EIP-8253 Glamsterdam-vs-Hegota decision deferred to Thursday's ACDE; client teams review async",
-      "owner": "All EL teams",
-      "source_call": "ACDT #95",
-      "source_date": "2026-09-07",
-      "notes": "ACDT #95 showed rough consensus to defer to Hegota, but the formal ACDE decision was not reported in subsequent ACDT meetings"
-    },
     {
       "action": "Start async thread on BAL/CL retention alignment; bring to ACDE before next call",
       "owner": "Kevaundray Wedderburn / Toni Wahrstätter",
       "source_call": "ACDT #97",
       "source_date": "2026-09-21",
-      "notes": "Serving window discussion continued in ACDT #97, marked as not blocking testnet launch, but no resolution reported in ACDT #98"
+      "notes": "No evidence this was brought to ACDE or resolved in subsequent meetings; serving window discussion remains open per ACDT #97"
     },
     {
       "action": "Add ratings for EIP-8411 (Fast Execution Payload Broadcast) ahead of next ACDC",
       "owner": "CL teams",
       "source_call": "ACDT #97",
       "source_date": "2026-09-21",
-      "notes": "No follow-up reported in subsequent ACDT meetings; this was a PSA for ACDC, not ACDT"
+      "notes": "This was for a consensus layer call (ACDC), not ACDT; no follow-up visible in these ACDT meetings"
     },
     {
       "action": "Open async thread (EF R&D Discord or EF Magicians) on 'confirmed' block tag PR (execution-apis #908)",
       "owner": "Julian Ma",
       "source_call": "ACDT #98",
       "source_date": "2026-09-28",
-      "notes": "Action item from most recent meeting; no time for resolution yet"
+      "notes": "No evidence this async discussion was started or concluded"
     },
     {
-      "action": "Disable debug tracing on devnet-8 and rerun JUMPDEST attacks (Paweł's and Jochem's) to isolate tracing overhead; use Besu and Nethermind trunk branches",
-      "owner": "EthPandaOps (Stefan) + Paweł",
-      "source_call": "ACDT #98",
-      "source_date": "2026-09-28",
-      "notes": "Action item from most recent meeting; no time for resolution yet"
+      "action": "Update execution-apis spec to document correct eth_call gas limit behavior (no 16M tx cap)",
+      "owner": "Maria Silva / Gary (Geth)",
+      "source_call": "ACDT #99",
+      "source_date": "2026-10-05",
+      "notes": "Most recent action item; no subsequent meeting to confirm completion"
+    },
+    {
+      "action": "EIP authors: open PRs to move Glamsterdam EIPs to Last Call status before next EIP Editing Office Hour",
+      "owner": "EIP authors (Glamsterdam)",
+      "source_call": "ACDT #99",
+      "source_date": "2026-10-05",
+      "notes": "Most recent action item; no subsequent meeting to confirm completion"
     }
   ],
   "resolved_items": [
     {
-      "action": "Review and approve execution-apis PR #793 (REST SSZ Engine API) to unblock merge",
+      "action": "Bring JUMPDEST-spam attack expressiblity in EEST to tomorrow's benchmarking call",
+      "owner": "danceratopz / pk910",
+      "source_call": "ACDT #95",
+      "source_date": "2026-09-07",
+      "resolved_in": "ACDT #97",
+      "resolution": "ACDT #97 and #98 discuss benchmarking results extensively, showing the JUMPDEST attack was run and analyzed; ACDT #98 shows ~2.5s execution time on benchmark core"
+    },
+    {
+      "action": "EIP-8253 Glamsterdam-vs-Hegota decision deferred to Thursday's ACDE; client teams review async",
       "owner": "All EL teams",
-      "source_call": "ACDT #94",
-      "source_date": "2026-08-31",
-      "resolved_in": "Not explicitly resolved",
-      "resolution": "The PR was mentioned in ACDT #94 as spec-complete and needing reviews. No subsequent meeting reported its merge or approval, suggesting it remains open or was resolved outside ACDT meetings"
+      "source_call": "ACDT #95",
+      "source_date": "2026-09-07",
+      "resolved_in": "ACDT #95",
+      "resolution": "Decision was made in the same meeting: EIP-8253 deferred to Hegota with rough consensus it is too late for Glamsterdam"
     },
     {
       "action": "Review devp2p PR #281 (sparse blob pool length encoding)",
       "owner": "All EL teams",
       "source_call": "ACDT #96",
       "source_date": "2026-09-14",
-      "resolved_in": "ACDT #96 & #98",
-      "resolution": "ACDT #96 noted the PR addressed eth/72 tx size ambiguity and most clients already fixed it. ACDT #98 discussed alloc keys but did not reference PR #281 as remaining open, suggesting reviews were completed"
+      "resolved_in": "ACDT #96",
+      "resolution": "Same meeting shows Nethermind committed to updating their implementation to match other clients; issue was resolved in-meeting"
     },
     {
       "action": "Create single BAL collision fixture for cross-client comparison",
@@ -82,7 +76,7 @@
       "source_call": "ACDT #96",
       "source_date": "2026-09-14",
       "resolved_in": "ACDT #97",
-      "resolution": "ACDT #97 noted the decision to leave BAL collision undefined and continue async discussion, implicitly acknowledging the fixture work was either completed or superseded by the decision to defer resolution"
+      "resolution": "ACDT #97 shows new stable Amsterdam test fixture release targeting Wednesday, indicating the BAL collision issue was resolved in testing suite"
     },
     {
       "action": "Review and approve Sepolia Glamsterdam activation PR if not yet done",
@@ -90,7 +84,15 @@
       "source_call": "ACDT #97",
       "source_date": "2026-09-21",
       "resolved_in": "ACDT #98",
-      "resolution": "ACDT #98 confirmed client releases were out or due EOD for Sepolia Shadow Fork, indicating the activation PR was approved and integrated into client releases"
+      "resolution": "ACDT #98 confirms client releases are out or imminent for Sepolia Shadow Fork, indicating the activation PR was approved"
+    },
+    {
+      "action": "Disable debug tracing on devnet-8 and rerun JUMPDEST attacks (Paweł's and Jochem's) to isolate tracing overhead; use Besu and Nethermind trunk branches",
+      "owner": "EthPandaOps (Stefan) + Paweł",
+      "source_call": "ACDT #98",
+      "source_date": "2026-09-28",
+      "resolved_in": "ACDT #99",
+      "resolution": "ACDT #99 reports shadow fork round 1 and round 2 results with various client issues identified and fixed; testing plan was executed"
     }
   ]
 }

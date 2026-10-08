@@ -1,0 +1,73 @@
+{
+  "meeting": "P2P #009 - 2026-10-07",
+  "eips": [
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "discussed",
+      "summary": "Debated whether fast execution payload broadcast via segmentation should be included in Hegota or deferred to I-star.",
+      "moments": [
+        {
+          "timestamp": "00:18:23",
+          "context": "Daniel Knopik mentioned Lighthouse is continuing work on prototypes for 8411 alongside attestation bundling."
+        },
+        {
+          "timestamp": "01:10:33",
+          "context": "Kamil introduced 8411 as the last agenda topic, noting the EIP is merged in the EIPs repo and PFI'd to Hegota, describing its 64-chunk payload segmentation approach."
+        },
+        {
+          "timestamp": "01:12:28",
+          "context": "Matthew Keil (Lodestar) questioned the data-driven necessity, noting devnets showed no issues with large payload delivery, and expressed concern about adding implementation complexity that could delay shipping H fork."
+        },
+        {
+          "timestamp": "01:13:54",
+          "context": "Csaba argued testnets lack realistic builders and mainnet conditions, and the feature prepares for future gas limit increases, PQ signatures, and ZK proofs that will all need large message segmentation."
+        },
+        {
+          "timestamp": "01:26:02",
+          "context": "Kamil stressed the machinery built for 8411 would be reused for PQ proof propagation and other large messages, making it foundational rather than one-off."
+        },
+        {
+          "timestamp": "01:37:42",
+          "context": "Csaba emphasized the EIP contains a critical consensus change to the bid that serves as an unlock, noting segmentation could even be parameterized to use one segment to preserve current behavior."
+        },
+        {
+          "timestamp": "01:43:02",
+          "context": "João (Lighthouse) stated Lighthouse will implement 8411 with backward compatibility regardless of whether it is accepted into Hegota. Daniel Knopik invited other clients to join and noted Prysm appeared interested."
+        }
+      ]
+    },
+    {
+      "eip": 8334,
+      "title": "Bundled Attestation Propagation",
+      "weight": "discussed",
+      "summary": "Referred to throughout only as “attestation bundling”, never by number; Lighthouse is prototyping it and committed to implement it alongside EIP-8411.",
+      "moments": [
+        {
+          "timestamp": "00:18:25",
+          "context": "Daniel Knopik listed “attestation bundling” alongside EIP-8411 as Lighthouse's ongoing prototype work."
+        },
+        {
+          "timestamp": "00:25:52",
+          "context": "Kamil described it as the “EIP from Sukun ... about bundling attestations” that he hopes gets through to Hegota, and suggested the same technique be considered for payload attestation messages, which sit on a single global topic."
+        },
+        {
+          "timestamp": "01:43:08",
+          "context": "jxs said Lighthouse will proceed equally with EIP-8411 “and also the attestation broadcast”, implementing both with backward compatibility even if they are not accepted."
+        }
+      ]
+    },
+    {
+      "eip": 7870,
+      "title": "Hardware and Bandwidth Recommendations",
+      "weight": "mentioned",
+      "summary": "Raúl noted EIP-7870 should be updated because Nielsen's Law has rolled over several times since it was written.",
+      "moments": [
+        {
+          "timestamp": "01:16:13",
+          "context": "In chat, Raúl suggested updating EIP-7870's hardware and bandwidth recommendations because Nielsen's Law has advanced since the EIP was drafted."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "eipId": 7907,
+  "commits": [
+    {
+      "sha": "b3a1f7ba0554f57c5d892028f42d6bc8716bfb88",
+      "date": "2026-09-29T19:28:02Z",
+      "message": "Update EIP-7907: Defer size-limit increases to EIP-7954",
+      "author": "benaadams",
+      "prNumber": null,
+      "additions": 13,
+      "deletions": 26
+    },
+    {
+      "sha": "530aafbf70773d1ca4d04c9aa133580dc63b2973",
+      "date": "2025-12-17T02:07:31Z",
+      "message": "Update EIP-7907: add codesize to account tuple and update gas cost per word",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "additions": 32,
+      "deletions": 18
+    },
+    {
+      "sha": "491ab9f349070259646534ffcc6225eeb217dcf2",
+      "date": "2025-09-29T10:04:11Z",
+      "message": "Update EIP-7907: correct parameter reference in excess_code_size function",
+      "author": "pendrue",
+      "prNumber": null,
+      "patch": "@@ -41,7 +41,7 @@ def ceil32(n: int) -> int:\n     return ((n + 31) // 32) * 32\n \n def excess_code_size(n: int) -> int:\n-    return max(0, contract_size - 0x6000)\n+    return max(0, n - 0x6000)\n ```\n \n ### Behavior",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "7f45e063a84ea2870e630e845f438d6165d57d4b",
+      "date": "2025-08-05T12:21:16Z",
+      "message": "Update EIP-7907: fix typos",
+      "author": "tinyfoxy",
+      "prNumber": null,
+      "patch": "@@ -32,7 +32,7 @@ Improving developer experience is the primary motivation for increasing the cont\n | COLD_SLOAD_COST | `2100` | The cost charged for cold loading storage as defined by [EIP-2929](./eip-2929.md). |\n | WARM_STORAGE_READ_COST | `100` | The cost charged for loading warm storage as defined by [EIP-2929](./eip-2929.md). |\n | `COLD_ACCOUNT_ACCESS_COST` | `2600` | The cost charged for loading a cold account as defined by [EIP-2929](./eip-2929.md). |\n-| `GAS_PER_CODE_WORD` | `4` | The cost charged per word of code loaded beyond the intial `24KB` amount. |\n+| `GAS_PER_CODE_WORD` | `4` | The cost charged per word of code loaded beyond the initial `24KB` amount. |\n \n #### Helpers\n \n@@ -48,7 +48,7 @@ def excess_code_size(n: int) -> int:\n \n 1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KB (`0x6000` bytes) to 48KB (`0xc000` bytes).\n 2. Introduces a new cold/warm state for contract code. Specifically, change the gas schedule of operations that load code, e.g. the opcodes `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` are modified so that flat `COLD_SLOAD_COST=2100` and dynamic `EXCESS_CODE_COST= ceil32(excess_code_size(len(code))) * GAS_CODE_LOAD_WORD_COST // 32` gas are added to the access cost if the code is cold. When the code is an [EIP-7702](./eip-7702.md) delegation to another account, if target account code is cold add additional gas should be accounted. Warming of the contract code is subjected to the journaling and can be reverted similar to other state warming in [EIP-2930](./eip-2930.md).\n-3. The cost for `EXTCODESIZE` is updated to acknowlege the potential for two database reads: once for the account (making it warm) and second for code size if bytecode is marked as cold. Bytecode will not be marked as warm as only codesize is read. In addition to the current pricing scheme defined under [EIP-2929](./eip-2929.md), the instruction will also be subject to the `COLD_SLOAD_COST=2100` if code is cold.\n+3. The cost for `EXTCODESIZE` is updated to acknowledge the potential for two database reads: once for the account (making it warm) and second for code size if bytecode is marked as cold. Bytecode will not be marked as warm as only codesize is read. In addition to the current pricing scheme defined under [EIP-2929](./eip-2929.md), the instruction will also be subject to the `COLD_SLOAD_COST=2100` if code is cold.\n 4. Update the [EIP-3860](./eip-3860.md) contract initcode size limit of 48KB (`0xc000` bytes) to 96KB (`0x18000` bytes).\n 5. If a large contract is the entry point of a transaction, the cost calculated in (2) is charged before the execution and contract code is marked as warm. This fee is not calculated towards the initial gas fee. In case of out-of-gas halt, execution will stop and the balance will not be transferred.\n 6. Empty code ( with `keccak(\"\") = \"0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470\"`) is always considered warm.",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "7d68f67d23a2b0a206ca598ac217f06612f0996f",
+      "date": "2025-07-22T16:29:37Z",
+      "message": "Update EIP-7907: Consider empty code as always warm",
+      "author": "rakita",
+      "prNumber": null,
+      "patch": "@@ -51,6 +51,7 @@ def excess_code_size(n: int) -> int:\n 3. The cost for `EXTCODESIZE` is updated to acknowlege the potential for two database reads: once for the account (making it warm) and second for code size if bytecode is marked as cold. Bytecode will not be marked as warm as only codesize is read. In addition to the current pricing scheme defined under [EIP-2929](./eip-2929.md), the instruction will also be subject to the `COLD_SLOAD_COST=2100` if code is cold.\n 4. Update the [EIP-3860](./eip-3860.md) contract initcode size limit of 48KB (`0xc000` bytes) to 96KB (`0x18000` bytes).\n 5. If a large contract is the entry point of a transaction, the cost calculated in (2) is charged before the execution and contract code is marked as warm. This fee is not calculated towards the initial gas fee. In case of out-of-gas halt, execution will stop and the balance will not be transferred.\n+6. Empty code ( with `keccak(\"\") = \"0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470\"`) is always considered warm.\n \n | Contract                | Gas changes (only opcodes that load code)                          | How?                                                                                                                       |\n | ----------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
+      "sha": "c575d68b994edfb73e7e61e04d07521d9fc86561",
+      "date": "2025-07-14T13:13:58Z",
+      "message": "Update EIP-7907: Backwards compatibility update",
+      "author": "rakita",
+      "prNumber": null,
+      "patch": "@@ -78,9 +78,7 @@ The limit for initcode has also been increased to 96KB, following the pattern se\n \n ## Backwards Compatibility\n \n-This EIP is backward compatible with existing contracts. All contracts that were valid before this EIP will remain valid after it, and their gas costs will not change.\n-\n-The only change is that new contracts larger than 24KB will be allowed, whereas they were previously rejected regardless of available gas.\n+This EIP introduces additional gas costs for certain operations. Specifically, `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE`, `EXTCODESIZE`, and `EXTCODECOPY` may now require extra gas when accessing cold contract code.\n \n ## Test Cases\n ",
+      "additions": 1,
+      "deletions": 3
+    },
+    {
+      "sha": "0a2dc9e4d44cb6778a6f4aa71810662f489b4ac2",
+      "date": "2025-07-08T12:04:46Z",
+      "message": "Update EIP-7907: fix formula for ceil32",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -37,14 +37,11 @@ Improving developer experience is the primary motivation for increasing the cont\n #### Helpers\n \n ```python\n-def ceil32(n):\n-  if n % 32 == 0:\n-    return n // 32\n-  else:\n-    return n // 32 + 32\n-\n-def excess_code_size(n):\n-  return max(0, contract_size - 0x6000)\n+def ceil32(n: int) -> int:\n+    return ((n + 31) // 32) * 32\n+\n+def excess_code_size(n: int) -> int:\n+    return max(0, contract_size - 0x6000)\n ```\n \n ### Behavior\n@@ -96,9 +93,3 @@ Clients should add an efficient way to determine the code size without loading t\n ## Copyright\n \n Copyright and related rights waived via [CC0](../LICENSE.md).\n-\n-<!-- markdownlint-configure-file\n-{\n-  \"line-length\": false\n-}\n--->",
+      "additions": 5,
+      "deletions": 14
+    },
+    {
+      "sha": "5376a712188b6c85a4b6940db9df177f403b536d",
+      "date": "2025-07-07T17:15:31Z",
+      "message": "Update EIP-7907: Reduce code limit, increase cost per word, fix `EXTCODESIZE` issue",
+      "author": "lightclient",
+      "prNumber": null,
+      "additions": 45,
+      "deletions": 17
+    },
+    {
+      "sha": "e9ec317a203e71d13d67bae76eacc1326cc71768",
+      "date": "2025-07-03T15:41:10Z",
+      "message": "Update EIP-7907: Account for large contracts as tx entry point",
+      "author": "marioevz",
+      "prNumber": null,
+      "patch": "@@ -39,6 +39,7 @@ The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"S\n `COLD_ACCOUNT_ACCESS_COST` and `WARM_STORAGE_READ_COST` are defined in [EIP-2929](./eip-2929.md#parameters).\n \n 3. Update the [EIP-3860](./eip-3860.md) contract initcode size limit of 48KB (`0xc000` bytes) to 512KB (`0x80000` bytes).\n+4. If a large contract is the entry point of a transaction, the cost calculated in (2) is charged before the execution and contract code is marked as warm. This fee is not calculated towards the initial gas fee. In case of out-of-gas halt, execution will stop and the balance will not be transferred.\n \n ## Rationale\n ",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
+      "sha": "0e18632bd37e806185f91b806214031a0903eff6",
+      "date": "2025-07-03T09:21:32Z",
+      "message": "Update EIP-7907: add lightclient and rakita to authors list",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7907\n title: Meter Contract Code Size And Increase Limit\n description: Increases the contract code size limit introduced in EIP-170 and adds a gas metering to code loading\n-author: Charles Cooper (@charles-cooper), Qi Zhou (@qizhou)\n+author: Charles Cooper (@charles-cooper), Qi Zhou (@qizhou), Matt (@lightclient), Dragan Rakita (@rakita)\n discussions-to: https://ethereum-magicians.org/t/eip-remove-contract-size-limit/23156\n status: Draft\n type: Standards Track",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "b0c050e56e2c9eb086b362a9625b8e1c4e1783f0",
+      "date": "2025-05-28T03:30:33Z",
+      "message": "Update EIP-7907: add strong devex motivation examples",
+      "author": "jgresham",
+      "prNumber": null,
+      "patch": "@@ -19,7 +19,9 @@ This EIP substantially increases the hard contract code size limit from 24KB (24\n \n EIP-170 introduced a 24KB contract code size limit to prevent potential DoS attacks, as large contract code requires O(n) resource cost in terms of disk reads, VM preprocessing, and Merkle proof sizes, all of which are not directly compensated by gas fees. However, this limit restricts legitimate use cases for large contracts.\n \n-This EIP proposes a gas-based solution that allows contracts of any size while ensuring that users loading very large contracts pay gas proportional to the additional resources they consume. This approach aligns with Ethereum's gas model philosophy of paying for the resources consumed. A new limit has been set at 256KB, so that raising the gas limit does not break assumptions in the p2p layer.\n+This EIP proposes a gas-based solution that allows contracts of larger size while ensuring that users loading large contracts pay gas proportional to the additional resources they consume. This approach aligns with Ethereum's gas model philosophy of paying for the resources consumed. A new limit has been set at 256KB, so that raising the gas limit does not break assumptions in the p2p layer.\n+\n+Improving developer experience is the primary motivation for increasing the contract size limit. The current 24KB ceiling forces developers to split functionality across multiple contracts, introduce proxies or delegatecall-based indirection, and rely on architectural patterns like the Diamond Standard—even when those patterns aren't otherwise necessary. These workarounds can increase code complexity, deployment costs, and audit surface. By raising the limit, developers can keep more logic in a single contract, improving readability and lowering gas usage by avoiding unnecessary cross-contract calls. This also makes smart contract development more accessible to newer developers, who can move from idea to deployment without first learning advanced contract composition patterns.\n \n ## Specification\n ",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "sha": "e0a15e9d95ea89be2c93962d5bfb19fe25086e1f",
+      "date": "2025-05-21T00:08:01Z",
+      "message": "Update EIP-7907: warm cold table with gas cost and scenarios",
+      "author": "jgresham",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2025-03-14\n-requires: 170, 3860\n+requires: 170, 2929, 3860\n ---\n \n ## Abstract\n@@ -26,8 +26,17 @@ This EIP proposes a gas-based solution that allows contracts of any size while e\n The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).\n \n 1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KB (`0x6000` bytes) to 256KB (`0x40000` bytes).\n-2. Change the gas schedule for opcodes which load code. Specifically, the `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` opcodes are modified so that `ceil32(excess_contract_size) * GAS_INIT_CODE_WORD_COST // 32` gas is added to the [cold access cost](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/instructions/system.py#L367), where `excess_contract_size = max(0, contract_size - 0x6000)`, and `GAS_INIT_CODE_WORD_COST = 2`. (Cf. initcode metering: [EELS](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/gas.py#L269)). If the account is warm, no change to the gas schedule occurs.\n-3. Update the EIP-3860 contract code size limit of 48KB (`0xc000` bytes) to 512KB (`0x80000` bytes).\n+2. Change the gas schedule for opcodes which load code. Specifically, the opcodes `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` are modified so that `largeContractCost = ceil32(excess_contract_size) * GAS_INIT_CODE_WORD_COST // 32` gas is added to the access cost if the code is cold, where `excess_contract_size = max(0, contract_size - 0x6000)`, and `GAS_INIT_CODE_WORD_COST = 2`. (Cf. initcode metering: [EELS](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/gas.py#L269)). This introduces a new warm state for contract code - warm if the code has been loaded, cold if not.\n+\n+| Contract                | Gas changes (only opcodes that load code)                          | How?                                                                                                                       |\n+| ----------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------- |\n+| Cold account and code   | Add `largeContractCost` to `COLD_ACCOUNT_ACCESS_COST=2600`         | Contract not in access list nor accessed prior in the txn                                                           |\n+| Warm account, cold code | Add `largeContractCost` to `WARM_STORAGE_READ_COST=100`         | Already accessed balance, storage, or included in access list ([EIP-2930](./eip-2930.md))                                               |\n+| Warm account and code   | No change to existing gas schedule. `WARM_STORAGE_READ_COST=100` | Contract created with `CREATE`/`CREATE2`, or `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` or `EXTCODECOPY` made on the contract, previously in the txn (opcodes that load contract code) |\n+\n+`COLD_ACCOUNT_ACCESS_COST` and `WARM_STORAGE_READ_COST` are defined in [EIP-2929](./eip-2929.md#parameters).\n+\n+3. Update the [EIP-3860](./eip-3860.md) contract initcode size limit of 48KB (`0xc000` bytes) to 512KB (`0x80000` bytes).\n \n ## Rationale\n ",
+      "additions": 12,
+      "deletions": 3
+    },
+    {
+      "sha": "d2fe991471826ab0ae68ea6ea33e7c8cea30f128",
+      "date": "2025-05-20T13:59:37Z",
+      "message": "Update EIP-7907: clarify that 2 == GAS_INIT_CODE_WORD_COST",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -26,7 +26,7 @@ This EIP proposes a gas-based solution that allows contracts of any size while e\n The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).\n \n 1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KB (`0x6000` bytes) to 256KB (`0x40000` bytes).\n-2. Change the gas schedule for opcodes which load code. Specifically, the `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` opcodes are modified so that `ceil32(excess_contract_size) * 2 // 32` gas is added to the [cold access cost](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/instructions/system.py#L367), where `excess_contract_size = max(0, contract_size - 0x6000)`. (Cf. initcode metering: [EELS](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/gas.py#L269)). If the account is warm, no change to the gas schedule occurs.\n+2. Change the gas schedule for opcodes which load code. Specifically, the `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` opcodes are modified so that `ceil32(excess_contract_size) * GAS_INIT_CODE_WORD_COST // 32` gas is added to the [cold access cost](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/instructions/system.py#L367), where `excess_contract_size = max(0, contract_size - 0x6000)`, and `GAS_INIT_CODE_WORD_COST = 2`. (Cf. initcode metering: [EELS](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/gas.py#L269)). If the account is warm, no change to the gas schedule occurs.\n 3. Update the EIP-3860 contract code size limit of 48KB (`0xc000` bytes) to 512KB (`0x80000` bytes).\n \n ## Rationale",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "e18683ddb78505ec06b6ef0698ed0ccf6acfbb44",
+      "date": "2025-05-02T17:48:19Z",
+      "message": "Update EIP-7907: 256KB and 512KB hex values",
+      "author": "jgresham",
+      "prNumber": null,
+      "patch": "@@ -25,9 +25,9 @@ This EIP proposes a gas-based solution that allows contracts of any size while e\n \n The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).\n \n-1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KB (`0x6000` bytes) to 256KB (`0x20000` bytes).\n+1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KB (`0x6000` bytes) to 256KB (`0x40000` bytes).\n 2. Change the gas schedule for opcodes which load code. Specifically, the `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` opcodes are modified so that `ceil32(excess_contract_size) * 2 // 32` gas is added to the [cold access cost](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/instructions/system.py#L367), where `excess_contract_size = max(0, contract_size - 0x6000)`. (Cf. initcode metering: [EELS](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/gas.py#L269)). If the account is warm, no change to the gas schedule occurs.\n-3. Update the EIP-3860 contract code size limit of 48KB (`0xc000` bytes) to 512KB (`0x40000` bytes).\n+3. Update the EIP-3860 contract code size limit of 48KB (`0xc000` bytes) to 512KB (`0x80000` bytes).\n \n ## Rationale\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "8584c5d03a798639fb9f10009787ddacc53bc4cc",
+      "date": "2025-04-23T17:47:25Z",
+      "message": "Update EIP-7907: add hyperlinks",
+      "author": "gap-editor",
+      "prNumber": null,
+      "patch": "@@ -23,15 +23,15 @@ This EIP proposes a gas-based solution that allows contracts of any size while e\n \n ## Specification\n \n-The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 and RFC 8174.\n+The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) and [RFC 8174](https://www.rfc-editor.org/rfc/rfc8174).\n \n-1. Update the EIP-170 contract code size limit of 24KB (`0x6000` bytes) to 256KB (`0x20000` bytes).\n+1. Update the [EIP-170](./eip-170.md) contract code size limit of 24KB (`0x6000` bytes) to 256KB (`0x20000` bytes).\n 2. Change the gas schedule for opcodes which load code. Specifically, the `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` opcodes are modified so that `ceil32(excess_contract_size) * 2 // 32` gas is added to the [cold access cost](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/instructions/system.py#L367), where `excess_contract_size = max(0, contract_size - 0x6000)`. (Cf. initcode metering: [EELS](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/gas.py#L269)). If the account is warm, no change to the gas schedule occurs.\n 3. Update the EIP-3860 contract code size limit of 48KB (`0xc000` bytes) to 512KB (`0x40000` bytes).\n \n ## Rationale\n \n-The gas cost of 2 per word was chosen in-line with EIP-3860. This accounts for:\n+The gas cost of 2 per word was chosen in-line with [EIP-3860](./eip-3860.md). This accounts for:\n \n 1. The additional disk I/O for retrieving larger contract code\n 2. The increased computational resources for preprocessing larger code for execution (a.k.a. \"JUMPDEST analysis\").",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
+      "sha": "e3e864c85ac2c811233ac1fb073332b2a90a25be",
+      "date": "2025-04-11T06:16:14Z",
+      "message": "Update EIP-7907: update initcode limit in EIP 7907",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "patch": "@@ -8,12 +8,12 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2025-03-14\n-requires: 170\n+requires: 170, 3860\n ---\n \n ## Abstract\n \n-This EIP substantially increases the hard contract code size limit from 24KB (24576 bytes) introduced in [EIP-170](./eip-170.md) to 256KB, and adds gas metering. It introduces a gas cost of 2 gas per (32 byte) word for contract code exceeding 24KB, allowing deployment of contracts of any size while preventing DoS attacks through appropriate gas metering.\n+This EIP substantially increases the hard contract code size limit from 24KB (24576 bytes) introduced in [EIP-170](./eip-170.md) to 256KB, and adds gas metering. It introduces a gas cost of 2 gas per (32 byte) word for contract code exceeding 24KB, allowing deployment of contracts of any size while preventing DoS attacks through appropriate gas metering. Lastly, it also commensurately increases initcode size limit from 48KB, introduced in [EIP-3860](./eip-3860.md), to 512KB.\n \n ## Motivation\n \n@@ -27,6 +27,7 @@ The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"S\n \n 1. Update the EIP-170 contract code size limit of 24KB (`0x6000` bytes) to 256KB (`0x20000` bytes).\n 2. Change the gas schedule for opcodes which load code. Specifically, the `CALL`, `STATICCALL`, `DELEGATECALL`, `CALLCODE` and `EXTCODECOPY` opcodes are modified so that `ceil32(excess_contract_size) * 2 // 32` gas is added to the [cold access cost](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/instructions/system.py#L367), where `excess_contract_size = max(0, contract_size - 0x6000)`. (Cf. initcode metering: [EELS](https://github.com/ethereum/execution-specs/blob/1a587803e3e698407d204888b02342393f8b4fe5/src/ethereum/cancun/vm/gas.py#L269)). If the account is warm, no change to the gas schedule occurs.\n+3. Update the EIP-3860 contract code size limit of 48KB (`0xc000` bytes) to 512KB (`0x40000` bytes).\n \n ## Rationale\n \n@@ -42,6 +43,8 @@ The `EXTCODECOPY` opcode could theoretically be exempt from this, since clients\n \n The new limit has been set at 256KB. This is significantly larger than the limit implied by the current block gas limit of 35mm (~170KB). The limit has been put in place so that increasing the gas limit won't have unexpected side effects at the db or p2p layer. For instance, in devp2p, the maximum packet size is 10MB (https://github.com/ethereum/devp2p/blob/5713591d0366da78a913a811c7502d9ca91d29a8/caps/eth.md#basic-operation). As of time of this writing, the maximum packet size in snap sync is even lower, at 512KB.\n \n+The limit for initcode has also been increased to 512KB, following the pattern set in EIP-3860 that the initcode limit is double the runtime code limit. While initcode is different from deployed code in that it does not live in the state and therefore isn't visible in devp2p or in the db, fully removing the limit could have unforeseen consequences.\n+\n ## Backwards Compatibility\n \n This EIP is backward compatible with existing contracts. All contracts that were valid before this EIP will remain valid after it, and their gas costs will not change.",
+      "additions": 5,
+      "deletions": 2
+    },
+    {
+      "sha": "929a13247e98efb4358ca4e5b85dd172c151fe57",
+      "date": "2025-03-21T19:23:48Z",
+      "message": "Add EIP: Meter Contract Code Size And Increase Limit",
+      "author": "charles-cooper",
+      "prNumber": null,
+      "additions": 61,
+      "deletions": 0
+    }
+  ],
+  "openPrs": [
+    {
+      "number": 10992,
+      "title": "Update EIP-7907: Corrections and clarifications",
+      "author": "fselmo",
+      "updatedAt": "2026-10-02T05:44:56Z",
+      "additions": 4,
+      "deletions": 4
+    }
+  ]
+}

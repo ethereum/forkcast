@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "af80fc1c4122c4990b8c84bfd10be60c6e343bb2",
+      "date": "2026-10-08T17:50:27Z",
+      "message": "Update EIP-8141: roll back the approval context when a call reverts",
+      "author": "soispoke",
+      "prNumber": null,
+      "patch": "@@ -469,7 +469,7 @@ A few cross-frame interactions to note:\n - When frame-transaction processing begins, `accessed_addresses` is initialized as in [EIP-2929](./eip-2929.md) and [EIP-3651](./eip-3651.md) (`tx.sender`, the coinbase, and precompiles warm), and `accessed_storage_keys` empty (there is no access list). Being a frame target does not warm an address: a `resolved_target`'s warm/cold access is charged at frame entry within the frame's own `limits.execution`. The payer needs no separate warming rule: it is the executing frame's `resolved_target`, whose access was charged at frame entry and journaled like any other [EIP-2929](./eip-2929.md) access. `ENTRY_POINT` is not pre-warmed, so `ORIGIN` is cold in `DEFAULT` and `VERIFY` frames (where it is `ENTRY_POINT`) and warm in a `SENDER` frame (where it is `tx.sender`).\n - For the purposes of gas accounting of warm / cold state status, the journal of such touches is shared across frames.\n - If a frame reverts, warm / cold status reverts to the state before the frame.\n-- State-gas ownership records and changes to frame receipts' `gas_used.state` fields journaled alongside the state changes that produced them. Reverting a call, frame, or atomic batch restores all of them to the corresponding checkpoint.\n+- State-gas ownership records, changes to frame receipts' `gas_used.state` fields, and the approval context (`payer`, `sender_approved`) are journaled alongside the state changes that produced them. Reverting a call, frame, or atomic batch restores all of them to the corresponding checkpoint.\n - Discard the `TSTORE` and `TLOAD` transient storage between frames.\n \n ##### Gas Accounting",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "6bc5841052ad161b29e21d11dbfb58bc98dac507",
       "date": "2026-10-07T17:29:00Z",
       "message": "Update EIP-8141: check frame modes against a set of valid values",

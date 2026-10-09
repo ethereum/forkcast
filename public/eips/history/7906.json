@@ -2,6 +2,16 @@
   "eipId": 7906,
   "commits": [
     {
+      "sha": "f5151dcfbad07a7ba677cb59038ac2985c63356e",
+      "date": "2026-10-09T06:02:25Z",
+      "message": "Update EIP-7906: limits of a single-transaction diff",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -427,6 +427,16 @@ This applies to two sources of reference values:\n \n Assertions should take the reference values they compare the outcome against, such as minimum amounts received, permitted spenders, and prices, from data fixed at signing time, for example the `POST_TX` frame's `data` committed by the canonical signature hash, or from `before` values, which the transaction cannot modify. `before` values reflect the transaction prestate, so earlier transactions in the same block can still move them; a price read from the prestate keeps the usual oracle manipulation risk.\n \n+### Changes outside of Transaction Assertion's control\n+\n+An assertion constrains one transaction on one chain: the transaction that carries it. The following limits hold for any assertion, however complete.\n+\n+- Earlier authority: an existing allowance, operator approval, or signed off-chain permit stays usable in the spender's own transactions, which do not carry this assertion.\n+- Later effects: a queued withdrawal or a bridge deposit completes in another transaction or on another chain, where this assertion does not run.\n+- Time before inclusion: the prestate is the state at inclusion, not the state the signer saw. An [EIP-8141](./eip-8141.md) expiry verifier frame limits that time, not the change.\n+- Revert target state is not the prestate: the verification prefix of a transaction modifies the chain state as well as the execution body. Assertions revert the execution body. Changes that take place in the verification prefix are observed but cannot be undone.\n+- Events: a contract's event shows only that its code emitted it. A contract can change state without an event, or emit an event without the change. Storage and balance changes remain the source of truth.\n+\n ### Assertion Gas Exhaustion\n \n Assertion contracts that enumerate `TXTRACE` results may run out of gas.",
+      "additions": 10,
+      "deletions": 0
+    },
+    {
       "sha": "8dbdab2b25dec0c3645169ce50c6d43a502a17c6",
       "date": "2026-10-08T17:49:20Z",
       "message": "Update EIP-7906: clarify diff opcode semantics and gas accounting",
@@ -282,14 +292,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12438,
-      "title": "Update EIP-7906: limits of a single-transaction diff",
-      "author": "AnkushinDaniil",
-      "updatedAt": "2026-10-07T08:22:08Z",
-      "additions": 10,
-      "deletions": 0
-    },
     {
       "number": 12304,
       "title": "Update EIP-7906: add POST_TX_EXEMPT frame flag",

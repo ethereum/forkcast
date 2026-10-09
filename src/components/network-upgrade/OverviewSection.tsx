@@ -141,7 +141,7 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               >
                 Sepolia
               </Link>
-              {' '}followed on October 6, 2026. Hoodi is proposed for October 27, to be confirmed on October 8.
+              {' '}followed on October 6, 2026. Hoodi is scheduled for October 26, agreed on ACDE 247.
             </p>
           </div>
         </div>

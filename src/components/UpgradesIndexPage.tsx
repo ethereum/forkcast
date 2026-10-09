@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from './navigation';
-import { networkUpgrades, NetworkUpgrade, shortUpgradeName } from '../data/upgrades';
+import {
+  networkUpgrades,
+  bpoUpgrades,
+  NetworkUpgrade,
+  BpoUpgrade,
+  shortUpgradeName,
+} from '../data/upgrades';
 import { parseShortDate } from './schedule/forkDateCalculator';
 import UpgradeCard from './ui/UpgradeCard';
-import { UpgradeMascot } from './ui';
+import { UpgradeMascot, Tooltip } from './ui';
 
 const isInProgress = (u: NetworkUpgrade) => !u.disabled && u.status !== 'Live';
 
@@ -13,8 +19,8 @@ const inProgressOrder: Partial<Record<NetworkUpgrade['status'], number>> = {
   Research: 2,
 };
 
-const activationTimestamp = (u: NetworkUpgrade): number => {
-  const d = u.activationDate ? parseShortDate(u.activationDate) : null;
+const activationTimestamp = (activationDate?: string): number => {
+  const d = activationDate ? parseShortDate(activationDate) : null;
   return d ? d.getTime() : -Infinity;
 };
 
@@ -22,93 +28,169 @@ const inProgressUpgrades = networkUpgrades
   .filter(isInProgress)
   .sort((a, b) => (inProgressOrder[a.status] ?? 99) - (inProgressOrder[b.status] ?? 99));
 
-const liveUpgrades = networkUpgrades
-  .filter((u) => !isInProgress(u))
-  .sort((a, b) => activationTimestamp(b) - activationTimestamp(a));
+type LiveEntry =
+  | { kind: 'upgrade'; key: string; at: number; upgrade: NetworkUpgrade }
+  | { kind: 'bpo'; key: string; at: number; bpo: BpoUpgrade };
 
-interface UpgradeRowProps {
-  upgrade: NetworkUpgrade;
+// Majors and BPOs share one chronology: a BPO lands between the upgrade that
+// introduced it and the next one, which is the order a reader expects.
+const liveEntries: LiveEntry[] = [
+  ...networkUpgrades
+    .filter((u) => !isInProgress(u))
+    .map<LiveEntry>((upgrade) => ({
+      kind: 'upgrade',
+      key: upgrade.id,
+      at: activationTimestamp(upgrade.activationDate),
+      upgrade,
+    })),
+  ...bpoUpgrades.map<LiveEntry>((bpo) => ({
+    kind: 'bpo',
+    key: bpo.id,
+    at: activationTimestamp(bpo.activationDate),
+    bpo,
+  })),
+].sort((a, b) => b.at - a.at);
+
+const ExternalIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+  </svg>
+);
+
+const ChevronIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  </svg>
+);
+
+const BpoBadge = () => (
+  <Tooltip
+    content={
+      <span className="block">
+        <span className="font-medium">Blob-parameter-only fork</span>
+        <span className="block mt-0.5 text-slate-600 dark:text-slate-300">
+          Raises blob capacity between major upgrades, per EIP-7892.
+        </span>
+      </span>
+    }
+  >
+    <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wide uppercase bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+      BPO
+    </span>
+  </Tooltip>
+);
+
+interface RowProps {
+  name: string;
+  /** Rendered beside the name — a mascot, a badge. Must not contain an anchor. */
+  accessory?: React.ReactNode;
+  tagline: string;
+  activationDate?: string;
+  /** Omitted for an upgrade with nowhere to link, which renders as plain text. */
+  href?: string;
+  external?: boolean;
+  muted?: boolean;
 }
 
-const UpgradeRow: React.FC<UpgradeRowProps> = ({ upgrade }) => {
-  const isExternal = Boolean(upgrade.disabled && upgrade.externalLink);
-  const isInteractive = !upgrade.disabled || isExternal;
-
+const Row: React.FC<RowProps> = ({
+  name,
+  accessory,
+  tagline,
+  activationDate,
+  href,
+  external = false,
+  muted = false,
+}) => {
   const inner = (
     <div
       className={`flex items-center gap-4 px-5 py-4 transition-colors ${
-        isInteractive ? 'group hover:bg-slate-50 dark:hover:bg-slate-700/40' : ''
+        href ? 'group hover:bg-slate-50 dark:hover:bg-slate-700/40' : ''
       }`}
     >
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <span
             className={`text-sm font-medium ${
-              upgrade.disabled
-                ? 'text-slate-600 dark:text-slate-300'
-                : 'text-slate-900 dark:text-slate-100'
+              muted ? 'text-slate-600 dark:text-slate-300' : 'text-slate-900 dark:text-slate-100'
             }`}
           >
-            {shortUpgradeName(upgrade.name)}
+            {name}
           </span>
-          <UpgradeMascot upgradeId={upgrade.id} size="text-base" linked={false} />
-          {upgrade.activationDate && (
+          {accessory}
+          {activationDate && (
             <span className="sm:hidden text-xs text-slate-500 dark:text-slate-400">
-              · {upgrade.activationDate}
+              · {activationDate}
             </span>
           )}
         </div>
         <p
           className={`text-sm truncate mt-1 ${
-            upgrade.disabled ? 'text-slate-500 dark:text-slate-400' : 'text-slate-600 dark:text-slate-300'
+            muted ? 'text-slate-500 dark:text-slate-400' : 'text-slate-600 dark:text-slate-300'
           }`}
         >
-          {upgrade.tagline}
+          {tagline}
         </p>
       </div>
 
       <span className="hidden sm:inline-block w-24 text-right text-xs text-slate-500 dark:text-slate-400 tabular-nums shrink-0">
-        {upgrade.activationDate ?? ''}
+        {activationDate ?? ''}
       </span>
 
-      {isInteractive && (
+      {href && (
         <span
           className={`shrink-0 ${
-            upgrade.disabled
-              ? 'text-slate-400 dark:text-slate-500'
-              : 'text-slate-400 group-hover:text-purple-500'
+            muted ? 'text-slate-400 dark:text-slate-500' : 'text-slate-400 group-hover:text-purple-500'
           }`}
         >
-          {isExternal ? (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
-          ) : (
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          )}
+          {external ? <ExternalIcon /> : <ChevronIcon />}
         </span>
       )}
     </div>
   );
 
-  if (isExternal) {
+  if (!href) {
+    return <div className="opacity-70">{inner}</div>;
+  }
+  if (external) {
     return (
-      <a href={upgrade.externalLink} target="_blank" rel="noopener noreferrer" className="block">
+      <a href={href} target="_blank" rel="noopener noreferrer" className="block">
         {inner}
       </a>
     );
   }
-  if (upgrade.disabled) {
-    return <div className="opacity-70">{inner}</div>;
-  }
   return (
-    <Link to={upgrade.path} className="block">
+    <Link to={href} className="block">
       {inner}
     </Link>
   );
 };
+
+const UpgradeRow: React.FC<{ upgrade: NetworkUpgrade }> = ({ upgrade }) => {
+  const isExternal = Boolean(upgrade.disabled && upgrade.externalLink);
+  return (
+    <Row
+      name={shortUpgradeName(upgrade.name)}
+      accessory={<UpgradeMascot upgradeId={upgrade.id} size="text-base" linked={false} />}
+      tagline={upgrade.tagline}
+      activationDate={upgrade.activationDate}
+      href={upgrade.disabled ? upgrade.externalLink : upgrade.path}
+      external={isExternal}
+      muted={upgrade.disabled}
+    />
+  );
+};
+
+// A BPO's meta EIP is its only page, so the row links there rather than to an
+// `/upgrade/{id}` route that doesn't exist.
+const BpoRow: React.FC<{ bpo: BpoUpgrade }> = ({ bpo }) => (
+  <Row
+    name={bpo.name}
+    accessory={<BpoBadge />}
+    tagline={bpo.tagline}
+    activationDate={bpo.activationDate}
+    href={`/eips/${bpo.metaEipId}`}
+  />
+);
 
 const UpgradesIndexPage: React.FC = () => {
   return (
@@ -136,13 +218,17 @@ const UpgradesIndexPage: React.FC = () => {
           </section>
         )}
 
-        {liveUpgrades.length > 0 && (
+        {liveEntries.length > 0 && (
           <section>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Live</h2>
             <ul className="divide-y divide-slate-200 dark:divide-slate-700 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden bg-white dark:bg-slate-800">
-              {liveUpgrades.map((u) => (
-                <li key={u.id}>
-                  <UpgradeRow upgrade={u} />
+              {liveEntries.map((entry) => (
+                <li key={entry.key}>
+                  {entry.kind === 'bpo' ? (
+                    <BpoRow bpo={entry.bpo} />
+                  ) : (
+                    <UpgradeRow upgrade={entry.upgrade} />
+                  )}
                 </li>
               ))}
             </ul>

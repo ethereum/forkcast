@@ -232,6 +232,40 @@ export const networkUpgrades: NetworkUpgrade[] = [
   }
 ];
 
+/**
+ * A blob-parameter-only fork (EIP-7892). A BPO changes the blob schedule and
+ * nothing else, so there is no scope to track and no `/upgrade/{id}` page to
+ * build — its meta EIP is the whole specification, and that is what it links to.
+ * Kept out of `networkUpgrades` so the schedule, cadence and API projections
+ * built from that list keep meaning "major upgrade".
+ */
+export interface BpoUpgrade {
+  id: string;
+  name: string;
+  /** Meta EIP recording the activation time and the parameters it set. */
+  metaEipId: number;
+  /** Display text, in the same shape as `NetworkUpgrade.activationDate`. */
+  activationDate: string;
+  tagline: string;
+}
+
+export const bpoUpgrades: BpoUpgrade[] = [
+  {
+    id: 'bpo1',
+    name: 'BPO1',
+    metaEipId: 8134,
+    activationDate: 'Dec 9, 2025',
+    tagline: 'First blob-parameter-only fork: blob target 6 → 10, max 9 → 15.'
+  },
+  {
+    id: 'bpo2',
+    name: 'BPO2',
+    metaEipId: 8135,
+    activationDate: 'Jan 7, 2026',
+    tagline: 'Blob target 10 → 14, max 15 → 21.'
+  }
+];
+
 export const getUpgradeById = (id: string): NetworkUpgrade | undefined => {
   return networkUpgrades.find(upgrade => upgrade.id === id);
 };

@@ -2,6 +2,25 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "af3a7802c8ea516f717c6013e27d0f529046f007",
+      "date": "2026-10-09T16:58:06Z",
+      "message": "Update EIP-8141: define the validation prefix and execution body under Behavior",
+      "author": "spencer-tb",
+      "prNumber": null,
+      "patch": "@@ -462,6 +462,12 @@ Then for each frame:\n \n After executing all frames, verify that `payer` has been set (i.e. `payer != None`). If it is not, the whole transaction is invalid. Then, settle fees as defined in [Gas Accounting](#gas-accounting), returning `payer_refund` to the payer.\n \n+##### Validation prefix and execution body\n+\n+The **validation prefix** of a frame transaction is the frames up to and including the first frame after whose execution `payer` is set. The frames after it form the **execution body**. A frame that sets `payer` and then reverts does not end the prefix, since its approval context is discarded with it. Because `APPROVE` is not possible within an atomic batch, the prefix never ends inside one. A transaction in which no frame sets `payer` has no validation prefix and is invalid.\n+\n+The boundary has no effect on the processing above. It is defined here so that the [mempool rules](#validation-prefix) and other EIPs can refer to it.\n+\n ##### Cross-frame interactions\n \n A few cross-frame interactions to note:\n@@ -902,7 +908,7 @@ This policy is inspired by [ERC-7562](./eip-7562.md), but removes staking and re\n \n #### Validation Prefix\n \n-The **validation prefix** of a frame transaction is the shortest prefix of frames whose successful execution sets `payer`.\n+The validation prefix and the execution body are defined under [Behavior](#validation-prefix-and-execution-body).\n \n Public mempool rules apply only to the validation prefix. Once `payer` has been set, subsequent frames are outside public mempool validation and may be arbitrary. In particular, `user_op` and `post_op` occur after payment approval and are therefore not subject to the public mempool restrictions below.\n ",
+      "additions": 7,
+      "deletions": 1
+    },
+    {
+      "sha": "7752622050d9d77c46b578351eba9cfb5125f087",
+      "date": "2026-10-09T14:59:40Z",
+      "message": "Update EIP-8141: name the TXPARAM, FRAMEPARAM and SIGPARAM params",
+      "author": "spencer-tb",
+      "prNumber": null,
+      "additions": 35,
+      "deletions": 35
+    },
+    {
       "sha": "af80fc1c4122c4990b8c84bfd10be60c6e343bb2",
       "date": "2026-10-08T17:50:27Z",
       "message": "Update EIP-8141: roll back the approval context when a call reverts",

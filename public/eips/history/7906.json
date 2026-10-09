@@ -2,6 +2,35 @@
   "eipId": 7906,
   "commits": [
     {
+      "sha": "4be9e59ff8f1ea0613386eb1756f755a18cb7b51",
+      "date": "2026-10-09T14:23:47Z",
+      "message": "Update EIP-7906: specify block-level access list recording for TXDIFF and POST_TX rollback",
+      "author": "forshtat",
+      "prNumber": null,
+      "patch": "@@ -215,6 +215,12 @@ The actual nonce value is not observable through `TXTRACE` or `TXDIFF`.\n \n For params `0x00`–`0x05`, the accessed slot or address is added to the [EIP-2929](./eip-2929.md) access list after the call, and — where [EIP-7928](./eip-7928.md) is active — recorded in the block-level access list, like any other state-reading opcode. For params `0x00` and `0x01` that is the `(address, slot)` pair only; for params `0x02`–`0x05` it is the address. The full gas cost is charged before state is read: if the charge fails, or the opcode halts on a non-zero reserved input or outside a `POST_TX` frame, the opcode adds no access to the block-level access list. `TXTRACE` and `EVENTDATACOPY` read only already-recorded diff and log data and therefore add no new accesses. Params `0x06`–`0x0C` do not interact with the [EIP-2929](./eip-2929.md) access lists.\n \n+#### Block-Level Access List\n+\n+Where [EIP-7928](./eip-7928.md) is active, a `TXDIFF` read of params `0x00`–`0x05` is recorded in the block-level access list as follows. A slot read (`0x00`, `0x01`) adds the slot to the account's `storage_reads`, and adds the account to the list with empty change lists if it is absent, without adding the address to the accessed addresses set. A balance or codehash read (`0x02`–`0x05`) adds the address with empty change lists if absent. As in EIP-7928, a slot appears in `storage_reads` only if it appears in no `storage_changes` entry of the same account anywhere in the block.\n+\n+If a `POST_TX` failure reverts the execution body, the block-level access list treats the reverted frames as reverted calls: their state changes are discarded, but every address and storage slot they accessed remains in the list. A slot the body wrote and that the rollback restored has no net change, so it is recorded in `storage_reads` unless the validation prefix or another transaction in the block changed it. Accesses made by the `POST_TX` frames themselves also remain. State changes from the validation prefix are recorded at the transaction's `block_access_index`.\n+\n ### Event Data Copy Opcode\n \n `TXTRACE` reports an event's topics and the byte length of its non-indexed data, but not the data itself, which is variable-length and so cannot be returned on the stack. We introduce an `EVENTDATACOPY` opcode (`0xb8`) to copy that data into memory.",
+      "additions": 6,
+      "deletions": 0
+    },
+    {
+      "sha": "7d3570401baf6d9eac25c4f8fccf26d05de37032",
+      "date": "2026-10-09T13:07:07Z",
+      "message": "Update EIP-7906: name the TXTRACE and TXDIFF params",
+      "author": "spencer-tb",
+      "prNumber": null,
+      "additions": 39,
+      "deletions": 39
+    },
+    {
+      "sha": "fedcaf7ffbbcaa3e98326d3f9a3b2264e39e85f3",
+      "date": "2026-10-09T08:25:59Z",
+      "message": "Update EIP-7906: say that a failed assertion reverts the execution body",
+      "author": "danceratopz",
+      "prNumber": null,
+      "patch": "@@ -332,13 +332,13 @@ Keeping the transaction valid and committing the validation prefix is strictly r\n \n The `TXTRACE` and `EVENTDATACOPY` opcodes provide significant introspection capabilities that may break code encapsulation.\n \n-By only allowing their execution inside a `POST_TX` frame we ensure this capability may only be used to determine the outcome validity and decide whether to revert the entire transaction.\n+By only allowing their execution inside a `POST_TX` frame we ensure this capability may only be used to determine the outcome validity and decide whether to revert the execution body.\n \n-Because `POST_TX` frames are required to be a trailing suffix of `tx.frames`, the diff `TXTRACE` observes is always the final outcome of the transaction, and because a `POST_TX` revert unconditionally invalidates the whole transaction, a failed assertion can never be partially bypassed by atomic-batch semantics or by frames that ran before it.\n+Because `POST_TX` frames are required to be a trailing suffix of `tx.frames`, the diff `TXTRACE` observes is always the final outcome of the transaction, and because a `POST_TX` failure unconditionally reverts the whole execution body, a failed assertion can never be partially bypassed by atomic-batch semantics or by frames that ran before it.\n \n Allowing multiple `POST_TX` frames allows independent assertion providers to compose without a need for an active collaboration.\n \n-Each transaction assertion module can run its own assertion logic in its own frame and independently invalidate the transaction if its check fails.\n+Each transaction assertion module can run its own assertion logic in its own frame and independently revert the execution body if its check fails.\n \n ### Per-contract Usage\n ",
+      "additions": 3,
+      "deletions": 3
+    },
+    {
       "sha": "f5151dcfbad07a7ba677cb59038ac2985c63356e",
       "date": "2026-10-09T06:02:25Z",
       "message": "Update EIP-7906: limits of a single-transaction diff",
@@ -296,17 +325,17 @@
       "number": 12304,
       "title": "Update EIP-7906: add POST_TX_EXEMPT frame flag",
       "author": "chiranjeev13",
-      "updatedAt": "2026-10-08T08:50:42Z",
+      "updatedAt": "2026-10-09T13:31:02Z",
       "additions": 93,
       "deletions": 6
     },
     {
-      "number": 12463,
-      "title": "Update EIP-7906: specify block-level access list recording for TXDIFF and POST_TX rollback",
-      "author": "forshtat",
-      "updatedAt": "2026-10-08T18:05:16Z",
-      "additions": 6,
-      "deletions": 0
+      "number": 12472,
+      "title": "Update EIP-7906: state the POST_TX rollback point via the EIP-8141 validation prefix",
+      "author": "spencer-tb",
+      "updatedAt": "2026-10-09T16:43:39Z",
+      "additions": 2,
+      "deletions": 2
     },
     {
       "number": 11267,

@@ -6,6 +6,8 @@ import TldrSummary from './TldrSummary';
 import CallNotes, { type NotesData } from './CallNotes';
 import CallEipMentions, { type EipMentionsData } from './CallEipMentions';
 import CallSearch from './CallSearch';
+import { TextWithLinks, handleEipLinkClick } from './TextWithLinks';
+import { EipDrawer } from '../eip/EipDrawer';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
 import { upcomingCalls } from '../../domain/calls/upcomingCalls';
@@ -540,6 +542,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedSearchResult, setSelectedSearchResult] = useState<{timestamp: string, text: string, type: string} | null>(null);
+  const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   // The view is a per-device reading preference, so it persists; it stays out of the URL because a
   // shared link's query params are all content deep links and shouldn't impose someone's pane geometry.
@@ -1274,6 +1277,11 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const hasTldr = Boolean(callData.tldrData);
   const hasNotes = Boolean(callData.notesData?.sections?.length);
   const hasEipMentions = Boolean(callData.eipMentions?.eips?.length);
+  // EIP ids named in this call's own eip_mentions.json — the only ids the
+  // free-text linkifiers may turn into links. No file, no links.
+  const mentionedEipIds = new Set(
+    (callData.eipMentions?.eips ?? []).map(mention => mention.eip),
+  );
   const hasSummary = hasTldr || hasNotes || hasEipMentions;
   const availableSummaryTabs = SUMMARY_TABS.filter(
     tab => ({ tldr: hasTldr, notes: hasNotes, eips: hasEipMentions })[tab.key],
@@ -1488,6 +1496,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
         {breakoutEipInfo && renderReadingField('EIP', (
           <Link
             to={`/eips/${breakoutEipInfo.eip.id}`}
+            onClick={handleEipLinkClick(breakoutEipInfo.eip.id, setDrawerEipId)}
             className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
           >
             {breakoutEipInfo.eip.id}
@@ -1577,6 +1586,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                   <span className="text-slate-600 dark:text-slate-300">EIP:</span>
                   <Link
                     to={`/eips/${breakoutEipInfo.eip.id}`}
+                    onClick={handleEipLinkClick(breakoutEipInfo.eip.id, setDrawerEipId)}
                     className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
                   >
                     {breakoutEipInfo.eip.id}
@@ -1757,7 +1767,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                       ${isSelectedSearch ? 'text-slate-900 dark:text-slate-100' :
                         isHighlighted ? 'text-slate-900 dark:text-slate-100' :
                         'text-slate-600 dark:text-slate-400'}
-                    `}>{entry.text}</span>
+                    `}><TextWithLinks text={entry.text} allowedIds={mentionedEipIds} onOpenEip={setDrawerEipId} /></span>
                   </div>
                 </div>
               );
@@ -1799,6 +1809,8 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             selectedSearchResult={selectedSearchResult}
             onTimestampClick={handleTranscriptClick}
             allowTimestampNavigation={!activeBreakout?.legacy}
+            onOpenEip={setDrawerEipId}
+            allowedIds={mentionedEipIds}
           />
         </div>
       ) : isUpcoming ? (
@@ -1930,6 +1942,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
           )}
         </div>
       </div>
+      <EipDrawer eipId={drawerEipId} onClose={() => setDrawerEipId(null)} />
     </div>
   );
 };

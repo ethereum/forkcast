@@ -5,6 +5,7 @@ import ChatLog from './ChatLog';
 import TldrSummary from './TldrSummary';
 import CallNotes, { type NotesData } from './CallNotes';
 import CallEipMentions, { type EipMentionsData } from './CallEipMentions';
+import CallAgenda from './CallAgenda';
 import CallSearch from './CallSearch';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
@@ -87,9 +88,12 @@ const DESKTOP_WORKSPACE_HEIGHT_WITH_BAR = 'clamp(28rem, calc(100svh - 13.75rem),
 const TALL_SCREEN_QUERY = '(min-height: 1000px) and (min-width: 1200px) and (max-width: 1600px)';
 const SURFACE_DEEP_LINK_QUERY_KEYS = ['search', 'timestamp', 'type', 'text', 'chat', 'summary'] as const;
 const SUMMARY_CONTENT_ID = 'call-summary-content';
-// Declaration order is the tab order, and the first tab a call actually has is
-// its default — so a call with no tldr.json opens on whatever it does have.
+// Declaration order is the tab order, and the first tab a call actually has — Agenda
+// aside — is its default, so a call with no tldr.json opens on whatever else it has.
+// Agenda leads the row because it is what the call set out to cover, but a call
+// carrying any record of what happened should open on that instead.
 const SUMMARY_TABS = [
+  { key: 'agenda', label: 'Agenda' },
   { key: 'tldr', label: 'TL;DR' },
   { key: 'notes', label: 'Detailed Notes' },
   { key: 'eips', label: 'EIPs' },
@@ -673,7 +677,13 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     if (hasHandledSummaryDeepLink.current) return;
     const requested = searchParams.get('summary');
     const target =
-      requested === 'notes' ? callData?.notesData : requested === 'eips' ? callData?.eipMentions : null;
+      requested === 'agenda'
+        ? callConfig?.issue
+        : requested === 'notes'
+        ? callData?.notesData
+        : requested === 'eips'
+        ? callData?.eipMentions
+        : null;
     if (!target) return;
 
     hasHandledSummaryDeepLink.current = true;
@@ -686,7 +696,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
         });
       });
     });
-  }, [searchParams, callData]);
+  }, [searchParams, callData, callConfig]);
 
   // Keyboard shortcut to open search (Cmd/Ctrl + K)
   useEffect(() => {
@@ -1274,21 +1284,25 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const hasTldr = Boolean(callData.tldrData);
   const hasNotes = Boolean(callData.notesData?.sections?.length);
   const hasEipMentions = Boolean(callData.eipMentions?.eips?.length);
-  const hasSummary = hasTldr || hasNotes || hasEipMentions;
+  // Whether the issue carries an agenda is only known once the tab fetches it, so the
+  // tab is offered for any call that has an issue and says so itself when it finds none.
+  const agendaIssue = callConfig?.issue;
+  const hasSummary = hasTldr || hasNotes || hasEipMentions || Boolean(agendaIssue);
   const availableSummaryTabs = SUMMARY_TABS.filter(
-    tab => ({ tldr: hasTldr, notes: hasNotes, eips: hasEipMentions })[tab.key],
+    tab => ({ agenda: Boolean(agendaIssue), tldr: hasTldr, notes: hasNotes, eips: hasEipMentions })[tab.key],
   );
   const showSummaryTabs = availableSummaryTabs.length > 1;
   // ?type=agenda|action deep links scroll to anchors that only exist in the TL;DR view.
   const forceTldr = hasTldr && (selectedSearchResult?.type === 'agenda' || selectedSearchResult?.type === 'action');
   const requestedTab = availableSummaryTabs.find(tab => tab.key === searchParams.get('summary'));
-  const summaryTab: SummaryTab =
-    (!forceTldr && requestedTab?.key) || availableSummaryTabs[0]?.key || 'tldr';
+  const defaultSummaryTab: SummaryTab =
+    availableSummaryTabs.find(tab => tab.key !== 'agenda')?.key || 'agenda';
+  const summaryTab: SummaryTab = (!forceTldr && requestedTab?.key) || defaultSummaryTab;
 
   const setSummaryTab = (tab: SummaryTab) => {
     const next = new URLSearchParams(searchParams);
-    // TL;DR is the default view, so it leaves the URL clean.
-    if (tab === 'tldr') next.delete('summary');
+    // The tab a call opens on needs no param, so arriving at it leaves the URL clean.
+    if (tab === defaultSummaryTab) next.delete('summary');
     else next.set('summary', tab);
     setSearchParams(next, { replace: true });
   };
@@ -1310,7 +1324,9 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
         Summary
       </h2>
       <span className="text-xs text-slate-500 dark:text-slate-400">
-        {summaryTab === 'notes'
+        {summaryTab === 'agenda'
+          ? 'planned topics'
+          : summaryTab === 'notes'
           ? `${callData.notesData!.sections.length} sections`
           : summaryTab === 'eips'
           ? `${callData.eipMentions!.eips.length} EIPs`
@@ -1344,7 +1360,9 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
     <>
       {renderSummaryTabs()}
       <div className="p-6">
-        {summaryTab === 'notes' ? (
+        {summaryTab === 'agenda' ? (
+          <CallAgenda issueNumber={agendaIssue!} />
+        ) : summaryTab === 'notes' ? (
           <CallNotes
             data={callData.notesData!}
             onTimestampClick={handleTranscriptClick}

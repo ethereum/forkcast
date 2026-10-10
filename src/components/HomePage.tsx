@@ -1,21 +1,14 @@
-import { useEffect, useState } from 'react';
 import { Link } from './navigation';
 import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
-import { getRecentCalls, getCallTypeBadgeLabel, isOneOffCall, callTypeNames, protocolCalls, type Call, type CallType } from '../data/calls';
+import { getRecentCalls, getCallTypeBadgeLabel, isOneOffCall, callTypeNames, type CallType } from '../data/calls';
 import { eipsData, eipById } from '../data/eips';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { getProposalPrefix, getLaymanTitle } from '../utils/eip';
 import { getInclusionStageColor } from '../utils/colors';
 import UpgradeCard from './ui/UpgradeCard';
 import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
-import { EIP, InclusionStage, KeyDecision } from '../types/eip';
-
-const ACD_TYPES: CallType[] = ['acdc', 'acde', 'acdt'];
-
-interface RecentMeetingDecisions {
-  call: Call;
-  decisions: KeyDecision[];
-}
+import { EIP, InclusionStage } from '../types/eip';
+import type { MeetingDecisions } from '../domain/calls/keyDecisions';
 
 /** Status values from statusHistory → abbreviation labels for display. */
 const STATUS_ABBREV: Record<string, string> = {
@@ -38,30 +31,6 @@ interface StageTransition {
   changeDate: string; // YYYY-MM-DD
   timestamp: number;
 }
-
-const fetchLatestMeetingDecisions = async (): Promise<RecentMeetingDecisions | null> => {
-  const acdCalls = protocolCalls
-    .filter((call) => ACD_TYPES.includes(call.type as CallType))
-    .sort((a, b) => b.date.localeCompare(a.date));
-
-  for (const call of acdCalls) {
-    try {
-      const artifactPath = `${call.type}/${call.date}_${call.number}`;
-      const response = await fetch(`/artifacts/${artifactPath}/key_decisions.json`);
-      if (!response.ok) continue;
-
-      const data = await response.json();
-      const decisions: KeyDecision[] = data?.key_decisions;
-      if (Array.isArray(decisions) && decisions.length > 0) {
-        return { call, decisions };
-      }
-    } catch {
-      // Network or parse failure — try the next call rather than tearing down the section.
-    }
-  }
-
-  return null;
-};
 
 const quickLinks: NetworkUpgrade[] = (() => {
   const active = networkUpgrades.filter((u) => !u.disabled);
@@ -126,24 +95,14 @@ const recentStageTransitions: StageTransition[] = (() => {
   return transitions.slice(0, 5);
 })();
 
-const HomePage = () => {
+interface HomePageProps {
+  /** The most recent ACD call's key decisions, read at build time. */
+  recentMeetingDecisions: MeetingDecisions | null;
+}
+
+const HomePage = ({ recentMeetingDecisions }: HomePageProps) => {
   const recentCalls = getRecentCalls(5);
-  const [recentMeetingDecisions, setRecentMeetingDecisions] = useState<RecentMeetingDecisions | null>(null);
   const { trackLinkClick } = useAnalytics();
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchLatestMeetingDecisions().then((result) => {
-      if (!cancelled) {
-        setRecentMeetingDecisions(result);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
     trackLinkClick(linkType, url);

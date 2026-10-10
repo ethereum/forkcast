@@ -1,14 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from './navigation';
-import { protocolCalls, Call } from '../data/calls';
-import { KeyDecision } from '../types/eip';
 import { eipById } from '../data/eips';
 import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
-
-interface MeetingDecisions {
-  call: Call;
-  decisions: KeyDecision[];
-}
+import type { MeetingDecisions } from '../domain/calls/keyDecisions';
 
 type FilterType = 'all' | 'stage_change' | 'devnet_inclusion' | 'headliner_selected' | 'other';
 
@@ -20,9 +14,6 @@ const FILTER_OPTIONS: { value: FilterType; label: string }[] = [
   { value: 'other', label: 'Other' },
 ];
 
-const ACD_TYPES: string[] = ['acdc', 'acde', 'acdt'];
-const BREAKOUT_SUFFIXES: string[] = ['cl', 'el'];
-
 const formatDate = (dateStr: string): string => {
   const date = new Date(dateStr + 'T00:00:00');
   return date.toLocaleDateString('en-US', {
@@ -32,50 +23,12 @@ const formatDate = (dateStr: string): string => {
   });
 };
 
-const DecisionsPage: React.FC = () => {
-  const [meetings, setMeetings] = useState<MeetingDecisions[]>([]);
-  const [loading, setLoading] = useState(true);
+interface DecisionsPageProps {
+  meetings: MeetingDecisions[];
+}
+
+const DecisionsPage: React.FC<DecisionsPageProps> = ({ meetings }) => {
   const [filter, setFilter] = useState<FilterType>('all');
-
-
-  useEffect(() => {
-    const fetchAllDecisions = async () => {
-      const acdCalls = protocolCalls.filter(c => ACD_TYPES.includes(c.type));
-
-      const fetchKd = async (url: string): Promise<KeyDecision[]> => {
-        const response = await fetch(url);
-        if (!response.ok) return [];
-        const data = await response.json();
-        return data?.key_decisions ?? [];
-      };
-
-      const results = await Promise.allSettled(
-        acdCalls.map(async (call) => {
-          const artifactPath = `${call.type}/${call.date}_${call.number}`;
-          const urls = [`/artifacts/${artifactPath}/key_decisions.json`];
-          if (call.type === 'acdt') {
-            for (const suffix of BREAKOUT_SUFFIXES) {
-              urls.push(`/artifacts/${artifactPath}/key_decisions_${suffix}.json`);
-            }
-          }
-          const allDecisions = (await Promise.all(urls.map(fetchKd))).flat();
-          if (allDecisions.length === 0) return null;
-          return { call, decisions: allDecisions };
-        })
-      );
-
-      const meetingDecisions: MeetingDecisions[] = results
-        .filter((r): r is PromiseFulfilledResult<MeetingDecisions | null> => r.status === 'fulfilled')
-        .map(r => r.value)
-        .filter((m): m is MeetingDecisions => m !== null)
-        .sort((a, b) => b.call.date.localeCompare(a.call.date));
-
-      setMeetings(meetingDecisions);
-      setLoading(false);
-    };
-
-    fetchAllDecisions();
-  }, []);
 
   const filteredMeetings = useMemo(() => {
     if (filter === 'all') return meetings;
@@ -123,58 +76,47 @@ const DecisionsPage: React.FC = () => {
         </div>
 
         {/* Stats line */}
-        {!loading && (
-          <p className="text-xs text-slate-400 dark:text-slate-500 mb-6">
-            {stats.decisions} decision{stats.decisions !== 1 ? 's' : ''} across {stats.calls} call{stats.calls !== 1 ? 's' : ''}
-          </p>
-        )}
-
-        {/* Loading spinner */}
-        {loading && (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-          </div>
-        )}
+        <p className="text-xs text-slate-400 dark:text-slate-500 mb-6">
+          {stats.decisions} decision{stats.decisions !== 1 ? 's' : ''} across {stats.calls} call{stats.calls !== 1 ? 's' : ''}
+        </p>
 
         {/* Decisions grouped by meeting */}
-        {!loading && (
-          <div className="space-y-6">
-            {filteredMeetings.map(({ call, decisions }) => (
-              <div key={`${call.type}-${call.number}`}>
-                {/* Meeting header */}
-                <div className="flex items-baseline gap-2 mb-2">
-                  <Link
-                    to={`/calls/${call.type}/${call.number}`}
-                    className="text-sm font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
-                  >
-                    {call.type.toUpperCase()} #{call.number}
-                  </Link>
-                  <span className="text-xs text-slate-400 dark:text-slate-500">
-                    {formatDate(call.date)}
-                  </span>
-                </div>
-
-                {/* Decision list */}
-                <ul className="space-y-1.5 list-none ml-0">
-                  {decisions.map((decision, index) => {
-                    const isStructured = decision.type !== 'other';
-                    return (
-                      <li
-                        key={index}
-                        className="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
-                      >
-                        {isStructured
-                          ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                          : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />
-                        }
-                      </li>
-                    );
-                  })}
-                </ul>
+        <div className="space-y-6">
+          {filteredMeetings.map(({ call, decisions }) => (
+            <div key={`${call.type}-${call.number}`}>
+              {/* Meeting header */}
+              <div className="flex items-baseline gap-2 mb-2">
+                <Link
+                  to={`/calls/${call.type}/${call.number}`}
+                  className="text-sm font-semibold text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+                >
+                  {call.type.toUpperCase()} #{call.number}
+                </Link>
+                <span className="text-xs text-slate-400 dark:text-slate-500">
+                  {formatDate(call.date)}
+                </span>
               </div>
-            ))}
-          </div>
-        )}
+
+              {/* Decision list */}
+              <ul className="space-y-1.5 list-none ml-0">
+                {decisions.map((decision, index) => {
+                  const isStructured = decision.type !== 'other';
+                  return (
+                    <li
+                      key={index}
+                      className="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
+                    >
+                      {isStructured
+                        ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
+                        : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />
+                      }
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

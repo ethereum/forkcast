@@ -26,6 +26,11 @@ export const getCallTypeBadgeLabel = (type: string): string =>
 
 export const protocolCalls: Call[] = generatedCalls as Call[];
 
+// AllCoreDevs series (as opposed to breakouts), and the per-layer suffixes ACDT
+// uses for its split artifacts (e.g. key_decisions_cl.json).
+export const ACD_TYPES: string[] = ['acdc', 'acde', 'acdt'];
+export const BREAKOUT_SUFFIXES: string[] = ['cl', 'el'];
+
 export const isOneOffCall = (type: string): boolean => type.startsWith('one-off-');
 
 export const getCallDisplayName = (call: Call): string =>

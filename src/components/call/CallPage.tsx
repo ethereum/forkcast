@@ -20,6 +20,12 @@ import {
   computeGapSkipIntervals,
   findGapSkipTarget,
 } from '../../utils/gapSkip';
+import {
+  getAdjustedVideoTime as getSyncedVideoTime,
+  secondsToTimestamp,
+  stripMillis,
+  timestampToSeconds,
+} from '../../utils/timestamp';
 
 // Mapping of breakout call types to their associated EIP IDs
 const BREAKOUT_EIP_MAP: Record<string, number> = Object.fromEntries(
@@ -117,35 +123,6 @@ const LAYOUT_MODE_STORAGE_KEY = 'call-layout-mode';
 const readStoredLayoutMode = (): LayoutMode => {
   const stored = localStorage.getItem(LAYOUT_MODE_STORAGE_KEY);
   return LAYOUT_MODES.some(({ mode }) => mode === stored) ? (stored as LayoutMode) : 'balanced';
-};
-
-const timestampToSeconds = (timestamp: string | null | undefined): number => {
-  if (!timestamp) return 0;
-  const parts = timestamp.split(':');
-  if (parts.length !== 3) return 0;
-  const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-  return hours * 3600 + minutes * 60 + seconds;
-};
-
-const formatTimestamp = (timestamp: string): string => timestamp.split('.')[0];
-
-const secondsToTimestamp = (totalSeconds: number): string => {
-  const sign = totalSeconds < 0 ? '-' : '';
-  const absSeconds = Math.abs(totalSeconds);
-  const hours = Math.floor(absSeconds / 3600);
-  const minutes = Math.floor((absSeconds % 3600) / 60);
-  const seconds = Math.floor(absSeconds % 60);
-
-  return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-};
-
-const getAdjustedVideoTimeForConfig = (transcriptTimestamp: string, callConfig: CallConfig | null): number => {
-  const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
-  if (callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
-    const offset = timestampToSeconds(callConfig.sync.transcriptStartTime) - timestampToSeconds(callConfig.sync.videoStartTime);
-    return transcriptSeconds - offset;
-  }
-  return transcriptSeconds;
 };
 
 const extractYouTubeId = (url: string): string => {
@@ -696,7 +673,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
 
   // Apply sync offset to convert transcript time to video time
   const getAdjustedVideoTime = useCallback((transcriptTimestamp: string): number => {
-    return getAdjustedVideoTimeForConfig(transcriptTimestamp, callConfig);
+    return getSyncedVideoTime(transcriptTimestamp, callConfig?.sync);
   }, [callConfig]);
 
   useEffect(() => {
@@ -1733,7 +1710,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                   `} style={{ minWidth: '64px' }}>
                     {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
                       ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
-                      : formatTimestamp(entry.timestamp)
+                      : stripMillis(entry.timestamp)
                     }
                   </span>
                   <div className="flex-1 min-w-0">

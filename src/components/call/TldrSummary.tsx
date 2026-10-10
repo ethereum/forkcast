@@ -1,7 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 import { KeyDecision } from '../../types/eip';
 import type { SyncConfig, TldrData, TldrHighlight } from '../../types/artifacts';
-import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
+import {
+  PRE_RECORDING_LABEL,
+  getAdjustedVideoTime,
+  secondsToCompactTimestamp,
+  timestampToSeconds,
+} from '../../utils/timestamp';
 import KeyDecisionsSection from './KeyDecisionsSection';
 
 interface TldrSummaryProps {
@@ -33,26 +38,11 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     return `${h}:${m}:${seconds}`;
   };
 
-  const timestampToSeconds = (timestamp: string | null | undefined): number => {
-    if (!timestamp) return 0;
-    const parts = timestamp.split(':');
-    if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
   const getDisplayTimestamp = (timestamp: string): string => {
     if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
-      const adjustedSeconds = getAdjustedVideoTime(timestamp);
+      const adjustedSeconds = getAdjustedVideoTime(timestamp, syncConfig);
       if (adjustedSeconds < 0) return PRE_RECORDING_LABEL;
-      const hours = Math.floor(adjustedSeconds / 3600);
-      const minutes = Math.floor((adjustedSeconds % 3600) / 60);
-      const seconds = Math.floor(adjustedSeconds % 60);
-      const formattedSeconds = seconds.toString().padStart(2, '0');
-      if (hours === 0) {
-        return `00:${minutes}:${formattedSeconds}`;
-      }
-      return `${hours}:${minutes}:${formattedSeconds}`;
+      return secondsToCompactTimestamp(adjustedSeconds);
     }
     return formatTimestamp(timestamp);
   };
@@ -71,23 +61,12 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     ).join(' ');
   };
 
-  const getAdjustedVideoTime = (transcriptTimestamp: string): number => {
-    const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
-    if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
-      const transcriptStartSeconds = timestampToSeconds(syncConfig.transcriptStartTime);
-      const videoStartSeconds = timestampToSeconds(syncConfig.videoStartTime);
-      const offset = transcriptStartSeconds - videoStartSeconds;
-      return transcriptSeconds - offset;
-    }
-    return transcriptSeconds;
-  };
-
   const isCurrentHighlight = (timestamp: string, allHighlights: TldrHighlight[]): boolean => {
     if (!currentVideoTime || !syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime) return false;
-    const itemVideoTime = getAdjustedVideoTime(timestamp);
+    const itemVideoTime = getAdjustedVideoTime(timestamp, syncConfig);
     const itemIndex = allHighlights.findIndex(h => h.timestamp === timestamp);
     const nextItem = itemIndex < allHighlights.length - 1 ? allHighlights[itemIndex + 1] : null;
-    const nextItemVideoTime = nextItem ? getAdjustedVideoTime(nextItem.timestamp) : Infinity;
+    const nextItemVideoTime = nextItem ? getAdjustedVideoTime(nextItem.timestamp, syncConfig) : Infinity;
     return currentVideoTime >= itemVideoTime && currentVideoTime < nextItemVideoTime;
   };
 

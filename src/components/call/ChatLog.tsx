@@ -7,6 +7,7 @@ import {
   type ChatMessage,
 } from '../../domain/chat/zoomChat';
 import type { SyncConfig } from '../../types/artifacts';
+import { getAdjustedVideoTime, secondsToTimestamp, timestampToSeconds } from '../../utils/timestamp';
 
 interface ChatLogProps {
   content: string;
@@ -78,31 +79,6 @@ const ChatLog: React.FC<ChatLogProps> = ({
       }
       return part;
     });
-  };
-
-  // --- Timestamp conversion helpers ---
-  const timestampToSeconds = (timestamp: string): number => {
-    const parts = timestamp.split(':');
-    if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
-  const secondsToTimestamp = (totalSeconds: number): string => {
-    const sign = totalSeconds < 0 ? '-' : '';
-    const absSeconds = Math.abs(totalSeconds);
-    const hours = Math.floor(absSeconds / 3600);
-    const minutes = Math.floor((absSeconds % 3600) / 60);
-    const seconds = Math.floor(absSeconds % 60);
-
-    return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  const getAdjustedVideoTime = (chatTimestamp: string): number => {
-    if (!syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime) return 0;
-    const chatSeconds = timestampToSeconds(chatTimestamp);
-    const syncOffsetSeconds = timestampToSeconds(syncConfig.transcriptStartTime) - timestampToSeconds(syncConfig.videoStartTime);
-    return chatSeconds - syncOffsetSeconds;
   };
 
   // --- Threading and rendering logic (from TranscriptModal) ---
@@ -232,7 +208,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                   >
                     <span className="group-hover:hidden">
                       {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
-                        ? secondsToTimestamp(getAdjustedVideoTime(message.timestamp))
+                        ? secondsToTimestamp(getAdjustedVideoTime(message.timestamp, syncConfig))
                         : message.timestamp}
                     </span>
                     <span className="hidden group-hover:inline text-[10px] hover:underline cursor-pointer">
@@ -352,7 +328,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                       >
                         <span className="group-hover:hidden">
                           {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
-                            ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
+                            ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp, syncConfig))
                             : reply.timestamp}
                         </span>
                         <span className="hidden group-hover:inline text-[10px] hover:underline cursor-pointer">

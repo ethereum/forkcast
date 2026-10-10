@@ -3,6 +3,7 @@ import { SearchQueryProvider, SearchMatch } from '../search/SearchUi';
 import { getSearchTypeIcon, getSearchTypeColor } from '../search/searchShortcuts';
 import { openGlobalSearch } from '../../domain/search/globalSearchBridge';
 import type { SyncConfig, TldrData, TldrHighlight } from '../../types/artifacts';
+import { getAdjustedVideoTime, secondsToTimestamp, stripMillis, timestampToSeconds } from '../../utils/timestamp';
 
 interface SearchResult {
   type: 'transcript' | 'chat' | 'agenda' | 'action';
@@ -65,30 +66,6 @@ const CallSearch: React.FC<CallSearchProps> = ({
       }
     }
   }, [isOpen, initialQuery]);
-
-  // Helper functions for timestamp conversion
-  const timestampToSeconds = (timestamp: string): number => {
-    const parts = timestamp.split(':');
-    if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
-  const secondsToTimestamp = (totalSeconds: number): string => {
-    const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = Math.floor(totalSeconds % 60);
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  const getAdjustedVideoTime = (timestamp: string): number => {
-    const transcriptSeconds = timestampToSeconds(timestamp.split('.')[0]);
-    if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
-      const offset = timestampToSeconds(syncConfig.transcriptStartTime) - timestampToSeconds(syncConfig.videoStartTime);
-      return transcriptSeconds - offset;
-    }
-    return transcriptSeconds;
-  };
 
   // Parse content sources
   const parseTranscript = (text: string) => {
@@ -205,7 +182,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
       // Filter out entries before transcriptStartTime if sync config exists
       const entries = allEntries.filter(entry => {
         if (syncConfig?.transcriptStartTime) {
-          const entrySeconds = timestampToSeconds(entry.timestamp.split('.')[0]);
+          const entrySeconds = timestampToSeconds(stripMillis(entry.timestamp));
           const startSeconds = timestampToSeconds(syncConfig.transcriptStartTime);
           return entrySeconds >= startSeconds;
         }
@@ -537,7 +514,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span className="text-xs font-mono text-blue-600 dark:text-blue-400 flex-shrink-0">
-                          {syncConfig ? secondsToTimestamp(getAdjustedVideoTime(result.timestamp)) : result.timestamp.split('.')[0]}
+                          {syncConfig ? secondsToTimestamp(getAdjustedVideoTime(result.timestamp, syncConfig)) : stripMillis(result.timestamp)}
                         </span>
                         {result.speaker && (
                           <span className="text-xs font-medium text-slate-600 dark:text-slate-400 truncate">

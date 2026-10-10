@@ -3,7 +3,7 @@ import { Link } from '../navigation';
 import { KeyDecision, EIP } from '../../types/eip';
 import { getKeyDecisionTagColor } from '../../utils/colors';
 import type { SyncConfig } from '../../types/artifacts';
-import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
+import { PRE_RECORDING_LABEL, getAdjustedVideoTime, secondsToCompactTimestamp } from '../../utils/timestamp';
 import { eipById } from '../../data/eips';
 
 interface KeyDecisionsSectionProps {
@@ -285,29 +285,11 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
   syncConfig,
   selectedSearchResult,
 }) => {
-  const timestampToSeconds = (timestamp: string | null | undefined): number => {
-    if (!timestamp) return 0;
-    const parts = timestamp.split(':');
-    if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
   const getDisplayTimestamp = (timestamp: string): string => {
     if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
-      const transcriptSeconds = timestampToSeconds(timestamp);
-      const offset = timestampToSeconds(syncConfig.transcriptStartTime) -
-                     timestampToSeconds(syncConfig.videoStartTime);
-      const adjustedSeconds = transcriptSeconds - offset;
+      const adjustedSeconds = getAdjustedVideoTime(timestamp, syncConfig);
       if (adjustedSeconds < 0) return PRE_RECORDING_LABEL;
-      const hours = Math.floor(adjustedSeconds / 3600);
-      const minutes = Math.floor((adjustedSeconds % 3600) / 60);
-      const seconds = Math.floor(adjustedSeconds % 60);
-      const formattedSeconds = seconds.toString().padStart(2, '0');
-      if (hours === 0) {
-        return `00:${minutes}:${formattedSeconds}`;
-      }
-      return `${hours}:${minutes}:${formattedSeconds}`;
+      return secondsToCompactTimestamp(adjustedSeconds);
     }
     return timestamp;
   };

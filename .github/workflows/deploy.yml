@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - main
+  # Daily rebuild so build-time, date-relative content (upcoming calls,
+  # network snapshots, "next call" links) stays current on quiet days.
+  # 00:30 UTC sits between the hourly call sync and the 06:00 data bots.
+  schedule:
+    - cron: '30 0 * * *'
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

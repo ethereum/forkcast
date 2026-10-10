@@ -60,6 +60,7 @@ function parseAnnouncements(md) {
     // Strip leading emoji shortcodes like :mega:, :exclamation:, etc.
     text = text.replace(/^:[a-z_]+:\s*/i, '');
     // Strip leading unicode emoji (❗, 📢, ✅, etc.)
+    // eslint-disable-next-line no-misleading-character-class -- range deliberately spans variation selectors
     text = text.replace(/^[\u{2000}-\u{3300}\u{FE00}-\u{FEFF}\u{1F000}-\u{1FFFF}]\s*/u, '');
     if (text) announcements.push(text);
   }
@@ -134,7 +135,7 @@ function parseClientMatrix(md, sectionPattern) {
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     // Look for a table header line (has | and isn't a separator)
-    if (line.startsWith('|') && line.includes('|') && !line.match(/^\|[\s:\-]+\|/)) {
+    if (line.startsWith('|') && line.includes('|') && !line.match(/^\|[\s:-]+\|/)) {
       // Check next line is separator
       const nextLine = (lines[i + 1] || '').trim();
       if (nextLine.match(/^\|[\s:\-|]+\|?$/)) {

@@ -13,50 +13,31 @@ A call's `key_decisions.json` records `stage_change` decisions — e.g. ACDE #24
 - Example EIP with populated relationships: `src/data/eips/7805.json`.
 - `stage_change.to` values map 1:1 onto `statusHistory[].status` (`Proposed`, `Considered`, `Scheduled`, `Included`, `Declined`, `Withdrawn`). "PFI" = `Proposed`, "CFI" = `Considered`, "SFI" = `Scheduled`.
 
-### Step 1: Gather input
+### Steps 1–3: Run the script
 
-Ask the user for the **call ref** as `{type}/{number}` (e.g. `acde/240`). From it:
+Ask the user for the **call ref** as `{type}/{number}` (e.g. `acde/240`), then run:
 
-1. Resolve the artifact dir by glob: `public/artifacts/{type}/*_{number}/` (folder is `{date}_{numberPadded}`, e.g. `2026-07-02_240`).
-2. Read `key_decisions.json` from that dir. It's the source of truth for what changed.
-3. Derive the two fields every new `statusHistory` entry needs:
-   - **`call`**: `{type}/{number}` with the number as a plain integer, no leading zeros (e.g. `acde/240`, `acdt/85`). This is the `${type}/${number}` format used throughout existing EIPs.
-   - **`date`**: the `YYYY-MM-DD` prefix of the artifact folder name (also matches the `meeting` field's date).
+```bash
+node scripts/apply-key-decisions.mjs acde/240 --dry-run   # list the tuples first
+node scripts/apply-key-decisions.mjs acde/240
+```
 
-### Step 2: Collect the decisions
+Show the user the listed decisions before applying so they can spot anything off. `--since YYYY-MM-DD` or `--all` processes every call with a `key_decisions.json` instead of one ref. The script is idempotent; a decision already recorded is reported as "already reflected". The `apply-key-decisions` workflow runs it after each call sync and opens a PR.
 
-From `key_decisions.json`, select every entry where **all** of these hold:
+What it does, for reference:
 
-- `type == "stage_change"`
-- `fork` is present (e.g. `"Hegota"`)
-- `stage_change.to` is present
-- `eips` is non-empty
+1. Resolves `public/artifacts/{type}/*_{number}/key_decisions.json`. Every new `statusHistory` entry gets `call: "{type}/{number}"` (plain integer) and `date` from the folder's `YYYY-MM-DD` prefix.
+2. Takes every entry with `type == "stage_change"`, a `fork`, a `stage_change.to` and a non-empty `eips`, giving one `(eip, forkName, status)` tuple per EIP. Stage changes with **no fork** (often withdrawals/DFIs) are printed as "No fork given, not applied". Apply those by hand if they're real.
+3. For each tuple, edits `src/data/eips/{eip}.json`:
+   - No relationship for that fork (case-insensitive match): appends `{ "forkName", "statusHistory": [{ status, call, date }] }`. It never sets `isHeadliner` / `wasHeadlinerCandidate`.
+   - Otherwise it inserts the entry in date order. It skips the entry if the same `status`+`call` exists, or if the EIP already had that status at that point (e.g. a re-announced PFI).
+   - Only `forkRelationships` changes. Files are written as `JSON.stringify(_, null, 2)` plus a trailing newline, like the EIP sync.
 
-Each such entry yields one or more `(eip, forkName, status)` tuples (an entry usually has a single EIP). Ignore `type: "other"` entries and any with an empty `eips` array — those aren't per-EIP status changes.
-
-List the tuples back to the user before editing so they can spot anything off.
-
-### Step 3: Update each EIP's forkRelationships
-
-For each `(eip, forkName, status)`, open `src/data/eips/{eip}.json`:
-
-1. Find an existing `forkRelationships` entry whose `forkName` matches.
-   - **None found**: append a new relationship:
-     ```json
-     {
-       "forkName": "{forkName}",
-       "statusHistory": [
-         { "status": "{status}", "call": "{call}", "date": "{date}" }
-       ]
-     }
-     ```
-     Do **not** set `isHeadliner` / `wasHeadlinerCandidate` for a plain stage change — those are only for headliner candidacies and this skill doesn't infer them.
-   - **Found**: append a new `statusHistory` entry (keep the array ordered oldest → newest). Skip if an identical `status`+`call` entry already exists (idempotent — re-running the skill must not create duplicates).
-2. Preserve all other fields and formatting; only touch `forkRelationships`.
+The script prints EIPs with **no data file** (use convert-eip) and **"Lacking champions"**: the EIP/fork pairs step 4 applies to.
 
 ### Step 4: Attempt a champion (presenter)
 
-For each EIP that just got a new/updated relationship, try to add **one** champion — the person who championed the proposal. Only add a champion if the relationship has no `champions` yet.
+For each EIP the script listed under "Lacking champions", try to add **one** champion — the person who championed the proposal. Only add a champion if the relationship has no `champions` yet.
 
 The champion is usually the person who **added the proposal to the call agenda** by commenting on the ACDE/ACDC GitHub issue (in `ethereum/pm`). This is the most reliable signal — more reliable than who spoke on the call, since presenters sometimes speak on behalf of the actual champion.
 

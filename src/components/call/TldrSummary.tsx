@@ -121,9 +121,10 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                       }`}>
                         {item.highlight}
                       </span>
-                      <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button type="button" className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer">
+                        <span className="sr-only">Play from </span>
                         {getDisplayTimestamp(item.timestamp)}
-                      </span>
+                      </button>
                     </li>
                   );
                 })}
@@ -168,9 +169,10 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                       }`}>
                         {decision.decision}
                       </span>
-                      <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button type="button" className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer">
+                        <span className="sr-only">Play from </span>
                         {getDisplayTimestamp(decision.timestamp)}
-                      </span>
+                      </button>
                     </li>
                   );
                 })}
@@ -202,9 +204,10 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                     }`}>
                       <span className="font-normal">{item.owner}:</span> {item.action}
                     </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button type="button" className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer">
+                      <span className="sr-only">Play from </span>
                       {getDisplayTimestamp(item.timestamp)}
-                    </span>
+                    </button>
                   </li>
                 );
               })}
@@ -235,9 +238,10 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
                     }`}>
                       {target.target}
                     </span>
-                    <span className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button type="button" className="text-xs text-slate-400 dark:text-slate-400 ml-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer">
+                      <span className="sr-only">Play from </span>
                       {getDisplayTimestamp(target.timestamp)}
-                    </span>
+                    </button>
                   </li>
                 );
               })}

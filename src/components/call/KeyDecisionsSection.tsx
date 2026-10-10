@@ -324,9 +324,10 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
                 : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />
               }
             </span>
-            <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button type="button" className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer">
+              <span className="sr-only">Play from </span>
               {getDisplayTimestamp(decision.timestamp)}
-            </span>
+            </button>
           </li>
         );
       })}

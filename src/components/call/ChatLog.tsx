@@ -18,6 +18,23 @@ interface ChatLogProps {
   allowTimestampNavigation?: boolean;
 }
 
+// The timestamp button copies a link, so the speaker label is the keyboard way to
+// seek: when the row can seek it's a button, and activating it clicks through to
+// the row's handler.
+const SpeakerLabel: React.FC<{ seekable: boolean; className: string; children: React.ReactNode }> = ({
+  seekable,
+  className,
+  children,
+}) =>
+  seekable ? (
+    <button type="button" className={`${className} cursor-pointer`}>
+      {children}
+      <span className="sr-only"> (play from here)</span>
+    </button>
+  ) : (
+    <span className={className}>{children}</span>
+  );
+
 const ChatLog: React.FC<ChatLogProps> = ({
   content,
   syncConfig,
@@ -221,9 +238,9 @@ const ChatLog: React.FC<ChatLogProps> = ({
                   </span>
                 )}
                 <div className="flex-1 min-w-0">
-                  <span className={`font-medium mr-2 ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
+                  <SpeakerLabel seekable={isTimestampClickable} className={`font-medium mr-2 ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                     {message.speaker === 'Unknown' ? 'Context' : message.speaker}:
-                  </span>
+                  </SpeakerLabel>
                   <span className={`break-words ${
                     message.speaker === 'Unknown' 
                       ? (isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400 italic' : 'text-slate-500 dark:text-slate-400 italic')
@@ -336,9 +353,9 @@ const ChatLog: React.FC<ChatLogProps> = ({
                         </span>
                       </button>
                       <div className="flex-1 min-w-0">
-                        <span className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
+                        <SpeakerLabel seekable={allowTimestampNavigation && reply.timestamp !== '00:00:00'} className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                           {reply.speaker}:
-                        </span>
+                        </SpeakerLabel>
                         <span className={`break-words ${isSelectedReply ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>
                           {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
                             <React.Fragment key={index}>

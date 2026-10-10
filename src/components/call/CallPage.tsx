@@ -1703,16 +1703,18 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                       'border-transparent'}
                   `}
                 >
-                  <span className={`text-xs flex-shrink-0 font-mono mt-0.5
+                  {/* The keyboard way in: activating it clicks through to the row's handler. */}
+                  <button type="button" className={`text-xs flex-shrink-0 font-mono mt-0.5 self-start text-left cursor-pointer
                     ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' :
                       isHighlighted ? 'text-blue-600 dark:text-blue-400' :
                       'text-slate-500 dark:text-slate-400'}
                   `} style={{ minWidth: '64px' }}>
+                    <span className="sr-only">Play from </span>
                     {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
                       ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
                       : stripMillis(entry.timestamp)
                     }
-                  </span>
+                  </button>
                   <div className="flex-1 min-w-0">
                     <span className={`font-medium mr-2
                       ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' :

@@ -58,32 +58,8 @@ jobs:
             node scripts/generate-plan-artifacts.mjs --type "$t"
           done
 
-      - name: Check for changes
-        id: changes
-        run: |
-          if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
-          else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit and push
-        if: steps.changes.outputs.has_changes == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "generate plan artifacts"
-          git push
-
-      - name: Trigger deploy
-        if: steps.changes.outputs.has_changes == 'true'
-        uses: actions/github-script@v9
+      - name: Commit, push and deploy
+        uses: ./.github/actions/commit-and-push
         with:
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'deploy.yml',
-              ref: 'main'
-            });
+          paths: public/artifacts
+          message: 'generate plan artifacts'

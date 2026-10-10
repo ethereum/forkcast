@@ -1,0 +1,72 @@
+name: Commit and push
+description: Commit the given paths to main (rebasing onto any newer commits) and trigger a deploy.
+
+inputs:
+  paths:
+    description: Space-separated paths to stage
+    required: true
+  message:
+    description: Commit message
+    required: true
+  body:
+    description: Optional commit message body
+    required: false
+    default: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Commit and push
+      id: push
+      shell: bash
+      env:
+        PATHS: ${{ inputs.paths }}
+        MESSAGE: ${{ inputs.message }}
+        BODY: ${{ inputs.body }}
+      run: |
+        git add -- $PATHS
+        if git diff --cached --quiet; then
+          echo "No changes to commit"
+          echo "pushed=false" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        if [ -n "$BODY" ]; then
+          git commit -m "$MESSAGE" -m "$BODY"
+        else
+          git commit -m "$MESSAGE"
+        fi
+
+        # Rebase onto anything pushed to main since checkout (e.g. a maintainer
+        # push mid-run) rather than failing with "rejected (fetch first)".
+        for attempt in 1 2 3; do
+          if ! git pull --rebase --autostash; then
+            git rebase --abort || true
+            echo "::error::Rebase onto main failed (conflict with a newer commit)"
+            exit 1
+          fi
+          if git push; then
+            echo "pushed=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "Push rejected (attempt $attempt), retrying..."
+          sleep $((attempt * 5))
+        done
+        echo "::error::Push failed after 3 attempts"
+        exit 1
+
+    # Pushes made with GITHUB_TOKEN don't trigger `push` workflows, so
+    # deploy.yml has to be dispatched explicitly.
+    - name: Trigger deploy
+      if: steps.push.outputs.pushed == 'true'
+      uses: actions/github-script@v9
+      with:
+        script: |
+          await github.rest.actions.createWorkflowDispatch({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            workflow_id: 'deploy.yml',
+            ref: 'main'
+          });

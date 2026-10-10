@@ -14,10 +14,11 @@
  * Requires: ANTHROPIC_API_KEY environment variable
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
+import { writeFileAtomic } from './lib/atomic-write.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -313,7 +314,7 @@ ${transcript}`;
       }
     }
 
-    writeFileSync(outputPath, JSON.stringify(result, null, 2));
+    writeFileAtomic(outputPath, JSON.stringify(result, null, 2));
 
     const cost = calculateCost(model, usage);
     console.log(
@@ -417,6 +418,7 @@ async function main() {
   }
 
   console.log(`\nDone: ${succeeded} generated, ${skipped} skipped, ${failed} failed`);
+  if (failed > 0) process.exit(1);
 }
 
 main().catch((e) => {

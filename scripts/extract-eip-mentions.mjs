@@ -14,7 +14,7 @@
  * One call at a time by design — there is no --all. Requires ANTHROPIC_API_KEY.
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
@@ -25,6 +25,7 @@ import {
   sortMentions,
   validateMentions,
 } from './lib/eip-mentions.mjs';
+import { writeFileAtomic } from './lib/atomic-write.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -349,7 +350,7 @@ ${transcript}`;
       })),
     };
 
-    writeFileSync(outputPath, JSON.stringify(ordered, null, 2) + '\n');
+    writeFileAtomic(outputPath, JSON.stringify(ordered, null, 2) + '\n');
 
     if (warnings.length > 0) {
       console.log(`  ${warnings.length} warning(s) — check each before trusting the file:`);

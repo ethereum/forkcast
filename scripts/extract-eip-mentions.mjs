@@ -10,8 +10,11 @@
  *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-05-07_236
  *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-05-07_236 --force
  *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-05-07_236 --dry-run
+ *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-10-08_247,p2p/2026-10-07_009 --limit 4
  *
- * One call at a time by design — there is no --all. Requires ANTHROPIC_API_KEY.
+ * Calls are named explicitly by design — there is no --all. --only takes a
+ * comma-separated list; --limit caps how many transcripts are sent to the API
+ * in one run (existing outputs don't count). Requires ANTHROPIC_API_KEY.
  */
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
@@ -199,7 +202,7 @@ function formatAnchors(candidates, titles) {
   return blocks.join('\n\n');
 }
 
-async function extractForFile(entry, meetingDir, transcriptFile, titles, model, force) {
+async function extractForFile(entry, meetingDir, transcriptFile, titles, model, force, budget) {
   const { path: transcriptPath, suffix } = transcriptFile;
   const outputPath = join(meetingDir, `eip_mentions${suffix}.json`);
   const transcriptName = transcriptPath.split('/').pop();
@@ -240,6 +243,12 @@ ${chat ?? '(No chat file available)'}
 ## Transcript (WebVTT)
 
 ${transcript}`;
+
+  if (budget.remaining <= 0) {
+    console.log(`  ${transcriptName}: --limit reached, not generated`);
+    return 'deferred';
+  }
+  budget.remaining--;
 
   console.log(`  ${transcriptName}: calling Claude API (${model})...`);
 
@@ -317,18 +326,34 @@ ${transcript}`;
   }
 }
 
+/** `--only a,b` -> ['a', 'b']. */
+function splitList(value) {
+  return value
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** Name what --limit held back; in CI, as a warning annotation on the run. */
+function reportDeferred(deferred) {
+  if (deferred.length === 0) return;
+  const message = `--limit reached; not generated: ${deferred.join(', ')}`;
+  console.log(process.env.GITHUB_ACTIONS ? `::warning::${message}` : `\n${message}`);
+}
+
 async function main() {
   const { values } = parseArgs({
     options: {
       only: { type: 'string' },
       model: { type: 'string', short: 'm', default: LLM.model },
       force: { type: 'boolean', short: 'f', default: false },
+      limit: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
     },
   });
 
   if (!values.only) {
-    console.log('Specify --only <type>/<date>_<number> (e.g. acde/2026-05-07_236)');
+    console.log('Specify --only <type>/<date>_<number>[,...] (e.g. acde/2026-05-07_236)');
     process.exit(1);
   }
 
@@ -339,48 +364,65 @@ async function main() {
     process.exit(1);
   }
 
-  const entry = values.only;
-  const meetingDir = join(ARTIFACTS_DIR, entry);
-
-  console.log(`${entry}`);
-
-  if (!existsSync(meetingDir)) {
-    console.log(`  Directory not found: ${meetingDir}`);
-    process.exit(1);
-  }
-
-  const transcriptFiles = findTranscriptFiles(meetingDir);
-  if (transcriptFiles.length === 0) {
-    console.log('  No transcript files found');
-    process.exit(1);
-  }
-
-  if (values['dry-run']) {
-    const knownIds = new Set(titles.keys());
-    for (const { path, suffix } of transcriptFiles) {
-      const chat = readOptional(join(meetingDir, `chat${suffix}.txt`));
-      const candidates = extractEipCandidates(`${readFileSync(path, 'utf-8')}\n${chat ?? ''}`, knownIds);
-      const outputPath = join(meetingDir, `eip_mentions${suffix}.json`);
-      console.log(
-        `  ${path.split('/').pop()} -> eip_mentions${suffix}.json: ${existsSync(outputPath) ? 'exists' : 'missing'}` +
-          ` | ${candidates.size} candidate EIP(s)`,
-      );
-      // The anchors block is the whole deterministic contribution to the prompt,
-      // so seeing it is what makes a dry run useful.
-      console.log(formatAnchors(candidates, titles).split('\n').map((l) => `    ${l}`).join('\n'));
-    }
-    return;
-  }
-
+  const entries = splitList(values.only);
+  const budget = { remaining: values.limit ? parseInt(values.limit, 10) : Infinity };
+  const deferred = [];
   let failed = 0;
   let empty = 0;
-  for (const transcriptFile of transcriptFiles) {
-    const result = await extractForFile(entry, meetingDir, transcriptFile, titles, values.model, values.force);
-    if (result === 'failed') failed++;
-    else if (result === 'empty') empty++;
+
+  for (const entry of entries) {
+    const meetingDir = join(ARTIFACTS_DIR, entry);
+
+    console.log(`${entry}`);
+
+    if (!existsSync(meetingDir)) {
+      console.log(`  Directory not found: ${meetingDir}`);
+      failed++;
+      continue;
+    }
+
+    const transcriptFiles = findTranscriptFiles(meetingDir);
+    if (transcriptFiles.length === 0) {
+      // Some series (e.g. ethproofs) publish a TLDR but no transcript.
+      console.log('  No transcript files found — nothing to index');
+      continue;
+    }
+
+    if (values['dry-run']) {
+      const knownIds = new Set(titles.keys());
+      for (const { path, suffix } of transcriptFiles) {
+        const chat = readOptional(join(meetingDir, `chat${suffix}.txt`));
+        const candidates = extractEipCandidates(`${readFileSync(path, 'utf-8')}\n${chat ?? ''}`, knownIds);
+        const outputPath = join(meetingDir, `eip_mentions${suffix}.json`);
+        console.log(
+          `  ${path.split('/').pop()} -> eip_mentions${suffix}.json: ${existsSync(outputPath) ? 'exists' : 'missing'}` +
+            ` | ${candidates.size} candidate EIP(s)`,
+        );
+        // The anchors block is the whole deterministic contribution to the prompt,
+        // so seeing it is what makes a dry run useful.
+        console.log(formatAnchors(candidates, titles).split('\n').map((l) => `    ${l}`).join('\n'));
+      }
+      continue;
+    }
+
+    for (const transcriptFile of transcriptFiles) {
+      const result = await extractForFile(
+        entry,
+        meetingDir,
+        transcriptFile,
+        titles,
+        values.model,
+        values.force,
+        budget,
+      );
+      if (result === 'failed') failed++;
+      else if (result === 'empty') empty++;
+      else if (result === 'deferred') deferred.push(`${entry}${transcriptFile.suffix}`);
+    }
   }
 
   if (empty > 0) console.log(`\n${empty} transcript(s) had no EIP mentions.`);
+  reportDeferred(deferred);
 
   if (failed > 0) process.exit(1);
 }

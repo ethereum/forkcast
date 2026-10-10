@@ -10,6 +10,11 @@
  *   node --env-file=.env scripts/generate-call-notes.mjs --all
  *   node --env-file=.env scripts/generate-call-notes.mjs --all --dry-run
  *   node --env-file=.env scripts/generate-call-notes.mjs --only acdt/2026-07-20_088 --force
+ *   node --env-file=.env scripts/generate-call-notes.mjs --only aa/2026-10-06_006,rpc/2026-10-05_036 --limit 4
+ *
+ * --only takes a comma-separated list. --limit caps how many transcripts are
+ * sent to the API in one run (existing notes don't count), so CI can't run up
+ * a bill on a bulk re-sync.
  *
  * Requires: ANTHROPIC_API_KEY environment variable
  */
@@ -185,7 +190,7 @@ function meetingTitle(entry, suffix) {
   return suffix ? `${base} (${suffix.slice(1).toUpperCase()} Breakout)` : base;
 }
 
-async function generateNotesForFile(entry, meetingDir, transcriptFile, agenda, model, force) {
+async function generateNotesForFile(entry, meetingDir, transcriptFile, agenda, model, force, budget) {
   const { path: transcriptPath, suffix } = transcriptFile;
   const outputPath = join(meetingDir, `notes${suffix}.json`);
   const transcriptName = transcriptPath.split('/').pop();
@@ -219,6 +224,12 @@ ${chat ?? '(No chat file available)'}
 ## Transcript (WebVTT)
 
 ${transcript}`;
+
+  if (budget.remaining <= 0) {
+    console.log(`  ${transcriptName}: --limit reached, not generated`);
+    return 'deferred';
+  }
+  budget.remaining--;
 
   console.log(`  ${transcriptName}: calling Claude API (${model})...`);
 
@@ -287,6 +298,21 @@ function findAllTranscriptDirs() {
   return entries.sort();
 }
 
+/** `--only a,b` -> ['a', 'b']. */
+function splitList(value) {
+  return value
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** Name what --limit held back; in CI, as a warning annotation on the run. */
+function reportDeferred(deferred) {
+  if (deferred.length === 0) return;
+  const message = `--limit reached; not generated: ${deferred.join(', ')}`;
+  console.log(process.env.GITHUB_ACTIONS ? `::warning::${message}` : `\n${message}`);
+}
+
 async function main() {
   const { values } = parseArgs({
     options: {
@@ -294,6 +320,7 @@ async function main() {
       all: { type: 'boolean', default: false },
       model: { type: 'string', short: 'm', default: LLM.model },
       force: { type: 'boolean', short: 'f', default: false },
+      limit: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
     },
   });
@@ -303,7 +330,8 @@ async function main() {
     process.exit(1);
   }
 
-  const entries = values.only ? [values.only] : findAllTranscriptDirs();
+  const entries = values.only ? splitList(values.only) : findAllTranscriptDirs();
+  const budget = { remaining: values.limit ? parseInt(values.limit, 10) : Infinity };
 
   if (entries.length === 0) {
     console.log('No entries to process.');
@@ -315,6 +343,7 @@ async function main() {
   let succeeded = 0;
   let failed = 0;
   let skipped = 0;
+  const deferred = [];
 
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
@@ -355,14 +384,17 @@ async function main() {
         agenda,
         values.model,
         values.force,
+        budget,
       );
       if (result === 'succeeded') succeeded++;
       else if (result === 'skipped') skipped++;
+      else if (result === 'deferred') deferred.push(`${entry}${transcriptFile.suffix}`);
       else failed++;
     }
   }
 
   console.log(`\nDone: ${succeeded} generated, ${skipped} skipped, ${failed} failed`);
+  reportDeferred(deferred);
 }
 
 main().catch((e) => {

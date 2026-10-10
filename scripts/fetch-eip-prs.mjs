@@ -13,6 +13,7 @@ import {
   updateExistingEip,
 } from './eip-record-sync.mjs';
 import { loadDecisionEipIds } from './lib/key-decisions.mjs';
+import { keepTimestampIfUnchanged } from './lib/stable-timestamp.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -544,9 +545,11 @@ Environment:
   }
 
   // Save manifest — use the pre-fetch watermark so PRs updated during
-  // processing are re-checked on the next run.
+  // processing are re-checked on the next run. If no PR changed, keep the
+  // old (earlier, so still safe) watermark to avoid a timestamp-only commit.
   manifest.lastRun = syncStartedAt;
-  fs.writeFileSync(PR_MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
+  const output = keepTimestampIfUnchanged(manifest, loadPrManifest(), 'lastRun');
+  fs.writeFileSync(PR_MANIFEST_PATH, JSON.stringify(output, null, 2) + '\n');
 
   console.log('\n');
   console.log('Done!');

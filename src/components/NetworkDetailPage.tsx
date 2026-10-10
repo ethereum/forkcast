@@ -417,7 +417,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
               </>
             )}
             <span>
-              Scraped{' '}
+              Updated{' '}
               {new Date(spec.scrapedAt).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'short',

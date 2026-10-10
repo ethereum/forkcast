@@ -4,7 +4,7 @@ import type { EipMentionsData } from '../../types/eip';
 import { getDisplayTimestamp, type SyncConfig } from '../../utils/timestamp';
 import { EipLinkWithTooltip } from './KeyDecisionsSection';
 
-export type { EipMention, EipMentionMoment, EipMentionsData } from '../../types/eip';
+export type { EipMentionsData } from '../../types/eip';
 
 const toMarkdown = (data: EipMentionsData): string =>
   [

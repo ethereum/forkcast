@@ -14,9 +14,6 @@ import {
 } from '../../utils';
 import { Tooltip, CopyLinkButton } from '../ui';
 import { EipNotice } from '../eip/EipNotice';
-// Butterfly view disabled — data is stale. Uncomment to re-enable.
-// import { useButterflyData } from '../../hooks/useButterflyData';
-// import { ClientTestingProgress } from './ClientTestingProgress';
 
 interface EipCardProps {
   eip: EIP;
@@ -41,9 +38,6 @@ export const EipCard: React.FC<EipCardProps> = ({
   const [showChampionDetails, setShowChampionDetails] = useState(false);
   const forkRelationship = getForkRelationship(eip, forkName);
   const notice = forkRelationship?.notice;
-
-  // Butterfly view disabled — data is stale. Uncomment to re-enable.
-  // const { data: butterflyData, loading: butterflyLoading, error: butterflyError } = useButterflyData(eip.id, forkName);
 
   // Anywhere on the card opens the drawer, so the card's own links, buttons and the
   // tail of a drag-selection have to keep their click rather than surrender it.
@@ -279,26 +273,6 @@ export const EipCard: React.FC<EipCardProps> = ({
             </>
           );
         })()}
-
-        {/* Butterfly view disabled — data is stale. Uncomment to re-enable.
-        {eip.id === 7928 && !butterflyLoading && (
-          <>
-            {butterflyData && <ClientTestingProgress data={butterflyData} />}
-            {butterflyError && (
-              <div className="mt-4 border-t border-slate-200 dark:border-slate-600 pt-4">
-                <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-3 uppercase tracking-wide">
-                  Client Testing Progress
-                </h4>
-                <div className="bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-700/30 rounded-lg p-4">
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
-                    Unable to load implementation progress data.
-                  </p>
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        */}
 
       </div>
     </article>

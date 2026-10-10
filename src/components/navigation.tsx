@@ -47,7 +47,7 @@ const ensureLeading = (value: string, char: string): string =>
  * Resolve a react-router-style `To` into an href string, in the site's canonical
  * trailing-slash form so a link resolves directly instead of via a redirect.
  */
-export const toHref = (to: To): string => {
+const toHref = (to: To): string => {
   if (typeof to === 'string') return canonicalHref(to);
   const pathname = to.pathname ?? (hasWindow() ? window.location.pathname : '/');
   const search = to.search ? ensureLeading(to.search, '?') : '';

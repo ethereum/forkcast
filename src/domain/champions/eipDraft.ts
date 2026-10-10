@@ -46,9 +46,9 @@ export const LAYMAN_DESCRIPTION_MAX_WORDS = 60;
 export const CLAIM_MAX_WORDS = 16;
 
 /** Hard limits from scripts/eip-schema.json. */
-export const FAQ_MAX_ITEMS = 20;
-export const FAQ_QUESTION_MAX_CHARS = 200;
-export const FAQ_ANSWER_MAX_CHARS = 5000;
+const FAQ_MAX_ITEMS = 20;
+const FAQ_QUESTION_MAX_CHARS = 200;
+const FAQ_ANSWER_MAX_CHARS = 5000;
 export const CHAMPIONS_MAX = 3;
 
 export function countWords(text: string): number {

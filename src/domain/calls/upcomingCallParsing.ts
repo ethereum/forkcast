@@ -119,7 +119,7 @@ export const resolveUpcomingCallNumber = (title: string): string | undefined => 
 // Convert date strings like "October 2, 2025" or "Oct 6, 2025" to YYYY-MM-DD,
 // tolerating trailing emojis/characters. Uses local date components so the same
 // calendar date is produced regardless of the parser's timezone.
-export function parseCallDate(dateStr: string): string | null {
+function parseCallDate(dateStr: string): string | null {
   const dateMatch = dateStr.match(/([A-Za-z]+\s+\d{1,2},\s*\d{4})/);
   const cleanDateStr = dateMatch ? dateMatch[1] : dateStr.trim();
 

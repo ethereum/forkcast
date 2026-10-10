@@ -11,7 +11,7 @@ export function timestampToSeconds(timestamp: string): number {
 /**
  * Convert seconds to a timestamp string (HH:MM:SS)
  */
-export function secondsToTimestamp(totalSeconds: number): string {
+function secondsToTimestamp(totalSeconds: number): string {
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = Math.floor(totalSeconds % 60);
@@ -27,7 +27,7 @@ export interface SyncConfig {
 /**
  * Drop the milliseconds fraction from a VTT-style timestamp
  */
-export const stripMillis = (timestamp: string): string => timestamp.split('.')[0];
+const stripMillis = (timestamp: string): string => timestamp.split('.')[0];
 
 /**
  * Convert a transcript timestamp to the corresponding position in the video,

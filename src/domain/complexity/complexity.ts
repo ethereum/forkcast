@@ -55,7 +55,7 @@ export function parseComplexityMarkdown(
  * Revision 1 predates the line and does not declare itself, and some revision 2
  * assessments omit it, so the size of the anchor set decides when it is absent.
  */
-export function parseChecklistRevision(
+function parseChecklistRevision(
   markdown: string,
   anchorCount?: number
 ): ChecklistRevision {
@@ -194,7 +194,7 @@ function parseTier(markdown: string): ComplexityTier | null {
 /**
  * Calculate tier from total score, against the thresholds of the revision it was scored on.
  */
-export function calculateTier(
+function calculateTier(
   totalScore: number,
   revision: ChecklistRevision = 1
 ): ComplexityTier {

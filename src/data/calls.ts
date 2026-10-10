@@ -2,7 +2,7 @@ import generatedCalls from './protocol-calls.generated.json';
 import { getTodayDateString } from '../utils/localDate';
 import { getCallTypeName, type CallType } from './callSeries';
 
-export { callTypeNames, getCallTypeName } from './callSeries';
+export { callTypeNames, callTypeBadgeColors, getCallTypeName } from './callSeries';
 export type { CallType } from './callSeries';
 
 export interface Call {

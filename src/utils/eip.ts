@@ -63,6 +63,12 @@ export const getInclusionStage = (eip: EIP, forkName?: string): InclusionStage =
 };
 
 /**
+ * Map a raw `statusHistory` status to its full inclusion stage name.
+ */
+export const getInclusionStageForStatus = (status: ForkStatus): InclusionStage =>
+  INCLUSION_STAGE_BY_STATUS[status] ?? 'Unknown';
+
+/**
  * Get the compact display label for an inclusion stage.
  */
 export const getStageAbbreviation = (stage: string): string =>

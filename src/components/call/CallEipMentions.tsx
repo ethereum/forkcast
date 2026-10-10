@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { eipById } from '../../data/eips';
 import type { EipMentionsData } from '../../types/eip';
 import { getDisplayTimestamp, type SyncConfig } from '../../utils/timestamp';
-import { EipLinkWithTooltip } from './KeyDecisionsSection';
+import { EipLinkWithTooltip } from './KeyDecisionContent';
 
 export type { EipMention, EipMentionMoment, EipMentionsData } from '../../types/eip';
 

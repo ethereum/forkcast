@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from './navigation';
 import { eipById } from '../data/eips';
-import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
+import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionContent';
 import type { MeetingDecisions } from '../domain/calls/keyDecisions';
 
 type FilterType = 'all' | 'stage_change' | 'devnet_inclusion' | 'headliner_selected' | 'other';

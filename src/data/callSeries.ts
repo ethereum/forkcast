@@ -30,6 +30,22 @@ export const callTypeNames: Record<CallType, string> = {
   ethproofs: 'Ethproofs',
 };
 
+// ethereum/pm manifest series names that differ from the forkcast slug (the
+// artifact folder name). Series not listed here use their pm name as the slug.
+// Read by scripts/sync-call-assets.mjs, so this file must stay import-free.
+export const pmSeriesToCallType: Record<string, CallType> = {
+  glamsterdamrepricings: 'price',
+  trustlesslogindex: 'tli',
+  pqtransactionsignatures: 'pqts',
+  rpcstandards: 'rpc',
+  encryptthemempool: 'etm',
+  allwalletdevs: 'awd',
+  pqinterop: 'pqi',
+  nativeaa: 'aa',
+  p2pnetworking: 'p2p',
+  sszengineapi: 'ssz',
+};
+
 /** Falls back to the raw slug for a one-off, which carries its own `name`. */
 export const getCallTypeName = (type: string): string =>
   callTypeNames[type as CallType] || type;

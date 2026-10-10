@@ -59,11 +59,11 @@ All four files live under `../pm/.github/`:
 
 ### Step 4: Make the Forkcast-side edits via `add-series`
 
-Run the `add-series` skill with the Forkcast type abbreviation, display name, pm series key (so it knows whether to add a `SERIES_TO_TYPE` mapping), and Tailwind color. It will:
+Run the `add-series` skill with the Forkcast type abbreviation, display name, pm series key (so it knows whether to add a `pmSeriesToCallType` mapping), and Tailwind color. It will:
 
 - Update `src/data/calls.ts` (`CallType` union + `callTypeNames`)
 - Update color maps in `CallsIndexTimeline.tsx` and `HomePage.tsx`
-- Update `scripts/sync-call-assets.mjs` (`KNOWN_TYPES` and `SERIES_TO_TYPE` mapping)
+- Add the pm series mapping to `pmSeriesToCallType` in `src/data/callSeries.ts` if the names differ (the sync script reads its known types from there)
 - Run typecheck/build
 
 Skip `add-series` Step 5 ("Verify artifacts exist") and Step 6 ("Update `protocol-calls.generated.json`") — for a brand-new breakout there are no calls yet. Forkcast renders nothing until the first call is synced via the normal `sync call assets from eth/pm` pipeline.

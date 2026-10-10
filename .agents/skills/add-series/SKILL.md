@@ -16,7 +16,7 @@ Ask the user for:
 3. **Series name in ethereum/pm** — the folder/series key as it appears in the pm manifest. If it matches the type key exactly, no mapping is needed. If it differs (e.g., `pqinterop` → `pqi`), a mapping entry is required.
 4. **Is it livestreamed?** — Yes only for `acdc`, `acde`, `acdt`. New series are almost never livestreamed.
 
-### Step 2: Update `src/data/calls.ts`
+### Step 2: Update `src/data/callSeries.ts`
 
 Up to three edits needed:
 
@@ -32,7 +32,7 @@ Up to three edits needed:
 
    The `callTypeNames` record is typed as `Record<CallType, string>` — TypeScript will error at build time if any key is missing.
 
-3. **Optional** — EIP association: If the series maps to a specific EIP and should appear on that EIP's detail page, add an entry to `eipCallTypes` (line 49–53):
+3. **Optional** — EIP association: If the series maps to a specific EIP and should appear on that EIP's detail page, add an entry to `eipCallTypes` in `src/data/calls.ts`:
    ```ts
    7732: 'epbs',
    ```
@@ -50,23 +50,16 @@ epbs: 'border-l-amber-500 dark:border-l-amber-400',   // border map
 epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',  // badge maps
 ```
 
-### Step 4: Update `scripts/sync-call-assets.mjs`
+### Step 4: Map the pm series name (if it differs)
 
-Two possible edits:
-
-1. Add the type key to `KNOWN_TYPES` (line 22):
-   ```js
-   const KNOWN_TYPES = new Set([..., 'fcr', 'epbs']);
-   ```
-
-2. If the series name in ethereum/pm differs from the type key, add a mapping to `SERIES_TO_TYPE` (lines 25–33):
-   ```js
-   const SERIES_TO_TYPE = {
-     ...,
-     pqinterop: 'pqi',
-   };
-   ```
-   If the pm series name already matches the type key, skip this step.
+`scripts/sync-call-assets.mjs` reads its known types from `callTypeNames` in `src/data/callSeries.ts`, so step 2 already registers the series with the sync. If the series name in ethereum/pm differs from the type key, add a mapping to `pmSeriesToCallType` in the same file:
+```ts
+export const pmSeriesToCallType: Record<string, CallType> = {
+  ...,
+  pqinterop: 'pqi',
+};
+```
+If the pm series name already matches the type key, skip this step.
 
 ### Step 5: Verify artifacts exist
 

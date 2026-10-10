@@ -8,6 +8,7 @@ import { writeFileSync, readFileSync, appendFileSync, existsSync, mkdirSync } fr
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { generateConfig, normalizeManifest, updateConfig } from './sync-call-config.mjs';
+import { callTypeNames, pmSeriesToCallType } from '../src/data/callSeries.ts';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -20,24 +21,14 @@ const DENYLIST = new Set([
 ]);
 
 const GENERATED_JSON_PATH = join(ROOT, 'src/data/protocol-calls.generated.json');
-const KNOWN_TYPES = new Set(['acdc', 'acde', 'acdt', 'epbs', 'bal', 'focil', 'price', 'tli', 'pqts', 'rpc', 'zkevm', 'etm', 'awd', 'pqi', 'fcr', 'aa', 'p2p', 'ssz']);
-
-// Map pm series names to forkcast type names (for folder paths)
-const SERIES_TO_TYPE = {
-  glamsterdamrepricings: 'price',
-  trustlesslogindex: 'tli',
-  pqtransactionsignatures: 'pqts',
-  rpcstandards: 'rpc',
-  encryptthemempool: 'etm',
-  allwalletdevs: 'awd',
-  pqinterop: 'pqi',
-  nativeaa: 'aa',
-  p2pnetworking: 'p2p',
-  sszengineapi: 'ssz',
-};
+// Series in callSeries.ts that are curated by hand rather than indexed from the
+// pm manifest. ethproofs isn't in the manifest today; whether it should be
+// picked up if it appears there is an open question for the maintainers.
+const NOT_INDEXED_FROM_PM = new Set(['ethproofs']);
+const KNOWN_TYPES = new Set(Object.keys(callTypeNames).filter(type => !NOT_INDEXED_FROM_PM.has(type)));
 
 function getLocalType(series) {
-  return SERIES_TO_TYPE[series] || series;
+  return pmSeriesToCallType[series] || series;
 }
 
 async function fetchManifest() {

@@ -1,11 +1,13 @@
+// Explicit extension and type-only imports so scripts/snapshot-github-content.mjs can
+// import this parser directly (Node type-strips it on import).
 import {
-  ChecklistRevision,
+  type ChecklistRevision,
   CHECKLIST_REVISIONS,
-  ComplexityAnchor,
-  ComplexityPullRequest,
-  EipComplexity,
-  ComplexityTier,
-} from './types';
+  type ComplexityAnchor,
+  type ComplexityPullRequest,
+  type EipComplexity,
+  type ComplexityTier,
+} from './types.ts';
 
 interface ParseComplexityOptions {
   /** Where the assessment can be read. Defaults to the file on the STEEL main branch. */

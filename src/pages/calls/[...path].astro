@@ -6,6 +6,7 @@ import CallPage from '../../components/call/CallPage';
 import { protocolCalls, getCallTypeName } from '../../data/calls';
 import { upcomingCalls, hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
 import { breadcrumbList, callVideo } from '../../domain/seo/structuredData';
+import callAgendas from '../../data/generated/call-agendas.json';
 
 // Canonical call pages (/calls/{series}/{number}) for completed calls, plus
 // upcoming-call watch pages from the build-time snapshot. Single-segment paths
@@ -15,6 +16,8 @@ interface CallPageRouteProps {
   description: string;
   jsonLd?: ReadonlyArray<object | undefined>;
   upcoming?: { date: string; youtubeUrl?: string; githubUrl: string; issueNumber: number };
+  /** The call issue's agenda from the build-time snapshot; undefined when the snapshot lacks it. */
+  agenda?: string;
 }
 
 export function getStaticPaths() {
@@ -22,7 +25,7 @@ export function getStaticPaths() {
 
   // Declared here rather than at module scope: Astro evaluates getStaticPaths in
   // isolation, so it can't reach the component's frontmatter bindings.
-  const callVideoUrl = (type: string, date: string, number: string): string | undefined => {
+  const callConfig = (type: string, date: string, number: string): { videoUrl?: string; issue?: number } => {
     const config = path.join(
       process.cwd(),
       'public/artifacts',
@@ -31,14 +34,19 @@ export function getStaticPaths() {
       'config.json',
     );
     try {
-      return JSON.parse(fs.readFileSync(config, 'utf-8')).videoUrl;
+      return JSON.parse(fs.readFileSync(config, 'utf-8'));
     } catch (err) {
       if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
-      return undefined;
+      return {};
     }
   };
+  // Snapshotted by scripts/snapshot-github-content.mjs, so the Agenda tab needs no
+  // per-visit GitHub call.
+  const agendaFor = (issue?: number): string | undefined =>
+    issue === undefined ? undefined : (callAgendas as Record<string, string>)[issue];
 
   for (const call of protocolCalls) {
+    const config = callConfig(call.type, call.date, call.number);
     const seriesName = getCallTypeName(call.type);
     const name = call.name || seriesName;
     // A hand-written name already reads as a full title, so it takes no number.
@@ -58,7 +66,7 @@ export function getStaticPaths() {
             description,
             date: call.date,
             path: call.path,
-            videoUrl: callVideoUrl(call.type, call.date, call.number),
+            videoUrl: config.videoUrl,
           }),
           breadcrumbList([
             { name: 'Forkcast', url: 'https://forkcast.org/' },
@@ -67,6 +75,7 @@ export function getStaticPaths() {
             { name: displayName },
           ]),
         ],
+        agenda: agendaFor(config.issue),
       },
     });
   }
@@ -89,6 +98,7 @@ export function getStaticPaths() {
           githubUrl: call.githubUrl,
           issueNumber: call.issueNumber,
         },
+        agenda: agendaFor(call.issueNumber),
       },
     });
   }
@@ -97,7 +107,7 @@ export function getStaticPaths() {
 }
 
 const callPath = Astro.params.path!;
-const { title, description, jsonLd, upcoming } = Astro.props;
+const { title, description, jsonLd, upcoming, agenda } = Astro.props;
 ---
 
 <Layout
@@ -107,5 +117,5 @@ const { title, description, jsonLd, upcoming } = Astro.props;
   navVariant="wide"
   enableCallSearch
 >
-  <CallPage client:only="react" callPath={callPath} upcoming={upcoming} />
+  <CallPage client:only="react" callPath={callPath} upcoming={upcoming} agenda={agenda} />
 </Layout>

@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from '../navigation';
 import { eipsData } from '../../data/eips';
-import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
+import { useComplexityData, getComplexityForEip } from '../../hooks/useComplexityData';
 import { ComplexityScoreBadge } from '../ui';
 import type { EipComplexity } from '../../domain/complexity/types';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
@@ -114,7 +114,7 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
   const [stageFilter, setStageFilter] = useState<string>('all');
   const [layerFilter, setLayerFilter] = useState<'all' | 'EL' | 'CL'>('all');
   const [filtersModalOpen, setFiltersModalOpen] = useState(false);
-  const { complexityMap, loading: complexityLoading, refetch } = useComplexityData();
+  const { complexityMap } = useComplexityData();
 
   useEffect(() => {
     if (filtersModalOpen) {
@@ -395,17 +395,6 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
               />
               <span className="text-sm text-slate-600 dark:text-slate-300">Hide in devnet</span>
             </label>
-
-            <button
-              onClick={refetch}
-              disabled={complexityLoading}
-              className="p-1.5 text-slate-400 hover:text-slate-600 dark:text-slate-400 dark:hover:text-slate-300 transition-colors disabled:opacity-50 ml-auto"
-              title="Refresh complexity data"
-            >
-              <svg className={`w-4 h-4 ${complexityLoading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            </button>
           </div>
         </div>
       </div>

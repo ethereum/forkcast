@@ -1,5 +1,4 @@
 import React, { lazy, Suspense } from 'react';
-import { useCallAgenda } from '../../hooks/useCallAgenda';
 import { remarkHardBreaks } from '../../utils/remarkHardBreaks';
 
 // Agendas are nested markdown bullet lists with inline links, and occasionally a
@@ -54,10 +53,15 @@ const proseClasses = `prose prose-sm max-w-none break-words text-slate-600 dark:
 
 interface CallAgendaProps {
   issueNumber: number;
+  /**
+   * Agenda markdown from the build-time snapshot (scripts/snapshot-github-content.mjs).
+   * An empty string means the issue carries no agenda; undefined means the snapshot
+   * does not have this issue yet, e.g. one opened since the last deploy.
+   */
+  agenda?: string;
 }
 
-const CallAgenda: React.FC<CallAgendaProps> = ({ issueNumber }) => {
-  const { agenda, loading, error } = useCallAgenda(issueNumber);
+const CallAgenda: React.FC<CallAgendaProps> = ({ issueNumber, agenda }) => {
   const issueUrl = `https://github.com/ethereum/pm/issues/${issueNumber}`;
 
   const message = (text: string) => (
@@ -83,10 +87,8 @@ const CallAgenda: React.FC<CallAgendaProps> = ({ issueNumber }) => {
           </svg>
         </a>
       </div>
-      {loading
-        ? message('Loading the agenda from GitHub…')
-        : error
-        ? message(`Could not load the agenda from GitHub (${error}). Open the issue to read it.`)
+      {agenda === undefined
+        ? message('The agenda is not available here yet. Open the issue to read it.')
         : agenda
         ? (
           <div className={proseClasses}>

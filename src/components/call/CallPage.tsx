@@ -478,9 +478,11 @@ interface CallPageProps {
   callPath: string;
   /** Build-time metadata for an upcoming-call watch page, if this is one. */
   upcoming?: UpcomingCallMeta;
+  /** This call issue's agenda from the build-time snapshot, if it has one. */
+  agenda?: string;
 }
 
-const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
+const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming, agenda }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -1361,7 +1363,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
       {renderSummaryTabs()}
       <div className="p-6">
         {summaryTab === 'agenda' ? (
-          <CallAgenda issueNumber={agendaIssue!} />
+          <CallAgenda issueNumber={agendaIssue!} agenda={agenda} />
         ) : summaryTab === 'notes' ? (
           <CallNotes
             data={callData.notesData!}

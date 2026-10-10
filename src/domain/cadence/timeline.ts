@@ -4,50 +4,9 @@ import {
   parseLocalDate,
   daysBetween,
 } from '../../components/schedule/forkDateCalculator';
+import cadencePayload from '../../data/cadence-payload.json';
 
 const MONTH_DAYS = 365.25 / 12;
-
-/**
- * Included EIPs per post-Merge fork.
- *
- * Forkcast's own EIP dataset only reaches back to Pectra, so Shapella and Dencun
- * are literals sourced from ethereum.org and EIP-7569 respectively. Pectra and
- * Fusaka are derivable — `timeline.test.ts` asserts these numbers against
- * `eipsData` so the table can't silently drift, without making this module pull
- * the 630 KB EIP chunk into the page.
- *
- * `derivable` marks which entries the test checks.
- */
-export const FORK_EIP_COUNTS: Record<string, { eips: number; derivable: boolean }> = {
-  Shapella: { eips: 5, derivable: false },
-  Dencun: { eips: 9, derivable: false },
-  Pectra: { eips: 12, derivable: true },
-  Fusaka: { eips: 13, derivable: true },
-};
-
-/**
- * Total lines of specification markdown per fork, summed over its included
- * EIPs' files in `public/eips/`. EIP count is a poor proxy for how much a fork
- * actually specifies, so this is the second half of the payload picture.
- *
- * Literals for the same reason as FORK_EIP_COUNTS; `timeline.test.ts` recomputes
- * them from the markdown so they can't drift.
- */
-export const FORK_SPEC_LINES: Record<string, number> = {
-  Shapella: 385,
-  Dencun: 1455,
-  Pectra: 3354,
-  Fusaka: 1943,
-};
-
-/**
- * The next fork's spec volume across its scheduled EIPs. Moves both as EIPs are
- * scheduled or dropped and as their specs are edited, so it drifts faster than
- * anything above; `timeline.test.ts` recomputes it too.
- */
-export const NEXT_FORK_SPEC_LINES: Record<string, number> = {
-  Glamsterdam: 4186,
-};
 
 /**
  * A shipped fork's payload is its `Included` EIPs. A fork still in planning has
@@ -55,19 +14,54 @@ export const NEXT_FORK_SPEC_LINES: Record<string, number> = {
  * `Networking`. Networking EIPs belong in both — Fusaka's Included set contains
  * EIP-7642 (eth/69) — whereas `Informational` EIPs are process documents rather
  * than shipped changes and are excluded from each.
+ *
+ * `scripts/compile-cadence-payload.mjs` applies these when it derives the tables
+ * below, so keep the two in step.
  */
 export const SHIPPED_STATUSES = ['Included'];
 export const PLANNED_STATUSES = ['Scheduled', 'Networking'];
 
+type PayloadTable = Record<string, { eips: number; specLines: number }>;
+
+const pick = (table: PayloadTable, field: 'eips' | 'specLines') =>
+  Object.fromEntries(Object.entries(table).map(([fork, entry]) => [fork, entry[field]]));
+
 /**
- * The next upgrade's locked-in EIP count. Same literal-plus-drift-test approach
- * as FORK_EIP_COUNTS, for the same reason: keep the 630 KB EIP chunk off this
- * page. Unlike a shipped fork this moves as EIPs are scheduled or dropped, so
- * the test matters more here.
+ * The payload tables, generated at build time by `compile-cadence-payload` from
+ * the EIP dataset and the spec markdown in `public/eips/`. Precomputed rather
+ * than derived here so this page doesn't pull in the 630 KB EIP chunk.
+ *
+ * Forkcast's own EIP dataset only reaches back to Pectra, so the script takes
+ * Shapella's and Dencun's EIP sets from literals (ethereum.org and EIP-7569).
  */
-export const NEXT_FORK_EIP_COUNT: Record<string, number> = {
-  Glamsterdam: 23,
-};
+const shipped: PayloadTable = cadencePayload.shipped;
+const planned: PayloadTable = cadencePayload.planned;
+
+/** Included EIPs per post-Merge fork. */
+export const FORK_EIP_COUNTS: Record<string, { eips: number }> = shipped;
+
+/**
+ * Total lines of specification markdown per fork, summed over its included
+ * EIPs' files in `public/eips/`. EIP count is a poor proxy for how much a fork
+ * actually specifies, so this is the second half of the payload picture.
+ */
+export const FORK_SPEC_LINES: Record<string, number> = pick(shipped, 'specLines');
+
+/**
+ * The next fork's spec volume across its scheduled EIPs. Moves both as EIPs are
+ * scheduled or dropped and as their specs are edited.
+ */
+export const NEXT_FORK_SPEC_LINES: Record<string, number> = pick(planned, 'specLines');
+
+/** Locked-in EIP count per fork still in planning. */
+export const NEXT_FORK_EIP_COUNT: Record<string, number> = pick(planned, 'eips');
+
+/**
+ * Table key for an upgrade name. The EIP data spells forks without diacritics
+ * ("Hegota") while the upgrade list uses them ("Hegotá").
+ */
+const payloadKey = (name: string): string =>
+  name.normalize('NFD').replace(/\p{Diacritic}/gu, '');
 
 /** Strip the trailing "Upgrade" so "Fusaka Upgrade" reads as "Fusaka". */
 export const shortUpgradeName = (name: string): string => name.replace(/\s+Upgrade$/i, '');
@@ -218,7 +212,7 @@ export function buildCadenceTimeline(
 
   const next = nextEstimated(upgrades, lastDate);
   const nextName = next ? shortUpgradeName(next.upgrade.name) : null;
-  const nextEips = nextName != null ? (plannedCounts[nextName] ?? null) : null;
+  const nextEips = nextName != null ? (plannedCounts[payloadKey(nextName)] ?? null) : null;
 
   // The axis runs to whichever is later, today or the estimate, so the projected
   // bar stays on the chart whether the estimate is still ahead of today or has
@@ -243,7 +237,7 @@ export function buildCadenceTimeline(
 
   const forks: TimelineFork[] = live.slice(1).map((entry, i) => {
     const name = shortUpgradeName(entry.upgrade.name);
-    const eips = eipCounts[name]?.eips ?? null;
+    const eips = eipCounts[payloadKey(name)]?.eips ?? null;
     return {
       id: entry.upgrade.id,
       name,
@@ -341,15 +335,14 @@ export function buildCadenceStats(
     }));
 
   const spec = timeline.forks
-    .filter((f) => specLines[f.name] != null)
-    .map((f) => ({
-      name: f.name,
-      lines: specLines[f.name],
-      linesPerMonth: specLines[f.name] / (f.gapDays / MONTH_DAYS),
-    }));
+    .filter((f) => specLines[payloadKey(f.name)] != null)
+    .map((f) => {
+      const lines = specLines[payloadKey(f.name)];
+      return { name: f.name, lines, linesPerMonth: lines / (f.gapDays / MONTH_DAYS) };
+    });
 
   const { projection } = timeline;
-  const projectedLines = projection ? plannedSpecLines[projection.name] : undefined;
+  const projectedLines = projection ? plannedSpecLines[payloadKey(projection.name)] : undefined;
   const specProjection =
     projection && projectedLines != null
       ? {

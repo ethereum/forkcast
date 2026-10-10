@@ -88,6 +88,9 @@ export default defineConfig({
   // 301s the bare path to it; canonicals and sitemap entries must match that.
   trailingSlash: 'always',
   prefetch: true,
+  // Astro 7 defaults to 'jsx', which drops whitespace between elements on
+  // separate lines (e.g. glues adjacent inline text). Keep the HTML-aware rules.
+  compressHTML: true,
   integrations: [react(), sitemap({ serialize: withLastmod() })],
   vite: {
     plugins: [tailwindcss()],

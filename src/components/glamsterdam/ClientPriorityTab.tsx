@@ -21,6 +21,7 @@ import { RANK_FORK } from '../../domain/eips/rankableEips';
 import { DisplayGroup, UNCATEGORIZED, clDisplayGroups, displayGroups } from '../../data/eip-categories';
 import { EipDrawer } from '../eip/EipDrawer';
 import { Tooltip } from '../ui/Tooltip';
+import { SheetModal } from '../ui/Modal';
 import { InclusionStage } from '../../types';
 import { EipAggregateStance, ClientStance, TeamEntry } from '../../types/prioritization';
 import { useCallDecisions } from '../../hooks/useCallDecisions';
@@ -967,7 +968,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
 
       {/* Filters Modal */}
       {filtersModalOpen && (
-        <ModalShell
+        <SheetModal
           title="Filters"
           onClose={() => setFiltersModalOpen(false)}
           headerAction={
@@ -1096,12 +1097,12 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               </label>
             </div>
           </div>
-        </ModalShell>
+        </SheetModal>
       )}
 
       {/* Add to average modal */}
       {avgModalOpen && (
-        <ModalShell
+        <SheetModal
           title="Add to average score"
           onClose={() => setAvgModalOpen(false)}
           headerAction={
@@ -1144,7 +1145,7 @@ const ClientPriorityTab: React.FC<ClientPriorityTabProps> = ({ fork }) => {
               </label>
             ))}
           </div>
-        </ModalShell>
+        </SheetModal>
       )}
 
       {/* Mobile Card List */}
@@ -2340,47 +2341,6 @@ const ClientStancesGrid: React.FC<ClientStancesGridProps> = ({ stances, elTeams,
     </div>
   );
 };
-
-interface ModalShellProps {
-  title: string;
-  onClose: () => void;
-  /** Sits left of the close button, e.g. a reset action. */
-  headerAction?: React.ReactNode;
-  footer: React.ReactNode;
-  children: React.ReactNode;
-}
-
-/** Bottom sheet on mobile, centered dialog from md up. Body scrolls; header and footer don't. */
-const ModalShell: React.FC<ModalShellProps> = ({ title, onClose, headerAction, footer, children }) => (
-  <div className="fixed inset-0 z-50 animate-fadeIn">
-    <div className="absolute inset-0 bg-black/50" onClick={onClose} />
-    <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
-      <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-2xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
-          <div className="flex items-center gap-3">
-            {headerAction}
-            <button
-              onClick={onClose}
-              className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              aria-label="Close"
-            >
-              <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 md:p-6">{children}</div>
-
-        <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-          {footer}
-        </div>
-      </div>
-    </div>
-  </div>
-);
 
 const FilterChip: React.FC<{
   selected: boolean;

@@ -4,7 +4,7 @@ import { eipsData } from '../data/eips';
 import { getProposalPrefix, getLaymanTitle, getInclusionStage, isHeadlinerInAnyFork, wasHeadlinerCandidateInAnyFork, getEipLayer, isPendingEip } from '../utils/eip';
 import { EipSearch } from './eip/EipSearch';
 import { openGlobalSearch } from '../domain/search/globalSearchBridge';
-import { Tooltip, UpgradeStageBadge } from './ui';
+import { SheetModal, Tooltip, UpgradeStageBadge } from './ui';
 import { networkUpgrades } from '../data/upgrades';
 
 type SortField = 'number' | 'date' | 'status' | 'updated' | 'headliner';
@@ -418,214 +418,190 @@ const EipsIndexPage: React.FC = () => {
 
         {/* Filters Modal/Sheet */}
         {mobileFiltersOpen && (
-          <div className="fixed inset-0 z-50 animate-fadeIn">
-            {/* Backdrop */}
-            <div
-              className="absolute inset-0 bg-black/50"
-              onClick={() => setMobileFiltersOpen(false)}
-            />
-            {/* Modal */}
-            <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
-              <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-3xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
-                {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                  <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
-                  <div className="flex items-center gap-3">
-                    {hasActiveFilters && (
-                      <button
-                        onClick={clearAllFilters}
-                        className="text-sm text-purple-600 dark:text-purple-400 font-medium"
-                      >
-                        Clear all
-                      </button>
-                    )}
-                    <button
-                      onClick={() => setMobileFiltersOpen(false)}
-                      className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                    >
-                      <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-              {/* Filter Content */}
-              <div className="flex-1 overflow-y-auto p-4 md:p-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  {/* Upgrade Filter */}
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Upgrade</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {forksWithNone.map(fork => {
-                        const isSelected = forkFilters.has(fork);
-                        const forkColor = fork !== 'No Fork' ? getForkColor(fork) : '';
-                        const displayName = fork !== 'No Fork' ? getForkDisplayName(fork) : fork;
-                        return (
-                          <button
-                            key={fork}
-                            onClick={() => toggleFilter('upgrade', fork)}
-                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                              isSelected
-                                ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                : ''
-                            } ${fork !== 'No Fork' ? forkColor : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}
-                          >
-                            {displayName}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Stage Filter */}
-                  {stages.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stage</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {stages.map(stage => {
-                          const isSelected = stageFilters.has(stage);
-                          const label = STAGE_SHORT_NAMES[stage] ?? stage;
-                          const stageColor = getStageColor(stage);
-                          return (
-                            <button
-                              key={stage}
-                              onClick={() => toggleFilter('stage', stage)}
-                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${stageColor} ${
-                                isSelected
-                                  ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                  : ''
-                              }`}
-                            >
-                              {label}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Status Filter */}
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Status</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {statuses.map(status => {
-                        const isSelected = statusFilters.has(status);
-                        return (
-                          <button
-                            key={status}
-                            onClick={() => toggleFilter('status', status)}
-                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                              isSelected
-                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                            }`}
-                          >
-                            {status}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Type/Category Filter */}
-                  {categories.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Type</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {categories.map(category => {
-                          const isSelected = categoryFilters.has(category);
-                          return (
-                            <button
-                              key={category}
-                              onClick={() => toggleFilter('type', category)}
-                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                                isSelected
-                                  ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                  : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                              }`}
-                            >
-                              {category}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Layer Filter */}
-                  {layers.length > 0 && (
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {layers.map(layer => {
-                          const isSelected = layerFilters.has(layer);
-                          const layerColor = layer === 'EL'
-                            ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600 hover:bg-indigo-200 dark:hover:bg-indigo-900/30'
-                            : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600 hover:bg-teal-200 dark:hover:bg-teal-900/30';
-                          return (
-                            <button
-                              key={layer}
-                              onClick={() => toggleFilter('layer', layer)}
-                              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${layerColor} ${
-                                isSelected
-                                  ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                  : ''
-                              }`}
-                            >
-                              {layer}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Headliner Filter */}
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Headliner</h3>
-                    <div className="flex flex-wrap gap-2">
-                      <Tooltip text="Selected headliner for an upgrade">
-                        <button
-                          onClick={() => toggleFilter('headliner', 'Selected')}
-                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            headlinerFilters.has('Selected')
-                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          Selected ★
-                        </button>
-                      </Tooltip>
-                      <Tooltip text="Proposed headliner (not selected)">
-                        <button
-                          onClick={() => toggleFilter('headliner', 'Proposed')}
-                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            headlinerFilters.has('Proposed')
-                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          Proposed ☆
-                        </button>
-                      </Tooltip>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Footer */}
-              <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+          <SheetModal
+            title="Filters"
+            onClose={() => setMobileFiltersOpen(false)}
+            maxWidthClassName="md:max-w-3xl"
+            headerAction={
+              hasActiveFilters && (
                 <button
-                  onClick={() => setMobileFiltersOpen(false)}
-                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+                  onClick={clearAllFilters}
+                  className="text-sm text-purple-600 dark:text-purple-400 font-medium"
                 >
-                  Show {filteredAndSortedEips.length} {filteredAndSortedEips.length === 1 ? 'result' : 'results'}
+                  Clear all
                 </button>
+              )
+            }
+            footer={
+              <button
+                onClick={() => setMobileFiltersOpen(false)}
+                className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+              >
+                Show {filteredAndSortedEips.length} {filteredAndSortedEips.length === 1 ? 'result' : 'results'}
+              </button>
+            }
+          >
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Upgrade Filter */}
+              <div>
+                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Upgrade</h3>
+                <div className="flex flex-wrap gap-2">
+                  {forksWithNone.map(fork => {
+                    const isSelected = forkFilters.has(fork);
+                    const forkColor = fork !== 'No Fork' ? getForkColor(fork) : '';
+                    const displayName = fork !== 'No Fork' ? getForkDisplayName(fork) : fork;
+                    return (
+                      <button
+                        key={fork}
+                        onClick={() => toggleFilter('upgrade', fork)}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                          isSelected
+                            ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                            : ''
+                        } ${fork !== 'No Fork' ? forkColor : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'}`}
+                      >
+                        {displayName}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+
+              {/* Stage Filter */}
+              {stages.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Stage</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {stages.map(stage => {
+                      const isSelected = stageFilters.has(stage);
+                      const label = STAGE_SHORT_NAMES[stage] ?? stage;
+                      const stageColor = getStageColor(stage);
+                      return (
+                        <button
+                          key={stage}
+                          onClick={() => toggleFilter('stage', stage)}
+                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${stageColor} ${
+                            isSelected
+                              ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                              : ''
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Status Filter */}
+              <div>
+                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Status</h3>
+                <div className="flex flex-wrap gap-2">
+                  {statuses.map(status => {
+                    const isSelected = statusFilters.has(status);
+                    return (
+                      <button
+                        key={status}
+                        onClick={() => toggleFilter('status', status)}
+                        className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                          isSelected
+                            ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                            : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                        }`}
+                      >
+                        {status}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Type/Category Filter */}
+              {categories.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Type</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map(category => {
+                      const isSelected = categoryFilters.has(category);
+                      return (
+                        <button
+                          key={category}
+                          onClick={() => toggleFilter('type', category)}
+                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                            isSelected
+                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                          }`}
+                        >
+                          {category}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Layer Filter */}
+              {layers.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {layers.map(layer => {
+                      const isSelected = layerFilters.has(layer);
+                      const layerColor = layer === 'EL'
+                        ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-600 hover:bg-indigo-200 dark:hover:bg-indigo-900/30'
+                        : 'bg-teal-100 text-teal-700 dark:bg-teal-900/20 dark:text-teal-300 border border-teal-200 dark:border-teal-600 hover:bg-teal-200 dark:hover:bg-teal-900/30';
+                      return (
+                        <button
+                          key={layer}
+                          onClick={() => toggleFilter('layer', layer)}
+                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${layerColor} ${
+                            isSelected
+                              ? 'ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                              : ''
+                          }`}
+                        >
+                          {layer}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Headliner Filter */}
+              <div>
+                <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Headliner</h3>
+                <div className="flex flex-wrap gap-2">
+                  <Tooltip text="Selected headliner for an upgrade">
+                    <button
+                      onClick={() => toggleFilter('headliner', 'Selected')}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        headlinerFilters.has('Selected')
+                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      Selected ★
+                    </button>
+                  </Tooltip>
+                  <Tooltip text="Proposed headliner (not selected)">
+                    <button
+                      onClick={() => toggleFilter('headliner', 'Proposed')}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        headlinerFilters.has('Proposed')
+                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      Proposed ☆
+                    </button>
+                  </Tooltip>
+                </div>
               </div>
             </div>
-          </div>
+          </SheetModal>
         )}
 
         {/* Table - Desktop */}

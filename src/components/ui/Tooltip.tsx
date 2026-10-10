@@ -75,7 +75,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
         >
           {content || text}
         </span>,
-        document.body
+        // Inside a modal <dialog> only the top layer is visible, so portal there.
+        triggerRef.current?.closest('dialog') ?? document.body
       )}
     </span>
   );

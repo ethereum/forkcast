@@ -896,6 +896,7 @@ const RankPage: React.FC = () => {
                             </div>
                             <button
                               onClick={() => handleRemoveFromTier(item.id)}
+                              aria-label="Remove from tier"
                               className="ml-1 p-1 text-slate-400 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex-shrink-0"
                             >
                               <svg

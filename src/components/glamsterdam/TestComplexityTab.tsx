@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from '../navigation';
 import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
-import { ComplexityScoreBadge, Tooltip } from '../ui';
+import { ComplexityScoreBadge, SheetModal, Tooltip } from '../ui';
 import {
   getInclusionStage,
   getInclusionStageSortRank,
@@ -314,79 +314,60 @@ const TestComplexityTab: React.FC<TestComplexityTabProps> = ({ fork = 'glamsterd
 
       {/* Filters Modal */}
       {filtersModalOpen && (
-        <div className="fixed inset-0 z-50 animate-fadeIn">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setFiltersModalOpen(false)}
-          />
-          <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
-            <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-lg md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
-                <div className="flex items-center gap-3">
-                  {activeFilterCount > 0 && (
-                    <button
-                      onClick={clearFilters}
-                      className="text-sm text-purple-600 dark:text-purple-400 font-medium"
-                    >
-                      Clear all
-                    </button>
-                  )}
+        <SheetModal
+          title="Filters"
+          onClose={() => setFiltersModalOpen(false)}
+          maxWidthClassName="md:max-w-lg"
+          headerAction={
+            activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+              >
+                Clear all
+              </button>
+            )
+          }
+          footer={
+            <button
+              onClick={() => setFiltersModalOpen(false)}
+              className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Show {sortedEips.length} {sortedEips.length === 1 ? 'result' : 'results'}
+            </button>
+          }
+        >
+          <div>
+            <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Complexity Tier</h3>
+            <div className="flex flex-wrap gap-2">
+              {([
+                { value: 'all', label: 'All Tiers', color: null },
+                { value: 'Low', label: 'Low (<10)', color: 'emerald' },
+                { value: 'Medium', label: 'Medium (10-19)', color: 'amber' },
+                { value: 'High', label: 'High (≥20)', color: 'red' },
+                { value: 'unassessed', label: 'Not Assessed', color: null },
+              ] as const).map(({ value, label, color }) => {
+                const isSelected = filterTier === value;
+                return (
                   <button
-                    onClick={() => setFiltersModalOpen(false)}
-                    className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                    key={value}
+                    onClick={() => setFilterTier(value)}
+                    className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      isSelected
+                        ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                        : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                    }`}
                   >
-                    <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
+                    {color && (
+                      <span className={`inline-block w-2 h-2 rounded-full mr-1.5 bg-${color}-500`}></span>
+                    )}
+                    {label}
                   </button>
-                </div>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-4 md:p-6">
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Complexity Tier</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {([
-                      { value: 'all', label: 'All Tiers', color: null },
-                      { value: 'Low', label: 'Low (<10)', color: 'emerald' },
-                      { value: 'Medium', label: 'Medium (10-19)', color: 'amber' },
-                      { value: 'High', label: 'High (≥20)', color: 'red' },
-                      { value: 'unassessed', label: 'Not Assessed', color: null },
-                    ] as const).map(({ value, label, color }) => {
-                      const isSelected = filterTier === value;
-                      return (
-                        <button
-                          key={value}
-                          onClick={() => setFilterTier(value)}
-                          className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            isSelected
-                              ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                              : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                          }`}
-                        >
-                          {color && (
-                            <span className={`inline-block w-2 h-2 rounded-full mr-1.5 bg-${color}-500`}></span>
-                          )}
-                          {label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-                <button
-                  onClick={() => setFiltersModalOpen(false)}
-                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  Show {sortedEips.length} {sortedEips.length === 1 ? 'result' : 'results'}
-                </button>
-              </div>
+                );
+              })}
             </div>
           </div>
-        </div>
+        </SheetModal>
       )}
 
       {/* Error State */}

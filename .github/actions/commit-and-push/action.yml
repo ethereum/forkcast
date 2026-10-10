@@ -1,5 +1,5 @@
 name: Commit and push
-description: Commit the given paths to main (rebasing onto any newer commits) and trigger a deploy.
+description: Validate and commit the given paths to main (rebasing onto any newer commits) and trigger a deploy.
 
 inputs:
   paths:
@@ -10,6 +10,10 @@ inputs:
     required: true
   body:
     description: Optional commit message body
+    required: false
+    default: ''
+  validate:
+    description: Optional command run on the working tree before committing. If it fails, nothing is committed and the job fails with the output in the job summary.
     required: false
     default: ''
 
@@ -23,12 +27,42 @@ runs:
         PATHS: ${{ inputs.paths }}
         MESSAGE: ${{ inputs.message }}
         BODY: ${{ inputs.body }}
+        VALIDATE: ${{ inputs.validate }}
       run: |
         git add -- $PATHS
         if git diff --cached --quiet; then
           echo "No changes to commit"
           echo "pushed=false" >> "$GITHUB_OUTPUT"
           exit 0
+        fi
+
+        # Deploys run the same checks, so committing data that fails them would
+        # leave main undeployable until someone fixes it by hand.
+        if [ -n "$VALIDATE" ]; then
+          LOG="$RUNNER_TEMP/validate.log"
+          if ! bash -c "$VALIDATE" > "$LOG" 2>&1; then
+            cat "$LOG"
+            git diff --cached --name-status > "$RUNNER_TEMP/changed.txt"
+            {
+              echo "## Data validation failed: nothing committed"
+              echo
+              echo "\`$VALIDATE\` rejected the synced data, so \"$MESSAGE\" was not committed and main is unchanged. Fix the upstream source, or extend the schema (\`scripts/eip-schema.json\`, \`scripts/lib/data-integrity.mjs\`) if the new value is legitimate, then rerun."
+              echo
+              echo "### Output"
+              echo '```'
+              tail -n 100 "$LOG"
+              echo '```'
+              echo
+              echo "### Changed files ($(grep -c "" "$RUNNER_TEMP/changed.txt"), first 50)"
+              echo '```'
+              head -n 50 "$RUNNER_TEMP/changed.txt"
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            git reset -q
+            echo "::error title=Data validation failed::$VALIDATE failed on the synced data, so nothing was committed. See the job summary for details."
+            exit 1
+          fi
+          cat "$LOG"
         fi
 
         git config user.name "github-actions[bot]"

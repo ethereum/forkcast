@@ -36,6 +36,16 @@ jobs:
         working-directory: execution-specs
         run: uv sync
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+
+      # For the validation before committing (validate-data uses ajv).
+      - name: Install dependencies
+        run: npm ci
+
       - name: Collect test counts
         run: uv run --project execution-specs python scripts/collect-test-counts.py execution-specs src/data/execution-spec-test-counts.json
 
@@ -44,3 +54,4 @@ jobs:
         with:
           paths: src/data/execution-spec-test-counts.json
           message: 'sync: update execution-spec test counts'
+          validate: npm run validate-data

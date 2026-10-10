@@ -45,4 +45,5 @@ jobs:
         with:
           paths: public/artifacts src/data/protocol-calls.generated.json
           message: 'sync call assets from eth/pm'
+          validate: npm run validate-data
           body: ${{ steps.sync.outputs.synced_paths }}

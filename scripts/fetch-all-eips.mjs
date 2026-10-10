@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { createHash } from 'crypto';
 import { fileURLToPath } from 'url';
+import { writeFileAtomic } from './lib/atomic-write.mjs';
 import { parseFrontmatter, mapOfficialToLocal } from './lib/eip-parsing.mjs';
 import {
   buildNewEipJson,
@@ -33,12 +34,14 @@ function hashContent(content) {
   return createHash('sha256').update(content).digest('hex').slice(0, 8);
 }
 
+// A missing manifest means a fresh start; a corrupt one is an error, since
+// treating it as empty would rewrite every file and hide real changes.
 function loadManifest() {
   if (!fs.existsSync(MANIFEST_PATH)) return {};
   try {
     return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
-  } catch {
-    return {};
+  } catch (err) {
+    throw new Error(`Corrupt manifest ${MANIFEST_PATH}: ${err.message}`);
   }
 }
 
@@ -151,7 +154,7 @@ Options:
 
         if (isNew) {
           const eipJson = buildNewEipJson(eipNumber, mapped);
-          fs.writeFileSync(filePath, JSON.stringify(eipJson, null, 2) + '\n');
+          writeFileAtomic(filePath, JSON.stringify(eipJson, null, 2) + '\n');
           jsonChanged = true;
         } else {
           const existing = JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -159,7 +162,7 @@ Options:
             clearPendingPullRequest: true,
           });
           if (changed) {
-            fs.writeFileSync(filePath, JSON.stringify(updated, null, 2) + '\n');
+            writeFileAtomic(filePath, JSON.stringify(updated, null, 2) + '\n');
             jsonChanged = true;
           }
         }
@@ -174,7 +177,7 @@ Options:
 
           if (mdChanged) {
             const mdPath = path.join(EIPS_MD_DIR, `${eipNumber}.md`);
-            fs.writeFileSync(mdPath, body);
+            writeFileAtomic(mdPath, body);
             savedMd = true;
 
             if (prev) {
@@ -211,7 +214,7 @@ Options:
   }
 
   // Write manifest
-  fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
+  writeFileAtomic(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
 
   console.log('\n');
   console.log('Done!');
@@ -230,6 +233,12 @@ Options:
   }
 
   console.log('\nRun "npm run compile-eips" to rebuild the EIP data.');
+
+  // Everything that succeeded is written above; fail so CI surfaces the gaps.
+  if (errors > 0) {
+    console.error(`\n${errors} EIP(s) failed to fetch or parse.`);
+    process.exit(1);
+  }
 }
 
 main().catch((err) => {

@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { writeFileAtomic } from './lib/atomic-write.mjs';
 import { parseFrontmatter, mapOfficialToLocal } from './lib/eip-parsing.mjs';
 import {
   buildNewEipJson,
@@ -49,12 +50,14 @@ function loadPrManifest() {
   if (!fs.existsSync(PR_MANIFEST_PATH)) {
     return { lastRun: null, prs: {} };
   }
+  let manifest;
   try {
-    const manifest = JSON.parse(fs.readFileSync(PR_MANIFEST_PATH, 'utf8'));
-    return { lastRun: manifest.lastRun ?? null, prs: manifest.prs ?? {} };
-  } catch {
-    return { lastRun: null, prs: {} };
+    manifest = JSON.parse(fs.readFileSync(PR_MANIFEST_PATH, 'utf8'));
+  } catch (err) {
+    // Treating a corrupt manifest as empty would silently trigger a full rescan.
+    throw new Error(`Corrupt manifest ${PR_MANIFEST_PATH}: ${err.message}`);
   }
+  return { lastRun: manifest.lastRun ?? null, prs: manifest.prs ?? {} };
 }
 
 function getTrackedEipIds() {
@@ -280,7 +283,7 @@ async function processPr(prNumber, headers, trackedEipIds, requiresFilter, decis
   }
 
   for (const action of actions) {
-    fs.writeFileSync(action.filePath, JSON.stringify(action.eip, null, 2) + '\n');
+    writeFileAtomic(action.filePath, JSON.stringify(action.eip, null, 2) + '\n');
     const verb = action.type === 'create' ? 'Created' : 'Updated';
     console.log(`  ${verb} EIP-${action.eipNumber} from PR #${prNumber}`);
   }
@@ -306,7 +309,7 @@ function removePendingEipFilesForPr(manifest, prNumber, eipNumbers, reason) {
     const otherPr = findOtherClaimingPr(manifest, prNumber, eipNumber);
     if (otherPr) {
       existing.pendingPullRequest = pendingPullRequest(otherPr);
-      fs.writeFileSync(filePath, JSON.stringify(existing, null, 2) + '\n');
+      writeFileAtomic(filePath, JSON.stringify(existing, null, 2) + '\n');
       console.log(
         `  Preserving EIP-${eipNumber}; repointed from PR #${prNumber} to #${otherPr}`,
       );
@@ -315,7 +318,7 @@ function removePendingEipFilesForPr(manifest, prNumber, eipNumbers, reason) {
 
     if (hasCuratedContent(existing)) {
       delete existing.pendingPullRequest;
-      fs.writeFileSync(filePath, JSON.stringify(existing, null, 2) + '\n');
+      writeFileAtomic(filePath, JSON.stringify(existing, null, 2) + '\n');
       console.warn(
         `  WARNING: EIP-${eipNumber} has curated data but PR #${prNumber} is gone (${reason}). ` +
         `Cleared pendingPullRequest and kept the record — needs human review.`,
@@ -557,7 +560,7 @@ Environment:
   // Save manifest — use the pre-fetch watermark so PRs updated during
   // processing are re-checked on the next run.
   manifest.lastRun = syncStartedAt;
-  fs.writeFileSync(PR_MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
+  writeFileAtomic(PR_MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
 
   console.log('\n');
   console.log('Done!');

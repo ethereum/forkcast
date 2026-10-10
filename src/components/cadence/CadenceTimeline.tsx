@@ -156,10 +156,10 @@ const CadenceTimeline = ({ timeline }: Props) => {
                 </span>
                 {/* .forkcast-wordmark is the nav's monocolor filter. */}
                 <img
-                  src="/forkcast-logo.svg"
+                  src="/forkcast-logo.webp"
                   alt=""
-                  width="907"
-                  height="213"
+                  width="170"
+                  height="40"
                   loading="lazy"
                   className="forkcast-wordmark h-4 w-auto"
                 />

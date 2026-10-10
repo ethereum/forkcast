@@ -29,10 +29,13 @@ jobs:
       - name: Scrape devnet specs
         run: node scripts/scrape-all-devnet-specs.mjs
 
+      # Still sync and commit if some devnets failed to scrape; the job ends red.
       - name: Sync devnet launch dates
+        if: ${{ !cancelled() }}
         run: node scripts/sync-devnet-launches.mjs
 
       - name: Commit, push and deploy
+        if: ${{ !cancelled() }}
         uses: ./.github/actions/commit-and-push
         with:
           paths: src/data/devnets/ src/data/generated/devnet-launches.json

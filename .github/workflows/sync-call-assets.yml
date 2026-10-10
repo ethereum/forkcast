@@ -33,12 +33,14 @@ jobs:
         run: |
           node scripts/sync-call-assets.mjs
 
+      # Partial failures here still commit what succeeded; the job ends red.
       - name: Extract key decisions from new TLDRs
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: node scripts/extract-key-decisions.mjs --all
 
       - name: Commit, push and deploy
+        if: ${{ !cancelled() && steps.sync.outcome == 'success' }}
         uses: ./.github/actions/commit-and-push
         with:
           paths: public/artifacts src/data/protocol-calls.generated.json

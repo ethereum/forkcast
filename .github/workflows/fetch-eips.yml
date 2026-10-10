@@ -31,17 +31,22 @@ jobs:
       - name: Fetch EIPs
         run: node scripts/fetch-all-eips.mjs
 
+      # Later steps still run if an earlier fetch fails part-way, so whatever
+      # succeeded is committed; the job still ends red.
       - name: Fetch EIP PRs
+        if: ${{ !cancelled() }}
         run: node scripts/fetch-eip-prs.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fetch EIP spec history
+        if: ${{ !cancelled() }}
         run: node scripts/fetch-eip-history.mjs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Commit, push and deploy
+        if: ${{ !cancelled() }}
         uses: ./.github/actions/commit-and-push
         with:
           paths: src/data/eips/ public/eips/

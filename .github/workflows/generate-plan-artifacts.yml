@@ -52,13 +52,20 @@ jobs:
             SERIES="acde,acdc,acdt"
           fi
 
+          # Run every series even if one fails, then fail the step at the end.
+          FAILED=""
           IFS=',' read -ra TYPES <<< "$SERIES"
           for t in "${TYPES[@]}"; do
             echo "Generating plan artifacts for $t..."
-            node scripts/generate-plan-artifacts.mjs --type "$t"
+            node scripts/generate-plan-artifacts.mjs --type "$t" || FAILED="$FAILED $t"
           done
+          if [ -n "$FAILED" ]; then
+            echo "::error::Plan artifact generation failed for:$FAILED"
+            exit 1
+          fi
 
       - name: Commit, push and deploy
+        if: ${{ !cancelled() }}
         uses: ./.github/actions/commit-and-push
         with:
           paths: public/artifacts

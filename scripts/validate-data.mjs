@@ -23,7 +23,14 @@ const NON_SERIES_ARTIFACT_DIRS = new Set(['acdt-breakouts']);
 // <date>_<number>, where ethproofs has suffixed numbers like 006b.
 const CALL_DIR_RE = /^\d{4}-\d{2}-\d{2}_\d+[a-z]?$/;
 
-const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8'));
+function readJson(file) {
+  try {
+    return JSON.parse(fs.readFileSync(file, 'utf8'));
+  } catch (error) {
+    console.error(`Data validation error: ${path.relative(ROOT, file)}: ${error.message}`);
+    process.exit(1);
+  }
+}
 const jsonFiles = dir => fs.readdirSync(dir).filter(file => file.endsWith('.json')).sort();
 
 function loadCallDirs() {

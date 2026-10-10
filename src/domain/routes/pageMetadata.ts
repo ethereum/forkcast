@@ -8,6 +8,9 @@
  * calls/[...path], networks/[id]) compute their metadata from route data in
  * getStaticPaths() and intentionally stay out of this static registry.
  */
+import { forkMilestones } from '../../data/milestones';
+import { formatMilestone } from '../../utils/milestones';
+
 export interface PageMetadata {
   title: string;
   description: string;
@@ -68,12 +71,12 @@ export const staticPageMetadata = {
   pectra: {
     title: 'Pectra Upgrade - Forkcast',
     description:
-      'Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper. Live on mainnet May 7, 2025.',
+      `Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper. Live on mainnet ${formatMilestone(forkMilestones.pectra.mainnet)}.`,
   },
   fusaka: {
     title: 'Fusaka Upgrade - Forkcast',
     description:
-      'PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks. Live on mainnet Dec 3, 2025.',
+      `PeerDAS enables nodes to specialize in storing subsets of data while maintaining security, dramatically increasing data capacity for Layer 2 networks. Live on mainnet ${formatMilestone(forkMilestones.fusaka.mainnet)}.`,
   },
   hegota: {
     title: 'Hegotá Upgrade - Forkcast',

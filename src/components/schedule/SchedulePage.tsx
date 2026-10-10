@@ -5,6 +5,8 @@ import ForkGanttChart from './ForkGanttChart';
 import EditableDateCell from './EditableDateCell';
 import { Tooltip } from '../ui';
 import { getUpgradeById } from '../../data/upgrades';
+import { forkMilestones } from '../../data/milestones';
+import { formatMilestone } from '../../utils/milestones';
 import type { ForkProgress } from '../../types/timeline';
 
 type MobileFork = 'fusaka' | 'glamsterdam' | 'hegota';
@@ -17,6 +19,8 @@ interface PlanningTableState {
   lockedDates: Record<string, string>;
   phaseDurations: PhaseDurations;
 }
+
+const FUSAKA_MAINNET = formatMilestone(forkMilestones.fusaka.mainnet);
 
 /** Where ACD's agreed minimum gaps are written down, and the source every gap tooltip cites. */
 const PROTOCOL_UPGRADE_DOC =
@@ -206,8 +210,8 @@ const SchedulePage: React.FC = () => {
 
   const dynamicHegotaProjection = useMemo(() => {
     const generated = generateForkProgress('Hegota', parseLocalDate(hegotaMainnetDate), {
-      headlinerProposalDeadlineOverride: new Date(2026, 1, 4), // February 4, 2026
-      headlinerSelectionDeadlineOverride: new Date(2026, 2, 26), // March 26, 2026
+      headlinerProposalDeadlineOverride: parseLocalDate(forkMilestones.hegota.headlinerProposalDeadline.date),
+      headlinerSelectionDeadlineOverride: parseLocalDate(forkMilestones.hegota.headlinerSelectionDeadline.date),
       devnetCount: hegotaDevnetCount,
       durations: phaseDurations,
     });
@@ -456,8 +460,8 @@ const SchedulePage: React.FC = () => {
           };
 
           // Calculate time between upgrade mainnet dates
-          const pectraMainnet = parseShortDate('May 7, 2025')!;
-          const fusakaMainnet = parseShortDate('Dec 3, 2025')!;
+          const pectraMainnet = parseLocalDate(forkMilestones.pectra.mainnet.date);
+          const fusakaMainnet = parseLocalDate(forkMilestones.fusaka.mainnet.date);
           const glamsterdamMainnet = parseLocalDate(glamsterdamMainnetDate);
           const hegotaMainnet = parseLocalDate(hegotaMainnetDate);
 
@@ -1094,9 +1098,9 @@ const SchedulePage: React.FC = () => {
                       </td>
                       <td className={`px-3 py-1.5 text-slate-900 dark:text-slate-100 text-sm ${mobileFork === 'fusaka' ? '' : 'hidden'} md:table-cell`}>
                         <div className="flex flex-col">
-                          <span>Dec 3, 2025</span>
+                          <span>{FUSAKA_MAINNET}</span>
                           {(() => {
-                            const gap = calculateGap('Dec 3, 2025', 'fusaka');
+                            const gap = calculateGap(FUSAKA_MAINNET, 'fusaka');
                             return gap.text && (
                               <Tooltip text="Mainnet must not upgrade less than 30 days after the final testnet, so L2s and DAOs have time to produce proposals and organize their own upgrades. Click to read the Protocol Upgrade Process." position="top">
                                 <span className="inline-flex items-center gap-0.5">

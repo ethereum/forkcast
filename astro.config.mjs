@@ -91,6 +91,12 @@ export default defineConfig({
   integrations: [react(), sitemap({ serialize: withLastmod() })],
   vite: {
     plugins: [tailwindcss()],
+    // Milestone statuses derive from the build date (src/utils/milestones.ts).
+    // Baked in once so the server render and hydrated islands agree.
+    // FORKCAST_BUILD_DATE=YYYY-MM-DD previews the site as of another day.
+    define: {
+      __BUILD_DATE__: JSON.stringify(process.env.FORKCAST_BUILD_DATE || new Date().toISOString().slice(0, 10)),
+    },
   },
   redirects: {
     ...legacyRedirects,

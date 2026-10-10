@@ -11,6 +11,8 @@ import { groupByCategory } from "../domain/eips/eipCategories";
 import { getRankableEips } from "../domain/eips/rankableEips";
 import { EipDrawer } from "./eip/EipDrawer";
 import { decodeRankingsHash, encodeRankingsHash } from "../utils/rankShare";
+import { forkMilestones } from "../data/milestones";
+import { formatMilestone } from "../utils/milestones";
 
 interface TierItem {
   id: string;
@@ -768,7 +770,7 @@ const RankPage: React.FC = () => {
                     Users, node operators, app developers, core developers, and any other stakeholders
                     are invited to voice their support for their preferred non-headliner EIPs for the Hegotá upgrade.
                     The deadline for proposing non-headliner EIPs was{" "}
-                    <strong>August 6, 2026</strong>.
+                    <strong>{formatMilestone(forkMilestones.hegota.pfiDeadline, "prose")}</strong>.
                   </p>
                   <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
                     Drag and drop (desktop) or tap-to-assign (mobile) the EIPs

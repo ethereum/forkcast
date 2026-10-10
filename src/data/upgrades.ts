@@ -1,5 +1,18 @@
 import { ClientTeamPerspective } from '../types/eip';
 import type { MacroPhase } from '../types/timeline';
+import { bpoMilestones, forkMilestones } from './milestones';
+import { BUILD_DATE, formatMilestone, milestoneStatus, type Milestone } from '../utils/milestones';
+
+/**
+ * Card date for an upgrade: the day once it's fixed, else just the year
+ * ('2026' while the target is a quarter).
+ */
+const activationDate = (mainnet: Milestone): string =>
+  (mainnet.precision ?? 'day') === 'day' ? formatMilestone(mainnet) : mainnet.date!.slice(0, 4);
+
+/** 'Live' from the first build on or after mainnet activation; `planned` until then. */
+const statusFor = (mainnet: Milestone, planned: NetworkUpgrade['status']): NetworkUpgrade['status'] =>
+  milestoneStatus(mainnet, BUILD_DATE) === 'completed' ? 'Live' : planned;
 
 export interface ActivationDetails {
   blockNumber: number;
@@ -106,8 +119,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Pectra Upgrade',
     description: 'Major upgrade introducing account abstraction (enabling smart contract functionality for regular accounts), validator experience improvements (higher balance limits, faster deposits, better exit controls), and blob scaling (doubled throughput for Layer 2 data). Named after the combination of "Prague" (execution layer upgrade, named after Devcon IV location) and "Electra" (consensus layer upgrade, named after a star in Taurus).',
     tagline: 'Account abstraction, validator upgrades, and 2x blob throughput - making Ethereum faster and cheaper.',
-    status: 'Live',
-    activationDate: 'May 7, 2025',
+    status: statusFor(forkMilestones.pectra.mainnet, 'Upcoming'),
+    activationDate: activationDate(forkMilestones.pectra.mainnet),
     disabled: false,
     highlights: 'Account abstraction (EIP-7702), staker upgrades, blob scaling',
     metaEipLink: 'https://ethereum-magicians.org/t/pectra-network-upgrade-meta-thread/16809',
@@ -124,8 +137,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Fusaka Upgrade',
     description: 'Major improvements to Ethereum\'s scalability and user experience, including PeerDAS for enhanced data availability. Named after the combination of "Fulu" (consensus layer upgrade, named after a star) and "Osaka" (execution layer upgrade, named after a Devcon location).',
     tagline: 'PeerDAS enables nodes to specialize in storing data subsets, increasing capacity for Layer 2 networks.',
-    status: 'Live',
-    activationDate: 'Dec 3, 2025',
+    status: statusFor(forkMilestones.fusaka.mainnet, 'Upcoming'),
+    activationDate: activationDate(forkMilestones.fusaka.mainnet),
     disabled: false,
     highlights: 'PeerDAS (EIP-7594), gas limit increase, introduce BPOs',
     activationDetails: {
@@ -141,8 +154,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Glamsterdam Upgrade',
     description: 'Major network upgrade featuring Block-level Access Lists and ePBS. Named after the combination of "Amsterdam" (execution layer upgrade, named after the previous Devconnect location) and "Gloas" (consensus layer upgrade, named after a star).',
     tagline: 'Devnet series complete, now testing on public testnets',
-    status: 'Upcoming',
-    activationDate: '2026',
+    status: statusFor(forkMilestones.glamsterdam.mainnet, 'Upcoming'),
+    activationDate: activationDate(forkMilestones.glamsterdam.mainnet),
     projectedActivation: '2026-12-02',
     disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',
@@ -223,8 +236,8 @@ export const networkUpgrades: NetworkUpgrade[] = [
     name: 'Hegotá Upgrade',
     description: 'Future network upgrade currently in early planning stages. Named after the combination of "Heze" (consensus layer upgrade, named after a star) and "Bogotá" (execution layer upgrade, named after a Devcon location).',
     tagline: 'Headliner selection concluded: FOCIL and Frame Tx SFI\'d as headliners',
-    status: 'Planning',
-    activationDate: '2027',
+    status: statusFor(forkMilestones.hegota.mainnet, 'Planning'),
+    activationDate: activationDate(forkMilestones.hegota.mainnet),
     projectedActivation: '2027-06-16',
     disabled: false,
     macroPhaseOverride: 'scoping',
@@ -246,6 +259,9 @@ export interface BpoUpgrade {
   metaEipId: number;
   /** Display text, in the same shape as `NetworkUpgrade.activationDate`. */
   activationDate: string;
+  /** Blob target and max per block from this fork on. */
+  blobTarget: number;
+  blobMax: number;
   tagline: string;
 }
 
@@ -254,14 +270,18 @@ export const bpoUpgrades: BpoUpgrade[] = [
     id: 'bpo1',
     name: 'BPO1',
     metaEipId: 8134,
-    activationDate: 'Dec 9, 2025',
+    activationDate: formatMilestone(bpoMilestones.bpo1.mainnet),
+    blobTarget: 10,
+    blobMax: 15,
     tagline: 'First blob-parameter-only fork: blob target 6 → 10, max 9 → 15.'
   },
   {
     id: 'bpo2',
     name: 'BPO2',
     metaEipId: 8135,
-    activationDate: 'Jan 7, 2026',
+    activationDate: formatMilestone(bpoMilestones.bpo2.mainnet),
+    blobTarget: 14,
+    blobMax: 21,
     tagline: 'Blob target 10 → 14, max 15 → 21.'
   }
 ];

@@ -3,12 +3,15 @@
  * Scrape a devnet spec from HackMD and output structured JSON.
  * Usage: node scripts/scrape-devnet-spec.mjs bal-devnet-3
  * Exits with code 2 if the HackMD page doesn't exist, 1 on any other error.
+ * Refuses to overwrite an existing file with a parse that lost most of its
+ * EIPs or client rows; set ALLOW_SHRINK=1 to accept such a change.
  */
 
 import { readFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { writeFileAtomic } from './lib/atomic-write.mjs';
+import { findShrinkage } from './lib/devnet-shrink.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -311,6 +314,14 @@ async function main() {
     if (existing.canceled) spec.canceled = true;
     if (!spec.genesisTime && existing.genesisTime) {
       spec.genesisTime = existing.genesisTime;
+    }
+
+    const losses = findShrinkage(existing, spec);
+    if (losses.length > 0 && !process.env.ALLOW_SHRINK) {
+      throw new Error(
+        `Refusing to overwrite ${outPath}: the new parse lost most of its data ` +
+          `(${losses.join('; ')}). Check the HackMD page; rerun with ALLOW_SHRINK=1 if the change is real.`,
+      );
     }
   }
 

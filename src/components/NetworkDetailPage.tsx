@@ -479,7 +479,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
             everything at genesis, where the tables say nothing. */}
         {promoted && networkEntry && (
           <>
-            <ForkSchedule rows={buildForkRows(networkEntry.forks, Date.now())} />
+            <ForkSchedule rows={buildForkRows(networkEntry.forks, Math.floor(Date.now() / 1000))} />
             <BlobSchedule schedule={networkEntry.blobSchedule ?? []} />
           </>
         )}
@@ -723,7 +723,7 @@ function BlobSchedule({ schedule }: { schedule: BlobScheduleEntry[] }) {
 }
 
 function PublicNetworkContent({ id, networkEntry }: { id: string; networkEntry: NetworkEntry }) {
-  const forkRows = buildForkRows(networkEntry.forks, Date.now());
+  const forkRows = buildForkRows(networkEntry.forks, Math.floor(Date.now() / 1000));
   const executionGenesis = getExecutionGenesisTimestamp(networkEntry.forks);
 
   return (

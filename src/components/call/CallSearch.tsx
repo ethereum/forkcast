@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { SearchQueryProvider, SearchMatch } from '../search/SearchUi';
 import { getSearchTypeIcon, getSearchTypeColor } from '../search/searchShortcuts';
 import { openGlobalSearch } from '../../domain/search/globalSearchBridge';
+import type { SyncConfig, TldrData, TldrHighlight } from '../../types/artifacts';
 
 interface SearchResult {
   type: 'transcript' | 'chat' | 'agenda' | 'action';
@@ -13,34 +14,12 @@ interface SearchResult {
   originalIndex: number;
 }
 
-interface TldrHighlightItem {
-  timestamp: string;
-  highlight: string;
-}
-
-interface TldrActionItem {
-  timestamp: string;
-  action: string;
-  owner: string;
-}
-
-interface TldrData {
-  meeting: string;
-  highlights: { [category: string]: TldrHighlightItem[] };
-  action_items: TldrActionItem[];
-  decisions: { timestamp: string; decision: string }[];
-  targets: { timestamp: string; target: string }[];
-}
-
 interface CallSearchProps {
   transcriptContent?: string;
   chatContent?: string;
   tldrData?: TldrData;
   onResultClick?: (timestamp: string, searchResult?: SearchResult) => void;
-  syncConfig?: {
-    transcriptStartTime: string | null;
-    videoStartTime: string | null;
-  };
+  syncConfig?: SyncConfig;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   initialQuery?: string;
@@ -329,7 +308,7 @@ const CallSearch: React.FC<CallSearchProps> = ({
 
     // Search agenda topics from tldr highlights
     if (tldrData && (selectedFilter === 'all' || selectedFilter === 'agenda')) {
-      const allHighlights: TldrHighlightItem[] = Object.values(tldrData.highlights).flat();
+      const allHighlights: TldrHighlight[] = Object.values(tldrData.highlights).flat();
       allHighlights.forEach((item, index) => {
         const highlightLower = item.highlight.toLowerCase();
 

@@ -1,3 +1,5 @@
+import type { SyncConfig } from '../types/artifacts';
+
 /**
  * Convert a timestamp string (HH:MM:SS or HH:MM:SS.mmm) to seconds
  */
@@ -16,12 +18,6 @@ function secondsToTimestamp(totalSeconds: number): string {
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = Math.floor(totalSeconds % 60);
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
-
-export interface SyncConfig {
-  transcriptStartTime: string | null;
-  videoStartTime: string | null;
-  description?: string;
 }
 
 /**

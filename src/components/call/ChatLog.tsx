@@ -6,15 +6,12 @@ import {
   parseChatTranscript,
   type ChatMessage,
 } from '../../domain/chat/zoomChat';
+import type { SyncConfig } from '../../types/artifacts';
 
 interface ChatLogProps {
   content: string;
   scrollContainerRef?: React.RefObject<HTMLDivElement>;
-  syncConfig?: {
-    transcriptStartTime: string | null;
-    videoStartTime: string | null;
-    description?: string;
-  } | null;
+  syncConfig?: SyncConfig | null;
   selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
   onTimestampClick?: (timestamp: string) => void;
   allowTimestampNavigation?: boolean;

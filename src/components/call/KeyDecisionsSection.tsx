@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import { Link } from '../navigation';
 import { KeyDecision, EIP } from '../../types/eip';
 import { getKeyDecisionTagColor } from '../../utils/colors';
+import type { SyncConfig } from '../../types/artifacts';
 import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
 import { eipById } from '../../data/eips';
-
-interface SyncConfig {
-  transcriptStartTime: string | null;
-  videoStartTime: string | null;
-  description?: string;
-}
 
 interface KeyDecisionsSectionProps {
   decisions: KeyDecision[];

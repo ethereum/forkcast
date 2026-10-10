@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { eipById } from '../../data/eips';
 import type { EipMentionsData } from '../../types/eip';
-import { getDisplayTimestamp, type SyncConfig } from '../../utils/timestamp';
+import type { SyncConfig } from '../../types/artifacts';
+import { getDisplayTimestamp } from '../../utils/timestamp';
 import { EipLinkWithTooltip } from './KeyDecisionsSection';
 
 export type { EipMentionsData } from '../../types/eip';

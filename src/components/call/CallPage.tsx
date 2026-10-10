@@ -7,12 +7,13 @@ import CallNotes, { type NotesData } from './CallNotes';
 import CallEipMentions, { type EipMentionsData } from './CallEipMentions';
 import CallAgenda from './CallAgenda';
 import CallSearch from './CallSearch';
-import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
+import { protocolCalls, callTypeNames, eipCallTypes, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
 import { upcomingCalls } from '../../domain/calls/upcomingCalls';
 import { onOpenCallSearch } from '../../domain/calls/callSearch';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
+import type { BreakoutConfig, CallConfig, TldrData } from '../../types/artifacts';
 import { isSearchHotkey } from '../search/searchShortcuts';
 import {
   GAP_SKIP_WAIT_SECONDS,
@@ -21,19 +22,9 @@ import {
 } from '../../utils/gapSkip';
 
 // Mapping of breakout call types to their associated EIP IDs
-const BREAKOUT_EIP_MAP: Record<string, number> = {
-  epbs: 7732,
-  bal: 7928,
-  focil: 7805,
-};
-
-interface TldrData {
-  meeting: string;
-  highlights: { [category: string]: { timestamp: string; highlight: string }[] };
-  action_items: { timestamp: string; action: string; owner: string }[];
-  decisions: { timestamp: string; decision: string }[];
-  targets: { timestamp: string; target: string }[];
-}
+const BREAKOUT_EIP_MAP: Record<string, number> = Object.fromEntries(
+  Object.entries(eipCallTypes).map(([eipId, callType]) => [callType, Number(eipId)]),
+);
 
 interface CallData {
   type: string;
@@ -46,24 +37,6 @@ interface CallData {
   notesData?: NotesData;
   eipMentions?: EipMentionsData;
   keyDecisions?: KeyDecision[];
-}
-
-interface SyncConfig {
-  transcriptStartTime: string | null;
-  videoStartTime: string | null;
-  description?: string;
-}
-
-interface BreakoutConfig {
-  videoUrl: string;
-  sync?: SyncConfig;
-}
-
-interface CallConfig {
-  videoUrl?: string;
-  issue?: number;
-  sync?: SyncConfig;
-  breakouts?: Record<string, BreakoutConfig>;
 }
 
 interface ActiveBreakout {

@@ -8,14 +8,7 @@ import { getPendingProposalsForFork, type PendingProposal } from '../../data/pen
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
 import { formatCallReference } from '../../domain/calls/callReference';
 import { StructuredDecisionContent, EipLinkWithTooltip, DecisionTextWithEipLinks } from './KeyDecisionsSection';
-
-interface TldrData {
-  meeting: string;
-  highlights: { [category: string]: { timestamp: string; highlight: string }[] };
-  action_items: { timestamp: string; action: string; owner: string }[];
-  decisions: { timestamp: string; decision: string }[];
-  targets: { timestamp: string; target: string }[];
-}
+import type { TldrData } from '../../types/artifacts';
 
 interface CallTldr {
   call: Call;
@@ -345,9 +338,9 @@ const CallPlanPage: React.FC = () => {
 
           const hasContent =
             (tldrData.action_items?.length > 0) ||
-            (tldrData.decisions?.length > 0) ||
+            (tldrData.decisions?.length ?? 0) > 0 ||
             (keyDecisions && keyDecisions.length > 0) ||
-            (tldrData.targets?.length > 0);
+            (tldrData.targets?.length ?? 0) > 0;
           if (!hasContent) return null;
           const result: CallTldr = { call, tldrData };
           if (keyDecisions) result.keyDecisions = keyDecisions;
@@ -1294,7 +1287,7 @@ const CallPlanPage: React.FC = () => {
                                       </ul>
                                     ) : (
                                       <ul className="space-y-1 list-none ml-0">
-                                        {tldrData.decisions.map((decision, index) => (
+                                        {tldrData.decisions?.map((decision, index) => (
                                           <li
                                             key={index}
                                             className="text-sm before:content-['\2192'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"

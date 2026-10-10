@@ -1,4 +1,4 @@
-import type { SyncConfig } from '../utils/timestamp';
+import type { SyncConfig } from '../types/artifacts';
 import indexRaw from './eip-mentions-index.json';
 
 /** A call recording that mentioned an EIP — the main call, or one bundled breakout. */

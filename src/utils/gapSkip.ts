@@ -1,8 +1,5 @@
-import {
-  getAdjustedVideoTime,
-  timestampToSeconds,
-  type SyncConfig,
-} from './timestamp';
+import type { SyncConfig } from '../types/artifacts';
+import { getAdjustedVideoTime, timestampToSeconds } from './timestamp';
 
 // Tuning for skipping the silent gaps between transcript messages, in video
 // seconds.

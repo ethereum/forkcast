@@ -1,44 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { KeyDecision } from '../../types/eip';
+import type { SyncConfig, TldrData, TldrHighlight } from '../../types/artifacts';
 import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
 import KeyDecisionsSection from './KeyDecisionsSection';
-
-interface HighlightItem {
-  timestamp: string;
-  highlight: string;
-}
-
-interface ActionItem {
-  timestamp: string;
-  action: string;
-  owner: string;
-}
-
-interface Decision {
-  timestamp: string;
-  decision: string;
-}
-
-interface Target {
-  timestamp: string;
-  target: string;
-}
-
-interface TldrData {
-  meeting: string;
-  highlights: {
-    [category: string]: HighlightItem[];
-  };
-  action_items: ActionItem[];
-  decisions: Decision[];
-  targets: Target[];
-}
-
-interface SyncConfig {
-  transcriptStartTime: string | null;
-  videoStartTime: string | null;
-  description?: string;
-}
 
 interface TldrSummaryProps {
   data: TldrData;
@@ -118,7 +82,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     return transcriptSeconds;
   };
 
-  const isCurrentHighlight = (timestamp: string, allHighlights: HighlightItem[]): boolean => {
+  const isCurrentHighlight = (timestamp: string, allHighlights: TldrHighlight[]): boolean => {
     if (!currentVideoTime || !syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime) return false;
     const itemVideoTime = getAdjustedVideoTime(timestamp);
     const itemIndex = allHighlights.findIndex(h => h.timestamp === timestamp);
@@ -127,7 +91,7 @@ const TldrSummary: React.FC<TldrSummaryProps> = ({
     return currentVideoTime >= itemVideoTime && currentVideoTime < nextItemVideoTime;
   };
 
-  const allHighlights: HighlightItem[] = Object.values(data.highlights)
+  const allHighlights: TldrHighlight[] = Object.values(data.highlights)
     .flat()
     .sort((a, b) => timestampToSeconds(a.timestamp) - timestampToSeconds(b.timestamp));
 

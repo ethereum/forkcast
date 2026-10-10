@@ -60,6 +60,8 @@ const { errors, warnings } = checkDataIntegrity({
     data: readJson(path.join(DATA_DIR, 'devnets', file)),
   })),
   callDirs: loadCallDirs(),
+  testCounts: readJson(path.join(DATA_DIR, 'execution-spec-test-counts.json')),
+  devnetLaunches: readJson(path.join(DATA_DIR, 'generated/devnet-launches.json')),
   clientTeams: ALL_CLIENT_TEAMS,
   eipCategories,
   breakouts,

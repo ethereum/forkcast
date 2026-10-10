@@ -1,7 +1,8 @@
 /**
  * Integrity checks for the hand-edited data that has no schema of its own:
- * prioritization boards, devnet specs, call configs, and the references
- * between those files and the EIP set.
+ * prioritization boards, devnet specs, call configs, the bot-generated files
+ * the pages import directly, and the references between those files and the
+ * EIP set.
  *
  * Pure: `checkDataIntegrity` takes already-parsed data and returns problems,
  * so tests can feed it broken copies. `scripts/validate-data.mjs` does the I/O.
@@ -214,12 +215,58 @@ const CALL_CONFIG_SCHEMA = {
   },
 };
 
+// Mirrors ExecutionSpecTestData in src/domain/execution-specs/execution-specs.ts.
+// Written by collect-test-counts.py, so extra keys are tolerated.
+const TEST_COUNTS_SCHEMA = {
+  type: 'object',
+  required: ['repo', 'fetchedAt', 'eips'],
+  properties: {
+    repo: { type: 'string', minLength: 1 },
+    fetchedAt: { type: 'string' },
+    eips: {
+      type: 'object',
+      additionalProperties: {
+        type: 'object',
+        required: ['testFiles', 'testFunctions', 'branch', 'directoryName'],
+        properties: {
+          testFiles: { type: 'integer' },
+          testFunctions: { type: 'integer' },
+          testCases: { type: 'integer' },
+          branch: { type: 'string', minLength: 1 },
+          directoryName: { type: 'string', minLength: 1 },
+        },
+      },
+    },
+  },
+};
+
+// generated/devnet-launches.json, written by sync-devnet-launches.mjs and read
+// by src/data/events.ts and src/constants/timeline-phases.ts.
+const DEVNET_LAUNCHES_SCHEMA = {
+  type: 'object',
+  additionalProperties: {
+    type: 'array',
+    items: {
+      type: 'object',
+      required: ['version', 'date', 'dateISO', 'active'],
+      properties: {
+        version: { type: 'integer' },
+        date: { type: 'string' },
+        dateISO: ISO_DATE,
+        active: { type: 'boolean' },
+      },
+    },
+  },
+};
+
 const ajv = new Ajv({ allErrors: true, verbose: true });
 const validators = {
   prioritization: ajv.compile(PRIORITIZATION_SCHEMA),
   devnetSpec: ajv.compile(DEVNET_SPEC_SCHEMA),
   devnetUpgrade: ajv.compile(DEVNET_UPGRADE_SCHEMA),
   callConfig: ajv.compile(CALL_CONFIG_SCHEMA),
+  testCounts: ajv.compile(TEST_COUNTS_SCHEMA),
+  devnetLaunches: ajv.compile(DEVNET_LAUNCHES_SCHEMA),
 };
 
 function schemaErrors(validate, data, file) {
@@ -248,6 +295,8 @@ const callPath = ref => {
  * @param {Array<{file: string, data: object}>} data.prioritization
  * @param {Array<{file: string, data: object}>} data.devnets   every src/data/devnets file
  * @param {Array<{dir: string, config: object | null, hasTranscript: boolean}>} data.callDirs  public/artifacts/<type>/<date>_<n> dirs
+ * @param {object} data.testCounts      execution-spec-test-counts.json
+ * @param {object} data.devnetLaunches  generated/devnet-launches.json
  * @param {Array<{name: string, type: string}>} data.clientTeams  ALL_CLIENT_TEAMS
  * @param {Array<{id: string, eips?: number[], subcategories?: Array<{eips: number[]}>}>} data.eipCategories
  * @param {Array<{parentPath: string, artifactDir: string}>} data.breakouts
@@ -391,6 +440,25 @@ export function checkDataIntegrity(data) {
   }
   for (const [path, dir] of dirByPath) {
     if (!callPaths.has(path)) warnings.push(`public/artifacts/${dir}: not in protocol-calls.generated.json, so it has no page`);
+  }
+
+  // Bot-generated files the pages import as-is.
+  const testCountsFile = 'src/data/execution-spec-test-counts.json';
+  const testCountErrors = schemaErrors(validators.testCounts, data.testCounts, testCountsFile);
+  errors.push(...testCountErrors);
+  if (testCountErrors.length === 0) {
+    for (const id of Object.keys(data.testCounts.eips)) {
+      if (!/^[0-9]+$/.test(id)) errors.push(`${testCountsFile}: key "${id}" is not an EIP number`);
+      else if (!eipIds.has(Number(id))) warnings.push(`${testCountsFile}: EIP ${id} has no file in src/data/eips`);
+    }
+  }
+  const launchesFile = 'src/data/generated/devnet-launches.json';
+  const launchErrors = schemaErrors(validators.devnetLaunches, data.devnetLaunches, launchesFile);
+  errors.push(...launchErrors);
+  if (launchErrors.length === 0) {
+    for (const fork of Object.keys(data.devnetLaunches)) {
+      if (!forkNames.has(fork)) errors.push(`${launchesFile}: "${fork}" is not an upgrade id`);
+    }
   }
 
   // TS-side registries that point into the data.

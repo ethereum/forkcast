@@ -96,6 +96,12 @@ function fixture() {
         },
       },
     ],
+    testCounts: {
+      repo: 'ethereum/execution-specs',
+      fetchedAt: '2026-01-01T00:00:00+00:00',
+      eips: { 7928: { testFiles: 1, testFunctions: 2, testCases: 3, branch: 'forks/amsterdam', directoryName: 'eip7928_bal' } },
+    },
+    devnetLaunches: { glamsterdam: [{ version: 0, date: 'Jan 1, 2026', dateISO: '2026-01-01', active: true }] },
     clientTeams: [{ name: 'Geth', type: 'EL' }],
     eipCategories: [{ id: 'bal', eips: [7928] }, { id: 'aa', subcategories: [{ eips: [7928] }] }],
     breakouts: [{ parentPath: 'acdt/066', artifactDir: 'acdt-breakouts/2025-01-01_066/bal' }],
@@ -131,6 +137,10 @@ describe('checkDataIntegrity', () => {
     ['a malformed sync offset', d => { d.callDirs[1].config.sync.videoStartTime = '0:00'; }, 'videoStartTime'],
     ['a listed call with no artifact folder', d => { d.callDirs.pop(); }, 'acdt/066 has no artifact folder'],
     ['a category EIP with no file', d => { d.eipCategories[1].subcategories[0].eips = [1]; }, 'category "aa" lists EIP 1'],
+    ['a test count with a non-numeric field', d => { d.testCounts.eips[7928].testFiles = '1'; }, '/eips/7928/testFiles must be integer'],
+    ['test counts keyed by something other than an EIP number', d => { d.testCounts.eips = { 'EIP-7928': d.testCounts.eips[7928] }; }, 'key "EIP-7928" is not an EIP number'],
+    ['a devnet launch with a malformed date', d => { d.devnetLaunches.glamsterdam[0].dateISO = '1/1/2026'; }, 'dateISO'],
+    ['devnet launches for an unknown upgrade', d => { d.devnetLaunches.glamstredam = d.devnetLaunches.glamsterdam; delete d.devnetLaunches.glamsterdam; }, '"glamstredam" is not an upgrade id'],
     ['a breakout under a call that does not exist', d => { d.breakouts[0].parentPath = 'acdt/067'; }, 'parent call "acdt/067"'],
   ])('flags %s', (_label, mutate, message) => {
     const { errors } = check(mutate);

@@ -1,0 +1,35 @@
+{
+  "meeting": "ACDT #100 - 2026-10-12 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "v1.7.0-beta.4 Release and Hoodi Compliance",
+      "summary": "Beta 4 is published with a breaking edge-case change; all client teams must ensure their Hoodi releases are compliant.",
+      "timestamp": "00:00:28",
+      "body": "- Justin reminded all teams that the v1.7.0-beta.4 consensus-specs release has been published and contains a breaking change for an edge case.\n- Client teams must ensure their Hoodi releases support this version; Hoodi releases are needed by Friday, October 16th.\n- Lodestar confirmed they are passing beta 4.\n- Nico noted there is a spec test that will catch any client that forgets to implement the change, as long as they pin beta 4."
+    },
+    {
+      "heading": "Raising IL Deadline from 8s to 9s",
+      "summary": "No objections raised; consensus to merge the PR raising the inclusion list deadline to 9 seconds (75% of slot).",
+      "timestamp": "00:01:21",
+      "body": "- Jihoon presented [consensus-specs PR #5727](https://github.com/ethereum/consensus-specs/pull/5727) proposing to move the IL deadline from 8 seconds to 9 seconds into the slot.\n- Motivation: give more time to build and broadcast ILs, especially when nodes execute the payload before constructing their IL.\n- Benchmark data ([gist](https://gist.github.com/jihoonsong/b8d8bbf862f9fd7cd4dbb89fd0d47ca2)): worst-case time to process a 200M gas payload averaged 1.4s, median 1.5s, max 4.8s. A node receiving a payload at 6s could be too tight at an 8s deadline.\n- Payload production time from Sepolia Shadow Fork 1 data was sub-second, much less than payload processing.\n- NC noted the data only covers up to 150M gas and does not measure publication latency.\n- Nico's concern: moving the IL deadline later gives less time to the proposer to prepare the payload. He said both 8 and 9 seem fine and the value can be tweaked later.\n- Barnabas asked whether the deadline would need to be adjusted again if slots move to 10 seconds. Jihoon confirmed the current formula uses 75% of slot duration, so it would become 7.5s under 10s slots; final tuning would happen once slot reduction is tested.\n- Jihoon mentioned that a later deadline could also allow collecting more PTC votes, though he does not strongly advocate that.\n- Barnabé Monnot commented in chat that with future PQ-signature aggregation, the design may allow more asynchrony between IL construction and payload, reducing the need to block on newPayload.\n- No opposition was raised; 2–3 explicit supports. Agreement to merge the PR."
+    },
+    {
+      "heading": "Config Validation for Future Forks",
+      "summary": "Dustin urged clients to ship correct constants in release branches; Nico proposed only validating configs for scheduled forks.",
+      "timestamp": "00:05:45",
+      "body": "- Dustin raised a meta-concern: a past incident where a client shipped a stale constant (changed from 7,500 to 5,000) in release branches, causing interop issues. He asked teams to ensure shipping branches carry current numbers.\n- Nico explained that Lodestar only validates future-fork config values if the fork is actually scheduled in the client config, avoiding false validation failures on mainnet.\n  - Lodestar had to add two workarounds because other clients validated configs strictly for unscheduled forks.\n- Vero noted they have a `--ignore-spec-mismatch` flag for this scenario.\n- Justin agreed that validating unused configs is unnecessary."
+    },
+    {
+      "heading": "EIP-8198 (Quick Slots) Merge and Beta 5 Spec Tests",
+      "summary": "EIP-8198 PR to be merged into Heze specs; beta 5 release delayed to Thursday to add quick-slots spec tests.",
+      "timestamp": "00:12:11",
+      "body": "- As decided in the earlier (non-CL-breakout) session, [consensus-specs PR #5718](https://github.com/ethereum/consensus-specs/pull/5718) for EIP-8198 (quick slots) will be merged after this call.\n- Nico raised a concern: current spec tests run with 12-second slots, so a client could pass beta 5 tests without actually implementing the Heze slot duration change or any STF changes, leading to consensus splits on Kurtosis with shorter slots.\n- Barnabas noted the next devnet will still use 12-second slots, with the following devnet requiring actual STF changes and shorter slots.\n- Jihoon acknowledged the gap and agreed to add spec tests covering the quick-slots feature before cutting the beta 5 release.\n- Agreement: target Thursday for the beta 5 release to allow time for adding those tests.\n- Barnabé Monnot offered to help as the EIP champion."
+    },
+    {
+      "heading": "produceBlockV4WithBid Beacon API Endpoint",
+      "summary": "Vero proposed a new Beacon API endpoint letting validator clients supply their own bids; teams asked to review the PR.",
+      "timestamp": "00:15:21",
+      "body": "- Luca (Vero) presented [beacon-APIs PR #627](https://github.com/ethereum/beacon-APIs/pull/627) for a `produceBlockV4WithBid` endpoint, allowing validator clients to supply their own bids to the beacon node.\n- Motivation 1 — monitoring: with Gloas, bid selection moves from MEV Boost / Commit Boost into the beacon node. In multi-node setups (e.g., one VC talking to 5 CLs), each CL may handle bid selection differently, making monitoring and alerting harder. Moving bid selection optionally into the VC centralises observability.\n- Motivation 2 — optimality: when a VC queries 5 CLs for blocks, each may return a block with a different bid; 4 out of 5 are guaranteed sub-optimal. Supplying a single bid to all CLs ensures every returned block contains the same chosen bid.\n- The endpoint is optional; clients do not have to use it.\n- Luca noted limited feedback so far (one new comment since last week) and asked other client teams to review.\n- A discussion thread exists in the CL APIs Discord channel.\n- Justin said he would post a reminder in the interop channel."
+    }
+  ]
+}

@@ -1,0 +1,277 @@
+{
+  "meeting": "ACDT #100 - 2026-10-12",
+  "eips": [
+    {
+      "eip": 7870,
+      "title": "Hardware and Bandwidth Recommendations",
+      "weight": "discussed",
+      "summary": "Discussed updating recommended hardware specs, particularly raising sequential read/write speeds from 500 to 1000–2000 MB/s for Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "00:17:20",
+          "context": "Jochem introduced EIP-7870 as needing an update because current 500 MB/s sequential speeds are too low for Glamsterdam worst-case blocks, which take 8 seconds on such hardware."
+        },
+        {
+          "timestamp": "00:18:36",
+          "context": "Discussion on whether to update this living EIP or create a new per-fork EIP; consensus leaned toward keeping it as one living document."
+        },
+        {
+          "timestamp": "00:21:53",
+          "context": "Dustin pushed back on the narrative that specs are generally too low, noting that memory and CPU requirements already seem high, though he stipulated disk speed claims may be valid."
+        },
+        {
+          "timestamp": "00:25:43",
+          "context": "Jochem argued for per-fork EIPs for clearer communication; Łukasz disagreed, preferring a single EIP with history to avoid confusion from multiple documents."
+        }
+      ]
+    },
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "Included in the proposed heze-devnet-2 EIP list; interactions with frames noted as key reason to merge CL and EL devnets.",
+      "moments": [
+        {
+          "timestamp": "00:29:36",
+          "context": "Listed as one of the EIPs for the next CL devnet alongside EIP-8015, EIP-8365, and EIP-8198."
+        },
+        {
+          "timestamp": "00:46:09",
+          "context": "Justin Florentine noted FOCIL and frames interactions as a reason to get them on a combined devnet quickly, since interactions could impact capacity."
+        }
+      ]
+    },
+    {
+      "eip": 8015,
+      "title": "Remove `deposit` and `eth1data` fields",
+      "weight": "discussed",
+      "summary": "Included in the proposed heze-devnet-2 as one of the CFI'd CL EIPs to remove deposit and eth1data fields.",
+      "moments": [
+        {
+          "timestamp": "00:29:36",
+          "context": "Listed by Jun Song and Spencer as part of the heze-devnet-2 scope along with EIP-7805, EIP-8365, and EIP-8198."
+        },
+        {
+          "timestamp": "00:30:22",
+          "context": "Matthew Keil confirmed support for including the ETH1 data removal alongside FOCIL and 0x00 validator changes."
+        }
+      ]
+    },
+    {
+      "eip": 8365,
+      "title": "Disallow new 0x00 validators",
+      "weight": "discussed",
+      "summary": "Included in proposed heze-devnet-2 to disallow new 0x00 validators; no objections raised.",
+      "moments": [
+        {
+          "timestamp": "00:29:36",
+          "context": "Listed as one of the four CL EIPs for the next devnet by Jun Song."
+        },
+        {
+          "timestamp": "00:30:22",
+          "context": "Matthew Keil referenced closing the door to 0x00 validators as part of the devnet scope he supports."
+        }
+      ]
+    },
+    {
+      "eip": 8198,
+      "title": "Quick Slots",
+      "weight": "discussed",
+      "summary": "Quick Slots proposed for heze-devnet-2 but with 12-second slot duration initially; shorter slots deferred until more clients are ready.",
+      "moments": [
+        {
+          "timestamp": "00:29:36",
+          "context": "Listed as one of the CFI'd CL EIPs for the next devnet, with the question of whether to use 10s or 12s slot time."
+        },
+        {
+          "timestamp": "00:37:05",
+          "context": "Dustin said Nimbus is not likely to have quick slots ready in this timeframe; agreed to keep 12-second slots for heze-devnet-2."
+        },
+        {
+          "timestamp": "00:39:07",
+          "context": "Justin Traglia proposed merging EIP-8198 into Heze specs as soon as tests pass, with agreement to keep 12s duration for the devnet."
+        },
+        {
+          "timestamp": "00:39:24",
+          "context": "Barnabas said Teku and Lodestar have already implemented even the shorter slots; Jihoon added Lighthouse, giving three clients."
+        }
+      ]
+    },
+    {
+      "eip": 1,
+      "title": "EIP Purpose and Guidelines",
+      "weight": "mentioned",
+      "summary": "Referenced in chat regarding the EIP process for modifying living versus final EIPs.",
+      "moments": [
+        {
+          "timestamp": "00:35:46",
+          "context": "Jochem linked EIP-1's process diagram in chat to clarify rules about changing living vs final EIPs, in context of the EIP-7870 update discussion."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "discussed",
+      "summary": "Raised repeatedly as a candidate for an upcoming devnet; implemented by two clients and argued as the path to post-quantum migration.",
+      "moments": [
+        {
+          "timestamp": "00:47:08",
+          "context": "CPerezz in chat: \"I guess no SETCODEFROM anytime soon… 🙁\", reacting to the bogota-devnet-1 scope."
+        },
+        {
+          "timestamp": "01:01:13",
+          "context": "Mario Vega opened the floor on SetCodeFrom, noting strong opinions and mentions in chat."
+        },
+        {
+          "timestamp": "01:01:39",
+          "context": "CPerezz argued the tests exist, Nethermind and Geth have implemented it and pass the EEST PR, it is the main route to early post-quantum migration, and it would let the non-trivial integration with frames be tested."
+        },
+        {
+          "timestamp": "01:02:26",
+          "context": "Toni in chat: \"my feeling is do setcodefrom + data repricing\"; his consolidated list at 01:05:18 kept set code from first."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame Transaction EIP included in Bogota devnet 1 scope alongside keyed nonces, recent roots, and transaction assertions.",
+      "moments": [
+        {
+          "timestamp": "00:49:28",
+          "context": "Spencer listed EIP-8141 as one of the four EIPs in the Bogota devnet 1 release being prepared for Thursday launch."
+        }
+      ]
+    },
+    {
+      "eip": 8250,
+      "title": "Keyed Nonces for Frame Transactions",
+      "weight": "discussed",
+      "summary": "Keyed Nonces for Frame Transactions included in Bogota devnet 1; consensus-breaking interaction with floor gas pricing discussed.",
+      "moments": [
+        {
+          "timestamp": "00:49:29",
+          "context": "Spencer listed EIP-8250 in the Bogota devnet 1 scope."
+        },
+        {
+          "timestamp": "00:53:01",
+          "context": "Toni explained that keyed nonces are part of the transaction envelope and affect floor gas pricing when combined with frames, making it a consensus-breaking change requiring all clients to implement."
+        }
+      ]
+    },
+    {
+      "eip": 8272,
+      "title": "Recent Roots for Frame Transactions",
+      "weight": "mentioned",
+      "summary": "Recent Roots for Frame Transactions listed as part of Bogota devnet 1 scope.",
+      "moments": [
+        {
+          "timestamp": "00:49:31",
+          "context": "Spencer listed EIP-8272 as one of the four EIPs included in the upcoming Bogota devnet 1 release."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "mentioned",
+      "summary": "Transaction Assertions listed as part of Bogota devnet 1 scope.",
+      "moments": [
+        {
+          "timestamp": "00:49:31",
+          "context": "Spencer listed EIP-7906 (transaction assertions) as the fourth EIP in the Bogota devnet 1 release."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "discussed",
+      "summary": "Bump nonce of zero-nonce storage accounts proposed for next devnet; behavior only triggers at fork transition so early testing on multiple devnets is important.",
+      "moments": [
+        {
+          "timestamp": "00:57:27",
+          "context": "Spencer said he and Jochem want EIP-8253 in the next devnet."
+        },
+        {
+          "timestamp": "00:57:55",
+          "context": "Jochem explained the EIP's behavior only happens at the fork transition, so testing it on as many devnets as possible is desirable, and he will open a PR for devnet template accounts."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "mentioned",
+      "summary": "Suggested alongside SetCodeFrom as a frames-adjacent EIP to include in an upcoming devnet.",
+      "moments": [
+        {
+          "timestamp": "00:57:32",
+          "context": "Marc suggested SetCodeFrom and EIP-8151 would be cool to go along with frames in a future devnet."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "mentioned",
+      "summary": "Toni cited its early inclusion in a previous devnet as a positive precedent for including complex EIPs early.",
+      "moments": [
+        {
+          "timestamp": "00:57:46",
+          "context": "Toni said including EIP-8037 early last time gave time to understand and debug it, and suggested the same approach for data repricing EIPs."
+        }
+      ]
+    },
+    {
+      "eip": 8279,
+      "title": "Block Access List Byte Floor",
+      "weight": "discussed",
+      "summary": "Block Access List Byte Floor suggested as a candidate for early devnet inclusion due to its complexity.",
+      "moments": [
+        {
+          "timestamp": "00:57:46",
+          "context": "Toni suggested EIP-8279 as a candidate for early devnet testing since it is the more involved of the data repricing EIPs."
+        },
+        {
+          "timestamp": "00:59:08",
+          "context": "Toni confirmed EIP-8279 would be a candidate for the next devnet based on the principle of adding complex EIPs early."
+        }
+      ]
+    },
+    {
+      "eip": 4758,
+      "title": "Deactivate SELFDESTRUCT",
+      "weight": "discussed",
+      "summary": "Maria asked whether deactivating SELFDESTRUCT early would simplify testing; jochem tied it to shipping TCREATE alongside.",
+      "moments": [
+        {
+          "timestamp": "00:59:04",
+          "context": "Maria Silva asked whether adding DEACTIVATE self-destruct earlier would help with testing by removing edge cases; spencer agreed it would."
+        },
+        {
+          "timestamp": "00:59:51",
+          "context": "jochem noted that if deactivate self-destruct ships, EIP-8360 (TCREATE) has to ship too, since patterns using self-destruct get more expensive; Justin Florentine called TCREATE testing orthogonal to Maria's point."
+        },
+        {
+          "timestamp": "01:05:18",
+          "context": "Included in Toni's chat list of candidates for the next devnet: set code from, data repricing, bump nonce, deactivate selfdestruct."
+        }
+      ]
+    },
+    {
+      "eip": 8360,
+      "title": "TCREATE Opcode",
+      "weight": "discussed",
+      "summary": "Jochem noted TCREATE must ship alongside deactivate self-destruct to preserve existing patterns, though not necessarily in the same devnet.",
+      "moments": [
+        {
+          "timestamp": "00:59:51",
+          "context": "Jochem said if self-destruct is deactivated, EIP-8360 (TCREATE) must also be included because removing self-destruct eliminates patterns that become more expensive in Glamsterdam; Justin Florentine noted this is orthogonal to testing self-destruct early."
+        }
+      ]
+    }
+  ]
+}

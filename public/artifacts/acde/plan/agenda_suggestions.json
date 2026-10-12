@@ -1,63 +1,63 @@
 {
   "series": "ACDE",
-  "generated": "2026-10-05",
-  "for_call": "ACDE #247",
+  "generated": "2026-10-12",
+  "for_call": "ACDE #248",
   "suggestions": [
     {
-      "topic": "EIP-8298 (SETCODEFROM) CFI decision",
+      "topic": "EIP-7907 (contract size metering) CFI/DFI decision",
       "priority": "high",
-      "rationale": "Deferred from ACDE #246 with expectation to decide at this call. Strong CFI interest from most clients; Besu requested more time. Final decision needed to complete Hegota scoping.",
+      "rationale": "Deferred from ACDE #247 with explicit expectation to decide at next call. Ben Adams raised as PFI to address DoS surface created by EIP-7954 raising contract limit without metering.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8360 (TCREATE opcode) and self-destruct deprecation path",
+      "topic": "Hoodi fork readiness and client release status",
       "priority": "high",
-      "rationale": "Deferred from ACDE #246; champion (Milos) tasked to engage clients before this call. Decision linked to broader self-destruct deprecation strategy. Action item explicitly due for this call.",
+      "rationale": "Hoodi fork scheduled for October 26, 2026 (18 days away). Client releases were due October 16 (4 days ago). Critical to confirm all clients have released and identify any blockers.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "EIP-8372 and EIP-8368 decision based on mainnet Glamsterdam data",
+      "priority": "high",
+      "rationale": "Both remain PFI pending ≥30 days of mainnet Glamsterdam data. Sepolia forked October 6; mainnet fork likely occurred early October. If 30+ days of data are now available, these need CFI/DFI decisions for Hegota scoping.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Remaining Hegota EIP decisions (~10 EIPs including EIP-8298)",
-      "priority": "high",
-      "rationale": "nixo assigned to post list of remaining ~10 Hegota EIPs to ExecutionDev/EthRD channels before this call. Final CFI/DFI pass needed to complete Hegota scoping ahead of Devcon (Nov 3).",
+      "topic": "EIP-8077 (eth/xx mempool networking) expansion to include fee/frame fields",
+      "priority": "medium",
+      "rationale": "CFI'd conditionally in ACDE #247 pending deeper analysis including fee/frame fields. Champion Csaba was actioned to expand the proposal; status update needed to confirm whether conditional CFI requirements are met.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Sepolia Glamsterdam fork readiness (Oct 6 target)",
-      "priority": "high",
-      "rationale": "Sepolia fork confirmed for October 6. Client releases were due Sep 29 (most released, Reth delayed to this week). Status check needed as fork is imminent — within 24 hours of this call if held Oct 5.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "200M gas limit on Sepolia: JUMPDEST attack monitoring and reorg risk",
+      "topic": "Mainnet Glamsterdam fork post-mortem and metrics",
       "priority": "medium",
-      "rationale": "ACDE #246 identified valid blocks taking 8–14s to execute due to JUMPDEST analysis attack at 200M gas limit. Reorg risk deemed expensive but non-persistent. Post-launch monitoring and any observed issues should be discussed.",
+      "rationale": "Sepolia forked October 6; Hoodi scheduled October 26. Mainnet fork likely occurred in early-to-mid October. Review of mainnet fork execution, gas limit ramp performance, ePBS adoption, and any unexpected issues is standard practice.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "CL block retention window and BAL retention alignment",
+      "topic": "CL block retention window and BAL alignment async resolution",
       "priority": "medium",
-      "rationale": "ACDE #246 deferred to async ETH R&D thread. Not blocking Gloas but affects history expiry and full sync capability at higher gas limits. Check if async discussion has converged on a solution.",
+      "rationale": "Deferred to async ETH R&D Discord thread in ACDE #246 (not blocking Gloas). No follow-up confirming resolution. If alignment is needed before Hegota or affects other decisions, should surface status.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "open_action_item"
     },
     {
-      "topic": "EIP-8368/8372 (CPSB recalibration / normalized state gas limit) data readiness",
+      "topic": "Hegota fork complexity assessment and testing strategy",
       "priority": "low",
-      "rationale": "Both remain PFI pending ≥30 days of mainnet Glamsterdam data. Mainnet fork not yet live, so no new data expected. Informational check on whether Sepolia/Hoodi data might inform earlier decision.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Hegota scoping completion timeline toward Devcon (Nov 3)",
-      "priority": "low",
-      "rationale": "ACDE #244 targeted Hegota scoping complete by Devcon (Nov 3). With ~4 weeks remaining and ~10 EIPs still pending decisions, confirm realistic timeline and any scope adjustments.",
+      "rationale": "ACDE #247 noted Hegota is already the most complex fork on record with 14 CFI/SFI EIPs before additional PFIs. With multiple new CFIs added in #247, reassess total complexity and discuss testing/coordination strategy (e.g., tooling improvements, champion involvement).",
       "related_eips": [],
       "source": "ongoing_discussion"
+    },
+    {
+      "topic": "eth_simulateV1 spec gap resolution status",
+      "priority": "low",
+      "rationale": "Flagged in ACDE #244 that clients disagree on simulated block contents (execution-apis issue #868). No follow-up since. If unresolved, could affect tooling/testing; if resolved async, worth noting for closure.",
+      "related_eips": [],
+      "source": "open_action_item"
     }
   ]
 }

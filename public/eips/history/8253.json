@@ -2,6 +2,25 @@
   "eipId": 8253,
   "commits": [
     {
+      "sha": "0cc66cb8a489925c5a56ff2df112cbcd1293c148",
+      "date": "2026-10-12T21:30:20Z",
+      "message": "Update EIP-8253: Add Mainnet prestate values + genesis/devnet alloc",
+      "author": "jochem-brouwer",
+      "prNumber": null,
+      "patch": "@@ -37,7 +37,7 @@ Such accounts can only be produced by a contract creation before [EIP-161](./eip\n \n ### Mainnet account list\n \n-The targeted Mainnet accounts are published as [`targeted-accounts.json`](../assets/eip-8253/targeted-accounts.json) (28 entries). Each entry contains the 20-byte address and its `keccak256` hash. The published file additionally records each account's non-zero storage slots (slot key and its hash), as supporting information for the predicate `storageRoot != EmptyRootHash` as we can construct the storage root ourselves and see that it matches the reported root. The slot information is not used by the state transition.\n+The targeted Mainnet accounts are published as [`targeted-accounts.json`](../assets/eip-8253/targeted-accounts.json) (28 entries). Each entry contains the 20-byte address and its `keccak256` hash. The published file additionally records each account's non-zero storage slots (slot key, its hash, and its value), as supporting information for the predicate `storageRoot != EmptyRootHash`: the storage root of each account can be reconstructed from the file alone and compared to the reported root. The slot information is not used by the state transition.\n \n The construction procedure and verification (against `eth_getProof` on `latest`) are documented in [`methodology.md`](../assets/eip-8253/methodology.md). The 224-entry pre-EIP-161-deletion superset at the Spurious Dragon block is published alongside, as [`zero-nonce-matches.jsonl`](../assets/eip-8253/zero-nonce-matches.jsonl).\n \n@@ -54,7 +54,7 @@ The transition produces no transaction, receipt, or log, and consumes no gas.\n \n ### Application to non-Mainnet chains\n \n-Chains that carry Mainnet state from after Spurious Dragon (including Mainnet shadow forks) apply the Mainnet list. Chains on which EIP-161 has been active since genesis, which includes all current public test networks, have an empty list. Other chains have to generate the list for their own state using the procedure in [`methodology.md`](../assets/eip-8253/methodology.md), listing both the address preimages and their hashes. Test chains and test fixtures that exercise the transition allocate accounts of the targeted shape in genesis and name them in the chain configuration, in the same way system contracts are exercised.\n+Chains that carry Mainnet state from after Spurious Dragon (including Mainnet shadow forks) apply the Mainnet list. Chains on which EIP-161 has been active since genesis, which includes all current public test networks, have an empty list. Other chains have to generate the list for their own state using the procedure in [`methodology.md`](../assets/eip-8253/methodology.md), listing both the address preimages and their hashes. Test chains and test fixtures that exercise the transition allocate accounts of the targeted shape in genesis and name them in the chain configuration, in the same way system contracts are exercised. To exercise the Mainnet list itself, [`mainnet-prestate-alloc.json`](../assets/eip-8253/mainnet-prestate-alloc.json) provides the 28 Mainnet accounts (balance, zero nonce, storage) as a genesis `alloc` fragment; a devnet that allocates these in genesis and configures the Mainnet list activates the EIP against the exact Mainnet shape of the targeted accounts.\n \n ### Interaction with [EIP-7928](./eip-7928.md)\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "2b3e257fcb4e6c89fbe6d62bf0fabfb7649c2c3f",
+      "date": "2026-10-12T18:37:12Z",
+      "message": "Update EIP-8253: explicitly define Mainnet/testnet chain configs",
+      "author": "jochem-brouwer",
+      "prNumber": null,
+      "additions": 37,
+      "deletions": 13
+    },
+    {
       "sha": "e799068319906463adb97f383585970d30f637ef",
       "date": "2026-05-21T14:45:19Z",
       "message": "Update EIP-8253: edit title",
@@ -17,16 +36,6 @@
       "prNumber": null,
       "additions": 98,
       "deletions": 0
-    }
-  ],
-  "openPrs": [
-    {
-      "number": 12456,
-      "title": "Update EIP-8253: explicitly define Mainnet/testnet chain configs",
-      "author": "jochem-brouwer",
-      "updatedAt": "2026-10-12T14:56:57Z",
-      "additions": 37,
-      "deletions": 13
     }
   ]
 }

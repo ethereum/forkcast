@@ -1,0 +1,117 @@
+{
+  "meeting": "FOCIL #044 - 2026-10-13",
+  "eips": [
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "The call's subject: devnet 1 behaviour, IL-building timing, the EIP rebased from Fulu to Heze, three CL-spec PRs, and a possible change to how ILs reach the EL.",
+      "moments": [
+        {
+          "timestamp": "00:05:09",
+          "context": "Rahul Barman reported Lighthouse participated in devnet 1 having intentionally left fork-choice enforcement out, assuming payloads would satisfy the inclusion list; once censorship testing started Lighthouse diverged from other clients, and a PR adding enforcement is under review."
+        },
+        {
+          "timestamp": "00:12:01",
+          "context": "NC said Lodestar creates ILs when the execution payload is received rather than after the new payload call, so it always takes the spec's fallback path instead of executing the payload first."
+        },
+        {
+          "timestamp": "00:13:58",
+          "context": "Jihoon rebased the FOCIL EIP from Fulu to Heze and reflected all changes made so far."
+        },
+        {
+          "timestamp": "00:14:26",
+          "context": "Three CL-spec PRs were posted: two minor bug fixes and one on the IL deadline discussed at ACDT the day before."
+        },
+        {
+          "timestamp": "00:39:32",
+          "context": "Jihoon raised an alternative design in which the CL passes whole ILs to the EL instead of IL transactions, moving deduplication and omission checks to the EL at the cost of engine API bandwidth."
+        }
+      ]
+    },
+    {
+      "eip": 8198,
+      "title": "Quick Slots",
+      "weight": "discussed",
+      "summary": "Teams reported implementation status of EIP-8198 (Quick Slots) for Heze devnet 2 and tested it with FOCIL.",
+      "moments": [
+        {
+          "timestamp": "00:06:50",
+          "context": "Iván from ethrex reported they have implemented 8198 and are ready for Heze devnet 2, and asked whether to keep their base fee and block schedule changes given the talk of using 12 seconds; Jihoon confirmed devnet 2 uses 12 seconds, making it effectively a no-op, and separately asked for a version testing a 10-second slot locally."
+        },
+        {
+          "timestamp": "00:09:09",
+          "context": "NC from Lodestar confirmed they have merged 8198 into their trunk branch alongside other Heze EIPs."
+        },
+        {
+          "timestamp": "00:10:07",
+          "context": "Marc from Nethermind said he needs to look into 8198 as he hadn't considered whether it required EL changes."
+        },
+        {
+          "timestamp": "00:12:47",
+          "context": "Nico Flaig mentioned he tested running quick slots with FOCIL using 10-second slots on Heze and it seems to work well for Lodestar."
+        }
+      ]
+    },
+    {
+      "eip": 8365,
+      "title": "Disallow new 0x00 validators",
+      "weight": "mentioned",
+      "summary": "Listed as one of the EIPs Lodestar has merged into their trunk branch for Heze.",
+      "moments": [
+        {
+          "timestamp": "00:09:09",
+          "context": "NC stated Lodestar has merged EIP-8365, 8015, and 8198 into their trunk branch."
+        }
+      ]
+    },
+    {
+      "eip": 8015,
+      "title": "Remove `deposit` and `eth1data` fields",
+      "weight": "mentioned",
+      "summary": "Listed as one of the EIPs Lodestar has merged into their trunk branch for Heze.",
+      "moments": [
+        {
+          "timestamp": "00:09:09",
+          "context": "NC stated Lodestar has merged EIP-8365, 8015, and 8198 into their trunk branch."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Marc presented the spec work for handling profile 2 frame transactions inside FOCIL: a claims object, per-IL verification-gas bounding and a membership bitmap.",
+      "moments": [
+        {
+          "timestamp": "00:14:05",
+          "context": "Jihoon noted the FOCIL EIP does not yet include the interaction mechanism with frames; he will add it once the design settles."
+        },
+        {
+          "timestamp": "00:32:04",
+          "context": "Marc's work covers handling of profile 2 frame transactions: because the builder must specify the index where it evaluated a transaction, a new claims object maps transaction hashes to that index, and the builder commits to its root in their bid."
+        },
+        {
+          "timestamp": "00:34:27",
+          "context": "The computation needed to verify validation prefixes is bounded per IL, so one IL proposer's validation gas cannot be used up by someone else; a membership bitmap lets the EL identify which IL each transaction came from."
+        },
+        {
+          "timestamp": "00:35:50",
+          "context": "Jihoon asked how many frame transactions fit within the 1 million gas max verify gas per IL; nobody had a figure, and ethrex said it would be interesting to measure."
+        }
+      ]
+    },
+    {
+      "eip": 8369,
+      "title": "VOPS Profiles for FOCIL Eligibility",
+      "weight": "mentioned",
+      "summary": "Cited as the informational EIP whose profile 2 rules Marc's FOCIL-and-frames spec work implements.",
+      "moments": [
+        {
+          "timestamp": "00:31:48",
+          "context": "Marc described his spec work as \"realizing the details of Thomas' informational EIP\" — the VOPS profiles whose profile 2 handling the claims object and per-IL budget implement."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "meeting": "FOCIL #044 - 2026-10-13",
+  "sections": [
+    {
+      "heading": "Heze Devnet 1 Status",
+      "summary": "Network is generally healthy but some slots are missed due to Lighthouse lacking fork choice enforcement; a fix PR is under review.",
+      "timestamp": "00:04:19",
+      "body": "- The Heze devnet 1 network is generally healthy according to [Dora](https://dora.heze-devnet-1.ethpandaops.io/), but some slots are being missed.\n- Lighthouse participated in devnet 1 under the assumption that payloads would satisfy the inclusion list, intentionally omitting fork choice enforcement.\n  - When censorship testing began, Lighthouse diverged from other clients.\n  - A PR adding enforcement has been submitted; it is currently under review and expected to merge this week.\n- Validator indices 2200–2206 are inactive (not slashed); the cause is unknown and will be investigated offline.\n- Decision: keep devnet 1 running until devnet 2 is ready."
+    },
+    {
+      "heading": "Client Development Updates for Heze Devnet 2",
+      "summary": "Ethrex is ready for devnet 2 with EIP-8198; Prysm is rebasing its FOCIL work; Lodestar merged EIP-8365, 8015 and 8198 to trunk.",
+      "timestamp": "00:06:43",
+      "body": "- **Ethrex**: Implemented [EIP-8198](https://forkcast.org/eips/8198/?tab=spec) and is ready for Heze devnet 2. Current implementation uses base fee and block schedule changes rather than a flat 12-second slot time; Jihoon noted devnet 2 will use 12 seconds (effectively a no-op) but also wants to test 10-second slots locally.\n  - Slot timing derived from fork configuration in [consensus-specs #5710](https://github.com/ethereum/consensus-specs/pull/5710); EL-side changes in [execution-specs #3703](https://github.com/ethereum/execution-specs/pull/3703)\n- **Prysm** (Jun Song, first time joining): Rebasing Terrence's earlier FOCIL implementation, planning to sync with the current devnet to validate the work before devnet 2.\n- **Lodestar** (NC): Merged EIP-8365, EIP-8015, and EIP-8198 into trunk. FOCIL branch still needs to be merged in the next couple of days. Identified an issue where ILs are created upon receiving execution payload rather than after new payload execution (always using fallback path instead of eagerly building after payload execution).\n- **Nethermind** (Marc): Continuing work on frames and FOCIL specs; expects to be ready for devnet 2 but needs to review whether EIP-8198 requires EL changes.\n- **Lodestar branch issue** (Nico Flaig): The focil-devnet-1 branch was accidentally broken by merging trunk (which includes quick slots and other Heze changes). A pinned image is running on devnet 1. Tested 10-second slots with FOCIL locally and it works.\n  - No backport branch exists if a Lodestar bug surfaces on devnet 1."
+    },
+    {
+      "heading": "IL Building Timing and Payload Resealing",
+      "summary": "EL clients rebuild payloads iteratively; Besu builds a minimal IL-compliant block first, then improves it; resealing speed varies by implementation.",
+      "timestamp": "00:10:18",
+      "body": "- Key question raised by Nico Flaig and Toni Wahrstätter: how efficiently can ELs apply IL transactions on top of an already-sealed payload, and when should the CL call `engine_forkchoiceUpdated` with the superset of observed ILs?\n- **Besu** (Fabio Di Fabio): The EL iteratively rebuilds blocks until `getPayload` is called.\n  - First iteration now builds a \"minimal block\" containing only IL transactions (previously it built an empty block). This ensures IL compliance even if `getPayload` arrives very quickly.\n  - IL transactions are also sent to the public transaction pool so subsequent iterations can sort them by fee organically.\n  - Any IL transactions not picked up organically are appended at the end.\n  - Transaction ordering may change between iterations in edge cases (e.g., fee bumping on earlier transactions from the same sender), but every iteration is verified to be IL-conformant.\n- Nico Flaig noted his builder takes ~5ms to reseal a payload, but doubted ELs are equally optimized.\n  - Toni Wahrstätter pointed out resealing involves updating the state root, BAL, and execution traces—not just appending transactions.\n- **Timing discussion**: Lodestar currently calls `forkchoiceUpdated` at 8 seconds in the previous slot and `getPayload` ~100ms into the next slot.\n  - With ILs, the IL view should be frozen by 9 seconds (per spec), so calling FCU at ~10 seconds or at slot start is conservative and sufficient.\n  - If ELs can efficiently reseal with IL transactions, local build time is not significantly reduced.\n- Jihoon: optimized EL building strategies for ILs may be worth exploring but it is too early to standardize."
+    },
+    {
+      "heading": "Spec and EIP Updates",
+      "summary": "The FOCIL EIP has been rebased to Heze; three CL-spec PRs address bug fixes and the IL deadline discussed at ACDT.",
+      "timestamp": "00:13:49",
+      "body": "- Jihoon rebased the [FOCIL EIP](https://github.com/ethereum/EIPs/pull/12470) from Fulu to Heze, reflecting all changes made so far. It does not yet include the transaction interaction mechanism with frames.\n- Three CL-spec PRs for Heze devnet 2:\n  - [consensus-specs #5721](https://github.com/ethereum/consensus-specs/pull/5721) – minor bug fix\n  - [consensus-specs #5724](https://github.com/ethereum/consensus-specs/pull/5724) – minor bug fix\n  - [consensus-specs #5727](https://github.com/ethereum/consensus-specs/pull/5727) – IL deadline change discussed at ACDT\n- [Heze devnet 2 spec sheet](https://notes.ethereum.org/@ethpandaops/heze-devnet-2) updated."
+    },
+    {
+      "heading": "New Payload and IL Consistency",
+      "summary": "Calling new_payload with different inclusion lists for the same payload should not happen; the IL view is frozen well before new_payload is called.",
+      "timestamp": "00:29:03",
+      "body": "- Fabio Di Fabio (Besu) asked whether `newPayload` could be called with different inclusion lists (e.g., flipping the IL-satisfied status).\n- Jihoon confirmed this should not happen: attesters freeze their IL view at 9 seconds in the previous slot, well before `newPayload` is called.\n  - The only theoretical scenario would be an equivocation, but equivocations seen after the freeze deadline do not affect the IL view.\n  - If it does happen, it should be treated as a bug."
+    },
+    {
+      "heading": "FOCIL and Frames Interaction Design",
+      "summary": "Marc presented specs for frame transaction handling in FOCIL including claims objects, membership bitmaps, and per-IL gas limits; alternative designs were discussed.",
+      "timestamp": "00:31:29",
+      "body": "- Marc presented work realizing Thomas Thiery's informational [EIP-8369](https://forkcast.org/eips/8369/?tab=spec) (VOPS profiles) for frame transaction (profile 2) handling within FOCIL.\n  - Relevant PRs: [EIP #12394](https://github.com/ethereum/EIPs/pull/12394), [consensus-specs #5698](https://github.com/ethereum/consensus-specs/pull/5698), [execution-apis #911](https://github.com/ethereum/execution-apis/pull/911)\n- **Claims object**: Maps transaction hashes to the index where the builder evaluated them. The builder commits to the root in their bid; it is passed along in the execution payload envelope.\n- **Per-IL verification gas limit**: `MAX_VERIFY_GAS_PER_IL` is set to 1 million gas. This bounds computation for verifying validation prefixes per individual IL, preventing one IL committee member from consuming another's gas budget.\n- **Membership bitmap**: A new object that lets the EL identify which IL each transaction originated from, enabling per-IL gas accounting.\n- **New ID / async status endpoint** (`engine_getInclusionListStatusV1`): Would make `newPayload` / `forkchoiceUpdated` async for IL validation. Jihoon questioned the rationale since the CL must wait for the IL validation result anyway. Marc acknowledged it may not be needed if a simpler approach is taken.\n- **Alternative design discussed by Jihoon**: Instead of the CL deduplicating IL transactions and creating the membership mapping (requiring byte-to-byte comparison), the CL could pass raw ILs to the EL, which would handle deduplication and omission checks. This increases engine API bandwidth but simplifies the spec and CL implementation. This direction was previously considered and deferred; Jihoon suggested revisiting it now that frames are in scope.\n- Toni Wahrstätter confirmed per-IL gas enforcement must happen on the EL side since the CL cannot inspect transaction contents.\n- Open question on expected IL composition with frames: ~50 regular transactions and 2–3 privacy transactions per IL. Privacy transactions (e.g., Railgun, Tornado Cash) currently ~250k gas each, similar in calldata size to complex DeFi transactions. Post-quantum proofs may increase their size.\n- Marc requested review from ethrex on the spec PRs; ethrex will review as soon as possible."
+    },
+    {
+      "heading": "Censoring Builder for Testing",
+      "summary": "No censoring builder is currently available for FOCIL devnet testing; one should be developed for future devnets.",
+      "timestamp": "00:43:54",
+      "body": "- Nico Flaig asked whether a censoring builder exists for testing. The trivial censorship strategy is producing empty payloads.\n- No censoring builder is currently available; Nico's builder has not been updated for FOCIL yet.\n- Jihoon suggested building something similar to the \"Death Star\" for future devnets—producing censoring payloads, attesting to wrong payloads, etc."
+    },
+    {
+      "heading": "Breakout Call Schedule",
+      "summary": "Next breakout (#45) in two weeks as scheduled; the following one tentatively moved to November 17 instead of November 10 due to Devcon.",
+      "timestamp": "00:45:34",
+      "body": "- FOCIL breakout #45 will proceed as scheduled in two weeks (one week before Devcon).\n- The subsequent call would normally fall on November 10 (during Devcon recovery). Tentatively pushed to November 17; final decision to be confirmed at breakout #45.\n- NC asked whether FOCIL breakout calls are still needed once Heze devnet 2 exists, since testing discussion happens at ACDT.\n  - Jihoon: the breakout will eventually be absorbed into ACDT, but the timing is uncertain. FOCIL-specific design discussions (e.g., frames interaction) still warrant a dedicated call for now."
+    }
+  ]
+}

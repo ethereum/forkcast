@@ -25,16 +25,14 @@ import { Tooltip, CopyLinkButton, UpgradeMascot } from './ui';
 import { EipDrawer } from './eip/EipDrawer';
 import {
   NetworkUpgradeTimeline,
-  FusakaTimeline,
-  GlamsterdamTimeline,
-  HegotaTimeline,
-  PectraTimeline,
+  UpgradeTimeline,
   TableOfContents,
   EipFilterBar,
   OverviewSection,
   ClientPerspectives,
   EipCard
 } from './network-upgrade';
+import { UPGRADE_TIMELINES } from './network-upgrade/upgradeTimelines';
 
 // Upgrade page display modes control which sections are visible.
 // headlinerSelection hides the overview and stage-grouped EIP sections.
@@ -394,7 +392,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     { id: 'overview', label: 'Overview', type: 'section' as const, count: null as number | null },
 
     // Add timeline section for forks that have one
-    ...(['glamsterdam', 'fusaka', 'pectra', 'hegota'].includes(forkName.toLowerCase()) ? [
+    ...(UPGRADE_TIMELINES[forkName.toLowerCase()] ? [
       { id: `${forkName.toLowerCase()}-timeline`, label: 'Timeline', type: 'section' as const, count: null as number | null }
     ] : []),
 
@@ -598,25 +596,7 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
 
               {/* Timeline Section — hidden when filter is active */}
               {(() => {
-                const timelineConfig: Record<string, { description: string; component: React.ReactNode }> = {
-                  hegota: {
-                    description: 'The planning timeline for Hegotá, showing the progression from headliner selection to final implementation decisions.',
-                    component: <HegotaTimeline />
-                  },
-                  glamsterdam: {
-                    description: 'The planning timeline for Glamsterdam, showing the progression from headliner selection to final implementation decisions.',
-                    component: <GlamsterdamTimeline />
-                  },
-                  fusaka: {
-                    description: 'The deployment timeline for Fusaka, showing the progression from devnets through testnet deployments to mainnet.',
-                    component: <FusakaTimeline />
-                  },
-                  pectra: {
-                    description: 'The deployment timeline for Pectra, showing the progression from devnets through testnet deployments to mainnet.',
-                    component: <PectraTimeline />
-                  },
-                };
-                const config = timelineConfig[forkName.toLowerCase()];
+                const config = UPGRADE_TIMELINES[forkName.toLowerCase()];
                 if (!config) return null;
                 const sectionId = `${forkName.toLowerCase()}-timeline`;
                 return (
@@ -634,7 +614,12 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
                         {config.description}
                       </p>
                     </div>
-                    {config.component}
+                    <UpgradeTimeline
+                      phases={config.phases}
+                      sourceUrl={config.sourceUrl}
+                      sourceLabel={config.sourceLabel}
+                      footnote={config.footnote}
+                    />
                   </div>
                 );
               })()}

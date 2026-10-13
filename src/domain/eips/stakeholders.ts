@@ -36,8 +36,6 @@ export const stakeholders: Stakeholder[] = [
   { key: 'elClients', label: 'EL Client Developers', audience: 'Execution layer client teams' },
 ];
 
-export const stakeholderKeys = stakeholders.map((s) => s.key);
-
 export const stakeholderLabels: Record<string, string> = Object.fromEntries(
   stakeholders.map((s) => [s.key, s.label]),
 );

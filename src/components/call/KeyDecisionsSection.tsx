@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import { Link } from '../navigation';
 import { KeyDecision, EIP } from '../../types/eip';
 import { getKeyDecisionTagColor } from '../../utils/colors';
-import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
+import type { SyncConfig } from '../../types/artifacts';
+import { PRE_RECORDING_LABEL, getAdjustedVideoTime, secondsToCompactTimestamp } from '../../utils/timestamp';
 import { eipById } from '../../data/eips';
-
-interface SyncConfig {
-  transcriptStartTime: string | null;
-  videoStartTime: string | null;
-  description?: string;
-}
 
 interface KeyDecisionsSectionProps {
   decisions: KeyDecision[];
@@ -290,29 +285,11 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
   syncConfig,
   selectedSearchResult,
 }) => {
-  const timestampToSeconds = (timestamp: string | null | undefined): number => {
-    if (!timestamp) return 0;
-    const parts = timestamp.split(':');
-    if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
   const getDisplayTimestamp = (timestamp: string): string => {
     if (syncConfig?.transcriptStartTime && syncConfig?.videoStartTime) {
-      const transcriptSeconds = timestampToSeconds(timestamp);
-      const offset = timestampToSeconds(syncConfig.transcriptStartTime) -
-                     timestampToSeconds(syncConfig.videoStartTime);
-      const adjustedSeconds = transcriptSeconds - offset;
+      const adjustedSeconds = getAdjustedVideoTime(timestamp, syncConfig);
       if (adjustedSeconds < 0) return PRE_RECORDING_LABEL;
-      const hours = Math.floor(adjustedSeconds / 3600);
-      const minutes = Math.floor((adjustedSeconds % 3600) / 60);
-      const seconds = Math.floor(adjustedSeconds % 60);
-      const formattedSeconds = seconds.toString().padStart(2, '0');
-      if (hours === 0) {
-        return `00:${minutes}:${formattedSeconds}`;
-      }
-      return `${hours}:${minutes}:${formattedSeconds}`;
+      return secondsToCompactTimestamp(adjustedSeconds);
     }
     return timestamp;
   };
@@ -347,9 +324,10 @@ const KeyDecisionsSection: React.FC<KeyDecisionsSectionProps> = ({
                 : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />
               }
             </span>
-            <span className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button type="button" className="text-xs text-slate-400 dark:text-slate-500 ml-1 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity cursor-pointer">
+              <span className="sr-only">Play from </span>
               {getDisplayTimestamp(decision.timestamp)}
-            </span>
+            </button>
           </li>
         );
       })}

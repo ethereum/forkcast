@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from '../navigation';
 import { eipsData } from '../../data/eips';
 import { useComplexityData, getComplexityForEip } from '../../domain/complexity/useComplexityData';
-import { ComplexityScoreBadge } from '../ui';
+import { ComplexityScoreBadge, SheetModal } from '../ui';
 import type { EipComplexity } from '../../domain/complexity/types';
 import { usePrioritizationData } from '../../hooks/usePrioritizationData';
 import { getScoreColor } from '../../utils/prioritization';
@@ -258,95 +258,75 @@ const GlamsterdamPrioritizationSection: React.FC = () => {
     <>
       {/* Filters Modal */}
       {filtersModalOpen && (
-        <div className="fixed inset-0 z-50 animate-fadeIn">
-          <div
-            className="absolute inset-0 bg-black/50"
-            onClick={() => setFiltersModalOpen(false)}
-          />
-          <div className="md:absolute md:inset-0 md:flex md:items-center md:justify-center absolute bottom-0 left-0 right-0">
-            <div className="bg-white dark:bg-slate-800 md:rounded-2xl rounded-t-2xl md:max-w-2xl md:w-full max-h-[85vh] md:max-h-[90vh] overflow-hidden flex flex-col animate-fade-scale md:shadow-2xl">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 dark:border-slate-700">
-                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Filters</h2>
-                <div className="flex items-center gap-3">
-                  {activeFilterCount > 0 && (
+        <SheetModal
+          title="Filters"
+          onClose={() => setFiltersModalOpen(false)}
+          headerAction={
+            activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+              >
+                Clear all
+              </button>
+            )
+          }
+          footer={
+            <button
+              onClick={() => setFiltersModalOpen(false)}
+              className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
+            >
+              Show {sortedData.length} {sortedData.length === 1 ? 'result' : 'results'}
+            </button>
+          }
+        >
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Inclusion Stage</h3>
+              <div className="flex flex-wrap gap-2">
+                {[{ value: 'all', label: 'All Stages' }, ...stageOptions.map(s => ({ value: s, label: getStageAbbreviation(s) }))].map(({ value, label }) => {
+                  const isSelected = stageFilter === value;
+                  return (
                     <button
-                      onClick={clearFilters}
-                      className="text-sm text-purple-600 dark:text-purple-400 font-medium"
+                      key={value}
+                      onClick={() => setStageFilter(value)}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        isSelected
+                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      }`}
                     >
-                      Clear all
+                      {label}
                     </button>
-                  )}
-                  <button
-                    onClick={() => setFiltersModalOpen(false)}
-                    className="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-                  >
-                    <svg className="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
+                  );
+                })}
               </div>
+            </div>
 
-              <div className="flex-1 overflow-y-auto p-4 md:p-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Inclusion Stage</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {[{ value: 'all', label: 'All Stages' }, ...stageOptions.map(s => ({ value: s, label: getStageAbbreviation(s) }))].map(({ value, label }) => {
-                        const isSelected = stageFilter === value;
-                        return (
-                          <button
-                            key={value}
-                            onClick={() => setStageFilter(value)}
-                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                              isSelected
-                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {(['all', 'EL', 'CL'] as const).map((layer) => {
-                        const isSelected = layerFilter === layer;
-                        const label = layer === 'all' ? 'All Layers' : layer === 'EL' ? 'Execution Layer' : 'Consensus Layer';
-                        return (
-                          <button
-                            key={layer}
-                            onClick={() => setLayerFilter(layer)}
-                            className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                              isSelected
-                                ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
-                                : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
-                <button
-                  onClick={() => setFiltersModalOpen(false)}
-                  className="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors"
-                >
-                  Show {sortedData.length} {sortedData.length === 1 ? 'result' : 'results'}
-                </button>
+            <div>
+              <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">Layer</h3>
+              <div className="flex flex-wrap gap-2">
+                {(['all', 'EL', 'CL'] as const).map((layer) => {
+                  const isSelected = layerFilter === layer;
+                  const label = layer === 'all' ? 'All Layers' : layer === 'EL' ? 'Execution Layer' : 'Consensus Layer';
+                  return (
+                    <button
+                      key={layer}
+                      onClick={() => setLayerFilter(layer)}
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                        isSelected
+                          ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-300 ring-2 ring-purple-500 ring-offset-1 dark:ring-offset-slate-800'
+                          : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
-        </div>
+        </SheetModal>
       )}
 
       <div className="mb-4">

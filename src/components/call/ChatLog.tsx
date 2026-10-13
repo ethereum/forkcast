@@ -6,19 +6,34 @@ import {
   parseChatTranscript,
   type ChatMessage,
 } from '../../domain/chat/zoomChat';
+import type { SyncConfig } from '../../types/artifacts';
+import { getAdjustedVideoTime, secondsToTimestamp, timestampToSeconds } from '../../utils/timestamp';
 
 interface ChatLogProps {
   content: string;
   scrollContainerRef?: React.RefObject<HTMLDivElement>;
-  syncConfig?: {
-    transcriptStartTime: string | null;
-    videoStartTime: string | null;
-    description?: string;
-  } | null;
+  syncConfig?: SyncConfig | null;
   selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
   onTimestampClick?: (timestamp: string) => void;
   allowTimestampNavigation?: boolean;
 }
+
+// The timestamp button copies a link, so the speaker label is the keyboard way to
+// seek: when the row can seek it's a button, and activating it clicks through to
+// the row's handler.
+const SpeakerLabel: React.FC<{ seekable: boolean; className: string; children: React.ReactNode }> = ({
+  seekable,
+  className,
+  children,
+}) =>
+  seekable ? (
+    <button type="button" className={`${className} cursor-pointer`}>
+      {children}
+      <span className="sr-only"> (play from here)</span>
+    </button>
+  ) : (
+    <span className={className}>{children}</span>
+  );
 
 const ChatLog: React.FC<ChatLogProps> = ({
   content,
@@ -81,31 +96,6 @@ const ChatLog: React.FC<ChatLogProps> = ({
       }
       return part;
     });
-  };
-
-  // --- Timestamp conversion helpers ---
-  const timestampToSeconds = (timestamp: string): number => {
-    const parts = timestamp.split(':');
-    if (parts.length !== 3) return 0;
-    const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-    return hours * 3600 + minutes * 60 + seconds;
-  };
-
-  const secondsToTimestamp = (totalSeconds: number): string => {
-    const sign = totalSeconds < 0 ? '-' : '';
-    const absSeconds = Math.abs(totalSeconds);
-    const hours = Math.floor(absSeconds / 3600);
-    const minutes = Math.floor((absSeconds % 3600) / 60);
-    const seconds = Math.floor(absSeconds % 60);
-
-    return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  const getAdjustedVideoTime = (chatTimestamp: string): number => {
-    if (!syncConfig?.transcriptStartTime || !syncConfig?.videoStartTime) return 0;
-    const chatSeconds = timestampToSeconds(chatTimestamp);
-    const syncOffsetSeconds = timestampToSeconds(syncConfig.transcriptStartTime) - timestampToSeconds(syncConfig.videoStartTime);
-    return chatSeconds - syncOffsetSeconds;
   };
 
   // --- Threading and rendering logic (from TranscriptModal) ---
@@ -235,7 +225,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                   >
                     <span className="group-hover:hidden">
                       {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
-                        ? secondsToTimestamp(getAdjustedVideoTime(message.timestamp))
+                        ? secondsToTimestamp(getAdjustedVideoTime(message.timestamp, syncConfig))
                         : message.timestamp}
                     </span>
                     <span className="hidden group-hover:inline text-[10px] hover:underline cursor-pointer">
@@ -248,9 +238,9 @@ const ChatLog: React.FC<ChatLogProps> = ({
                   </span>
                 )}
                 <div className="flex-1 min-w-0">
-                  <span className={`font-medium mr-2 ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
+                  <SpeakerLabel seekable={isTimestampClickable} className={`font-medium mr-2 ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                     {message.speaker === 'Unknown' ? 'Context' : message.speaker}:
-                  </span>
+                  </SpeakerLabel>
                   <span className={`break-words ${
                     message.speaker === 'Unknown' 
                       ? (isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400 italic' : 'text-slate-500 dark:text-slate-400 italic')
@@ -355,7 +345,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                       >
                         <span className="group-hover:hidden">
                           {syncConfig?.transcriptStartTime && syncConfig?.videoStartTime
-                            ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp))
+                            ? secondsToTimestamp(getAdjustedVideoTime(reply.timestamp, syncConfig))
                             : reply.timestamp}
                         </span>
                         <span className="hidden group-hover:inline text-[10px] hover:underline cursor-pointer">
@@ -363,9 +353,9 @@ const ChatLog: React.FC<ChatLogProps> = ({
                         </span>
                       </button>
                       <div className="flex-1 min-w-0">
-                        <span className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
+                        <SpeakerLabel seekable={allowTimestampNavigation && reply.timestamp !== '00:00:00'} className={`font-medium mr-2 ${isSelectedReply ? 'text-yellow-900 dark:text-yellow-100' : 'text-slate-700 dark:text-slate-300'}`}>
                           {reply.speaker}:
-                        </span>
+                        </SpeakerLabel>
                         <span className={`break-words ${isSelectedReply ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'}`}>
                           {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
                             <React.Fragment key={index}>

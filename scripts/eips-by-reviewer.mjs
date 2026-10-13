@@ -24,7 +24,9 @@ for (const eip of eips) {
 
   if (eip.forkRelationships && eip.forkRelationships.length > 0) {
     for (const relationship of eip.forkRelationships) {
-      if (relationship.status !== 'Declined') {
+      // Relationships carry no status of their own; the current one is the
+      // last statusHistory entry.
+      if (relationship.statusHistory.at(-1)?.status !== 'Declined') {
         const forkName = relationship.forkName.toLowerCase();
         const index = upgradeOrder.indexOf(forkName);
 

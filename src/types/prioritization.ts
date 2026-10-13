@@ -6,10 +6,6 @@ export type RatingSystem =
   | 'priority-tier'
   | 'custom';
 
-export type TierRating = 'S' | 'A' | 'B' | 'C' | 'D' | 'DFI';
-export type SupportRating = 'strongly-support' | 'support' | 'weakly-support' | 'neutral' | 'oppose';
-export type PriorityRating = 'tier-1' | 'tier-2';
-
 /** EL/CL client teams, or a non-client participant (EF Architecture Team, Ethlabs, ...). */
 export type TeamType = 'EL' | 'CL' | 'OTHER';
 

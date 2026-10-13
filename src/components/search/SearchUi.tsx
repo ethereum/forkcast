@@ -1,4 +1,5 @@
 import { createContext, useContext, type ReactNode, type RefObject } from 'react';
+import { Modal } from '../ui/Modal';
 import { getSearchShortcutLabel } from './searchShortcuts';
 
 const SearchQueryContext = createContext('');
@@ -119,7 +120,11 @@ export function SearchDialog({
 
   return (
     <SearchQueryProvider query={query}>
-      <div className="fixed inset-0 z-50 flex items-start justify-center px-2 pt-4 sm:px-4 sm:pt-20">
+      <Modal
+        onClose={onClose}
+        aria-label="Search"
+        className="fixed inset-0 z-50 flex items-start justify-center px-2 pt-4 sm:px-4 sm:pt-20"
+      >
         <div
           className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
           onClick={onClose}
@@ -133,7 +138,7 @@ export function SearchDialog({
         >
           {children}
         </div>
-      </div>
+      </Modal>
     </SearchQueryProvider>
   );
 }

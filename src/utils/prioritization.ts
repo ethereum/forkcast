@@ -2,71 +2,6 @@ import { RatingSystem, ClientStance, EipAggregateStance } from '../types/priorit
 import { EIP } from '../types/eip';
 import { getInclusionStage, getInclusionStageSortRank, getLaymanTitle } from './index';
 
-/**
- * Normalize a raw rating to a 1-5 scale based on the rating system
- */
-export function normalizeRating(
-  ratingSystem: RatingSystem,
-  rawRating: string | null
-): number | null {
-  if (!rawRating) return null;
-
-  const rating = rawRating.toLowerCase();
-
-  switch (ratingSystem) {
-    case 'tier-abcds':
-      switch (rating) {
-        case 's': return 5;
-        case 'a': return 4;
-        case 'b': return 3;
-        case 'c': return 2;
-        case 'd': return 1;
-        case 'dfi': return 1;
-        default: return null;
-      }
-
-    // D is a rejection request rather than a priority, so only four tiers describe
-    // priority and the scale tops out at 4 with no gap above the 0 reserved for reject.
-    case 'tier-abcds-reject':
-      switch (rating) {
-        case 's': return 4;
-        case 'a': return 3;
-        case 'b': return 2;
-        case 'c': return 1;
-        case 'd': return 0;
-        default: return null;
-      }
-
-    case 'support-oppose':
-      switch (rating) {
-        case 'strongly-support': return 5;
-        case 'support': return 4;
-        case 'weakly-support': return 3;
-        case 'neutral': return null;
-        case 'oppose': return 1;
-        default: return null;
-      }
-
-    case 'priority-tier':
-      switch (rating) {
-        case 'tier-1': return 5;
-        case 'tier-2': return 3;
-        default: return null;
-      }
-
-    case 'custom':
-      switch (rating) {
-        case 'approve': return 5;
-        case 'reject': return 1;
-        case 'uncertain': return null;
-        default: return null;
-      }
-
-    default:
-      return null;
-  }
-}
-
 export interface ScoreLevel {
   score: number;
   label: string;
@@ -120,7 +55,7 @@ export function getMinScore(fork: string): number {
  * ranking it low. Only the newer tier system draws that distinction; Glamsterdam's
  * `tier-abcds`/`custom` ratings keep their original low-priority scoring.
  */
-export function isRejection(ratingSystem: RatingSystem, rawRating: string | null): boolean {
+function isRejection(ratingSystem: RatingSystem, rawRating: string | null): boolean {
   return ratingSystem === 'tier-abcds-reject' && rawRating?.toLowerCase() === 'd';
 }
 
@@ -231,23 +166,6 @@ export function getScoreColor(
       return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300';
     default:
       return 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-400';
-  }
-}
-
-/**
- * Get a short label for a normalized score
- */
-export function getScoreLabel(score: number | null): string {
-  if (score === null) return '?';
-
-  switch (score) {
-    case 5: return 'Strong';
-    case 4: return 'Support';
-    case 3: return 'Neutral';
-    case 2: return 'Low';
-    case 1: return 'Oppose';
-    case 0: return 'Reject';
-    default: return '?';
   }
 }
 

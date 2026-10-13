@@ -13,11 +13,13 @@ const ROOT = join(__dirname, '..');
 const OUTPUT_DIR = join(ROOT, 'src/data/devnets');
 
 const id = process.argv[2];
-if (!id) {
+// Imported by the parser tests, which only need the parse* exports.
+const isCli = process.argv[1] === fileURLToPath(import.meta.url);
+if (isCli && !id) {
   console.error('Usage: node scripts/scrape-devnet-spec.mjs <devnet-id>');
   process.exit(1);
 }
-if (!/^[a-z0-9-]+$/.test(id)) {
+if (isCli && !/^[a-z0-9-]+$/.test(id)) {
   console.error(`Invalid devnet id: ${id}`);
   process.exit(1);
 }
@@ -46,12 +48,12 @@ async function fetchGenesisTime() {
   }
 }
 
-function parseTitle(md) {
+export function parseTitle(md, fallback = id) {
   const match = md.match(/^# (.+)$/m);
-  return match ? match[1].trim().replace(/\s+spec$/i, '') : id;
+  return match ? match[1].trim().replace(/\s+spec$/i, '') : fallback;
 }
 
-function parseAnnouncements(md) {
+export function parseAnnouncements(md) {
   const announcements = [];
   const infoBlockRegex = /:::(?:info|success|warning)\n([\s\S]*?):::/g;
   let match;
@@ -66,7 +68,7 @@ function parseAnnouncements(md) {
   return announcements;
 }
 
-function parseStatusCell(text) {
+export function parseStatusCell(text) {
   const t = text.trim();
   if (t.includes(':up:') || t.includes('🆙')) return 'updated';
   if ((t.includes(':new:') || t.includes('🆕')) && /optional/i.test(t))
@@ -79,7 +81,7 @@ function parseStatusCell(text) {
   return null;
 }
 
-function parseEipTable(md) {
+export function parseEipTable(md) {
   // Find the EIP list table - look for rows with [EIP-NNNN](url)
   // Supports two layouts:
   //   A) | [EIP-NNNN](url) | title | status |        (shortcodes after title)
@@ -119,7 +121,11 @@ const STATUS_MAP = {
   ':question:': 'unknown',
 };
 
-function parseClientMatrix(md, sectionPattern) {
+export const EL_SECTION = /## Execution Layer Client Support|### Implementation tracker EL/;
+export const CL_SECTION =
+  /## Consensus Layer Client Support|## Consensus Layer Support|### Implementation tracker CL/;
+
+export function parseClientMatrix(md, sectionPattern) {
   // Find the section
   const sectionIdx = md.search(sectionPattern);
   if (sectionIdx === -1) return { clients: [], matrix: [] };
@@ -211,7 +217,7 @@ function parseSpecLine(md, label) {
   return null;
 }
 
-function parseSpecReferences(md) {
+export function parseSpecReferences(md) {
   return {
     consensusSpecs: parseSpecLine(md, 'Consensus Specs'),
     executionSpecs: parseSpecLine(md, 'Execution Specs'),
@@ -223,7 +229,7 @@ function parseSpecReferences(md) {
  * Returns the referenced devnet ID if found, otherwise null.
  * Prefers the link text over the URL slug (pages sometimes have copy-paste URL errors).
  */
-function parseSameSpecAs(md) {
+export function parseSameSpecAs(md) {
   const match = md.match(
     /same spec as \[([^\]]+)\]\(https?:\/\/notes\.ethereum\.org\/@ethpandaops\/([a-z0-9-]+)\)/i,
   );
@@ -273,14 +279,8 @@ async function main() {
       scrapedAt: new Date().toISOString(),
       announcements: parseAnnouncements(md),
       eips: parseEipTable(md),
-      elClientSupport: parseClientMatrix(
-        md,
-        /## Execution Layer Client Support|### Implementation tracker EL/,
-      ),
-      clClientSupport: parseClientMatrix(
-        md,
-        /## Consensus Layer Client Support|## Consensus Layer Support|### Implementation tracker CL/,
-      ),
+      elClientSupport: parseClientMatrix(md, EL_SECTION),
+      clClientSupport: parseClientMatrix(md, CL_SECTION),
       specReferences: parseSpecReferences(md),
     };
   }
@@ -310,7 +310,9 @@ async function main() {
   console.log(`Wrote ${outPath}`);
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (isCli) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}

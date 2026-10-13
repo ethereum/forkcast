@@ -31,9 +31,6 @@ export const DEFAULT_PHASE_DURATIONS: PhaseDurations = {
   SELECTION_TO_EIP_PFI: 7            // 7 days between headliner selection and EIP proposal window
 };
 
-// For backwards compatibility
-export const PHASE_DURATIONS = DEFAULT_PHASE_DURATIONS;
-
 // Helper to parse date string as local date (avoiding timezone issues)
 export function parseLocalDate(dateString: string): Date {
   const [year, month, day] = dateString.split('-').map(Number);
@@ -87,7 +84,7 @@ export interface CalculatedDates {
   headlinerProposalDeadline: Date;
 }
 
-export function calculateForkDates(
+function calculateForkDates(
   mainnetDate: Date,
   devnetCount: number = DEFAULT_PHASE_DURATIONS.DEVNET_COUNT,
   durations: PhaseDurations = DEFAULT_PHASE_DURATIONS
@@ -129,30 +126,6 @@ export function calculateForkDates(
     headlinerSelectionDeadline,
     headlinerProposalDeadline
   };
-}
-
-// Calculate the soonest mainnet date given a Devnet-0 start date
-export function calculateSoonestMainnetDate(
-  devnet0Start: Date,
-  devnetCount: number = DEFAULT_PHASE_DURATIONS.DEVNET_COUNT,
-  durations: PhaseDurations = DEFAULT_PHASE_DURATIONS
-): Date {
-  const daysFromDevnet0 =
-    (devnetCount - 1) * durations.DEVNET_DURATION +
-    durations.DEVNET_TO_SEPOLIA +
-    durations.SEPOLIA_TO_HOODI +
-    durations.HOODI_TO_MAINNET;
-  const mainnet = new Date(devnet0Start);
-  mainnet.setDate(mainnet.getDate() + daysFromDevnet0);
-  return mainnet;
-}
-
-// Format a Date as 'YYYY-MM-DD'
-export function formatDateISO(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
 }
 
 export interface ForkProgressOptions {

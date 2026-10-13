@@ -1,3 +1,5 @@
+import type { TldrData, TldrHighlight } from '../types/artifacts';
+
 interface CallInfo {
   type: string;
   date: string;
@@ -12,25 +14,6 @@ interface SearchCorpusCall extends CallInfo {
 
 interface SearchCorpusMeta {
   sha256: string;
-}
-
-interface TldrHighlightItem {
-  timestamp: string;
-  highlight: string;
-}
-
-interface TldrActionItem {
-  timestamp: string;
-  action: string;
-  owner: string;
-}
-
-interface TldrData {
-  meeting: string;
-  highlights: { [category: string]: TldrHighlightItem[] };
-  action_items: TldrActionItem[];
-  decisions: { timestamp: string; decision: string }[];
-  targets: { timestamp: string; target: string }[];
 }
 
 export interface IndexedContent {
@@ -434,7 +417,7 @@ class SearchIndexService {
 
     // Index highlights (categorized agenda items)
     if (tldrData.highlights) {
-      const allHighlights: TldrHighlightItem[] = Object.values(tldrData.highlights).flat();
+      const allHighlights: TldrHighlight[] = Object.values(tldrData.highlights).flat();
       allHighlights.forEach(item => {
         if (item.highlight) {
           results.push({

@@ -32,7 +32,7 @@ const getExplicitEventDateTime = (item: TimelineItem): Date | null => {
   return null;
 };
 
-export const getTimestampedItemDateTime = (item: TimelineItem): Date | null => {
+const getTimestampedItemDateTime = (item: TimelineItem): Date | null => {
   const eventDateTime = getExplicitEventDateTime(item);
   if (eventDateTime) return eventDateTime;
 

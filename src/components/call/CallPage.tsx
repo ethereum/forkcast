@@ -7,33 +7,30 @@ import CallNotes, { type NotesData } from './CallNotes';
 import CallEipMentions, { type EipMentionsData } from './CallEipMentions';
 import CallAgenda from './CallAgenda';
 import CallSearch from './CallSearch';
-import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
+import { protocolCalls, callTypeNames, eipCallTypes, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
 import { upcomingCalls } from '../../domain/calls/upcomingCalls';
 import { onOpenCallSearch } from '../../domain/calls/callSearch';
 import { eipsData } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
+import type { BreakoutConfig, CallConfig, TldrData } from '../../types/artifacts';
 import { isSearchHotkey } from '../search/searchShortcuts';
 import {
   GAP_SKIP_WAIT_SECONDS,
   computeGapSkipIntervals,
   findGapSkipTarget,
 } from '../../utils/gapSkip';
+import {
+  getAdjustedVideoTime as getSyncedVideoTime,
+  secondsToTimestamp,
+  stripMillis,
+  timestampToSeconds,
+} from '../../utils/timestamp';
 
 // Mapping of breakout call types to their associated EIP IDs
-const BREAKOUT_EIP_MAP: Record<string, number> = {
-  epbs: 7732,
-  bal: 7928,
-  focil: 7805,
-};
-
-interface TldrData {
-  meeting: string;
-  highlights: { [category: string]: { timestamp: string; highlight: string }[] };
-  action_items: { timestamp: string; action: string; owner: string }[];
-  decisions: { timestamp: string; decision: string }[];
-  targets: { timestamp: string; target: string }[];
-}
+const BREAKOUT_EIP_MAP: Record<string, number> = Object.fromEntries(
+  Object.entries(eipCallTypes).map(([eipId, callType]) => [callType, Number(eipId)]),
+);
 
 interface CallData {
   type: string;
@@ -46,24 +43,6 @@ interface CallData {
   notesData?: NotesData;
   eipMentions?: EipMentionsData;
   keyDecisions?: KeyDecision[];
-}
-
-interface SyncConfig {
-  transcriptStartTime: string | null;
-  videoStartTime: string | null;
-  description?: string;
-}
-
-interface BreakoutConfig {
-  videoUrl: string;
-  sync?: SyncConfig;
-}
-
-interface CallConfig {
-  videoUrl?: string;
-  issue?: number;
-  sync?: SyncConfig;
-  breakouts?: Record<string, BreakoutConfig>;
 }
 
 interface ActiveBreakout {
@@ -144,35 +123,6 @@ const LAYOUT_MODE_STORAGE_KEY = 'call-layout-mode';
 const readStoredLayoutMode = (): LayoutMode => {
   const stored = localStorage.getItem(LAYOUT_MODE_STORAGE_KEY);
   return LAYOUT_MODES.some(({ mode }) => mode === stored) ? (stored as LayoutMode) : 'balanced';
-};
-
-const timestampToSeconds = (timestamp: string | null | undefined): number => {
-  if (!timestamp) return 0;
-  const parts = timestamp.split(':');
-  if (parts.length !== 3) return 0;
-  const [hours, minutes, seconds] = parts.map(p => parseFloat(p));
-  return hours * 3600 + minutes * 60 + seconds;
-};
-
-const formatTimestamp = (timestamp: string): string => timestamp.split('.')[0];
-
-const secondsToTimestamp = (totalSeconds: number): string => {
-  const sign = totalSeconds < 0 ? '-' : '';
-  const absSeconds = Math.abs(totalSeconds);
-  const hours = Math.floor(absSeconds / 3600);
-  const minutes = Math.floor((absSeconds % 3600) / 60);
-  const seconds = Math.floor(absSeconds % 60);
-
-  return `${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-};
-
-const getAdjustedVideoTimeForConfig = (transcriptTimestamp: string, callConfig: CallConfig | null): number => {
-  const transcriptSeconds = timestampToSeconds(formatTimestamp(transcriptTimestamp));
-  if (callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime) {
-    const offset = timestampToSeconds(callConfig.sync.transcriptStartTime) - timestampToSeconds(callConfig.sync.videoStartTime);
-    return transcriptSeconds - offset;
-  }
-  return transcriptSeconds;
 };
 
 const extractYouTubeId = (url: string): string => {
@@ -723,7 +673,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
 
   // Apply sync offset to convert transcript time to video time
   const getAdjustedVideoTime = useCallback((transcriptTimestamp: string): number => {
-    return getAdjustedVideoTimeForConfig(transcriptTimestamp, callConfig);
+    return getSyncedVideoTime(transcriptTimestamp, callConfig?.sync);
   }, [callConfig]);
 
   useEffect(() => {
@@ -1753,16 +1703,18 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                       'border-transparent'}
                   `}
                 >
-                  <span className={`text-xs flex-shrink-0 font-mono mt-0.5
+                  {/* The keyboard way in: activating it clicks through to the row's handler. */}
+                  <button type="button" className={`text-xs flex-shrink-0 font-mono mt-0.5 self-start text-left cursor-pointer
                     ${isSelectedSearch ? 'text-yellow-600 dark:text-yellow-400' :
                       isHighlighted ? 'text-blue-600 dark:text-blue-400' :
                       'text-slate-500 dark:text-slate-400'}
                   `} style={{ minWidth: '64px' }}>
+                    <span className="sr-only">Play from </span>
                     {callConfig?.sync?.transcriptStartTime && callConfig?.sync?.videoStartTime
                       ? secondsToTimestamp(getAdjustedVideoTime(entry.timestamp))
-                      : formatTimestamp(entry.timestamp)
+                      : stripMillis(entry.timestamp)
                     }
-                  </span>
+                  </button>
                   <div className="flex-1 min-w-0">
                     <span className={`font-medium mr-2
                       ${isSelectedSearch ? 'text-yellow-900 dark:text-yellow-100' :

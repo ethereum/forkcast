@@ -2,7 +2,7 @@ import type { MacroPhase, ForkProgress } from '../types/timeline';
 import { FORK_PROGRESS_MAP } from '../constants/timeline-phases';
 import type { NetworkUpgrade } from '../data/upgrades';
 
-export function deriveMacroPhase(progress: ForkProgress): MacroPhase {
+function deriveMacroPhase(progress: ForkProgress): MacroPhase {
   const phaseStatus = (phaseId: string) =>
     progress.phases.find(p => p.phaseId === phaseId)?.status;
 

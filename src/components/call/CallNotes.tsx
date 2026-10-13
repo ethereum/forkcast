@@ -1,9 +1,6 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react';
-import {
-  getAdjustedVideoTime,
-  getDisplayTimestamp,
-  type SyncConfig,
-} from '../../utils/timestamp';
+import type { SyncConfig } from '../../types/artifacts';
+import { getAdjustedVideoTime, getDisplayTimestamp } from '../../utils/timestamp';
 
 export interface NotesSection {
   heading: string;

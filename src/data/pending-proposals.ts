@@ -14,7 +14,7 @@ export interface PendingProposal {
   forkName: string;
 }
 
-export const pendingProposals: PendingProposal[] = [
+const pendingProposals: PendingProposal[] = [
   {
     id: 'partial-reconstruction-2d-peerdas',
     title: 'Partial Reconstruction and 2D PeerDAS',

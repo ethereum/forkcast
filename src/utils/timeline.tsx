@@ -52,3 +52,16 @@ export const getPhaseStatusIcon = (status: TimelinePhase['status']): React.React
       return null;
   }
 };
+/**
+ * The phase an upgrade timeline highlights (and keeps visible when collapsed on
+ * mobile). Devnets and public testnets can run in parallel, so it is the
+ * furthest-along in-progress phase. Between two phases nothing is in progress,
+ * and the next one up is what the reader is waiting on. Once every phase is
+ * done, it is the last.
+ */
+export const getHighlightedPhaseIndex = (phases: Pick<TimelinePhase, 'status'>[]): number => {
+  const activeIndex = phases.findLastIndex(p => p.status === 'in-progress');
+  if (activeIndex >= 0) return activeIndex;
+  const nextIndex = phases.findIndex(p => p.status === 'upcoming');
+  return nextIndex >= 0 ? nextIndex : phases.length - 1;
+};

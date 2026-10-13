@@ -2,11 +2,16 @@
 /**
  * Scrape a devnet spec from HackMD and output structured JSON.
  * Usage: node scripts/scrape-devnet-spec.mjs bal-devnet-3
+ * Exits with code 2 if the HackMD page doesn't exist, 1 on any other error.
+ * Refuses to overwrite an existing file with a parse that lost most of its
+ * EIPs or client rows; set ALLOW_SHRINK=1 to accept such a change.
  */
 
-import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
+import { readFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import { writeFileAtomic } from './lib/atomic-write.mjs';
+import { findShrinkage } from './lib/devnet-shrink.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -23,13 +28,18 @@ if (!/^[a-z0-9-]+$/.test(id)) {
 }
 
 const DOWNLOAD_URL = `https://notes.ethereum.org/@ethpandaops/${id}/download`;
+const EXIT_NOT_FOUND = 2;
 const NETWORKS_URL =
   'https://ethpandaops-platform-production-cartographoor.ams3.digitaloceanspaces.com/networks.json';
 
 async function fetchMarkdown() {
   console.log(`Fetching ${DOWNLOAD_URL}`);
   const res = await fetch(DOWNLOAD_URL);
-  if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${DOWNLOAD_URL}`);
+  if (!res.ok) {
+    const err = new Error(`HTTP ${res.status} fetching ${DOWNLOAD_URL}`);
+    err.notFound = res.status === 404;
+    throw err;
+  }
   return res.text();
 }
 
@@ -37,11 +47,13 @@ async function fetchMarkdown() {
 async function fetchGenesisTime() {
   try {
     const res = await fetch(NETWORKS_URL);
-    if (!res.ok) return null;
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const entry = data.networks?.[id];
     return entry?.genesisConfig?.genesisTime ?? null;
-  } catch {
+  } catch (e) {
+    // Non-fatal: a previously scraped genesis time is kept below.
+    console.warn(`  Warning: could not fetch cartographoor networks.json: ${e.message}`);
     return null;
   }
 }
@@ -303,14 +315,26 @@ async function main() {
     if (!spec.genesisTime && existing.genesisTime) {
       spec.genesisTime = existing.genesisTime;
     }
+
+    const losses = findShrinkage(existing, spec);
+    if (losses.length > 0 && !process.env.ALLOW_SHRINK) {
+      throw new Error(
+        `Refusing to overwrite ${outPath}: the new parse lost most of its data ` +
+          `(${losses.join('; ')}). Check the HackMD page; rerun with ALLOW_SHRINK=1 if the change is real.`,
+      );
+    }
   }
 
   if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });
-  writeFileSync(outPath, JSON.stringify(spec, null, 2) + '\n');
+  writeFileAtomic(outPath, JSON.stringify(spec, null, 2) + '\n');
   console.log(`Wrote ${outPath}`);
 }
 
 main().catch((e) => {
+  if (e.notFound) {
+    console.error(e.message);
+    process.exit(EXIT_NOT_FOUND);
+  }
   console.error(e);
   process.exit(1);
 });

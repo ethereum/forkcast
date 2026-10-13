@@ -17,10 +17,11 @@
  * Requires: ANTHROPIC_API_KEY environment variable
  */
 
-import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
+import { writeFileAtomic } from './lib/atomic-write.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -493,7 +494,7 @@ async function extractActions(callType, callData, model, planDir, today) {
   if (errors.length > 0) throw new Error(`Validation errors:\n  ${errors.join('\n  ')}`);
 
   const outputPath = join(planDir, 'open_action_items.json');
-  writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
+  writeFileAtomic(outputPath, JSON.stringify(result, null, 2) + '\n');
   logCost('Actions', model, response.usage);
   console.log(`  Open: ${result.open_items.length} | Resolved: ${result.resolved_items.length}`);
   return result;
@@ -513,7 +514,7 @@ async function extractDeferred(callType, callData, model, planDir, today) {
   if (errors.length > 0) throw new Error(`Validation errors:\n  ${errors.join('\n  ')}`);
 
   const outputPath = join(planDir, 'deferred_decisions.json');
-  writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
+  writeFileAtomic(outputPath, JSON.stringify(result, null, 2) + '\n');
   logCost('Deferred', model, response.usage);
   const pending = result.deferred.filter(d => !d.revisited).length;
   console.log(`  ${result.deferred.length} total (${pending} pending)`);
@@ -547,7 +548,7 @@ async function extractThreads(callType, callData, model, planDir, today) {
   if (errors.length > 0) throw new Error(`Validation errors:\n  ${errors.join('\n  ')}`);
 
   const outputPath = join(planDir, 'eip_threads.json');
-  writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
+  writeFileAtomic(outputPath, JSON.stringify(result, null, 2) + '\n');
   logCost('Threads', model, response.usage);
   const withQuestions = result.eip_threads.filter(t => t.open_questions.length > 0).length;
   console.log(`  ${result.eip_threads.length} EIPs with threads (${withQuestions} have open questions)`);
@@ -601,7 +602,7 @@ async function extractAgenda(callType, callData, recentCalls, model, planDir, to
   if (stripped > 0) console.log(`  Stripped ${stripped} unknown EIP ID(s) from related_eips`);
 
   const outputPath = join(planDir, 'agenda_suggestions.json');
-  writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
+  writeFileAtomic(outputPath, JSON.stringify(result, null, 2) + '\n');
   logCost('Agenda', model, response.usage);
   const byPriority = { high: 0, medium: 0, low: 0 };
   for (const s of result.suggestions) byPriority[s.priority]++;
@@ -680,12 +681,15 @@ async function main() {
     mkdirSync(planDir, { recursive: true });
   }
 
+  let failed = 0;
+
   if (steps.includes('actions')) {
     console.log('\n1/4 Open Action Items...');
     try {
       await extractActions(callType, callData, model, planDir, today);
     } catch (e) {
       console.log(`  ERROR: ${e.message}`);
+      failed++;
     }
   }
 
@@ -695,6 +699,7 @@ async function main() {
       await extractDeferred(callType, callData, model, planDir, today);
     } catch (e) {
       console.log(`  ERROR: ${e.message}`);
+      failed++;
     }
   }
 
@@ -704,6 +709,7 @@ async function main() {
       await extractThreads(callType, callData, model, planDir, today);
     } catch (e) {
       console.log(`  ERROR: ${e.message}`);
+      failed++;
     }
   }
 
@@ -713,10 +719,15 @@ async function main() {
       await extractAgenda(callType, callData, recentCalls, model, planDir, today);
     } catch (e) {
       console.log(`  ERROR: ${e.message}`);
+      failed++;
     }
   }
 
   console.log(`\nDone. Artifacts saved to ${planDir.replace(ROOT + '/', '')}/`);
+  if (failed > 0) {
+    console.log(`${failed} step(s) failed`);
+    process.exit(1);
+  }
 }
 
 main().catch((e) => {

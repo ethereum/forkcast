@@ -221,6 +221,25 @@ def process_branch(repo_path: str, branch: str, target_eip: int | None = None) -
     return results
 
 
+def keep_fetched_at_if_unchanged(output: dict, output_path: Path) -> dict:
+    """Keep the previous fetchedAt when the counts are unchanged.
+
+    Otherwise every daily run rewrites the timestamp, so the bot commits and
+    the site redeploys even though no count moved.
+    """
+    if not output_path.exists():
+        return output
+    try:
+        prev = json.loads(output_path.read_text())
+    except ValueError:
+        return output
+    if "fetchedAt" not in prev:
+        return output
+    if {**prev, "fetchedAt": None} != {**output, "fetchedAt": None}:
+        return output
+    return {**output, "fetchedAt": prev["fetchedAt"]}
+
+
 def main():
     if len(sys.argv) != 3:
         print(f"Usage: {sys.argv[0]} <execution-specs-path> <output-json-path>")
@@ -279,6 +298,7 @@ def main():
         "fetchedAt": datetime.now(timezone.utc).isoformat(),
         "eips": eips,
     }
+    output = keep_fetched_at_if_unchanged(output, Path(output_path))
 
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     Path(output_path).write_text(json.dumps(output, indent=2) + "\n")

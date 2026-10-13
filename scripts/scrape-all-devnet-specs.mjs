@@ -3,7 +3,8 @@
  * Re-scrape all known devnet specs from HackMD.
  * Reads existing JSON files in src/data/devnets/ to determine which IDs to scrape,
  * then probes for new devnets beyond the highest known number in each series.
- * Tolerates 404s (not all devnets have HackMD specs).
+ * Tolerates 404s (not all devnets have HackMD specs); any other failure is
+ * reported and makes the run exit non-zero after everything else is scraped.
  */
 
 import { readdirSync } from 'fs';
@@ -14,6 +15,8 @@ import { execFileSync } from 'child_process';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DEVNETS_DIR = join(__dirname, '..', 'src/data/devnets');
 const SCRAPER = join(__dirname, 'scrape-devnet-spec.mjs');
+// Exit code scrape-devnet-spec.mjs uses when the HackMD page doesn't exist.
+const EXIT_NOT_FOUND = 2;
 
 function scrape(id, { quiet = false } = {}) {
   execFileSync('node', [SCRAPER, id], {
@@ -42,14 +45,20 @@ console.log(`Scraping ${ids.size} known devnet specs...\n`);
 
 let succeeded = 0;
 let failed = 0;
+const errors = [];
 
 for (const id of ids) {
   try {
     scrape(id);
     succeeded++;
-  } catch {
-    console.warn(`  ⚠ Skipped ${id} (no HackMD spec found)\n`);
-    failed++;
+  } catch (e) {
+    if (e.status === EXIT_NOT_FOUND) {
+      console.warn(`  ⚠ Skipped ${id} (no HackMD spec found)\n`);
+      failed++;
+    } else {
+      console.error(`  ✗ Failed to scrape ${id}\n`);
+      errors.push(id);
+    }
   }
 }
 
@@ -66,8 +75,14 @@ for (const [series, max] of seriesMax) {
       console.log(`  ✓ Discovered ${candidate}`);
       discovered++;
       next++;
-    } catch {
-      console.log(`  — not found, stopping ${series} series`);
+    } catch (e) {
+      if (e.status === EXIT_NOT_FOUND) {
+        console.log(`  — not found, stopping ${series} series`);
+      } else {
+        // Don't mistake a transient failure for the end of the series.
+        console.error(`  ✗ Failed to probe ${candidate}:\n${e.stderr ?? ''}`);
+        errors.push(candidate);
+      }
       break;
     }
   }
@@ -76,3 +91,8 @@ for (const [series, max] of seriesMax) {
 console.log(
   `\nDone: ${succeeded} updated, ${failed} skipped, ${discovered} newly discovered`,
 );
+
+if (errors.length > 0) {
+  console.error(`${errors.length} failed: ${errors.join(', ')}`);
+  process.exit(1);
+}

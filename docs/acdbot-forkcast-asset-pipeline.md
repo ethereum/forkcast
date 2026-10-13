@@ -73,7 +73,7 @@ Two scripts run sequentially via `sync-call-assets.yml` (scheduled cron). Both l
 ### Step 1: Sync call assets (`sync-call-assets.mjs`)
 
 1. **Fetches** `manifest.json` from `https://raw.githubusercontent.com/ethereum/pm/master/.github/ACDbot/artifacts/manifest.json`.
-2. **Maps** PM series names to Forkcast short codes (i.e. `glamsterdamrepricings` → `price`, `rpcstandards` → `rpc`). Core series like `acdc`, `acde`, `acdt` pass through unchanged. The full mapping is defined in `SERIES_TO_TYPE` in `sync-call-assets.mjs` — series not in `KNOWN_TYPES` are skipped with a console warning.
+2. **Maps** PM series names to Forkcast short codes (i.e. `glamsterdamrepricings` → `price`, `rpcstandards` → `rpc`). Core series like `acdc`, `acde`, `acdt` pass through unchanged. The full mapping is `pmSeriesToCallType` in `src/data/callSeries.ts` — series whose short code isn't in `callTypeNames` there are left out of the call index with a console warning.
 3. **Filters** — only syncs calls that have a `videoUrl` AND at least one of `tldr`, `transcript`, or `transcript_corrected`.
 4. **Downloads** new assets to `forkcast/public/artifacts/{type}/{date}_{number}/`. Skips files that already exist locally unless `--force` is passed. Bundled breakout assets (e.g. the ACDT CL breakout's `transcript_cl.vtt`, `chat_cl.txt`, `tldr_cl.json`) download into the same directory as the parent call's assets.
 5. **Generates `config.json`** for each call — stores the issue number, video URL, and sync offsets. For livestreamed types (`acdc`, `acde`), sync times start as `null` (manual sync required). For all others (raw Zoom recordings, including `acdt`), offsets default to `"00:00:00"`. If the manifest entry has `breakoutVideoUrls`, a `breakouts` map is added with each breakout's video URL and zero-sync defaults.
@@ -203,8 +203,8 @@ Use the table below as a checklist. Every new series requires all of these chang
 
 | # | File | What to do |
 |---|------|-----------|
-| 1 | `src/data/calls.ts` | Add the short code to the `CallType` union and add a `name: 'Display Name'` entry to `callTypeNames`. If the series has an associated EIP, add it to `eipCallTypes`. |
-| 2 | `scripts/sync-call-assets.mjs` | Add the short code to `KNOWN_TYPES`. If the PM series name differs from the short code (it usually does for breakouts), add a mapping in `SERIES_TO_TYPE`. |
+| 1 | `src/data/callSeries.ts` | Add the short code to the `CallType` union and add a `name: 'Display Name'` entry to `callTypeNames`. If the series has an associated EIP, add it to `eipCallTypes` in `src/data/calls.ts`. |
+| 2 | `src/data/callSeries.ts` | If the PM series name differs from the short code (it usually does for breakouts), add a mapping in `pmSeriesToCallType`. The sync script reads both this and `callTypeNames`, so it needs no edit. |
 | 3 | `src/components/calls-index/CallsIndexTimeline.tsx` | Add the short code with a color to both maps: `CALL_TYPE_BORDER_COLORS`, `CALL_TYPE_BADGE_COLORS`. |
 | 4 | `src/components/HomePage.tsx` | Add the short code to the `callTypeBadgeColors` map. |
 | 5 | `src/domain/calls/upcomingCalls.ts` | Add an entry to `UPCOMING_CALL_SERIES_TO_TYPE`, keyed by the lowercased `### Call Series` value (e.g. `'encrypt the mempool'`). |
@@ -212,13 +212,13 @@ Use the table below as a checklist. Every new series requires all of these chang
 ### Naming conventions
 
 - **Short code** (`CallType`): A terse lowercase identifier used in URLs, file paths, and the generated JSON. Examples: `acdc`, `focil`, `pqi`. Pick something 2-5 characters that matches the badge text.
-- **PM series name**: The key used in the PM manifest's `series` object. This is typically the full name lowercased with spaces removed (e.g., `pqinterop`, `allwalletdevs`, `glamsterdamrepricings`). If it differs from the short code, add a `SERIES_TO_TYPE` mapping.
+- **PM series name**: The key used in the PM manifest's `series` object. This is typically the full name lowercased with spaces removed (e.g., `pqinterop`, `allwalletdevs`, `glamsterdamrepricings`). If it differs from the short code, add a `pmSeriesToCallType` mapping.
 - **Display name** (`callTypeNames`): The human-readable name shown in tooltips (e.g., `"PQ Interop"`, `"FOCIL Breakout"`).
 - **Badge text**: What appears in the colored pill on the calendar. This is `call.type.toUpperCase()` — so the short code determines the badge text (e.g., `pqi` renders as `PQI`).
 
 ### Verifying
 
-After making all changes, run `npx tsc --noEmit` — the `Record<CallType, string>` types will catch any maps you missed. `SERIES_TO_TYPE` and `UPCOMING_CALL_SERIES_TO_TYPE` are not type-enforced; verify those by hand. Then run the sync script to confirm the new series is recognized:
+After making all changes, run `npx tsc --noEmit` — the `Record<CallType, string>` types will catch any maps you missed. `pmSeriesToCallType` values are type-checked, but its keys and `UPCOMING_CALL_SERIES_TO_TYPE` are not; verify those by hand. Then run the sync script to confirm the new series is recognized:
 
 ```sh
 node scripts/sync-call-assets.mjs
@@ -234,7 +234,7 @@ If the PM manifest already has calls for the series, they should sync down. If n
 
 1. **No `videoUrl` yet.** The video hasn't been uploaded to YouTube, or the manifest hasn't been regenerated after upload. Check `pm/.github/ACDbot/artifacts/manifest.json` for the call entry.
 2. **No text assets yet.** The PM pipeline hasn't completed processing. Check `pm/.github/ACDbot/artifacts/{series}/{date}_{number}/` for the expected files.
-3. **Series not in `KNOWN_TYPES`.** If a new call series was added to PM but not to Forkcast's sync script, it will be skipped (with a console warning). Add it to `SERIES_TO_TYPE` and `KNOWN_TYPES` in `sync-call-assets.mjs`.
+3. **Series not registered.** If a new call series was added to PM but not to `src/data/callSeries.ts`, it will be left out of the call index (with a console warning). Add it to `callTypeNames`, plus `pmSeriesToCallType` if the names differ.
 4. **Series in `DENYLIST`.** If a series was temporarily blocked from syncing (e.g., during a bad data incident), check `DENYLIST` in `sync-call-assets.mjs` and remove the entry.
 
 ### Forkcast shows a dead or wrong video link

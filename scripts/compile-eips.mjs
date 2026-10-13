@@ -11,7 +11,7 @@ const OUTPUT_FILE = path.join(__dirname, '../src/data/eips.json');
 const SCHEMA_FILE = path.join(__dirname, 'eip-schema.json');
 
 // Initialize JSON Schema validator
-const ajv = new Ajv({ allErrors: true });
+const ajv = new Ajv({ allErrors: true, verbose: true });
 const schema = JSON.parse(fs.readFileSync(SCHEMA_FILE, 'utf8'));
 const validate = ajv.compile(schema);
 
@@ -53,7 +53,9 @@ function compileEips() {
             const path = err.instancePath || '/';
             const extra = err.params?.additionalProperty
               ? ` (property: "${err.params.additionalProperty}")`
-              : '';
+              : err.params?.allowedValues
+                ? ` (got ${JSON.stringify(err.data)}, allowed: ${err.params.allowedValues.join(', ')})`
+                : '';
             return `  - ${path}: ${err.message}${extra}`;
           })
           .join('\n');

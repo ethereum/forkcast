@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { writeFileAtomic } from './lib/atomic-write.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,12 +31,14 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// A missing manifest means a fresh start; a corrupt one is an error, since
+// treating it as empty would rewrite every file and hide real changes.
 function loadManifest() {
   if (!fs.existsSync(MANIFEST_PATH)) return {};
   try {
     return JSON.parse(fs.readFileSync(MANIFEST_PATH, 'utf8'));
-  } catch {
-    return {};
+  } catch (err) {
+    throw new Error(`Corrupt manifest ${MANIFEST_PATH}: ${err.message}`);
   }
 }
 
@@ -350,7 +353,7 @@ Environment:
                   ...(openPrs.length > 0 ? { openPrs } : {}),
                 };
                 const filePath = path.join(HISTORY_DIR, `${eipNumber}.json`);
-                fs.writeFileSync(filePath, JSON.stringify(history, null, 2) + '\n');
+                writeFileAtomic(filePath, JSON.stringify(history, null, 2) + '\n');
               }
             }
             return { eipNumber, skipped: true, backfilled: missingPatches.length };
@@ -397,7 +400,7 @@ Environment:
           };
 
           const filePath = path.join(HISTORY_DIR, `${eipNumber}.json`);
-          fs.writeFileSync(filePath, JSON.stringify(history, null, 2) + '\n');
+          writeFileAtomic(filePath, JSON.stringify(history, null, 2) + '\n');
 
           manifest[eipNumber] = {
             lastSha: allCommits[0]?.sha || null,
@@ -431,13 +434,16 @@ Environment:
     }
   }
 
-  fs.writeFileSync(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
+  writeFileAtomic(MANIFEST_PATH, JSON.stringify(manifest, null, 2) + '\n');
 
   console.log('\n');
   console.log('Done!');
   console.log(`  Updated: ${updated}`);
   console.log(`  Skipped (no new commits): ${skipped}`);
-  if (errors > 0) console.log(`  Errors: ${errors}`);
+  if (errors > 0) {
+    console.log(`  Errors: ${errors}`);
+    process.exit(1);
+  }
 }
 
 main().catch((err) => {

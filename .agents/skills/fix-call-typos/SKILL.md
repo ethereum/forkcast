@@ -31,7 +31,7 @@ Ask the user for:
 
 1. **Call slug + number** (e.g., `pqi/038`, `acdc/177`). This determines:
    - Forkcast path: `<forkcast>/public/artifacts/{slug}/{date}_{number_padded}/`
-   - PM path: `<pm>/.github/ACDbot/artifacts/{pm_series}/{date}_{number_padded}/` — the PM series name often differs from the forkcast slug. Check `SERIES_TO_TYPE` in `<forkcast>/scripts/sync-call-assets.mjs` for the mapping (e.g., `pqi` ↔ `pqinterop`, `price` ↔ `glamsterdamrepricings`). Core series (`acdc`, `acde`, `acdt`) pass through unchanged.
+   - PM path: `<pm>/.github/ACDbot/artifacts/{pm_series}/{date}_{number_padded}/` — the PM series name often differs from the forkcast slug. Check `pmSeriesToCallType` in `<forkcast>/src/data/callSeries.ts` for the mapping (e.g., `pqi` ↔ `pqinterop`, `price` ↔ `glamsterdamrepricings`). Core series (`acdc`, `acde`, `acdt`) pass through unchanged.
 
 Resolve the absolute paths and confirm both directories exist before continuing.
 

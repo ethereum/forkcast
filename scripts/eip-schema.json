@@ -7,15 +7,18 @@
   "properties": {
     "id": { "type": "integer" },
     "title": { "type": "string" },
-    "status": { "type": "string" },
+    "status": {
+      "type": "string",
+      "enum": ["Draft", "Review", "Last Call", "Final", "Stagnant", "Withdrawn", "Living", "Moved"]
+    },
     "description": { "type": "string" },
     "author": { "type": "string" },
-    "type": { "type": "string" },
-    "category": { "type": "string" },
+    "type": { "type": "string", "enum": ["Standards Track", "Meta", "Informational"] },
+    "category": { "type": "string", "enum": ["Core", "Networking", "Interface", "ERC"] },
     "createdDate": { "type": "string" },
     "discussionLink": { "type": "string" },
-    "reviewer": { "type": "string" },
-    "layer": { "type": "string" },
+    "reviewer": { "type": "string", "enum": ["bot", "staff", "expert"] },
+    "layer": { "type": "string", "enum": ["EL", "CL"] },
     "collection": { "type": "string" },
     "specificationUrl": { "type": "string" },
     "pendingPullRequest": { "$ref": "#/$defs/PendingPullRequest" },
@@ -85,7 +88,11 @@
       "required": ["forkName", "statusHistory"],
       "additionalProperties": false,
       "properties": {
-        "forkName": { "type": "string" },
+        "forkName": {
+          "type": "string",
+          "enum": ["Shapella", "Dencun", "Pectra", "Fusaka", "Glamsterdam", "Hegota"],
+          "description": "Capitalised id of an upgrade in src/data/upgrades.ts (kept in sync by src/data/eip-schema.test.ts)"
+        },
         "statusHistory": {
           "type": "array",
           "items": { "$ref": "#/$defs/StatusHistoryEntry" }

@@ -7,15 +7,26 @@
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
+import {
+  legacyDevnetId,
+  renameDevnetSeries,
+  renameDevnetSeriesDeep,
+} from './lib/devnet-renames.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const OUTPUT_DIR = join(ROOT, 'src/data/devnets');
 
-const id = process.argv[2];
-if (!id) {
+const rawId = process.argv[2];
+if (!rawId) {
   console.error('Usage: node scripts/scrape-devnet-spec.mjs <devnet-id>');
   process.exit(1);
+}
+// A renamed series is scraped under its current name whichever name is passed, so
+// the HackMD slug, the written filename and the spec's own id can never disagree.
+const id = renameDevnetSeries(rawId);
+if (id !== rawId) {
+  console.log(`${rawId} is now ${id}`);
 }
 if (!/^[a-z0-9-]+$/.test(id)) {
   console.error(`Invalid devnet id: ${id}`);
@@ -33,13 +44,18 @@ async function fetchMarkdown() {
   return res.text();
 }
 
-/** Fetch genesis time (unix seconds) from the cartographoor networks.json. */
+/**
+ * Fetch genesis time (unix seconds) from the cartographoor networks.json. A
+ * renamed devnet is also looked up under its pre-rename key, which is what
+ * cartographoor still publishes it as.
+ */
 async function fetchGenesisTime() {
   try {
     const res = await fetch(NETWORKS_URL);
     if (!res.ok) return null;
     const data = await res.json();
-    const entry = data.networks?.[id];
+    const legacyId = legacyDevnetId(id);
+    const entry = data.networks?.[id] ?? (legacyId ? data.networks?.[legacyId] : null);
     return entry?.genesisConfig?.genesisTime ?? null;
   } catch {
     return null;
@@ -231,7 +247,9 @@ function parseSameSpecAs(md) {
   const linkText = match[1].trim();
   const urlSlug = match[2];
   // Use link text if it looks like a valid devnet ID, otherwise fall back to URL slug
-  return /^[a-z0-9-]+-devnet-\d+$/.test(linkText) ? linkText : urlSlug;
+  const referenced = /^[a-z0-9-]+-devnet-\d+$/.test(linkText) ? linkText : urlSlug;
+  // The spec file it points at is stored under the renamed id.
+  return renameDevnetSeries(referenced);
 }
 
 async function main() {
@@ -284,6 +302,14 @@ async function main() {
       specReferences: parseSpecReferences(md),
     };
   }
+
+  // HackMD pages still carry the pre-rename series names in their headings, links
+  // and prose; the renamed slugs are the live ones, so normalise the spec. The
+  // exception is specReferences: a tag like `focil-devnet@v0.3.0` belongs to an
+  // ethereum-org release that kept its name, and renaming it would point the page
+  // at a tag that does not exist.
+  const { specReferences, ...renamable } = spec;
+  spec = { ...renameDevnetSeriesDeep(renamable), specReferences };
 
   // Store genesis time if available (from cartographoor or previously scraped)
   if (genesisTime) {

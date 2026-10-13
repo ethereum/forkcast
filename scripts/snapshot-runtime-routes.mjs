@@ -26,6 +26,11 @@ import {
   parseUpcomingCallFromIssue,
   extractYouTubeUrl,
 } from '../src/domain/calls/upcomingCallParsing.ts';
+import {
+  renameDevnetSeries,
+  renameDevnetSeriesDeep,
+  renameDevnetSeriesKey,
+} from './lib/devnet-renames.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const GENERATED_DIR = path.join(__dirname, '../src/data/generated');
@@ -127,14 +132,29 @@ const sortKeysDeep = (value) => {
   return value;
 };
 
+// Renaming two upstream keys onto one would drop an entry silently, so a partial
+// upstream migration — the old and the new name published side by side — fails the
+// refresh instead, leaving the committed snapshot in place.
+const assertFreeKey = (target, key, kind) => {
+  if (key in target) {
+    throw new Error(`${kind} key "${key}" appears twice after the devnet series rename`);
+  }
+};
+
+// Devnet series that upstream has renamed are renamed here too, so the snapshot —
+// and with it every route, card and link derived from it — speaks the names the
+// specs and the live devnet hosts use. See scripts/lib/devnet-renames.mjs.
 const canonicalizeNetworksSnapshot = (raw) => {
   const networkMetadata = {};
   for (const [key, value] of Object.entries(raw.networkMetadata ?? {})) {
-    networkMetadata[key] = {
-      ...value,
+    const meta = renameDevnetSeriesDeep(value);
+    const metaKey = renameDevnetSeriesKey(key);
+    assertFreeKey(networkMetadata, metaKey, 'metadata');
+    networkMetadata[metaKey] = {
+      ...meta,
       stats: {
-        ...value.stats,
-        networkNames: [...(value.stats?.networkNames ?? [])].sort(),
+        ...meta.stats,
+        networkNames: [...(meta.stats?.networkNames ?? [])].sort(),
       },
     };
   }
@@ -142,7 +162,9 @@ const canonicalizeNetworksSnapshot = (raw) => {
   const networks = {};
   for (const [key, value] of Object.entries(raw.networks ?? {})) {
     const { lastUpdated: _lastUpdated, ...stableNetwork } = value;
-    networks[key] = stableNetwork;
+    const networkKey = renameDevnetSeries(key);
+    assertFreeKey(networks, networkKey, 'network');
+    networks[networkKey] = renameDevnetSeriesDeep(stableNetwork);
   }
 
   return sortKeysDeep({ networkMetadata, networks });

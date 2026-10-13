@@ -3,6 +3,7 @@ import { Link } from './navigation';
 import { useNetworks } from '../hooks/useNetworks';
 import { getAllDevnetSpecIds } from '../data/devnet-specs';
 import { getPromotedDevnet } from '../domain/networks/promotedDevnets';
+import { parseNetworkKey, shadowForkLabel } from '../domain/networks/networkKeys';
 import {
   RETIRED_PUBLIC_NETWORKS,
   type RetiredPublicNetwork,
@@ -15,8 +16,8 @@ import type {
 
 const CATEGORY_TEXT_COLORS: Record<string, string> = {
   // Hegotá — uniform color
-  focil: 'text-teal-600 dark:text-teal-400',
-  frames: 'text-teal-600 dark:text-teal-400',
+  heze: 'text-teal-600 dark:text-teal-400',
+  bogota: 'text-teal-600 dark:text-teal-400',
   hegota: 'text-teal-600 dark:text-teal-400',
   // Glamsterdam — uniform color
   bal: 'text-purple-600 dark:text-purple-400',
@@ -52,9 +53,10 @@ function getCategoryTextColor(key: string): string {
   return CATEGORY_TEXT_COLORS[key] || 'text-slate-500 dark:text-slate-400';
 }
 
-// The headliner series (focil, frames) sit with the fork's own series, since a
-// headliner's feature devnets are how that fork's payload gets tested.
-const HEGOTA_CATEGORIES = new Set(['focil', 'frames', 'hegota']);
+// The headliner series (heze for FOCIL, bogota for Frame Transactions) sit with
+// the fork's own series, since a headliner's feature devnets are how that fork's
+// payload gets tested.
+const HEGOTA_CATEGORIES = new Set(['heze', 'bogota', 'hegota']);
 const GLAMSTERDAM_CATEGORIES = new Set(['bal', 'epbs', 'glamsterdam']);
 const FUSAKA_CATEGORIES = new Set(['berlinterop', 'eof', 'fusaka', 'peerdas']);
 const PECTRA_CATEGORIES = new Set(['mekong', 'pectra']);
@@ -69,13 +71,6 @@ interface DevnetCardItem {
   activeKeys: string[];
   /** Non-null when a local spec exists for a version cartographoor has never seen, i.e. one that hasn't launched yet. */
   upcomingSpecId: string | null;
-}
-
-/** Parse "epbs-devnet-0" → { category: "epbs", version: 0 } */
-function parseSpecId(id: string): { category: string; version: number } | null {
-  const match = id.match(/^(.+)-devnet-(\d+)$/);
-  if (!match) return null;
-  return { category: match[1], version: parseInt(match[2], 10) };
 }
 
 /**
@@ -126,8 +121,8 @@ function findUpcomingSpec(allSpecIds: string[], categoryKey: string, highestKnow
   let best: { id: string; version: number } | null = null;
 
   for (const specId of allSpecIds) {
-    const parsed = parseSpecId(specId);
-    if (!parsed || parsed.category !== categoryKey) continue;
+    const parsed = parseNetworkKey(specId);
+    if (!parsed || parsed.categoryKey !== categoryKey) continue;
     if (parsed.version <= highestKnownVersion) continue;
     if (best === null || parsed.version > best.version) {
       best = { id: specId, version: parsed.version };
@@ -164,6 +159,7 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
         )}
         {item.activeKeys.map((key) => {
           const promoted = getPromotedDevnet(key);
+          const shadowFork = shadowForkLabel(key);
           return (
             <div key={key} className="flex items-center gap-1.5">
               <Link
@@ -175,6 +171,11 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
               {promoted && (
                 <span className="px-1.5 py-0.5 text-[10px] font-medium bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 rounded">
                   {promoted.name}
+                </span>
+              )}
+              {shadowFork && (
+                <span className="px-1.5 py-0.5 text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400 rounded">
+                  {shadowFork.toLowerCase()}
                 </span>
               )}
             </div>

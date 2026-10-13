@@ -71,12 +71,16 @@ const CORE_PAGES = [
 // Retired URLs that are still linked to from off-site; `astro.config.mjs` keeps
 // them alive as meta-refresh stubs.
 const EXPECTED_REDIRECTS: Record<string, string> = {
-  'planner/index.html': '/schedule',
-  'glamsterdam/index.html': '/upgrade/glamsterdam',
-  'priority/index.html': '/upgrade/glamsterdam/client-priority',
-  'complexity/index.html': '/upgrade/glamsterdam/test-complexity',
+  'planner/index.html': '/schedule/',
+  'glamsterdam/index.html': '/upgrade/glamsterdam/',
+  'priority/index.html': '/upgrade/glamsterdam/client-priority/',
+  'complexity/index.html': '/upgrade/glamsterdam/test-complexity/',
   'feedback/index.html': 'ethereum-magicians.org',
-  'devnets/index.html': '/networks',
+  'devnets/index.html': '/networks/',
+  // Every devnet whose series was renamed keeps its old URL; astro.config.mjs
+  // derives these from the rename map, so one of each series is asserted here.
+  'networks/frames-devnet-1/index.html': '/networks/bogota-devnet-1/',
+  'networks/focil-devnet-1/index.html': '/networks/heze-devnet-1/',
 };
 
 // ---------------------------------------------------------------------------

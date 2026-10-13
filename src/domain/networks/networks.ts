@@ -8,6 +8,7 @@ import type {
 } from '../../types/networks';
 import networksSnapshotRaw from '../../data/generated/networks.json';
 import { buildForkRows, type ForkRow } from './forkSchedule';
+import { isSeriesMember, parseNetworkKey } from './networkKeys';
 import { PROMOTED_DEVNETS } from './promotedDevnets';
 
 // The ethPandaOps cartographoor networks.json is runtime-discovered data. To keep
@@ -29,50 +30,54 @@ export function getNetworkMetadata(categoryKey: string) {
   return snapshot.networkMetadata[categoryKey] ?? null;
 }
 
-// Network keys look like "{categoryKey}-{label}-{version}", e.g. "bal-devnet-3".
-// The category key comes from externally-discovered cartographoor metadata, so it
-// is escaped before being interpolated into the matcher — otherwise a key with a
-// regex metacharacter could match the wrong networks (or throw). Built once per
-// category rather than per network key.
-const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
-const versionMatcher = (categoryKey: string): RegExp =>
-  new RegExp(`^${escapeRegExp(categoryKey)}-.*-(\\d+)$`);
+interface ActiveNetwork {
+  key: string;
+  version: number;
+  isDevnet: boolean;
+  serviceUrls: NetworkServiceUrls | null;
+}
 
 /**
- * Given a category key (e.g. "bal") and the flat networks map,
- * find all active networks, sorted by version descending.
+ * Given a category key (e.g. "bal") and the flat networks map, find all active
+ * networks in that series: devnets first, each sorted by version descending, with
+ * the series' shadow forks after them.
  */
 function findActiveNetworks(
   categoryKey: string,
   networks: Record<string, NetworkEntry>,
-): Array<{ key: string; version: number; serviceUrls: NetworkServiceUrls | null }> {
-  const matcher = versionMatcher(categoryKey);
-  const results: Array<{ key: string; version: number; serviceUrls: NetworkServiceUrls | null }> = [];
+): ActiveNetwork[] {
+  const results: ActiveNetwork[] = [];
 
   for (const [key, entry] of Object.entries(networks)) {
     if (entry.status !== 'active') continue;
-    const match = key.match(matcher);
-    if (!match) continue;
-    results.push({ key, version: parseInt(match[1], 10), serviceUrls: entry.serviceUrls ?? null });
+    const parsed = parseNetworkKey(key);
+    if (!parsed || parsed.categoryKey !== categoryKey) continue;
+    results.push({
+      key,
+      version: parsed.version,
+      isDevnet: parsed.kind === 'devnet',
+      serviceUrls: entry.serviceUrls ?? null,
+    });
   }
 
-  results.sort((a, b) => b.version - a.version);
+  results.sort((a, b) => Number(b.isDevnet) - Number(a.isDevnet) || b.version - a.version);
   return results;
 }
 
-/** Find the highest version number across all networks (any status) for a category. */
+/**
+ * Find the highest devnet version across all networks (any status) for a category.
+ * Shadow forks are numbered in their own sequence, so they are left out: the index
+ * compares this against the local spec files, which only ever describe devnets.
+ */
 function findHighestVersion(
   categoryKey: string,
   networks: Record<string, NetworkEntry>,
 ): number | null {
-  const matcher = versionMatcher(categoryKey);
   let max: number | null = null;
   for (const key of Object.keys(networks)) {
-    const match = key.match(matcher);
-    if (!match) continue;
-    const version = parseInt(match[1], 10);
-    if (max === null || version > max) max = version;
+    const parsed = parseNetworkKey(key);
+    if (!parsed || parsed.categoryKey !== categoryKey || parsed.kind !== 'devnet') continue;
+    if (max === null || parsed.version > max) max = parsed.version;
   }
   return max;
 }
@@ -101,16 +106,16 @@ export function buildDevnetSeries(
     }
 
     const active = findActiveNetworks(categoryKey, source.networks);
-    const latest = active[0] ?? null;
+    const latestDevnet = active.find((network) => network.isDevnet) ?? null;
     activeSeries.push({
       categoryKey,
       displayName: meta.displayName,
       description: meta.description,
       links: meta.links,
       activeKeys: active.map((a) => a.key),
-      latestActiveVersion: latest?.version ?? null,
+      latestActiveVersion: latestDevnet?.version ?? null,
       highestKnownVersion: findHighestVersion(categoryKey, source.networks),
-      serviceUrls: latest?.serviceUrls ?? null,
+      serviceUrls: latestDevnet?.serviceUrls ?? null,
     });
   }
 
@@ -123,23 +128,12 @@ export function buildDevnetSeries(
 // Derived once from the static snapshot.
 export const { activeSeries, inactiveSeries } = buildDevnetSeries(snapshot);
 
-/**
- * All active devnet network keys the index can link to (e.g. "bal-devnet-3").
- * Astro's getStaticPaths() unions this with local spec IDs so every link the
- * island renders resolves to an emitted page. Network-only routes are the active
- * keys without a local spec.
- */
-export function getActiveDevnetNetworkKeys(): string[] {
-  return activeSeries.flatMap((series) => series.activeKeys);
-}
-
-/** Every network key claimed by a devnet series, using the same matcher the series do. */
+/** Every network key claimed by a devnet series, by the same parse the series use. */
 function seriesClaimedKeys(source: NetworksJsonResponse): Set<string> {
   const claimed = new Set<string>();
   for (const categoryKey of Object.keys(source.networkMetadata)) {
-    const matcher = versionMatcher(categoryKey);
     for (const key of Object.keys(source.networks)) {
-      if (matcher.test(key)) claimed.add(key);
+      if (isSeriesMember(key, categoryKey)) claimed.add(key);
     }
   }
   return claimed;
@@ -224,6 +218,16 @@ export const publicNetworks = buildPublicNetworks(snapshot);
 const publicNetworkKeys = new Set(
   publicNetworks.filter((network) => network.promotedLabel === null).map((network) => network.key),
 );
+
+/**
+ * Every network key in the snapshot, active or not. A devnet keeps its page after
+ * it is torn down: cartographoor keeps serving the entry (stripped back to its
+ * name, repo and status), and a link that was published while the devnet ran
+ * should not start 404ing the day it is shut down.
+ */
+export function getKnownNetworkKeys(): string[] {
+  return Object.keys(snapshot.networks);
+}
 
 /** Route ids for the public-network detail pages. */
 export function getPublicNetworkKeys(): string[] {

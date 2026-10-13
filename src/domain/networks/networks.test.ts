@@ -69,10 +69,10 @@ describe('buildDevnetSeries', () => {
 
   it('routes a category with zero active networks to inactiveSeries with the highest known version', () => {
     const source: NetworksJsonResponse = {
-      networkMetadata: { focil: meta('FOCIL', 0) },
+      networkMetadata: { heze: meta('Heze', 0) },
       networks: {
-        'focil-devnet-1': net('inactive'),
-        'focil-devnet-4': net('inactive'),
+        'heze-devnet-1': net('inactive'),
+        'heze-devnet-4': net('inactive'),
       },
     };
 
@@ -80,13 +80,13 @@ describe('buildDevnetSeries', () => {
 
     expect(activeSeries).toEqual([]);
     expect(inactiveSeries).toEqual([
-      expect.objectContaining({ categoryKey: 'focil', highestKnownVersion: 4 }),
+      expect.objectContaining({ categoryKey: 'heze', highestKnownVersion: 4 }),
     ]);
   });
 
-  it('escapes the category key so a regex metacharacter cannot match another category\'s networks', () => {
-    // Without escaping, the "a.b" matcher (`^a.b-.*-(\d+)$`) would also match
-    // "axb-devnet-2" because `.` is any-char, contaminating the active key set.
+  it('matches the category key exactly, so one category cannot claim another\'s networks', () => {
+    // The keys are parsed and compared as strings, so a category whose name holds a
+    // regex metacharacter ("a.b") still claims only its own networks.
     const source: NetworksJsonResponse = {
       networkMetadata: { 'a.b': meta('A dot B', 1), axb: meta('Axb', 1) },
       networks: {
@@ -101,6 +101,41 @@ describe('buildDevnetSeries', () => {
     expect(activeSeries.map((s) => s.categoryKey)).toEqual(['a.b', 'axb']);
     expect(activeSeries[0].activeKeys).toEqual(['a.b-devnet-1']);
     expect(activeSeries[1].activeKeys).toEqual(['axb-devnet-2']);
+  });
+
+  it('keeps a shadow fork in the series without letting it count as a devnet', () => {
+    // glamsterdam-msf-2 is the second mainnet shadow fork, not Glamsterdam devnet 2:
+    // it belongs on the card, but the devnet version and its serviceUrls come from
+    // the latest active devnet.
+    const source: NetworksJsonResponse = {
+      networkMetadata: { glamsterdam: meta('Glamsterdam', 2) },
+      networks: {
+        'glamsterdam-devnet-8': net('active', { serviceUrls: { faucet: 'f8' } }),
+        'glamsterdam-msf-2': net('active', { serviceUrls: { faucet: 'msf' } }),
+        'glamsterdam-sepsf-1': net('inactive'),
+      },
+    };
+
+    const { activeSeries } = buildDevnetSeries(source);
+
+    expect(activeSeries[0].activeKeys).toEqual(['glamsterdam-devnet-8', 'glamsterdam-msf-2']);
+    expect(activeSeries[0].latestActiveVersion).toBe(8);
+    expect(activeSeries[0].highestKnownVersion).toBe(8);
+    expect(activeSeries[0].serviceUrls).toEqual({ faucet: 'f8' });
+  });
+
+  it('reports a series as inactive when only its shadow forks are running', () => {
+    const source: NetworksJsonResponse = {
+      networkMetadata: { pectra: meta('Pectra', 0) },
+      networks: { 'pectra-msf-1': net('active') },
+    };
+
+    const { activeSeries, inactiveSeries } = buildDevnetSeries(source);
+
+    expect(activeSeries).toEqual([]);
+    expect(inactiveSeries).toEqual([
+      expect.objectContaining({ categoryKey: 'pectra', highestKnownVersion: null }),
+    ]);
   });
 });
 

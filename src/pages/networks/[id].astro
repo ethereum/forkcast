@@ -3,19 +3,21 @@ import Layout from '../../layouts/Layout.astro';
 import NetworkDetailPage from '../../components/NetworkDetailPage';
 import { getAllDevnetSpecIds, getDevnetSpec } from '../../data/devnet-specs';
 import {
-  getActiveDevnetNetworkKeys,
+  getKnownNetworkKeys,
   getPublicNetworkKeys,
 } from '../../domain/networks/networks';
+import { shadowForkLabel } from '../../domain/networks/networkKeys';
 import { getPromotedDevnet } from '../../domain/networks/promotedDevnets';
 
-// Local spec IDs, active devnet keys, and the public networks — all from the
-// build-time networks snapshot. Devnet keys without a local spec render
-// network-only pages. Both getStaticPaths and the island read the same snapshot,
-// so links never point to un-emitted routes.
+// Local spec IDs plus every network in the build-time snapshot, the public ones
+// included. Network keys without a local spec render network-only pages, and
+// inactive ones are emitted too so a published link survives the teardown. Both
+// getStaticPaths and the island read the same snapshot, so links never point to
+// un-emitted routes.
 export function getStaticPaths() {
   const publicKeys = new Set(getPublicNetworkKeys());
   const ids = Array.from(
-    new Set([...getAllDevnetSpecIds(), ...getActiveDevnetNetworkKeys(), ...publicKeys]),
+    new Set([...getAllDevnetSpecIds(), ...getKnownNetworkKeys(), ...publicKeys]),
   );
 
   return ids.map((id) => {
@@ -32,13 +34,16 @@ export function getStaticPaths() {
     // A promoted devnet's public name is curated, since the scraped spec title is
     // regenerated on every re-scrape. Keep the head in sync with the rendered h1.
     const promoted = getPromotedDevnet(id);
+    const shadowFork = shadowForkLabel(id);
     return {
       params: { id },
       props: {
         title: `${promoted?.name ?? spec?.title ?? id} - Forkcast`,
         description: spec
           ? `Devnet spec for ${id}: EIP list, client implementation status, and spec references.`
-          : `Devnet network details for ${id}.`,
+          : shadowFork
+            ? `${shadowFork} ${id}: network details and resources.`
+            : `Devnet network details for ${id}.`,
       },
     };
   });

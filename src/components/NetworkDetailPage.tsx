@@ -12,10 +12,37 @@ import type {
   EipDevnetStatus,
 } from '../types';
 import type { BlobScheduleEntry, NetworkEntry, NetworkMetadataLink } from '../types/networks';
+import { parseNetworkKey, shadowForkLabel } from '../domain/networks/networkKeys';
 
-/** Extract category key from a devnet id, e.g. "bal-devnet-3" → "bal" */
+/** Extract category key from a network id, e.g. "bal-devnet-3" → "bal" */
 function parseCategoryKey(id: string): string {
-  return id.replace(/-devnet-\d+$/, '');
+  return parseNetworkKey(id)?.categoryKey ?? id;
+}
+
+/**
+ * What this network is, where the id alone doesn't say it: the network a shadow
+ * fork copies, and whether cartographoor still reports the network as running.
+ * A torn-down network keeps its page, so the state has to be on it.
+ */
+function NetworkBadges({ id, networkEntry }: { id: string; networkEntry: NetworkEntry | null }) {
+  const shadowFork = shadowForkLabel(id);
+  const retired = networkEntry?.status === 'inactive';
+  if (!shadowFork && !retired) return null;
+
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-2">
+      {shadowFork && (
+        <span className="px-2 py-0.5 text-xs font-medium rounded bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          {shadowFork}
+        </span>
+      )}
+      {retired && (
+        <span className="px-2 py-0.5 text-xs font-medium rounded bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">
+          No longer running
+        </span>
+      )}
+    </div>
+  );
 }
 
 function StatusBadge({ status }: { status: EipDevnetStatus }) {
@@ -398,6 +425,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
               })}
             </span>
           </div>
+          <NetworkBadges id={spec.id} networkEntry={networkEntry} />
         </div>
 
         {/* Same-spec notice */}
@@ -574,6 +602,7 @@ function NetworkOnlyContent({ id, networkEntry, metadata }: { id: string; networ
             {metadata.description}
           </p>
         )}
+        <NetworkBadges id={id} networkEntry={networkEntry} />
       </div>
 
       <ResourceLinks

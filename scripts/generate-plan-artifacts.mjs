@@ -21,22 +21,15 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
+import { callClaude, formatCost, jobConfig, parseJson } from './lib/anthropic.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const ARTIFACTS_DIR = join(ROOT, 'public', 'artifacts');
 const EIPS_JSON = join(ROOT, 'src', 'data', 'eips.json');
 
-const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929';
+const LLM = jobConfig('plan-artifacts');
 const DEFAULT_LOOKBACK = 5;
-
-const MODEL_PRICING = {
-  'claude-opus-4-6': [15.0, 75.0],
-  'claude-opus-4-5-20251101': [15.0, 75.0],
-  'claude-sonnet-4-5-20250929': [3.0, 15.0],
-  'claude-sonnet-4-20250514': [3.0, 15.0],
-  'claude-haiku-4-5-20251001': [0.8, 4.0],
-};
 
 const CALL_TYPE_LAYER = {
   acde: 'EL',
@@ -45,50 +38,15 @@ const CALL_TYPE_LAYER = {
 
 // ── Shared utilities ──
 
-function calculateCost(model, usage) {
-  const [inputPrice, outputPrice] = MODEL_PRICING[model] || [0.8, 4.0];
-  return (
-    (usage.input_tokens / 1_000_000) * inputPrice +
-    (usage.output_tokens / 1_000_000) * outputPrice
-  );
-}
-
-async function callAnthropic(model, systemPrompt, userMessage, maxTokens = 4096) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY environment variable is not set');
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: maxTokens,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
+// Thinking shares max_tokens with the answer, so leave headroom.
+function callAnthropic(model, systemPrompt, userMessage, maxTokens = 16000) {
+  return callClaude({
+    model,
+    effort: LLM.effort,
+    system: systemPrompt,
+    messages: [{ role: 'user', content: userMessage }],
+    max_tokens: maxTokens,
   });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Anthropic API error ${response.status}: ${body}`);
-  }
-
-  return response.json();
-}
-
-function parseJsonResponse(response) {
-  let jsonStr = response.content[0].text.trim();
-  if (jsonStr.startsWith('```')) {
-    const lines = jsonStr.split('\n');
-    const start = lines[0].startsWith('```') ? 1 : 0;
-    const end = lines[lines.length - 1].trim() === '```' ? lines.length - 1 : lines.length;
-    jsonStr = lines.slice(start, end).join('\n');
-  }
-  return JSON.parse(jsonStr);
 }
 
 function findRecentCalls(callType, lookback) {
@@ -132,10 +90,9 @@ function inferNextCallNumber(recentCalls) {
   return maxNum + 1;
 }
 
-function logCost(label, model, usage) {
-  const cost = calculateCost(model, usage);
+function logCost(label, { usage, cost }) {
   console.log(
-    `  ${label}: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | $${cost.toFixed(4)}`,
+    `  ${label}: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | ${formatCost(cost)}`,
   );
   return cost;
 }
@@ -488,13 +445,13 @@ async function extractActions(callType, callData, model, planDir, today) {
   const userMessage = `## Call Series: ${callType.toUpperCase()}\n## Today: ${today}\n\n${callSummaries}`;
 
   const response = await callAnthropic(model, PROMPTS.actions, userMessage);
-  const result = parseJsonResponse(response);
+  const result = parseJson(response.text);
   const errors = validateActions(result);
   if (errors.length > 0) throw new Error(`Validation errors:\n  ${errors.join('\n  ')}`);
 
   const outputPath = join(planDir, 'open_action_items.json');
   writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
-  logCost('Actions', model, response.usage);
+  logCost('Actions', response);
   console.log(`  Open: ${result.open_items.length} | Resolved: ${result.resolved_items.length}`);
   return result;
 }
@@ -508,13 +465,13 @@ async function extractDeferred(callType, callData, model, planDir, today) {
   const userMessage = `## Call Series: ${callType.toUpperCase()}\n## Today: ${today}\n\n${sections}`;
 
   const response = await callAnthropic(model, PROMPTS.deferred, userMessage);
-  const result = parseJsonResponse(response);
+  const result = parseJson(response.text);
   const errors = validateDeferred(result);
   if (errors.length > 0) throw new Error(`Validation errors:\n  ${errors.join('\n  ')}`);
 
   const outputPath = join(planDir, 'deferred_decisions.json');
   writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
-  logCost('Deferred', model, response.usage);
+  logCost('Deferred', response);
   const pending = result.deferred.filter(d => !d.revisited).length;
   console.log(`  ${result.deferred.length} total (${pending} pending)`);
   return result;
@@ -541,14 +498,14 @@ async function extractThreads(callType, callData, model, planDir, today) {
   }
 
   const userMessage = sections.join('\n');
-  const response = await callAnthropic(model, PROMPTS.threads, userMessage, 8192);
-  const result = parseJsonResponse(response);
+  const response = await callAnthropic(model, PROMPTS.threads, userMessage, 32000);
+  const result = parseJson(response.text);
   const errors = validateThreads(result);
   if (errors.length > 0) throw new Error(`Validation errors:\n  ${errors.join('\n  ')}`);
 
   const outputPath = join(planDir, 'eip_threads.json');
   writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
-  logCost('Threads', model, response.usage);
+  logCost('Threads', response);
   const withQuestions = result.eip_threads.filter(t => t.open_questions.length > 0).length;
   console.log(`  ${result.eip_threads.length} EIPs with threads (${withQuestions} have open questions)`);
   return result;
@@ -586,7 +543,7 @@ async function extractAgenda(callType, callData, recentCalls, model, planDir, to
 
   const userMessage = sections.join('\n');
   const response = await callAnthropic(model, PROMPTS.agenda, userMessage);
-  const result = parseJsonResponse(response);
+  const result = parseJson(response.text);
   const errors = validateAgenda(result);
   if (errors.length > 0) throw new Error(`Validation errors:\n  ${errors.join('\n  ')}`);
 
@@ -602,7 +559,7 @@ async function extractAgenda(callType, callData, recentCalls, model, planDir, to
 
   const outputPath = join(planDir, 'agenda_suggestions.json');
   writeFileSync(outputPath, JSON.stringify(result, null, 2) + '\n');
-  logCost('Agenda', model, response.usage);
+  logCost('Agenda', response);
   const byPriority = { high: 0, medium: 0, low: 0 };
   for (const s of result.suggestions) byPriority[s.priority]++;
   console.log(`  ${result.suggestions.length} suggestions: ${byPriority.high} high, ${byPriority.medium} medium, ${byPriority.low} low`);
@@ -618,7 +575,7 @@ async function main() {
     options: {
       type: { type: 'string', short: 't' },
       lookback: { type: 'string', short: 'n', default: String(DEFAULT_LOOKBACK) },
-      model: { type: 'string', short: 'm', default: DEFAULT_MODEL },
+      model: { type: 'string', short: 'm', default: LLM.model },
       'dry-run': { type: 'boolean', default: false },
       only: { type: 'string' },
     },

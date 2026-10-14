@@ -10,8 +10,11 @@
  *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-05-07_236
  *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-05-07_236 --force
  *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-05-07_236 --dry-run
+ *   node --env-file=.env scripts/extract-eip-mentions.mjs --only acde/2026-10-08_247,p2p/2026-10-07_009 --limit 4
  *
- * One call at a time by design — there is no --all. Requires ANTHROPIC_API_KEY.
+ * Calls are named explicitly by design — there is no --all. --only takes a
+ * comma-separated list; --limit caps how many transcripts are sent to the API
+ * in one run (existing outputs don't count). Requires ANTHROPIC_API_KEY.
  */
 
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
@@ -25,21 +28,14 @@ import {
   sortMentions,
   validateMentions,
 } from './lib/eip-mentions.mjs';
+import { callClaude, formatCost, jobConfig, parseJson } from './lib/anthropic.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const ARTIFACTS_DIR = join(ROOT, 'public', 'artifacts');
 const EIPS_JSON = join(ROOT, 'src', 'data', 'eips.json');
 
-const DEFAULT_MODEL = 'claude-opus-4-6';
-
-const MODEL_PRICING = {
-  'claude-opus-4-6': [15.0, 75.0],
-  'claude-opus-4-5-20251101': [15.0, 75.0],
-  'claude-sonnet-4-5-20250929': [3.0, 15.0],
-  'claude-sonnet-4-20250514': [3.0, 15.0],
-  'claude-haiku-4-5-20251001': [0.8, 4.0],
-};
+const LLM = jobConfig('eip-mentions');
 
 const MENTIONS_PROMPT = `You index every EIP mentioned on an Ethereum core developer call, and the context each one came up in.
 
@@ -102,14 +98,6 @@ Return ONLY valid JSON, no markdown fences, no commentary:
 
 Do not emit a \`title\` field — titles are filled in from the EIP corpus afterwards.`;
 
-function calculateCost(model, usage) {
-  const [inputPrice, outputPrice] = MODEL_PRICING[model] || [0.8, 4.0];
-  return (
-    (usage.input_tokens / 1_000_000) * inputPrice +
-    (usage.output_tokens / 1_000_000) * outputPrice
-  );
-}
-
 /** id -> title, with the redundant "EIP-NNNN: " prefix stripped. */
 function loadEipTitles() {
   if (!existsSync(EIPS_JSON)) return null;
@@ -117,35 +105,6 @@ function loadEipTitles() {
   return new Map(
     data.filter((e) => e.id).map((e) => [e.id, String(e.title || '').replace(/^EIP-\d+:\s*/, '')]),
   );
-}
-
-async function callAnthropic(model, systemPrompt, userMessage) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error('ANTHROPIC_API_KEY environment variable is not set');
-  }
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 16000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Anthropic API error ${response.status}: ${body}`);
-  }
-
-  return response.json();
 }
 
 function readOptional(path) {
@@ -243,7 +202,7 @@ function formatAnchors(candidates, titles) {
   return blocks.join('\n\n');
 }
 
-async function extractForFile(entry, meetingDir, transcriptFile, titles, model, force) {
+async function extractForFile(entry, meetingDir, transcriptFile, titles, model, force, budget) {
   const { path: transcriptPath, suffix } = transcriptFile;
   const outputPath = join(meetingDir, `eip_mentions${suffix}.json`);
   const transcriptName = transcriptPath.split('/').pop();
@@ -285,27 +244,24 @@ ${chat ?? '(No chat file available)'}
 
 ${transcript}`;
 
+  if (budget.remaining <= 0) {
+    console.log(`  ${transcriptName}: --limit reached, not generated`);
+    return 'deferred';
+  }
+  budget.remaining--;
+
   console.log(`  ${transcriptName}: calling Claude API (${model})...`);
 
   try {
-    const response = await callAnthropic(model, MENTIONS_PROMPT, userMessage);
+    const { text, usage, cost } = await callClaude({
+      model,
+      effort: LLM.effort,
+      system: MENTIONS_PROMPT,
+      messages: [{ role: 'user', content: userMessage }],
+      max_tokens: 32000,
+    });
 
-    const usage = {
-      input_tokens: response.usage.input_tokens,
-      output_tokens: response.usage.output_tokens,
-    };
-
-    let jsonStr = response.content[0].text.trim();
-
-    // Strip markdown code fences if present
-    if (jsonStr.startsWith('```')) {
-      const lines = jsonStr.split('\n');
-      const start = lines[0].startsWith('```') ? 1 : 0;
-      const end = lines[lines.length - 1].trim() === '```' ? lines.length - 1 : lines.length;
-      jsonStr = lines.slice(start, end).join('\n');
-    }
-
-    const result = JSON.parse(jsonStr);
+    const result = parseJson(text);
 
     const { errors, warnings } = validateMentions(result, {
       knownIds,
@@ -357,9 +313,8 @@ ${transcript}`;
     }
 
     const discussed = ordered.eips.filter((e) => e.weight === 'discussed').length;
-    const cost = calculateCost(model, usage);
     console.log(
-      `  Tokens: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | Cost: $${cost.toFixed(4)}`,
+      `  Tokens: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | Cost: ${formatCost(cost)}`,
     );
     console.log(
       `  Saved ${outputPath.replace(ROOT + '/', '')} (${ordered.eips.length} EIPs, ${discussed} discussed)`,
@@ -371,18 +326,34 @@ ${transcript}`;
   }
 }
 
+/** `--only a,b` -> ['a', 'b']. */
+function splitList(value) {
+  return value
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** Name what --limit held back; in CI, as a warning annotation on the run. */
+function reportDeferred(deferred) {
+  if (deferred.length === 0) return;
+  const message = `--limit reached; not generated: ${deferred.join(', ')}`;
+  console.log(process.env.GITHUB_ACTIONS ? `::warning::${message}` : `\n${message}`);
+}
+
 async function main() {
   const { values } = parseArgs({
     options: {
       only: { type: 'string' },
-      model: { type: 'string', short: 'm', default: DEFAULT_MODEL },
+      model: { type: 'string', short: 'm', default: LLM.model },
       force: { type: 'boolean', short: 'f', default: false },
+      limit: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
     },
   });
 
   if (!values.only) {
-    console.log('Specify --only <type>/<date>_<number> (e.g. acde/2026-05-07_236)');
+    console.log('Specify --only <type>/<date>_<number>[,...] (e.g. acde/2026-05-07_236)');
     process.exit(1);
   }
 
@@ -393,48 +364,65 @@ async function main() {
     process.exit(1);
   }
 
-  const entry = values.only;
-  const meetingDir = join(ARTIFACTS_DIR, entry);
-
-  console.log(`${entry}`);
-
-  if (!existsSync(meetingDir)) {
-    console.log(`  Directory not found: ${meetingDir}`);
-    process.exit(1);
-  }
-
-  const transcriptFiles = findTranscriptFiles(meetingDir);
-  if (transcriptFiles.length === 0) {
-    console.log('  No transcript files found');
-    process.exit(1);
-  }
-
-  if (values['dry-run']) {
-    const knownIds = new Set(titles.keys());
-    for (const { path, suffix } of transcriptFiles) {
-      const chat = readOptional(join(meetingDir, `chat${suffix}.txt`));
-      const candidates = extractEipCandidates(`${readFileSync(path, 'utf-8')}\n${chat ?? ''}`, knownIds);
-      const outputPath = join(meetingDir, `eip_mentions${suffix}.json`);
-      console.log(
-        `  ${path.split('/').pop()} -> eip_mentions${suffix}.json: ${existsSync(outputPath) ? 'exists' : 'missing'}` +
-          ` | ${candidates.size} candidate EIP(s)`,
-      );
-      // The anchors block is the whole deterministic contribution to the prompt,
-      // so seeing it is what makes a dry run useful.
-      console.log(formatAnchors(candidates, titles).split('\n').map((l) => `    ${l}`).join('\n'));
-    }
-    return;
-  }
-
+  const entries = splitList(values.only);
+  const budget = { remaining: values.limit ? parseInt(values.limit, 10) : Infinity };
+  const deferred = [];
   let failed = 0;
   let empty = 0;
-  for (const transcriptFile of transcriptFiles) {
-    const result = await extractForFile(entry, meetingDir, transcriptFile, titles, values.model, values.force);
-    if (result === 'failed') failed++;
-    else if (result === 'empty') empty++;
+
+  for (const entry of entries) {
+    const meetingDir = join(ARTIFACTS_DIR, entry);
+
+    console.log(`${entry}`);
+
+    if (!existsSync(meetingDir)) {
+      console.log(`  Directory not found: ${meetingDir}`);
+      failed++;
+      continue;
+    }
+
+    const transcriptFiles = findTranscriptFiles(meetingDir);
+    if (transcriptFiles.length === 0) {
+      // Some series (e.g. ethproofs) publish a TLDR but no transcript.
+      console.log('  No transcript files found — nothing to index');
+      continue;
+    }
+
+    if (values['dry-run']) {
+      const knownIds = new Set(titles.keys());
+      for (const { path, suffix } of transcriptFiles) {
+        const chat = readOptional(join(meetingDir, `chat${suffix}.txt`));
+        const candidates = extractEipCandidates(`${readFileSync(path, 'utf-8')}\n${chat ?? ''}`, knownIds);
+        const outputPath = join(meetingDir, `eip_mentions${suffix}.json`);
+        console.log(
+          `  ${path.split('/').pop()} -> eip_mentions${suffix}.json: ${existsSync(outputPath) ? 'exists' : 'missing'}` +
+            ` | ${candidates.size} candidate EIP(s)`,
+        );
+        // The anchors block is the whole deterministic contribution to the prompt,
+        // so seeing it is what makes a dry run useful.
+        console.log(formatAnchors(candidates, titles).split('\n').map((l) => `    ${l}`).join('\n'));
+      }
+      continue;
+    }
+
+    for (const transcriptFile of transcriptFiles) {
+      const result = await extractForFile(
+        entry,
+        meetingDir,
+        transcriptFile,
+        titles,
+        values.model,
+        values.force,
+        budget,
+      );
+      if (result === 'failed') failed++;
+      else if (result === 'empty') empty++;
+      else if (result === 'deferred') deferred.push(`${entry}${transcriptFile.suffix}`);
+    }
   }
 
   if (empty > 0) console.log(`\n${empty} transcript(s) had no EIP mentions.`);
+  reportDeferred(deferred);
 
   if (failed > 0) process.exit(1);
 }

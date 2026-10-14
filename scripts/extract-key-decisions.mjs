@@ -18,6 +18,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
+import { callClaude, formatCost, jobConfig, parseJson } from './lib/anthropic.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -25,15 +26,7 @@ const ARTIFACTS_DIR = join(ROOT, 'public', 'artifacts');
 const EIPS_JSON = join(ROOT, 'src', 'data', 'eips.json');
 
 const ACD_CALL_TYPES = new Set(['acdc', 'acde', 'acdt']);
-const DEFAULT_MODEL = 'claude-opus-4-6';
-
-const MODEL_PRICING = {
-  'claude-opus-4-6': [15.0, 75.0],
-  'claude-opus-4-5-20251101': [15.0, 75.0],
-  'claude-sonnet-4-5-20250929': [3.0, 15.0],
-  'claude-sonnet-4-20250514': [3.0, 15.0],
-  'claude-haiku-4-5-20251001': [0.8, 4.0],
-};
+const LLM = jobConfig('key-decisions');
 
 const EXTRACTION_PROMPT = `Classify decisions from Ethereum governance meeting summaries into structured JSON.
 
@@ -80,14 +73,6 @@ Return ONLY valid JSON (no markdown fences):
 }
 
 Only include \`stage_change\` when type is "stage_change". Only include \`devnet\` when type is "devnet_inclusion". Only include \`fork\` when a fork name is mentioned. Only include \`context\` when meaningful additional context exists.`;
-
-function calculateCost(model, usage) {
-  const [inputPrice, outputPrice] = MODEL_PRICING[model] || [0.8, 4.0];
-  return (
-    (usage.input_tokens / 1_000_000) * inputPrice +
-    (usage.output_tokens / 1_000_000) * outputPrice
-  );
-}
 
 function loadKnownEipIds() {
   if (!existsSync(EIPS_JSON)) return new Set();
@@ -178,35 +163,6 @@ function validateSchema(data) {
   return errors;
 }
 
-async function callAnthropic(model, systemPrompt, userMessage) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error('ANTHROPIC_API_KEY environment variable is not set');
-  }
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 4096,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Anthropic API error ${response.status}: ${body}`);
-  }
-
-  return response.json();
-}
-
 function findTldrFiles(meetingDir) {
   const files = [];
   if (existsSync(join(meetingDir, 'tldr.json'))) {
@@ -255,24 +211,15 @@ async function extractKeyDecisionsForFile(meetingDir, tldrFile, model, force) {
   console.log(`  ${tldrName}: calling Claude API (${model}) with ${decisions.length} decision(s)...`);
 
   try {
-    const response = await callAnthropic(model, EXTRACTION_PROMPT, userMessage);
+    const { text, usage, cost } = await callClaude({
+      model,
+      effort: LLM.effort,
+      system: EXTRACTION_PROMPT,
+      messages: [{ role: 'user', content: userMessage }],
+      max_tokens: 16000,
+    });
 
-    const usage = {
-      input_tokens: response.usage.input_tokens,
-      output_tokens: response.usage.output_tokens,
-    };
-
-    let jsonStr = response.content[0].text.trim();
-
-    // Strip markdown code fences if present
-    if (jsonStr.startsWith('```')) {
-      const lines = jsonStr.split('\n');
-      const start = lines[0].startsWith('```') ? 1 : 0;
-      const end = lines[lines.length - 1].trim() === '```' ? lines.length - 1 : lines.length;
-      jsonStr = lines.slice(start, end).join('\n');
-    }
-
-    const result = JSON.parse(jsonStr);
+    const result = parseJson(text);
 
     // Validate schema
     const errors = validateSchema(result);
@@ -296,9 +243,8 @@ async function extractKeyDecisionsForFile(meetingDir, tldrFile, model, force) {
 
     writeFileSync(outputPath, JSON.stringify(result, null, 2));
 
-    const cost = calculateCost(model, usage);
     console.log(
-      `  Tokens: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | Cost: $${cost.toFixed(4)}`,
+      `  Tokens: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | Cost: ${formatCost(cost)}`,
     );
     console.log(`  Saved ${outputPath.replace(ROOT + '/', '')}`);
     return 'succeeded';
@@ -327,7 +273,7 @@ async function main() {
     options: {
       only: { type: 'string' },
       all: { type: 'boolean', default: false },
-      model: { type: 'string', short: 'm', default: DEFAULT_MODEL },
+      model: { type: 'string', short: 'm', default: LLM.model },
       force: { type: 'boolean', short: 'f', default: false },
       'dry-run': { type: 'boolean', default: false },
     },

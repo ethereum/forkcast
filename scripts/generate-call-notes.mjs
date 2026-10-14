@@ -10,6 +10,11 @@
  *   node --env-file=.env scripts/generate-call-notes.mjs --all
  *   node --env-file=.env scripts/generate-call-notes.mjs --all --dry-run
  *   node --env-file=.env scripts/generate-call-notes.mjs --only acdt/2026-07-20_088 --force
+ *   node --env-file=.env scripts/generate-call-notes.mjs --only aa/2026-10-06_006,rpc/2026-10-05_036 --limit 4
+ *
+ * --only takes a comma-separated list. --limit caps how many transcripts are
+ * sent to the API in one run (existing notes don't count), so CI can't run up
+ * a bill on a bulk re-sync.
  *
  * Requires: ANTHROPIC_API_KEY environment variable
  */
@@ -18,6 +23,7 @@ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
+import { callClaude, formatCost, jobConfig, parseJson } from './lib/anthropic.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -25,15 +31,7 @@ const ARTIFACTS_DIR = join(ROOT, 'public', 'artifacts');
 const STYLE_EXAMPLE_FILE = join(__dirname, 'prompts', 'example-call-notes.md');
 
 const ACD_CALL_TYPES = new Set(['acdc', 'acde', 'acdt']);
-const DEFAULT_MODEL = 'claude-opus-4-6';
-
-const MODEL_PRICING = {
-  'claude-opus-4-6': [15.0, 75.0],
-  'claude-opus-4-5-20251101': [15.0, 75.0],
-  'claude-sonnet-4-5-20250929': [3.0, 15.0],
-  'claude-sonnet-4-20250514': [3.0, 15.0],
-  'claude-haiku-4-5-20251001': [0.8, 4.0],
-};
+const LLM = jobConfig('call-notes');
 
 const NOTES_PROMPT = `You write detailed notes for Ethereum core developer calls. Your reader missed the call and wants to be fully caught up without watching it — so the notes must be comprehensive, not a highlight reel.
 
@@ -77,14 +75,6 @@ Return ONLY valid JSON, no markdown fences, no commentary:
 }
 
 \`body\` is a markdown string. Escape newlines as \\n.`;
-
-function calculateCost(model, usage) {
-  const [inputPrice, outputPrice] = MODEL_PRICING[model] || [0.8, 4.0];
-  return (
-    (usage.input_tokens / 1_000_000) * inputPrice +
-    (usage.output_tokens / 1_000_000) * outputPrice
-  );
-}
 
 const TIMESTAMP_RE = /^\d{2}:\d{2}:\d{2}$/;
 
@@ -145,35 +135,6 @@ function validateSchema(data) {
   return errors;
 }
 
-async function callAnthropic(model, systemPrompt, userMessage) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    throw new Error('ANTHROPIC_API_KEY environment variable is not set');
-  }
-
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method: 'POST',
-    headers: {
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 16000,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: userMessage }],
-    }),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`Anthropic API error ${response.status}: ${body}`);
-  }
-
-  return response.json();
-}
-
 async function fetchAgenda(issueNumber) {
   const headers = {
     accept: 'application/vnd.github+json',
@@ -229,7 +190,7 @@ function meetingTitle(entry, suffix) {
   return suffix ? `${base} (${suffix.slice(1).toUpperCase()} Breakout)` : base;
 }
 
-async function generateNotesForFile(entry, meetingDir, transcriptFile, agenda, model, force) {
+async function generateNotesForFile(entry, meetingDir, transcriptFile, agenda, model, force, budget) {
   const { path: transcriptPath, suffix } = transcriptFile;
   const outputPath = join(meetingDir, `notes${suffix}.json`);
   const transcriptName = transcriptPath.split('/').pop();
@@ -264,27 +225,24 @@ ${chat ?? '(No chat file available)'}
 
 ${transcript}`;
 
+  if (budget.remaining <= 0) {
+    console.log(`  ${transcriptName}: --limit reached, not generated`);
+    return 'deferred';
+  }
+  budget.remaining--;
+
   console.log(`  ${transcriptName}: calling Claude API (${model})...`);
 
   try {
-    const response = await callAnthropic(model, NOTES_PROMPT, userMessage);
+    const { text, usage, cost } = await callClaude({
+      model,
+      effort: LLM.effort,
+      system: NOTES_PROMPT,
+      messages: [{ role: 'user', content: userMessage }],
+      max_tokens: 32000,
+    });
 
-    const usage = {
-      input_tokens: response.usage.input_tokens,
-      output_tokens: response.usage.output_tokens,
-    };
-
-    let jsonStr = response.content[0].text.trim();
-
-    // Strip markdown code fences if present
-    if (jsonStr.startsWith('```')) {
-      const lines = jsonStr.split('\n');
-      const start = lines[0].startsWith('```') ? 1 : 0;
-      const end = lines[lines.length - 1].trim() === '```' ? lines.length - 1 : lines.length;
-      jsonStr = lines.slice(start, end).join('\n');
-    }
-
-    const result = JSON.parse(jsonStr);
+    const result = parseJson(text);
 
     const errors = validateSchema(result);
     if (errors.length > 0) {
@@ -315,9 +273,8 @@ ${transcript}`;
 
     writeFileSync(outputPath, JSON.stringify(result, null, 2));
 
-    const cost = calculateCost(model, usage);
     console.log(
-      `  Tokens: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | Cost: $${cost.toFixed(4)}`,
+      `  Tokens: ${usage.input_tokens.toLocaleString()} in, ${usage.output_tokens.toLocaleString()} out | Cost: ${formatCost(cost)}`,
     );
     console.log(`  Saved ${outputPath.replace(ROOT + '/', '')} (${result.sections.length} sections)`);
     return 'succeeded';
@@ -341,13 +298,29 @@ function findAllTranscriptDirs() {
   return entries.sort();
 }
 
+/** `--only a,b` -> ['a', 'b']. */
+function splitList(value) {
+  return value
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+/** Name what --limit held back; in CI, as a warning annotation on the run. */
+function reportDeferred(deferred) {
+  if (deferred.length === 0) return;
+  const message = `--limit reached; not generated: ${deferred.join(', ')}`;
+  console.log(process.env.GITHUB_ACTIONS ? `::warning::${message}` : `\n${message}`);
+}
+
 async function main() {
   const { values } = parseArgs({
     options: {
       only: { type: 'string' },
       all: { type: 'boolean', default: false },
-      model: { type: 'string', short: 'm', default: DEFAULT_MODEL },
+      model: { type: 'string', short: 'm', default: LLM.model },
       force: { type: 'boolean', short: 'f', default: false },
+      limit: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
     },
   });
@@ -357,7 +330,8 @@ async function main() {
     process.exit(1);
   }
 
-  const entries = values.only ? [values.only] : findAllTranscriptDirs();
+  const entries = values.only ? splitList(values.only) : findAllTranscriptDirs();
+  const budget = { remaining: values.limit ? parseInt(values.limit, 10) : Infinity };
 
   if (entries.length === 0) {
     console.log('No entries to process.');
@@ -369,6 +343,7 @@ async function main() {
   let succeeded = 0;
   let failed = 0;
   let skipped = 0;
+  const deferred = [];
 
   for (let i = 0; i < entries.length; i++) {
     const entry = entries[i];
@@ -409,14 +384,17 @@ async function main() {
         agenda,
         values.model,
         values.force,
+        budget,
       );
       if (result === 'succeeded') succeeded++;
       else if (result === 'skipped') skipped++;
+      else if (result === 'deferred') deferred.push(`${entry}${transcriptFile.suffix}`);
       else failed++;
     }
   }
 
   console.log(`\nDone: ${succeeded} generated, ${skipped} skipped, ${failed} failed`);
+  reportDeferred(deferred);
 }
 
 main().catch((e) => {

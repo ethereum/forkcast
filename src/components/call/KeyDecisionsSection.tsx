@@ -4,6 +4,7 @@ import { KeyDecision, EIP } from '../../types/eip';
 import { getKeyDecisionTagColor } from '../../utils/colors';
 import { PRE_RECORDING_LABEL } from '../../utils/timestamp';
 import { eipById } from '../../data/eips';
+import { preloadEipDrawer, useOpenEipOnClick } from '../eip/EipDrawerProvider';
 
 interface SyncConfig {
   transcriptStartTime: string | null;
@@ -61,9 +62,13 @@ export const EipLinkWithTooltip: React.FC<{
 }> = ({ eipId, eipMap }) => {
   const [tooltipPos, setTooltipPos] = useState<{ x: number; y: number } | null>(null);
   const eip = eipMap.get(eipId);
+  // The drawer resolves its own EIP and renders nothing for one we don't
+  // carry, so those links have to keep navigating.
+  const openDrawer = useOpenEipOnClick(eipId, Boolean(eip));
 
   const handleMouseEnter = (e: React.MouseEvent) => {
     if (!eip) return;
+    if (openDrawer) preloadEipDrawer();
     const rect = e.currentTarget.getBoundingClientRect();
     const tooltipWidth = 360;
     const tooltipHeight = 200;
@@ -95,7 +100,7 @@ export const EipLinkWithTooltip: React.FC<{
     <>
       <Link
         to={`/eips/${eipId}`}
-        onClick={(e) => e.stopPropagation()}
+        onClick={openDrawer ?? ((e) => e.stopPropagation())}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200"

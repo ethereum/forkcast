@@ -7,13 +7,13 @@ import CallNotes, { type NotesData } from './CallNotes';
 import CallEipMentions, { type EipMentionsData } from './CallEipMentions';
 import CallAgenda from './CallAgenda';
 import CallSearch from './CallSearch';
-import { TextWithLinks, handleEipLinkClick } from './TextWithLinks';
-import { EipDrawer } from '../eip/EipDrawer';
+import { TextWithLinks } from './TextWithLinks';
+import { EipDrawerProvider, useOpenEipOnClick } from '../eip/EipDrawerProvider';
 import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../../data/calls';
 import { breakouts, breakoutLabels, type Breakout, type BreakoutKind } from '../../data/breakouts';
 import { upcomingCalls } from '../../domain/calls/upcomingCalls';
 import { onOpenCallSearch } from '../../domain/calls/callSearch';
-import { eipsData } from '../../data/eips';
+import { eipsData, eipById } from '../../data/eips';
 import { EIP, ForkRelationship, KeyDecision } from '../../types/eip';
 import { isSearchHotkey } from '../search/searchShortcuts';
 import {
@@ -482,7 +482,26 @@ interface CallPageProps {
   upcoming?: UpcomingCallMeta;
 }
 
-const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
+/**
+ * The EIP a breakout series is about, in the call's reading-pane header and
+ * its workspace toolbar. Its own component so the drawer hook sits above any
+ * of CallPageInner's early returns.
+ */
+const BreakoutEipLink: React.FC<{ eipId: number }> = ({ eipId }) => {
+  const openDrawer = useOpenEipOnClick(eipId);
+
+  return (
+    <Link
+      to={`/eips/${eipId}`}
+      onClick={openDrawer}
+      className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
+    >
+      {eipId}
+    </Link>
+  );
+};
+
+const CallPageInner: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -546,7 +565,6 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const [currentVideoTime, setCurrentVideoTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [selectedSearchResult, setSelectedSearchResult] = useState<{timestamp: string, text: string, type: string} | null>(null);
-  const [drawerEipId, setDrawerEipId] = useState<number | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
   // The view is a per-device reading preference, so it persists; it stays out of the URL because a
   // shared link's query params are all content deep links and shouldn't impose someone's pane geometry.
@@ -1292,9 +1310,13 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
   const agendaIssue = callConfig?.issue;
   const hasSummary = hasTldr || hasNotes || hasEipMentions || Boolean(agendaIssue);
   // EIP ids named in this call's own eip_mentions.json — the only ids the
-  // free-text linkifiers may turn into links. No file, no links.
+  // free-text linkifiers may turn into links. No file, no links. Ids Forkcast
+  // carries no page for are dropped too: the drawer renders nothing for them
+  // and /eips/{id} isn't a built route, so the link would be dead either way.
   const mentionedEipIds = new Set(
-    (callData.eipMentions?.eips ?? []).map(mention => mention.eip),
+    (callData.eipMentions?.eips ?? [])
+      .map(mention => mention.eip)
+      .filter(id => eipById.has(id)),
   );
   const availableSummaryTabs = SUMMARY_TABS.filter(
     tab => ({ agenda: Boolean(agendaIssue), tldr: hasTldr, notes: hasNotes, eips: hasEipMentions })[tab.key],
@@ -1512,13 +1534,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
           </a>
         ))}
         {breakoutEipInfo && renderReadingField('EIP', (
-          <Link
-            to={`/eips/${breakoutEipInfo.eip.id}`}
-            onClick={handleEipLinkClick(breakoutEipInfo.eip.id, setDrawerEipId)}
-            className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
-          >
-            {breakoutEipInfo.eip.id}
-          </Link>
+          <BreakoutEipLink eipId={breakoutEipInfo.eip.id} />
         ))}
       </dl>
       <div className="mt-auto border-t border-slate-200 pt-3 dark:border-slate-700">
@@ -1602,13 +1618,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                 <div className="flex flex-shrink-0 items-center gap-1.5" title="EIP">
                   <span className="text-slate-500 dark:text-slate-400">📋</span>
                   <span className="text-slate-600 dark:text-slate-300">EIP:</span>
-                  <Link
-                    to={`/eips/${breakoutEipInfo.eip.id}`}
-                    onClick={handleEipLinkClick(breakoutEipInfo.eip.id, setDrawerEipId)}
-                    className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-200 font-medium underline decoration-1 underline-offset-2"
-                  >
-                    {breakoutEipInfo.eip.id}
-                  </Link>
+                  <BreakoutEipLink eipId={breakoutEipInfo.eip.id} />
                   {!isWorkspaceView && breakoutEipInfo.latestFork && (
                     <span className="text-slate-500 dark:text-slate-400">
                       ({breakoutEipInfo.latestFork.statusHistory[breakoutEipInfo.latestFork.statusHistory.length - 1]?.status} for {breakoutEipInfo.latestFork.forkName}{breakoutEipInfo.latestFork.isHeadliner ? ', Headliner' : ''})
@@ -1785,7 +1795,7 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
                       ${isSelectedSearch ? 'text-slate-900 dark:text-slate-100' :
                         isHighlighted ? 'text-slate-900 dark:text-slate-100' :
                         'text-slate-600 dark:text-slate-400'}
-                    `}><TextWithLinks text={entry.text} allowedIds={mentionedEipIds} onOpenEip={setDrawerEipId} /></span>
+                    `}><TextWithLinks text={entry.text} allowedIds={mentionedEipIds} /></span>
                   </div>
                 </div>
               );
@@ -1827,7 +1837,6 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
             selectedSearchResult={selectedSearchResult}
             onTimestampClick={handleTranscriptClick}
             allowTimestampNavigation={!activeBreakout?.legacy}
-            onOpenEip={setDrawerEipId}
             allowedIds={mentionedEipIds}
           />
         </div>
@@ -1960,9 +1969,15 @@ const CallPage: React.FC<CallPageProps> = ({ callPath, upcoming }) => {
           )}
         </div>
       </div>
-      <EipDrawer eipId={drawerEipId} onClose={() => setDrawerEipId(null)} />
     </div>
   );
 };
+
+/** Hosts the shared EIP drawer for every link on the page. */
+const CallPage: React.FC<CallPageProps> = (props) => (
+  <EipDrawerProvider>
+    <CallPageInner {...props} />
+  </EipDrawerProvider>
+);
 
 export default CallPage;

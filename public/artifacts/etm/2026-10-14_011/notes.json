@@ -1,0 +1,41 @@
+{
+  "meeting": "ETM #011 - 2026-10-14",
+  "sections": [
+    {
+      "heading": "Priority List PR Overview",
+      "summary": "Jannik opened a PR to Lucid adding a priority-list mechanism for trusted key publishers, replacing the earlier whitelist concept.",
+      "timestamp": "00:03:42",
+      "body": "- Jannik posted a [PR to the Lucid EIP](https://github.com/shutter-network/EIPs/pull/1/changes) roughly 30 minutes before the call; participants had not yet reviewed it in depth.\n- The PR splits into two parts:\n  - An EL voting contract that lets validators vote on key publishers, with results propagated to the CL as a priority list.\n  - Changes to Lucid's block-ordering rules on the CL to interpret and enforce the priority list.\n- A queuing mechanism was added to decouple contract changes from CL execution, limiting the rate of changes and preventing spam; modeled on similar patterns in validator consolidation EIPs.\n- A fee mechanism was added to further discourage spam, also borrowed from existing EIP patterns.\n- Key messages now require a signature from the key publisher to prevent impersonation \u2014 without this, anyone could claim their transaction's key came from a prioritized publisher and gain top-of-block placement.\n  - Signing key messages was preferred over signing tickets, as it is operationally simpler for key publishers who already perform key releases.\n- Max preceding commitments were removed because combining them with the priority list ordering is complex; the priority list is seen as a cleaner replacement.\n  - Lucid's recovery mechanism (for missed or invalid payloads) was extended to reorder transactions that violate priority-list ordering, which would have made max preceding commitments difficult for key publishers to predict.\n- Justin described the removal of max preceding commitments as \"aesthetically pleasing\" and clearer than the previous mechanism.\n- Engine API changes are still needed to communicate the priority list between EL and CL; Jannik has not yet drafted these.\n- Action items:\n  - Justin to review the full PR (targeting same day) and specifically examine Engine API implications.\n  - Justin to get review attention from Ander and Julian (Lucid authors).\n  - Justin to escalate to Tama, who had concerns about optionality in the design.\n  - Justin to add Jannik to the Lucid authors list if this contribution is pulled in."
+    },
+    {
+      "heading": "Voter Set for the Priority List",
+      "summary": "The current proposal uses all active validators weighted by effective balance; a smaller subset may suffice but is not yet proven necessary.",
+      "timestamp": "00:14:00",
+      "body": "- The voting body in the proposal is the full set of active validators, weighted by effective balance.\n- Justin suggested restricting the voter set, e.g. to validators that already have duties in the epoch; Jannik agreed a smaller subset would likely suffice but doubted it would simplify things.\n- The tally is computed iteratively so contract-level changes do not require full recomputation, but effective-balance changes (once per epoch) do force a recalculation.\n- Preliminary benchmarks from Jannik look acceptable for the full validator set.\n- Justin suggested consulting CL client teams on whether restricting the voter set would improve efficiency enough to justify the change."
+    },
+    {
+      "heading": "Key Validation and Publisher Accountability",
+      "summary": "There is no automatic mechanism to penalize key publishers for invalid reveals; the validator set must vote them out manually or via external monitoring.",
+      "timestamp": "00:17:42",
+      "body": "- Justin raised the question of how invalid key reveals (wrong key vs. no key at all) feed back into the priority list.\n- Lucid already rejects invalid keys, and the PR adds an additional rejection condition for invalid signatures, but neither triggers automatic removal from the priority list.\n- A misbehaving key publisher remains in the priority section (bottom of top-of-block at worst) until validators vote them out.\n- Jannik proposed that external monitoring software could track key publisher behavior and guide validator voting decisions.\n  - The same tooling could also document a path for new key publishers to join: start working outside the priority section, build a track record, and eventually be voted in.\n- No decision was made on adding automated punishment; the design currently relies on social/governance-layer enforcement."
+    },
+    {
+      "heading": "Top-of-Block Fee Retention",
+      "summary": "The top-of-block fee will be kept to regulate congestion within the priority section; ordering by key-publisher trust was rejected to avoid collusion.",
+      "timestamp": "00:21:55",
+      "body": "- Jannik initially suggested the top-of-block fee could be removed since the priority list already handles ordering, but Justin pointed out it is still needed to regulate who gets into the size-constrained priority section during congestion.\n- Within the priority section, transactions are ordered by top-of-block fee regardless of which key publisher was used, as long as the publisher meets the 50% vote threshold.\n- Transactions from different key publishers can be interleaved \u2014 the priority section is a set of all transactions meeting the trust threshold, not grouped by publisher.\n- Ordering by key-publisher trust level was explicitly rejected: MEV searchers should not compete on key trust, as this could create strange collusion dynamics.\n- Agreement: keep the top-of-block fee as the ordering dimension within the priority section."
+    },
+    {
+      "heading": "Key Message Signing Format",
+      "summary": "The key message signing format awkwardly mixes RLP and SSZ conventions because key publishers use EL addresses, not BLS keys; better formulations are sought.",
+      "timestamp": "00:27:08",
+      "body": "- Jannik flagged that the key message signing in the PR is syntactically unsatisfying: it combines RLP transaction signing with SSZ container signing.\n- CL container signing normally uses BLS signatures, but key publishers are identified by execution-layer addresses, so an EL signing scheme is required instead; which one was left open.\n- Frame transactions were briefly considered as an abstraction layer, but key messages are not transactions \u2014 they are consensus-layer messages that happen to use the EL signing scheme.\n- Justin noted a potential interaction with frames if key-origin validation were treated as a frame within a transaction, but this was not developed further.\n- No resolution; better ways to express the signing format are an open item for reviewers."
+    },
+    {
+      "heading": "Action Items and Wrap-Up",
+      "summary": "Participants are asked to review the PR, share it with CL client teams, and provide feedback before the next call.",
+      "timestamp": "00:29:45",
+      "body": "- Homework for all attendees: read the PR, leave comments, and run it by their local CL developers.\n- Call ended at approximately the 30-minute mark, returning 30 minutes to participants."
+    }
+  ]
+}

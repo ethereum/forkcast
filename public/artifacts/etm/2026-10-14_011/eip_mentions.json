@@ -1,0 +1,65 @@
+{
+  "meeting": "ETM #011 - 2026-10-14",
+  "eips": [
+    {
+      "eip": 8184,
+      "title": "LUCID encrypted mempool",
+      "weight": "discussed",
+      "summary": "The whole call reviewed Jannik's PR adding a validator-voted priority list of key publishers to LUCID, and the signing and ordering changes it brings.",
+      "moments": [
+        {
+          "timestamp": "00:03:50",
+          "context": "Jannik said he had opened a PR to the EIP about half an hour before the call, adding the key-publisher whitelisting mechanism."
+        },
+        {
+          "timestamp": "00:05:41",
+          "context": "Justin credited Jannik with opening the PR into Lucid, which specifies the top-of-block ordering mechanism the group converged on last session."
+        },
+        {
+          "timestamp": "00:06:22",
+          "context": "Jannik renamed the mechanism from whitelist to priority list, and split the PR into an EL voting contract and the CL ordering rules that consume it."
+        },
+        {
+          "timestamp": "00:08:42",
+          "context": "Key messages now carry a signature, so a transaction cannot claim its key came from a priority-listed publisher it did not use."
+        },
+        {
+          "timestamp": "00:09:45",
+          "context": "Max preceding commitments was removed, as Jannik found it difficult to combine with the priority-list ordering."
+        },
+        {
+          "timestamp": "00:13:00",
+          "context": "Justin committed to reviewing the PR, singled out the Engine API changes as needing attention, and said he would pull in Ander and Julian."
+        },
+        {
+          "timestamp": "00:26:36",
+          "context": "The top-of-block fee was kept: it is still needed to decide who gets into the size-constrained priority section under congestion."
+        },
+        {
+          "timestamp": "00:27:08",
+          "context": "Jannik flagged the key message signing format as unsatisfying, since it mixes RLP transaction signing with SSZ container signing and BLS is unavailable for EL addresses."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Raised as a possible abstraction for the key message signing format, then set aside because a key message is not a transaction.",
+      "moments": [
+        {
+          "timestamp": "00:28:02",
+          "context": "Justin suggested frame transactions could abstract away the mixed RLP/SSZ signing format."
+        },
+        {
+          "timestamp": "00:28:12",
+          "context": "Jannik objected that a key message is not a transaction — it is a consensus-layer message that uses the execution-layer signing scheme."
+        },
+        {
+          "timestamp": "00:28:44",
+          "context": "Justin kept the door open: validating the origin of a key could be treated as a frame within a transaction, which would then need to read the key message."
+        }
+      ]
+    }
+  ]
+}

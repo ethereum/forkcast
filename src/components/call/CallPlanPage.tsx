@@ -8,6 +8,7 @@ import { getPendingProposalsForFork, type PendingProposal } from '../../data/pen
 import { fetchUpcomingCalls, type UpcomingCall } from '../../domain/calls/upcomingCalls';
 import { formatCallReference } from '../../domain/calls/callReference';
 import { StructuredDecisionContent, EipLinkWithTooltip, DecisionTextWithEipLinks } from './KeyDecisionsSection';
+import { EipDrawerProvider } from '../eip/EipDrawerProvider';
 
 interface TldrData {
   meeting: string;
@@ -145,7 +146,7 @@ const SERIES_OPTIONS = [
 
 type SeriesKey = typeof SERIES_OPTIONS[number]['key'];
 
-const CallPlanPage: React.FC = () => {
+const CallPlanPageInner: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const seriesParam = searchParams.get('series') as SeriesKey | null;
   const type = seriesParam && SERIES_OPTIONS.some(o => o.key === seriesParam) ? seriesParam : 'acde';
@@ -1367,5 +1368,12 @@ const CallPlanPage: React.FC = () => {
     </div>
   );
 };
+
+/** Hosts the shared EIP drawer for the decision links on this page. */
+const CallPlanPage = () => (
+  <EipDrawerProvider>
+    <CallPlanPageInner />
+  </EipDrawerProvider>
+);
 
 export default CallPlanPage;

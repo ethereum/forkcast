@@ -19,7 +19,6 @@ interface ChatLogProps {
   selectedSearchResult?: {timestamp: string, text: string, type: string} | null;
   onTimestampClick?: (timestamp: string) => void;
   allowTimestampNavigation?: boolean;
-  onOpenEip?: (eipId: number) => void;
   allowedIds: Set<number>;
 }
 
@@ -29,7 +28,6 @@ const ChatLog: React.FC<ChatLogProps> = ({
   selectedSearchResult,
   onTimestampClick,
   allowTimestampNavigation = true,
-  onOpenEip,
   allowedIds,
 }) => {
   const [copiedTimestamp, setCopiedTimestamp] = useState<string | null>(null);
@@ -241,7 +239,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                     {message.message.split(/\r\n|\r|\n/).map((line, index) => (
                       <React.Fragment key={index}>
                         {index > 0 && <br />}
-                        {<TextWithLinks text={line} allowedIds={allowedIds} onOpenEip={onOpenEip} />}
+                        <TextWithLinks text={line} allowedIds={allowedIds} />
                       </React.Fragment>
                     ))}
                   </span>
@@ -352,7 +350,7 @@ const ChatLog: React.FC<ChatLogProps> = ({
                           {actualMessage.split(/\r\n|\r|\n/).map((line, index) => (
                             <React.Fragment key={index}>
                               {index > 0 && <br />}
-                              {<TextWithLinks text={line} allowedIds={allowedIds} onOpenEip={onOpenEip} />}
+                              <TextWithLinks text={line} allowedIds={allowedIds} />
                             </React.Fragment>
                           ))}
                         </span>

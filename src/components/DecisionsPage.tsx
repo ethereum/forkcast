@@ -4,6 +4,7 @@ import { protocolCalls, Call } from '../data/calls';
 import { KeyDecision } from '../types/eip';
 import { eipById } from '../data/eips';
 import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
+import { EipDrawerProvider } from './eip/EipDrawerProvider';
 
 interface MeetingDecisions {
   call: Call;
@@ -32,7 +33,7 @@ const formatDate = (dateStr: string): string => {
   });
 };
 
-const DecisionsPage: React.FC = () => {
+const DecisionsPageInner: React.FC = () => {
   const [meetings, setMeetings] = useState<MeetingDecisions[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
@@ -179,5 +180,12 @@ const DecisionsPage: React.FC = () => {
     </div>
   );
 };
+
+/** Hosts the shared EIP drawer for the decision links on this page. */
+const DecisionsPage = () => (
+  <EipDrawerProvider>
+    <DecisionsPageInner />
+  </EipDrawerProvider>
+);
 
 export default DecisionsPage;

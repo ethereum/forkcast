@@ -9,6 +9,7 @@ import { getInclusionStageColor } from '../utils/colors';
 import UpgradeCard from './ui/UpgradeCard';
 import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
 import { EIP, InclusionStage, KeyDecision } from '../types/eip';
+import { EipDrawerProvider } from './eip/EipDrawerProvider';
 
 const ACD_TYPES: CallType[] = ['acdc', 'acde', 'acdt'];
 
@@ -126,7 +127,7 @@ const recentStageTransitions: StageTransition[] = (() => {
   return transitions.slice(0, 5);
 })();
 
-const HomePage = () => {
+const HomePageInner = () => {
   const recentCalls = getRecentCalls(5);
   const [recentMeetingDecisions, setRecentMeetingDecisions] = useState<RecentMeetingDecisions | null>(null);
   const { trackLinkClick } = useAnalytics();
@@ -555,5 +556,12 @@ const HomePage = () => {
     </div>
   );
 };
+
+/** Hosts the shared EIP drawer for the decision links on this page. */
+const HomePage = () => (
+  <EipDrawerProvider>
+    <HomePageInner />
+  </EipDrawerProvider>
+);
 
 export default HomePage;

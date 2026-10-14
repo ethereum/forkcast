@@ -1,9 +1,12 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import {
   getAdjustedVideoTime,
   getDisplayTimestamp,
   type SyncConfig,
 } from '../../utils/timestamp';
+import { eipById } from '../../data/eips';
+import { resolveEipOverviewLink } from '../../domain/eips/eipMarkdownLinks';
+import { eipLinkClickHandler, preloadEipDrawer, useEipDrawer } from '../eip/EipDrawerProvider';
 
 export interface NotesSection {
   heading: string;
@@ -18,23 +21,19 @@ export interface NotesData {
   sections: NotesSection[];
 }
 
+type LinkRenderer = (props: {
+  href?: string;
+  children?: React.ReactNode;
+}) => React.ReactElement;
+
 // Notes bodies are nested markdown bullet lists with inline links. Lazy-loaded so
 // react-markdown stays out of the call page's initial bundle — Notes is not the
 // default summary tab.
 const LazyMarkdown = lazy(() =>
   Promise.all([import('react-markdown'), import('remark-gfm')]).then(
     ([{ default: ReactMarkdown }, { default: remarkGfm }]) => ({
-      default: ({ children }: { children: string }) => (
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm]}
-          components={{
-            a: ({ href, children: linkChildren, ...rest }) => (
-              <a href={href} target="_blank" rel="noopener noreferrer" {...rest}>
-                {linkChildren}
-              </a>
-            ),
-          }}
-        >
+      default: ({ children, link }: { children: string; link: LinkRenderer }) => (
+        <ReactMarkdown remarkPlugins={[remarkGfm]} components={{ a: link }}>
           {children}
         </ReactMarkdown>
       ),
@@ -77,6 +76,30 @@ const CallNotes: React.FC<CallNotesProps> = ({
   syncConfig,
   currentVideoTime = 0,
 }) => {
+  const openEip = useEipDrawer();
+  // Notes name EIPs as ordinary markdown links, usually to the spec site. Where
+  // one just points at an EIP, show it in the drawer instead of sending the
+  // reader off the page mid-call; every other link is left as authored.
+  const renderLink: LinkRenderer = useMemo(
+    () => ({ href, children, ...rest }) => {
+      const eipId = href ? resolveEipOverviewLink(href, eipById) : null;
+      const onClick = eipId === null ? undefined : eipLinkClickHandler(eipId, openEip);
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClick}
+          onMouseEnter={onClick ? preloadEipDrawer : undefined}
+          {...rest}
+        >
+          {children}
+        </a>
+      );
+    },
+    [openEip],
+  );
+
   const [copied, setCopied] = useState(false);
   // Sections collapse to heading + one-line summary; the first opens so the view
   // isn't entirely closed on arrival.
@@ -198,7 +221,7 @@ const CallNotes: React.FC<CallNotesProps> = ({
                 <div className="overflow-hidden">
                   <div className={`mt-1 ml-[1.125rem] ${proseClasses}`}>
                     <Suspense fallback={<div className="text-sm text-slate-400">Loading…</div>}>
-                      <LazyMarkdown>{section.body}</LazyMarkdown>
+                      <LazyMarkdown link={renderLink}>{section.body}</LazyMarkdown>
                     </Suspense>
                   </div>
                 </div>

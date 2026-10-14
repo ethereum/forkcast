@@ -1,0 +1,69 @@
+{
+  "meeting": "ZKEVM #009 - 2026-10-14",
+  "eips": [
+    {
+      "eip": 8025,
+      "title": "Optional Execution Proofs",
+      "weight": "discussed",
+      "summary": "Extensive discussion of CFI status for Hegota, spec readiness, PR line counts, CL implementation progress, and Sepolia deployment plans.",
+      "moments": [
+        {
+          "timestamp": "00:18:45",
+          "context": "Ignacio announced that EIP-8025 will likely be proposed for CFI in Hegota at the next ACDC call, urging supporters to attend."
+        },
+        {
+          "timestamp": "00:19:54",
+          "context": "Ignacio noted he updated the EIP-8025 document with latest progress and arguments, emphasizing the effort's maturity and readiness."
+        },
+        {
+          "timestamp": "00:22:33",
+          "context": "Ignacio said removing the headers field also retires a lot of the 8025 test cases that exist today for invalid header lists."
+        },
+        {
+          "timestamp": "00:25:07",
+          "context": "Ignacio presented a table showing EIP-8025's PR is 17,000 lines total but only 56 lines touch the STF spec, with most lines being tests and framework changes."
+        },
+        {
+          "timestamp": "00:33:09",
+          "context": "Ignacio described a new EIP for get-payload-with-witness for block building, noting it is not strictly needed for EIP-8025 but complements the long-term mandatory proofs arc."
+        },
+        {
+          "timestamp": "00:50:01",
+          "context": "Francesco described rebasing EIP-8025 on the Gloas specs and plans to deploy a prover on Sepolia, inviting client teams to join testing."
+        },
+        {
+          "timestamp": "00:50:40",
+          "context": "Manu reported Prysm implemented EIP-8025 as a proof of concept, working on Kurtosis, and is running a verifier node on Sepolia but encountering an incompatibility with Lighthouse sending proofs of type 0."
+        }
+      ]
+    },
+    {
+      "eip": 7709,
+      "title": "Read BLOCKHASH from Storage and Update Cost",
+      "weight": "discussed",
+      "summary": "Announced as CFI'd in the last ACDE call, simplifying stateless inputs by moving BLOCKHASH to EIP-2935 system contract.",
+      "moments": [
+        {
+          "timestamp": "00:21:13",
+          "context": "Ignacio announced EIP-7709 was CFI'd in the last ACDE call and explained it simplifies the execution witness by removing the headers field, since BLOCKHASH now uses the EIP-2935 system contract."
+        },
+        {
+          "timestamp": "00:22:33",
+          "context": "Ignacio noted EIP-7709 eliminates many test cases around invalid header lists and is a step toward the long-term direction where the execution witness is mainly state tree nodes."
+        }
+      ]
+    },
+    {
+      "eip": 2935,
+      "title": "Serve historical block hashes from state",
+      "weight": "mentioned",
+      "summary": "Referenced as the system contract that EIP-7709 uses to serve BLOCKHASH from state.",
+      "moments": [
+        {
+          "timestamp": "00:21:55",
+          "context": "Ignacio explained that EIP-7709 makes BLOCKHASH use the EIP-2935 system contract, so block hash data moves into the state tree."
+        }
+      ]
+    }
+  ]
+}

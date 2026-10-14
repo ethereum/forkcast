@@ -1,67 +1,12 @@
-import { useEffect, useState } from 'react';
 import { Link } from './navigation';
 import { networkUpgrades, NetworkUpgrade } from '../data/upgrades';
-import { getRecentCalls, getCallTypeBadgeLabel, isOneOffCall, callTypeNames, protocolCalls, type Call, type CallType } from '../data/calls';
-import { eipsData, eipById } from '../data/eips';
+import { getRecentCalls, getCallTypeBadgeLabel, isOneOffCall, callTypeNames, callTypeBadgeColors, type CallType } from '../data/calls';
 import { useAnalytics } from '../hooks/useAnalytics';
-import { getProposalPrefix, getLaymanTitle } from '../utils/eip';
 import { getInclusionStageColor } from '../utils/colors';
 import UpgradeCard from './ui/UpgradeCard';
-import { StructuredDecisionContent, DecisionTextWithEipLinks } from './call/KeyDecisionsSection';
-import { EIP, InclusionStage, KeyDecision } from '../types/eip';
-
-const ACD_TYPES: CallType[] = ['acdc', 'acde', 'acdt'];
-
-interface RecentMeetingDecisions {
-  call: Call;
-  decisions: KeyDecision[];
-}
-
-/** Status values from statusHistory → abbreviation labels for display. */
-const STATUS_ABBREV: Record<string, string> = {
-  Proposed: 'PFI',
-  Considered: 'CFI',
-  Scheduled: 'SFI',
-  Declined: 'DFI',
-  Included: 'Included',
-  Withdrawn: 'Withdrawn',
-  Informational: 'Info',
-};
-
-interface StageTransition {
-  eip: EIP;
-  forkName: string;
-  fromLabel: string | null;
-  fromStage: InclusionStage | null;
-  toLabel: string;
-  toStage: InclusionStage;
-  changeDate: string; // YYYY-MM-DD
-  timestamp: number;
-}
-
-const fetchLatestMeetingDecisions = async (): Promise<RecentMeetingDecisions | null> => {
-  const acdCalls = protocolCalls
-    .filter((call) => ACD_TYPES.includes(call.type as CallType))
-    .sort((a, b) => b.date.localeCompare(a.date));
-
-  for (const call of acdCalls) {
-    try {
-      const artifactPath = `${call.type}/${call.date}_${call.number}`;
-      const response = await fetch(`/artifacts/${artifactPath}/key_decisions.json`);
-      if (!response.ok) continue;
-
-      const data = await response.json();
-      const decisions: KeyDecision[] = data?.key_decisions;
-      if (Array.isArray(decisions) && decisions.length > 0) {
-        return { call, decisions };
-      }
-    } catch {
-      // Network or parse failure — try the next call rather than tearing down the section.
-    }
-  }
-
-  return null;
-};
+import { StructuredDecisionContent, DecisionTextWithEipLinks, type EipPreview } from './call/KeyDecisionContent';
+import type { MeetingDecisions } from '../domain/calls/keyDecisions';
+import type { StageTransition } from '../domain/eips/stageChanges';
 
 const quickLinks: NetworkUpgrade[] = (() => {
   const active = networkUpgrades.filter((u) => !u.disabled);
@@ -71,105 +16,21 @@ const quickLinks: NetworkUpgrade[] = (() => {
   return [previous, current, future].filter((u): u is NetworkUpgrade => u !== undefined);
 })();
 
-/** Map raw statusHistory status to the full InclusionStage name. */
-const STATUS_TO_STAGE: Record<string, InclusionStage> = {
-  Proposed: 'Proposed for Inclusion',
-  Considered: 'Considered for Inclusion',
-  Scheduled: 'Scheduled for Inclusion',
-  Declined: 'Declined for Inclusion',
-  Included: 'Included',
-  Withdrawn: 'Withdrawn',
-  Informational: 'Informational',
-  Networking: 'Networking',
-};
+interface HomePageProps {
+  recentStageTransitions: StageTransition[];
+  /** The most recent ACD call's key decisions, read at build time. */
+  recentMeetingDecisions: MeetingDecisions | null;
+  /** Only the EIPs those decisions mention, for their link tooltips. */
+  decisionEips: EipPreview[];
+}
 
-const recentStageTransitions: StageTransition[] = (() => {
-  const transitions: StageTransition[] = [];
-
-  for (const eip of eipsData) {
-    for (const fork of eip.forkRelationships) {
-      // Find the most recent dated status entry in this fork
-      let latestIdx = -1;
-      let latestTimestamp = -1;
-
-      for (let i = 0; i < fork.statusHistory.length; i++) {
-        const entry = fork.statusHistory[i];
-        if (!entry.date) continue;
-        const ts = Date.parse(entry.date);
-        if (!Number.isFinite(ts)) continue;
-        if (ts > latestTimestamp) {
-          latestTimestamp = ts;
-          latestIdx = i;
-        }
-      }
-
-      if (latestIdx < 0) continue;
-
-      const current = fork.statusHistory[latestIdx];
-      const previous = latestIdx > 0 ? fork.statusHistory[latestIdx - 1] : null;
-
-      transitions.push({
-        eip,
-        forkName: fork.forkName,
-        fromLabel: previous ? (STATUS_ABBREV[previous.status] ?? previous.status) : null,
-        fromStage: previous ? (STATUS_TO_STAGE[previous.status] ?? null) : null,
-        toLabel: STATUS_ABBREV[current.status] ?? current.status,
-        toStage: STATUS_TO_STAGE[current.status] ?? 'Unknown',
-        changeDate: current.date!,
-        timestamp: latestTimestamp,
-      });
-    }
-  }
-
-  // Sort by most recent first, then by EIP id for stability
-  transitions.sort((a, b) => b.timestamp - a.timestamp || a.eip.id - b.eip.id);
-  return transitions.slice(0, 5);
-})();
-
-const HomePage = () => {
+const HomePage = ({ recentStageTransitions, recentMeetingDecisions, decisionEips }: HomePageProps) => {
   const recentCalls = getRecentCalls(5);
-  const [recentMeetingDecisions, setRecentMeetingDecisions] = useState<RecentMeetingDecisions | null>(null);
+  const eipMap = new Map(decisionEips.map((eip) => [eip.id, eip]));
   const { trackLinkClick } = useAnalytics();
-
-  useEffect(() => {
-    let cancelled = false;
-
-    fetchLatestMeetingDecisions().then((result) => {
-      if (!cancelled) {
-        setRecentMeetingDecisions(result);
-      }
-    });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const handleExternalLinkClick = (linkType: string, url: string) => {
     trackLinkClick(linkType, url);
-  };
-
-  // Colors for call type badges
-  const callTypeBadgeColors: Record<CallType, string> = {
-    acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-    acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
-    acdt: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
-    epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
-    bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
-    focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
-    price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
-    tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
-    pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
-    rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
-    zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
-    etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-    awd: 'bg-stone-100 dark:bg-stone-900/30 text-stone-700 dark:text-stone-300',
-    pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
-    fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
-    aa: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
-    p2p: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-    ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300',
-    ethproofs: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
   };
 
   return (
@@ -218,21 +79,21 @@ const HomePage = () => {
           </div>
 
           <div className="space-y-2">
-            {recentStageTransitions.map(({ eip, forkName, fromLabel, fromStage, toLabel, toStage, changeDate }) => {
+            {recentStageTransitions.map(({ eipId, eipLabel, title, forkName, fromLabel, fromStage, toLabel, toStage, changeDate }) => {
               const dateLabel = new Date(changeDate + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
               return (
                 <Link
-                  key={`${eip.id}-${forkName}`}
-                  to={`/eips/${eip.id}`}
+                  key={`${eipId}-${forkName}`}
+                  to={`/eips/${eipId}`}
                   className="group flex items-center justify-between gap-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 hover:shadow-md dark:hover:shadow-slate-700/20 hover:border-purple-300 dark:hover:border-purple-600"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <span className="text-sm font-mono font-medium text-purple-600 dark:text-purple-400 flex-shrink-0">
-                      {getProposalPrefix(eip)}-{eip.id}
+                      {eipLabel}
                     </span>
                     <span className="text-sm text-slate-900 dark:text-slate-100 truncate">
-                      {getLaymanTitle(eip)}
+                      {title}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 flex-shrink-0">
@@ -363,8 +224,8 @@ const HomePage = () => {
                         className="text-sm before:content-['→'] before:mr-2 before:text-slate-400 dark:before:text-slate-500 text-slate-600 dark:text-slate-400"
                       >
                         {isStructured
-                          ? <StructuredDecisionContent decision={decision} eipMap={eipById} />
-                          : <DecisionTextWithEipLinks decision={decision} eipMap={eipById} />}
+                          ? <StructuredDecisionContent decision={decision} eipMap={eipMap} />
+                          : <DecisionTextWithEipLinks decision={decision} eipMap={eipMap} />}
                       </li>
                     );
                   })}

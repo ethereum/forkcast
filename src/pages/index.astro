@@ -1,10 +1,30 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import HomePage from '../components/HomePage';
+import { protocolCalls } from '../data/calls';
+import { eipsData, eipById } from '../data/eips';
+import { loadMeetingDecisions } from '../domain/calls/keyDecisions';
+import { getRecentStageTransitions } from '../domain/eips/stageChanges';
 import { staticPageMetadata } from '../domain/routes/pageMetadata';
 import { siteGraph } from '../domain/seo/structuredData';
+
+// Computed here so the homepage island ships a few rows, not the whole EIP dataset.
+const recentStageTransitions = getRecentStageTransitions(eipsData, 5);
+const recentMeetingDecisions = loadMeetingDecisions(protocolCalls)[0] ?? null;
+const decisionEipIds = new Set(recentMeetingDecisions?.decisions.flatMap((d) => d.eips) ?? []);
+const decisionEips = [...decisionEipIds].flatMap((id) => {
+  const eip = eipById.get(id);
+  if (!eip) return [];
+  const { title, layer, laymanDescription, description, author } = eip;
+  return [{ id, title, layer, laymanDescription, description, author }];
+});
 ---
 
 <Layout {...staticPageMetadata.home} jsonLd={[siteGraph()]}>
-  <HomePage client:only="react" />
+  <HomePage
+    client:only="react"
+    recentStageTransitions={recentStageTransitions}
+    recentMeetingDecisions={recentMeetingDecisions}
+    decisionEips={decisionEips}
+  />
 </Layout>

@@ -1,9 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import DecisionsPage from '../components/DecisionsPage';
+import { protocolCalls } from '../data/calls';
+import { loadMeetingDecisions } from '../domain/calls/keyDecisions';
 import { staticPageMetadata } from '../domain/routes/pageMetadata';
+
+const meetings = loadMeetingDecisions(protocolCalls);
 ---
 
 <Layout {...staticPageMetadata.decisions}>
-  <DecisionsPage client:only="react" />
+  <DecisionsPage client:only="react" meetings={meetings} />
 </Layout>

@@ -1,4 +1,10 @@
-import type { EIP } from '../../types/eip';
+import type { EIP, InclusionStage } from '../../types/eip';
+import {
+  getInclusionStageForStatus,
+  getLaymanTitle,
+  getProposalPrefix as getEipProposalPrefix,
+  getStageAbbreviation,
+} from '../../utils/eip';
 
 /**
  * One entry in the `/api/eip-stage-changes.json` artifact: an EIP that recently
@@ -102,4 +108,73 @@ export function buildEipStageChangesPayload(
 ): EipStageChangesPayload {
   const changes = getStageChanges(eips, count);
   return { generatedAt, count: changes.length, eips: changes };
+}
+
+/** One fork's latest dated stage change for an EIP, as shown on the homepage. */
+export interface StageTransition {
+  eipId: number;
+  /** `EIP-1234` or `RIP-1234`. */
+  eipLabel: string;
+  title: string;
+  forkName: string;
+  fromLabel: string | null;
+  fromStage: InclusionStage | null;
+  toLabel: string;
+  toStage: InclusionStage;
+  changeDate: string; // YYYY-MM-DD
+}
+
+/**
+ * The `count` most recent per-fork stage transitions, newest first. Unlike
+ * `getStageChanges` (one entry per EIP), an EIP that moved in two forks appears
+ * twice. Each entry carries only what the homepage renders, so the page can take
+ * it as a prop instead of bundling the whole EIP dataset.
+ */
+export function getRecentStageTransitions(eips: EIP[], count: number): StageTransition[] {
+  const transitions: Array<{ transition: StageTransition; timestamp: number }> = [];
+
+  for (const eip of eips) {
+    for (const fork of eip.forkRelationships) {
+      // Find the most recent dated status entry in this fork
+      let latestIdx = -1;
+      let latestTimestamp = -1;
+
+      for (let i = 0; i < fork.statusHistory.length; i++) {
+        const entry = fork.statusHistory[i];
+        if (!entry.date) continue;
+        const ts = Date.parse(entry.date);
+        if (!Number.isFinite(ts)) continue;
+        if (ts > latestTimestamp) {
+          latestTimestamp = ts;
+          latestIdx = i;
+        }
+      }
+
+      if (latestIdx < 0) continue;
+
+      const current = fork.statusHistory[latestIdx];
+      const previous = latestIdx > 0 ? fork.statusHistory[latestIdx - 1] : null;
+      const fromStage = previous ? getInclusionStageForStatus(previous.status) : null;
+      const toStage = getInclusionStageForStatus(current.status);
+
+      transitions.push({
+        transition: {
+          eipId: eip.id,
+          eipLabel: `${getEipProposalPrefix(eip)}-${eip.id}`,
+          title: getLaymanTitle(eip),
+          forkName: fork.forkName,
+          fromLabel: fromStage ? getStageAbbreviation(fromStage) : null,
+          fromStage,
+          toLabel: getStageAbbreviation(toStage),
+          toStage,
+          changeDate: current.date!,
+        },
+        timestamp: latestTimestamp,
+      });
+    }
+  }
+
+  // Sort by most recent first, then by EIP id for stability
+  transitions.sort((a, b) => b.timestamp - a.timestamp || a.transition.eipId - b.transition.eipId);
+  return transitions.slice(0, count).map((t) => t.transition);
 }

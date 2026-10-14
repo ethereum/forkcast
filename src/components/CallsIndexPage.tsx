@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useSearchParams, useNavigate } from './navigation';
-import { protocolCalls, callTypeNames, isOneOffCall, type CallType } from '../data/calls';
+import { protocolCalls, callTypeNames, isOneOffCall, ACD_TYPES, type CallType } from '../data/calls';
 import { timelineEvents } from '../data/events';
 import {
   fetchUpcomingCallsIfAvailable,
@@ -14,7 +14,6 @@ import { getTodayDateString } from '../utils/localDate';
 import { CallsIndexFilters } from './calls-index/CallsIndexFilters';
 import { CallsIndexTimeline } from './calls-index/CallsIndexTimeline';
 
-const ACD_TYPES = ['acdc', 'acde', 'acdt'];
 
 // Concrete call-type filters own a path scope (/calls/acde); aggregate filters
 // (acd, breakouts) stay query-string state on /calls.

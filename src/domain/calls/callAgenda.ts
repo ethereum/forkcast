@@ -5,7 +5,7 @@
  * the GitHub issue form (`### Agenda` between `### UTC Date & Time` and
  * `### Call Series`) and the hand-written format that predates it (`# Agenda`
  * running to the end of the body). Keep this module pure — the fetch lives in
- * useCallAgenda.
+ * scripts/snapshot-github-content.mjs.
  */
 
 /**

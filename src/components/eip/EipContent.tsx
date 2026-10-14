@@ -422,7 +422,7 @@ export const EipContent: React.FC<EipContentProps> = ({
                 >
                   <div className="relative w-7 h-7">
                     <img
-                      src="/eth-diamond-black.png"
+                      src="/eth-diamond-black.svg"
                       alt="Ethereum"
                       className="w-7 h-7 opacity-90 dark:opacity-100 dark:invert"
                     />

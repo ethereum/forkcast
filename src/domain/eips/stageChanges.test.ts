@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { EIP, ForkRelationship } from '../../types/eip';
-import { buildEipStageChangesPayload, getStageChanges } from './stageChanges';
+import { buildEipStageChangesPayload, getRecentStageTransitions, getStageChanges } from './stageChanges';
 
 type StatusEntry = ForkRelationship['statusHistory'][number];
 
@@ -149,5 +149,44 @@ describe('buildEipStageChangesPayload', () => {
 
     expect(payload.eips.map((e) => e.id)).toEqual([2, 1]);
     expect(payload.count).toBe(2);
+  });
+});
+
+describe('getRecentStageTransitions', () => {
+  it('reports each fork\'s latest dated transition, newest first, with stage labels', () => {
+    const eips = [
+      makeEip({
+        id: 10,
+        title: 'EIP-10: Two forks',
+        forkRelationships: [
+          fork('Glamsterdam', [entry('Proposed', '2025-01-01'), entry('Considered', '2025-03-01')]),
+          fork('Hegota', [entry('Proposed', '2025-02-01')]),
+        ],
+      }),
+      makeEip({
+        id: 20,
+        title: 'RIP-20: Rollup',
+        forkRelationships: [fork('Hegota', [entry('Declined', '2025-04-01'), entry('Scheduled', null)])],
+      }),
+    ];
+
+    const transitions = getRecentStageTransitions(eips, 5);
+
+    expect(transitions).toEqual([
+      {
+        eipId: 20,
+        eipLabel: 'RIP-20',
+        title: 'Rollup',
+        forkName: 'Hegota',
+        fromLabel: null,
+        fromStage: null,
+        toLabel: 'DFI',
+        toStage: 'Declined for Inclusion',
+        changeDate: '2025-04-01',
+      },
+      expect.objectContaining({ eipId: 10, forkName: 'Glamsterdam', fromLabel: 'PFI', toLabel: 'CFI' }),
+      expect.objectContaining({ eipId: 10, forkName: 'Hegota', fromLabel: null, toLabel: 'PFI' }),
+    ]);
+    expect(getRecentStageTransitions(eips, 1)).toHaveLength(1);
   });
 });

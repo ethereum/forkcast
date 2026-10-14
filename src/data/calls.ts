@@ -2,7 +2,7 @@ import generatedCalls from './protocol-calls.generated.json';
 import { getTodayDateString } from '../utils/localDate';
 import { getCallTypeName, type CallType } from './callSeries';
 
-export { callTypeNames, getCallTypeName } from './callSeries';
+export { callTypeNames, callTypeBadgeColors, getCallTypeName } from './callSeries';
 export type { CallType } from './callSeries';
 
 export interface Call {
@@ -25,6 +25,11 @@ export const getCallTypeBadgeLabel = (type: string): string =>
   callTypeBadgeLabels[type as CallType] ?? type.toUpperCase();
 
 export const protocolCalls: Call[] = generatedCalls as Call[];
+
+// AllCoreDevs series (as opposed to breakouts), and the per-layer suffixes ACDT
+// uses for its split artifacts (e.g. key_decisions_cl.json).
+export const ACD_TYPES: string[] = ['acdc', 'acde', 'acdt'];
+export const BREAKOUT_SUFFIXES: string[] = ['cl', 'el'];
 
 export const isOneOffCall = (type: string): boolean => type.startsWith('one-off-');
 

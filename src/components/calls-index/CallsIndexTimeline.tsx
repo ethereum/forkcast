@@ -1,5 +1,5 @@
 import { Link } from '../navigation';
-import { callTypeNames, getCallTypeBadgeLabel, isOneOffCall, type Call, type CallType } from '../../data/calls';
+import { callTypeNames, callTypeBadgeColors, getCallTypeBadgeLabel, isOneOffCall, type Call, type CallType } from '../../data/calls';
 import { hasUpcomingWatchPage } from '../../domain/calls/upcomingCalls';
 import { type TimelineEvent } from '../../data/events';
 import {
@@ -32,28 +32,6 @@ const CALL_TYPE_BORDER_COLORS: Record<CallType, string> = {
   p2p: 'border-l-green-500 dark:border-l-green-400',
   ssz: 'border-l-zinc-500 dark:border-l-zinc-400',
   ethproofs: 'border-l-lime-500 dark:border-l-lime-400'
-};
-
-const CALL_TYPE_BADGE_COLORS: Record<CallType, string> = {
-  acdc: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
-  acde: 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300',
-  acdt: 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300',
-  epbs: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
-  bal: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
-  focil: 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300',
-  price: 'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
-  tli: 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-300',
-  pqts: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
-  rpc: 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
-  zkevm: 'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
-  etm: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
-  awd: 'bg-stone-100 dark:bg-stone-900/30 text-stone-700 dark:text-stone-300',
-  pqi: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300',
-  fcr: 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
-  aa: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
-  p2p: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
-  ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300',
-  ethproofs: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300'
 };
 
 const FALLBACK_BORDER_COLOR = 'border-l-slate-400 dark:border-l-slate-500';
@@ -135,7 +113,7 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
     const cardContent = (
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <span className={`inline-block min-w-[3.5rem] flex-shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium ${CALL_TYPE_BADGE_COLORS[item.type]}`}>
+          <span className={`inline-block min-w-[3.5rem] flex-shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium ${callTypeBadgeColors[item.type]}`}>
             {getCallTypeBadgeLabel(item.type)}
           </span>
           <div className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">
@@ -190,7 +168,7 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-3">
-          <span className={`inline-block min-w-[3.5rem] flex-shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium ${CALL_TYPE_BADGE_COLORS[call.type as CallType] || FALLBACK_BADGE_COLOR}`}>
+          <span className={`inline-block min-w-[3.5rem] flex-shrink-0 rounded-full px-2 py-0.5 text-center text-xs font-medium ${callTypeBadgeColors[call.type as CallType] || FALLBACK_BADGE_COLOR}`}>
             {oneOff ? '1-OFF' : getCallTypeBadgeLabel(call.type)}
           </span>
           <div className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">

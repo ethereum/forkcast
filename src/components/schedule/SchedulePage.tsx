@@ -1,10 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
 import ActivationSlotPicker from './ActivationSlotPicker';
 import EditableDateCell from './EditableDateCell';
-import { Tooltip } from '../ui';
+import { CopyLinkButton, Tooltip } from '../ui';
 import { getUpgradeById } from '../../data/upgrades';
 import type { ForkProgress } from '../../types/timeline';
 
@@ -69,6 +69,14 @@ const SchedulePage: React.FC = () => {
   const [mobileNoticeDismissed, setMobileNoticeDismissed] = useState(false);
 
   // Reset to defaults
+  // The page is `client:only`, so the browser resolves a `#section` hash before this island
+  // exists and its own scroll goes nowhere. Repeat it once, after hydration, for whichever
+  // section the link named.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (id) document.getElementById(id)?.scrollIntoView();
+  }, []);
+
   const resetPlanningTable = () => {
     setGlamsterdamMainnetDate(DEFAULT_STATE.glamsterdamMainnetDate);
     setHegotaMainnetDate(DEFAULT_STATE.hegotaMainnetDate);
@@ -464,11 +472,23 @@ const SchedulePage: React.FC = () => {
 
           return (
             <div className="mb-10">
-              <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+              <div
+                id="milestones"
+                className="scroll-mt-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+              >
                 <div className="p-6 border-b border-slate-200 dark:border-slate-700">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">Fork Timeline Planning</h2>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Fork Milestones</h2>
+                        <div className="flex items-center relative top-0.5">
+                          <CopyLinkButton
+                            sectionId="milestones"
+                            title="Copy link to milestones"
+                            size="sm"
+                          />
+                        </div>
+                      </div>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
                         See the cascading impacts of scheduling decisions. Click dates to adjust.
                       </p>

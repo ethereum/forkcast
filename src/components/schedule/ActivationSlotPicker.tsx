@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   buildEpochCandidates,
   byFitThenQuality,
@@ -6,7 +6,6 @@ import {
   candidateBefore,
   DEFAULT_ZONES,
   formatUtc,
-  isIsoDate,
   localZone,
   readZone,
   scoreReadings,
@@ -15,8 +14,6 @@ import {
   timestampToSlot,
   toIsoDate,
   utcMidnight,
-  decodeZones,
-  encodeZones,
   zoneOptionsWithLocal,
   type CandidateScore,
   type EpochCandidate,
@@ -25,8 +22,7 @@ import {
   type ZoneReading,
 } from '../../domain/schedule/slots';
 import { publicNetworks } from '../../domain/networks/networks';
-import { useSearchParams } from '../navigation';
-import { SegmentedControl, Tooltip } from '../ui';
+import { CopyLinkButton, SegmentedControl, Tooltip } from '../ui';
 
 interface Preset {
   label: string;
@@ -177,90 +173,29 @@ const splitUtc = (timestamp: number): { date: string; time: string; seconds: str
 
 const ActivationSlotPicker: React.FC<ActivationSlotPickerProps> = ({ presets = [] }) => {
   const viewerZone = useMemo(() => localZone(), []);
+  const zoneOptions = useMemo(() => zoneOptionsWithLocal(viewerZone), [viewerZone]);
   const today = useMemo(() => toIsoDate(Date.now() / 1000), []);
 
   // Every control lives in the query string, so any view can be linked to. Defaults drop
   // their param, which keeps a pristine URL clean; see `shareLink` for how a share
   // normalises the omitted ones back in.
-  const [searchParams, setSearchParams] = useSearchParams();
-  const update = (changes: Record<string, string | null>) =>
-    setSearchParams(
-      (current) => {
-        const next = new URLSearchParams(current);
-        for (const [key, value] of Object.entries(changes)) {
-          if (value === null) next.delete(key);
-          else next.set(key, value);
-        }
-        return next;
-      },
-      { replace: true },
-    );
-
-  const networkKey =
-    NETWORKS.find((option) => option.key === searchParams.get('net'))?.key ??
-    NETWORKS[0]?.key ??
-    'mainnet';
-  // A hand-mangled or truncated link should still open on something usable. The check has
-  // to be stricter than "parses": an overflow date like 2026-02-30 parses as 2 March, which
-  // would draw the table from a day the date control cannot display.
-  const fromParam = searchParams.get('from');
-  const startDate = fromParam && isIsoDate(fromParam) ? fromParam : today;
-  const spanDays =
-    SPANS.find((span) => String(span.days) === searchParams.get('span'))?.days ?? DEFAULT_SPAN_DAYS;
-  const filter =
-    FILTERS.find((option) => option.param === searchParams.get('epochs'))?.id ?? DEFAULT_FILTER;
-  const sortByFit = searchParams.get('sort') === 'fit';
-
-  const defaultZones = useMemo(
-    () =>
-      DEFAULT_ZONES.includes(viewerZone) ? [...DEFAULT_ZONES] : [...DEFAULT_ZONES, viewerZone],
-    [viewerZone],
+  const [networkKey, setNetworkKey] = useState(NETWORKS[0]?.key ?? 'mainnet');
+  const [startDate, setStartDate] = useState(today);
+  const [spanDays, setSpanDays] = useState<number>(DEFAULT_SPAN_DAYS);
+  const [filter, setFilter] = useState<EpochFilter>(DEFAULT_FILTER);
+  const [sortByFit, setSortByFit] = useState(false);
+  const [zones, setZones] = useState<string[]>(() =>
+    DEFAULT_ZONES.includes(viewerZone) ? [...DEFAULT_ZONES] : [...DEFAULT_ZONES, viewerZone],
   );
-  const zoneParam = searchParams.get('tz');
-  const zones = useMemo(() => {
-    if (zoneParam === null) return defaultZones;
-    const decoded = decodeZones(zoneParam);
-    // An empty `tz` is a deliberate "compare nothing"; a non-empty one that decodes to
-    // nothing is a broken link, and defaults beat an empty board.
-    if (decoded.length === 0 && zoneParam !== '') return defaultZones;
-    return decoded;
-  }, [zoneParam, defaultZones]);
-
-  const expandedParam = Number(searchParams.get('epoch'));
-  const expanded = Number.isInteger(expandedParam) && expandedParam > 0 ? expandedParam : null;
-
-  const setNetworkKey = (value: string) =>
-    update({ net: value === NETWORKS[0]?.key ? null : value });
-  const setStartDate = (value: string) => update({ from: value === today ? null : value });
-  const setSpanDays = (value: number) =>
-    update({ span: value === DEFAULT_SPAN_DAYS ? null : String(value) });
-  const setFilter = (value: EpochFilter) =>
-    update({
-      epochs: value === DEFAULT_FILTER ? null : FILTERS.find((o) => o.id === value)!.param,
-    });
-  const setSortByFit = (value: boolean) => update({ sort: value ? 'fit' : null });
-  const setExpanded = (value: number | null) => update({ epoch: value === null ? null : String(value) });
-
-  // The page is `client:only`, so the browser resolves `#activation-slots` before this
-  // island exists and its own scroll goes nowhere. Repeat it once, after hydration.
-  useEffect(() => {
-    if (window.location.hash !== '#activation-slots') return;
-    document.getElementById('activation-slots')?.scrollIntoView();
-  }, []);
+  const [expanded, setExpanded] = useState<number | null>(null);
 
   const [addingZone, setAddingZone] = useState(false);
   const [copied, setCopied] = useState<number | null>(null);
-  const [sharedLink, setSharedLink] = useState(false);
   const [slotInput, setSlotInput] = useState('');
   const [timeInput, setTimeInput] = useState('');
 
   const network = NETWORKS.find((candidate) => candidate.key === networkKey) ?? NETWORKS[0];
   const genesisTime = network?.genesisTime ?? 0;
-
-  const zoneOptions = useMemo(
-    () => zoneOptionsWithLocal(viewerZone, zones),
-    [viewerZone, zones],
-  );
 
   // Columns follow the catalogue's order rather than the order they were ticked, so the
   // table reads west-to-east however the set was assembled.
@@ -268,11 +203,6 @@ const ActivationSlotPicker: React.FC<ActivationSlotPickerProps> = ({ presets = [
     () => zoneOptions.filter((option) => zones.includes(option.id)),
     [zoneOptions, zones],
   );
-  /** Canonical order for the query string, so one comparison set is always one URL. */
-  const orderZones = (ids: readonly string[]) =>
-    zoneOptionsWithLocal(viewerZone, ids)
-      .filter((option) => ids.includes(option.id))
-      .map((option) => option.id);
   const unpickedZones = zoneOptions.filter((option) => !zones.includes(option.id));
 
   const { scored, total, before, after } = useMemo(() => {
@@ -326,36 +256,10 @@ const ActivationSlotPicker: React.FC<ActivationSlotPickerProps> = ({ presets = [
   // The best any candidate in the window manages, so the column shows which rows tie for it.
   const bestWorking = scored.reduce((best, row) => Math.max(best, row.score.working), 0);
 
-  const toggleZone = (id: string) => {
-    const next = zones.includes(id) ? zones.filter((zone) => zone !== id) : [...zones, id];
-    // An emptied set still has to round-trip, so it is written as an empty param rather
-    // than dropped — dropping it would read back as the default set.
-    update({ tz: encodeZones(orderZones(next)) });
-  };
-
-  /**
-   * Shares the view exactly as it stands. Defaults are omitted from the URL while browsing,
-   * but a link that leaves them out would re-resolve against the recipient's own defaults —
-   * their timezone, their today — so the share writes every param explicitly first.
-   */
-  const shareLink = () => {
-    update({
-      net: networkKey,
-      from: startDate,
-      span: String(spanDays),
-      epochs: FILTERS.find((option) => option.id === filter)!.param,
-      sort: sortByFit ? 'fit' : null,
-      tz: encodeZones(orderZones(zones)),
-    });
-    const url = `${window.location.origin}${window.location.pathname}${window.location.search}#activation-slots`;
-    navigator.clipboard
-      .writeText(url)
-      .then(() => {
-        setSharedLink(true);
-        setTimeout(() => setSharedLink(false), 2000);
-      })
-      .catch(() => setSharedLink(false));
-  };
+  const toggleZone = (id: string) =>
+    setZones((previous) =>
+      previous.includes(id) ? previous.filter((zone) => zone !== id) : [...previous, id],
+    );
 
   const copySummary = (candidate: ScoredCandidate) => {
     navigator.clipboard
@@ -446,45 +350,13 @@ const ActivationSlotPicker: React.FC<ActivationSlotPickerProps> = ({ presets = [
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
             Activation Slot Picker
           </h2>
-          <Tooltip text={sharedLink ? 'Copied!' : 'Copy link to slot picker'}>
-            <button
-              onClick={shareLink}
-              className={`relative top-0.5 transition-colors cursor-pointer ${
-                sharedLink ? 'text-emerald-600' : 'text-slate-400 hover:text-slate-600'
-              }`}
-              aria-label="Copy link to slot picker"
-            >
-              {sharedLink ? (
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="w-3.5 h-3.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                  />
-                </svg>
-              )}
-            </button>
-          </Tooltip>
+          <div className="flex items-center relative top-0.5">
+            <CopyLinkButton
+              sectionId="activation-slots"
+              title="Copy link to slot picker"
+              size="sm"
+            />
+          </div>
         </div>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
           A fork activates on an epoch boundary. Pick a window and see what hour each candidate

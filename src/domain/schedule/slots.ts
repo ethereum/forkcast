@@ -159,31 +159,6 @@ export interface ZoneReading {
 }
 
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
-const zoneSupport = new Map<string, boolean>();
-
-/**
- * Whether this platform can format in `zone`.
- *
- * `Intl.DateTimeFormat` throws a `RangeError` on an id it does not know, and every caller
- * here runs inside a render, so an unknown id would take the page down rather than lose a
- * column. Ids reach us from the query string and from the browser's own guess, neither of
- * which is trustworthy: a link can be mistyped, and tzdata differs between browsers, so an
- * id that is perfectly valid for the sender may be unknown to the recipient.
- */
-export function isSupportedZone(zone: string): boolean {
-  const cached = zoneSupport.get(zone);
-  if (cached !== undefined) return cached;
-  let supported = false;
-  try {
-    new Intl.DateTimeFormat('en-GB', { timeZone: zone });
-    supported = true;
-  } catch {
-    supported = false;
-  }
-  zoneSupport.set(zone, supported);
-  return supported;
-}
-
 function zoneFormatter(zone: string): Intl.DateTimeFormat {
   let formatter = formatterCache.get(zone);
   if (!formatter) {
@@ -291,11 +266,6 @@ export function scoreReadings(readings: readonly ZoneReading[]): CandidateScore 
 export interface ZoneOption {
   id: string;
   label: string;
-  /**
-   * Short, stable token for the query string. Deliberately not derived from `label`,
-   * which is display text and may be reworded; a shared link must keep resolving.
-   */
-  code: string;
 }
 
 /**
@@ -304,20 +274,20 @@ export interface ZoneOption {
  * it as a timezone would put a working day nobody lives in into the denominator.
  */
 export const ZONE_OPTIONS: readonly ZoneOption[] = [
-  { id: 'America/Los_Angeles', label: 'US West', code: 'usw' },
-  { id: 'America/Chicago', label: 'US Central', code: 'usc' },
-  { id: 'America/New_York', label: 'US East', code: 'use' },
-  { id: 'America/Sao_Paulo', label: 'Brazil', code: 'br' },
-  { id: 'Europe/London', label: 'UK', code: 'uk' },
-  { id: 'Europe/Berlin', label: 'Germany', code: 'de' },
-  { id: 'Europe/Warsaw', label: 'Poland', code: 'pl' },
-  { id: 'Europe/Bucharest', label: 'Romania', code: 'ro' },
-  { id: 'Asia/Jerusalem', label: 'Israel', code: 'il' },
-  { id: 'Asia/Kolkata', label: 'India', code: 'in' },
-  { id: 'Asia/Singapore', label: 'Singapore', code: 'sg' },
-  { id: 'Asia/Tokyo', label: 'Japan', code: 'jp' },
-  { id: 'Australia/Brisbane', label: 'Australia', code: 'au' },
-  { id: 'Pacific/Auckland', label: 'New Zealand', code: 'nz' },
+  { id: 'America/Los_Angeles', label: 'US West' },
+  { id: 'America/Chicago', label: 'US Central' },
+  { id: 'America/New_York', label: 'US East' },
+  { id: 'America/Sao_Paulo', label: 'Brazil' },
+  { id: 'Europe/London', label: 'UK' },
+  { id: 'Europe/Berlin', label: 'Germany' },
+  { id: 'Europe/Warsaw', label: 'Poland' },
+  { id: 'Europe/Bucharest', label: 'Romania' },
+  { id: 'Asia/Jerusalem', label: 'Israel' },
+  { id: 'Asia/Kolkata', label: 'India' },
+  { id: 'Asia/Singapore', label: 'Singapore' },
+  { id: 'Asia/Tokyo', label: 'Japan' },
+  { id: 'Australia/Brisbane', label: 'Australia' },
+  { id: 'Pacific/Auckland', label: 'New Zealand' },
 ];
 
 export const DEFAULT_ZONES: readonly string[] = [
@@ -329,10 +299,9 @@ export const DEFAULT_ZONES: readonly string[] = [
   'Australia/Brisbane',
 ];
 
-/** The viewer's own zone, or `UTC` where the browser won't say or names one it cannot format. */
+/** The viewer's own zone, or `UTC` where the browser won't say. */
 export function localZone(): string {
-  const resolved = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  return resolved && isSupportedZone(resolved) ? resolved : 'UTC';
+  return Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
 }
 
 /** `America/Argentina/Buenos_Aires` -> `Buenos Aires`. */
@@ -341,57 +310,14 @@ const zoneName = (id: string): string => id.split('/').pop()?.replace(/_/g, ' ')
 /**
  * The offered zones with the viewer's own folded in: marked where it is already listed,
  * prepended under its IANA name where it is not, so a local column is always available.
- *
- * `alsoInclude` appends anything else that is already being compared. A shared link can
- * name a zone this catalogue has never heard of — the colleague who built it lives
- * somewhere unlisted — and without this the recipient would silently lose that column.
  */
-export function zoneOptionsWithLocal(
-  local: string,
-  alsoInclude: readonly string[] = [],
-): ZoneOption[] {
+export function zoneOptionsWithLocal(local: string): ZoneOption[] {
   const listed = ZONE_OPTIONS.some((option) => option.id === local);
-  const options: ZoneOption[] = listed
+  return listed
     ? ZONE_OPTIONS.map((option) =>
         option.id === local ? { ...option, label: `${option.label} · local` } : option,
       )
-    : [{ id: local, label: `${zoneName(local)} · local`, code: local }, ...ZONE_OPTIONS];
-
-  const known = new Set(options.map((option) => option.id));
-  for (const id of alsoInclude) {
-    if (known.has(id)) continue;
-    known.add(id);
-    options.push({ id, label: zoneName(id), code: id });
-  }
-  return options;
-}
-
-const CODE_TO_ID = new Map(ZONE_OPTIONS.map((option) => [option.code, option.id]));
-const ID_TO_CODE = new Map(ZONE_OPTIONS.map((option) => [option.id, option.code]));
-
-/**
- * Serialises a comparison set for the query string. Listed zones use their short code; a
- * viewer's own unlisted zone falls back to its IANA id, which survives the round trip at
- * the cost of a longer link.
- */
-export function encodeZones(ids: readonly string[]): string {
-  return ids.map((id) => ID_TO_CODE.get(id) ?? id).join(',');
-}
-
-/**
- * The inverse. Tokens that are neither a known code nor a zone this platform can format
- * are dropped rather than guessed at — passing one through would reach `readZone` and
- * throw mid-render.
- */
-export function decodeZones(param: string): string[] {
-  const seen = new Set<string>();
-  for (const token of param.split(',')) {
-    const trimmed = token.trim();
-    if (!trimmed) continue;
-    const id = CODE_TO_ID.get(trimmed) ?? trimmed;
-    if (isSupportedZone(id)) seen.add(id);
-  }
-  return [...seen];
+    : [{ id: local, label: `${zoneName(local)} · local` }, ...ZONE_OPTIONS];
 }
 
 const pad = (value: number): string => String(value).padStart(2, '0');
@@ -403,18 +329,6 @@ export function formatUtc(timestamp: number): string {
     `${date.getUTCFullYear()}-${pad(date.getUTCMonth() + 1)}-${pad(date.getUTCDate())} ` +
     `${pad(date.getUTCHours())}:${pad(date.getUTCMinutes())}:${pad(date.getUTCSeconds())}`
   );
-}
-
-/**
- * Whether `value` is a real `YYYY-MM-DD` date.
- *
- * `Date.parse` is not enough on its own: V8's legacy fallback rolls overflow dates over,
- * so `2026-02-30` parses happily as 2 March. The round trip catches those.
- */
-export function isIsoDate(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const seconds = utcMidnight(value);
-  return Number.isFinite(seconds) && toIsoDate(seconds) === value;
 }
 
 /** Midnight UTC on a `YYYY-MM-DD` date string, in unix seconds. */

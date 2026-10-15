@@ -2,8 +2,6 @@ import { describe, it, expect } from 'vitest';
 import {
   buildEpochCandidates,
   byFitThenQuality,
-  isIsoDate,
-  isSupportedZone,
   candidateAtOrAfter,
   candidateBefore,
   epochToSlot,
@@ -16,8 +14,6 @@ import {
   slotToTimestamp,
   timestampToSlot,
   utcMidnight,
-  encodeZones,
-  decodeZones,
   zoneOptionsWithLocal,
   ZONE_OPTIONS,
   type HourBand,
@@ -283,51 +279,9 @@ describe('zoneOptionsWithLocal', () => {
     expect(options[0].label).toBe('Buenos Aires · local');
   });
 
-  it('appends a zone a shared link names but the catalogue does not list', () => {
-    const options = zoneOptionsWithLocal('Europe/Berlin', ['Africa/Lagos', 'Europe/Berlin']);
-    expect(options).toHaveLength(ZONE_OPTIONS.length + 1);
-    expect(options.at(-1)).toMatchObject({ id: 'Africa/Lagos', label: 'Lagos' });
-  });
-
-  it('does not duplicate an extra that is already listed', () => {
-    const options = zoneOptionsWithLocal('Europe/Berlin', ['Asia/Tokyo']);
-    expect(options).toHaveLength(ZONE_OPTIONS.length);
-  });
-
   it('offers only zones the platform can format', () => {
     for (const option of ZONE_OPTIONS) {
       expect(() => readZone(0, option.id)).not.toThrow();
-    }
-  });
-});
-
-describe('zone codes', () => {
-  it('round-trips a comparison set', () => {
-    const zones = ['America/Los_Angeles', 'Europe/London', 'Asia/Singapore'];
-    expect(encodeZones(zones)).toBe('usw,uk,sg');
-    expect(decodeZones('usw,uk,sg')).toEqual(zones);
-  });
-
-  it('round-trips an unlisted zone by its IANA id', () => {
-    expect(encodeZones(['Africa/Lagos'])).toBe('Africa/Lagos');
-    expect(decodeZones('Africa/Lagos')).toEqual(['Africa/Lagos']);
-  });
-
-  it('drops unknown tokens rather than guessing', () => {
-    expect(decodeZones('usw,nope,,uk')).toEqual(['America/Los_Angeles', 'Europe/London']);
-    expect(decodeZones('')).toEqual([]);
-  });
-
-  it('de-duplicates repeats', () => {
-    expect(decodeZones('uk,uk')).toEqual(['Europe/London']);
-  });
-
-  it('gives every listed zone a unique code that is not its label', () => {
-    const codes = ZONE_OPTIONS.map((option) => option.code);
-    expect(new Set(codes).size).toBe(codes.length);
-    for (const option of ZONE_OPTIONS) {
-      expect(option.code).not.toContain(' ');
-      expect(option.code).not.toContain('/');
     }
   });
 });
@@ -406,45 +360,6 @@ describe('candidates just outside a window', () => {
     expect(candidateAtOrAfter(MAINNET_GENESIS, to, 'historical-root').epoch).toBe(
       candidates.at(-1)!.epoch + EPOCHS_PER_HISTORICAL_ROOT,
     );
-  });
-});
-
-describe('untrusted input', () => {
-  it('drops a zone id the platform cannot format', () => {
-    // Reaching `readZone` with one of these throws a RangeError mid-render, which takes
-    // the whole client:only island down — not just the column.
-    expect(isSupportedZone('Asia/Beijing')).toBe(false);
-    expect(isSupportedZone('America/Not_A_Zone')).toBe(false);
-    expect(isSupportedZone('Europe/London')).toBe(true);
-    expect(decodeZones('uk,Asia/Beijing')).toEqual(['Europe/London']);
-    expect(decodeZones('America/Not_A_Zone')).toEqual([]);
-  });
-
-  it('still carries a genuine unlisted zone', () => {
-    expect(decodeZones('uk,Africa/Lagos')).toEqual(['Europe/London', 'Africa/Lagos']);
-  });
-
-  it('never returns a zone readZone would throw on', () => {
-    for (const id of decodeZones('uk,Asia/Beijing,Africa/Lagos,nonsense,de')) {
-      expect(() => readZone(0, id)).not.toThrow();
-    }
-  });
-
-  it('rejects a date that parses but is not the date written', () => {
-    // V8's legacy fallback rolls these over rather than rejecting them.
-    expect(Number.isNaN(utcMidnight('2026-02-30'))).toBe(false);
-    expect(isIsoDate('2026-02-30')).toBe(false);
-    expect(isIsoDate('2026-02-29')).toBe(false);
-    expect(isIsoDate('2026-13-01')).toBe(false);
-    expect(isIsoDate('not-a-date')).toBe(false);
-    expect(isIsoDate('2026-2-3')).toBe(false);
-    expect(isIsoDate('')).toBe(false);
-  });
-
-  it('accepts real dates, leap day included', () => {
-    expect(isIsoDate('2026-12-02')).toBe(true);
-    expect(isIsoDate('2028-02-29')).toBe(true);
-    expect(isIsoDate('2026-01-01')).toBe(true);
   });
 });
 

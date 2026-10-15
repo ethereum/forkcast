@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import type { ForkProgress } from '../../types/timeline';
 import { parseShortDate } from './forkDateCalculator';
 import { acdCallsBetween, type AcdCall, type AcdSeries } from '../../domain/schedule/acdCalls';
+import { CopyLinkButton } from '../ui';
 
 interface ForkGanttChartProps {
   forks: {
@@ -319,9 +320,17 @@ const ForkGanttChart: React.FC<ForkGanttChartProps> = ({
   const todayPosition = todayInRange ? getPosition(today) : null;
 
   return (
-    <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+    <div
+      id="timeline"
+      className="scroll-mt-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden"
+    >
       <div className="p-4 border-b border-slate-200 dark:border-slate-700">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Timeline View</h3>
+        <div className="flex items-center gap-3">
+          <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Timeline View</h3>
+          <div className="flex items-center relative top-0.5">
+            <CopyLinkButton sectionId="timeline" title="Copy link to timeline view" size="sm" />
+          </div>
+        </div>
         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           Visualize upgrade phases and their overlap across forks
         </p>

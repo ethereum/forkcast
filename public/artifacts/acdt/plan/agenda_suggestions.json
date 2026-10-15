@@ -1,63 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-10-08",
-  "for_call": "ACDT #100",
+  "generated": "2026-10-15",
+  "for_call": "ACDT #101",
   "suggestions": [
     {
-      "topic": "Sepolia Glamsterdam fork post-mortem and Hoodi go/no-go decision",
+      "topic": "bogota-devnet-2 EIP scope finalization",
       "priority": "high",
-      "rationale": "Sepolia forked on October 6 (two days ago). Post-mortem needed to capture any issues. Hoodi go/no-go decision was scheduled for October 8 (today) with tentative fork date October 27.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "JUMPDEST attack repricing decision following devnet-8 retest results",
-      "priority": "high",
-      "rationale": "ACDT #98 deferred repricing decision pending devnet-8 retest without debug tracing. This test was planned for completion before the mainnet shadow fork (~mid-October). Results should inform whether 200M gas limit requires adjustment.",
+      "rationale": "Deferred from ACDT #100 with explicit 'next call' revisit. Strong community support to include SETCODEFROM, data repricing (EIP-8279), nonce bump (EIP-8253), and deactivate self-destruct. jochem raised that if deactivate self-destruct ships, EIP-8360 (TCREATE) should be prioritized to avoid economic disruption.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "BAL retention alignment with CL serving window",
+      "topic": "Hoodi testnet fork status and client readiness",
+      "priority": "high",
+      "rationale": "Client releases were due October 16th (yesterday). Go/no-go decision for Hoodi fork (tentatively October 27) was planned for October 8 but not documented. Need confirmation all releases are out and readiness for October 27 activation.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Glamsterdam devnet offline nodes investigation",
+      "priority": "high",
+      "rationale": "ACDT #100 reported Nimbus, Erigon, Lighthouse, Grandine, and Besu nodes offline on Glamsterdam devnet. Client teams were asked to investigate but no resolution was documented.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "heze-devnet-2 and bogota-devnet-1 launch status",
       "priority": "medium",
-      "rationale": "Deferred from ACDT #97 (Sept 21) to be brought to ACDE and discussed async. Three options tabled: keep 33,024 epochs, reduce to ~14,299 per EIP-8061, or reduce to 8,192 per EIP-8383. No evidence this was resolved in subsequent meetings.",
+      "rationale": "bogota-devnet-1 was targeting launch on October 15th (today). heze-devnet-2 targeting October 28th latest (3+ CL clients required). Need status updates on both launches and any blockers encountered.",
+      "related_eips": [],
+      "source": "devnet_update"
+    },
+    {
+      "topic": "EIP-7870 hardware specs update for Glamsterdam",
+      "priority": "medium",
+      "rationale": "ACDT #100 confirmed current 500 MB/s sequential read/write specs are too low for Glamsterdam; jochem recommends 2000 MB/s. Barnabas noted random 4K IOPS matter more than sequential MB/s. Decision made to keep EIP-7870 as living document with fork-specific updates, but actual spec update not yet completed.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Repricing decision following devnet-8 and mainnet shadow fork retests",
+      "priority": "medium",
+      "rationale": "ACDT #98 deferred repricing pending retests without debug tracing on devnet-8 and mainnet shadow fork (~1.5-2 weeks from Sept 28 = mid-October). ACDT #99 shadow fork round 2 went smoothly, but explicit repricing decision not yet documented. jochemnet shadow fork v2 with 64KB contracts launched post-Sepolia fork for benchmarking.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Hegota devnet status: FOCIL and Frames separate devnets",
-      "priority": "medium",
-      "rationale": "ACDT #97 decided on separate FOCIL-only and Frames-only devnets before combining. ACDT #99 noted focil-devnet-0 was accidentally taken down with reconstruction issues. Update needed on both tracks and timeline for combined devnet (target: before DevCon).",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "FCR 'confirmed' block tag implementation approach",
-      "priority": "medium",
-      "rationale": "ACDT #98 reached consensus on making FCR opt-in via compatible CL+EL pairs with a new 'confirmed' tag, but implementation approach still needs investigation. Async thread was supposed to be opened but no evidence it happened.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Mainnet shadow fork readiness and timeline",
-      "priority": "medium",
-      "rationale": "ACDT #98 mentioned mainnet shadow fork in ~1.5-2 weeks (mid-October). With Sepolia fork complete, mainnet shadow fork should be imminent. Client readiness confirmation needed.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Glamsterdam EIP status transition to Last Call",
+      "topic": "CL serving window and BAL retention alignment",
       "priority": "low",
-      "rationale": "ACDT #99 action item for EIP authors to open PRs moving Glamsterdam EIPs to Last Call before the next EIP Editing Office Hour. Brief status check on progress.",
+      "rationale": "Deferred from ACDT #97 to be brought to ACDE before next call. No subsequent ACDT meetings reference this discussion. While deferred, the 'before next call' target has passed without documented resolution, suggesting this may have been handled async or deprioritized.",
       "related_eips": [],
-      "source": "open_action_item"
+      "source": "deferred_decision"
     },
     {
-      "topic": "EIP-8411 (Fast Execution Payload Broadcast) CL team ratings update",
+      "topic": "Fast Confirmation Rule 'confirmed' block tag implementation approach",
       "priority": "low",
-      "rationale": "ACDT #97 mentioned EIP-8142 (BiB) withdrawal in favor of EIP-8411, with CL teams asked to rate ahead of next ACDC. While this is primarily for consensus calls, brief ACDT status update may be useful for coordination.",
+      "rationale": "ACDT #98 decided FCR should be opt-in via compatible CL+EL pairs without requiring hard fork, with implementation approach to be investigated. Julian Ma was to open async thread (execution-apis #908). Chainlink went live with FCR; other bridges and L2s blocked by RPC providers needing to serve both safe and FCR simultaneously.",
       "related_eips": [],
-      "source": "open_action_item"
+      "source": "ongoing_discussion"
     }
   ]
 }

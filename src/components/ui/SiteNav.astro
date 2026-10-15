@@ -28,14 +28,18 @@ const navItems = [
   { to: '/calls', label: 'Calls' },
   { to: '/decisions', label: 'Decisions' },
   { to: '/networks', label: 'Networks' },
-  { to: '/schedule', label: 'Schedule' },
-  // Highlighted while headliner ranking is open; drop `highlight` once it closes.
-  { to: '/rank', label: 'Rank', highlight: true },
 ];
+
+interface NavMenuItem {
+  to: string;
+  label: string;
+  /** `item` is a top-level row, `sub` an indented child, `index` the footer link. */
+  variant: string;
+}
 
 // Which tabs a fork surfaces here follows what that fork currently needs, so the
 // two forks deliberately don't carry a matching set of sub-items.
-const upgradeNavItems = [
+const upgradeNavItems: NavMenuItem[] = [
   { to: '/upgrade/glamsterdam', label: 'Glamsterdam', variant: 'item' },
   { to: '/upgrade/hegota', label: 'Hegotá', variant: 'item' },
   { to: '/upgrade/hegota/client-priority', label: 'Client Priority', variant: 'sub' },
@@ -51,17 +55,49 @@ const upgradeItemActive = (to: string) =>
 
 const upgradesActive = pathname === '/upgrades' || pathname.startsWith('/upgrade/');
 
-const navLinkClass = (active: boolean, highlight = false) =>
+// The forward-looking half of the site: what is being decided and when, rather than
+// what an upgrade already contains.
+const planningNavItems: NavMenuItem[] = [
+  { to: '/schedule', label: 'Schedule', variant: 'item' },
+  { to: '/rank', label: 'EIP Rankings', variant: 'item' },
+  { to: '/cadence', label: 'Upgrade Cadence', variant: 'item' },
+  { to: '/champions', label: 'Champions Guide', variant: 'item' },
+];
+
+const planningActive = planningNavItems.some((item) => isPathActive(pathname, item.to));
+
+// Both dropdowns render from one template; only the contents and the active rule differ.
+const upgradesMenu = {
+  kind: 'menu' as const,
+  label: 'Upgrades',
+  width: 'w-44',
+  items: upgradeNavItems,
+  active: upgradesActive,
+  itemActive: upgradeItemActive,
+};
+
+const planningMenu = {
+  kind: 'menu' as const,
+  label: 'Planning',
+  width: 'w-48',
+  items: planningNavItems,
+  active: planningActive,
+  itemActive: (to: string) => isPathActive(pathname, to),
+};
+
+// The running order, shared by the desktop bar and the mobile panel. Planning closes the
+// bar because it is where a reader goes next, not what they came for.
+const navEntries = [
+  upgradesMenu,
+  ...navItems.map((item) => ({ kind: 'link' as const, ...item })),
+  planningMenu,
+];
+
+const navLinkClass = (active: boolean) =>
   `px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-    highlight
-      ? `text-purple-700 dark:text-purple-300 ${
-          active
-            ? 'bg-purple-100 dark:bg-purple-500/20'
-            : 'bg-purple-50 hover:bg-purple-100 dark:bg-purple-500/10 dark:hover:bg-purple-500/20'
-        }`
-      : active
-        ? 'text-purple-700 dark:text-purple-300'
-        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+    active
+      ? 'text-purple-700 dark:text-purple-300'
+      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
   }`;
 
 // Sub-items sit a step down in both size and weight so the indent isn't carrying
@@ -111,70 +147,77 @@ const mobileLinkClass = (active: boolean, itemVariant: string) =>
       <div
         class={`${desktopNavDisplay} items-center gap-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2`}
       >
-        <div class="group relative" data-upgrade-menu>
-          <button
-            type="button"
-            data-upgrade-trigger
-            aria-haspopup="menu"
-            class={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 ${
-              upgradesActive
-                ? 'text-purple-700 dark:text-purple-300'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
-          >
-            Upgrades
-            <svg
-              class="h-3.5 w-3.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-
-          <div
-            class="invisible absolute left-0 top-full z-40 w-44 pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100"
-          >
-            <div
-              class="flex flex-col gap-1.5 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-900/10 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/30"
-            >
-              {
-                upgradeNavItems.map((item) => (
-                  <div
-                    class={
-                      item.variant === 'index'
-                        ? 'border-t border-slate-200 pt-1 dark:border-slate-700'
-                        : item.variant === 'sub'
-                          ? '-mt-1 ml-3'
-                          : undefined
-                    }
-                  >
-                    <a
-                      href={canonicalHref(item.to)}
-                      data-astro-prefetch
-                      class={menuLinkClass(upgradeItemActive(item.to), item.variant)}
-                    >
-                      <span class={item.variant === 'item' ? 'font-semibold' : 'font-medium'}>{item.label}</span>
-                    </a>
-                  </div>
-                ))
-              }
-            </div>
-          </div>
-        </div>
-
         {
-          navItems.map((item) => (
-            <a
-              href={canonicalHref(item.to)}
-              data-astro-prefetch
-              class={navLinkClass(isPathActive(pathname, item.to), item.highlight)}
-            >
-              {item.label}
-            </a>
-          ))
+          navEntries.map((entry) =>
+            entry.kind === 'menu' ? (
+              <div class="group relative" data-nav-menu>
+                <button
+                  type="button"
+                  aria-haspopup="menu"
+                  class={`flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500/40 ${
+                    entry.active
+                      ? 'text-purple-700 dark:text-purple-300'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+                  }`}
+                >
+                  {entry.label}
+                  <svg
+                    class="h-3.5 w-3.5 transition-transform group-hover:rotate-180 group-focus-within:rotate-180"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                <div
+                  class={`invisible absolute left-0 top-full z-40 ${entry.width} pt-2 opacity-0 transition-opacity group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100`}
+                >
+                  <div class="flex flex-col gap-1.5 rounded-lg border border-slate-200 bg-white p-1.5 shadow-lg shadow-slate-900/10 dark:border-slate-700 dark:bg-slate-900 dark:shadow-black/30">
+                    {entry.items.map((item) => (
+                      <div
+                        class={
+                          item.variant === 'index'
+                            ? 'border-t border-slate-200 pt-1 dark:border-slate-700'
+                            : item.variant === 'sub'
+                              ? '-mt-1 ml-3'
+                              : undefined
+                        }
+                      >
+                        <a
+                          href={canonicalHref(item.to)}
+                          data-astro-prefetch
+                          class={menuLinkClass(entry.itemActive(item.to), item.variant)}
+                        >
+                          {/* The heavier weight is what parents an indented `sub` row, so a
+                              flat menu has no use for it. */}
+                          <span
+                            class={
+                              item.variant === 'item' && entry.items.some((i) => i.variant === 'sub')
+                                ? 'font-semibold'
+                                : 'font-medium'
+                            }
+                          >
+                            {item.label}
+                          </span>
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <a
+                href={canonicalHref(entry.to)}
+                data-astro-prefetch
+                class={navLinkClass(isPathActive(pathname, entry.to))}
+              >
+                {entry.label}
+              </a>
+            )
+          )
         }
       </div>
 
@@ -261,44 +304,47 @@ const mobileLinkClass = (active: boolean, itemVariant: string) =>
     class={`hidden ${compactNavDisplay} border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 ${headerPadding}`}
   >
     <div class={`${navMaxWidth} mx-auto py-3`}>
-      <div class="px-1 py-2 text-sm text-slate-700 dark:text-slate-200">Upgrades</div>
-      <div class="mb-3 ml-2 flex flex-col gap-1.5 border-l border-slate-200 pl-3 dark:border-slate-700">
-        {
-          upgradeNavItems.map((item) => (
-            <div
-              class={
-                item.variant === 'index'
-                  ? 'mt-1 border-t border-slate-200 pt-2 dark:border-slate-700'
-                  : item.variant === 'sub'
-                    ? '-mt-1 ml-3'
-                    : undefined
-              }
-            >
-              <a
-                href={canonicalHref(item.to)}
-                data-astro-prefetch
-                class={mobileLinkClass(upgradeItemActive(item.to), item.variant)}
-              >
-                {item.label}
-              </a>
-            </div>
-          ))
-        }
-      </div>
       {
-        navItems.map((item) => (
-          <a
-            href={canonicalHref(item.to)}
-            data-astro-prefetch
-            class={`block px-1 py-2 text-sm ${
-              item.highlight || isPathActive(pathname, item.to)
-                ? 'text-purple-700 dark:text-purple-300 font-medium'
-                : 'text-slate-700 dark:text-slate-200'
-            }`}
-          >
-            {item.label}
-          </a>
-        ))
+        navEntries.map((entry) =>
+          entry.kind === 'menu' ? (
+            <Fragment>
+              <div class="px-1 py-2 text-sm text-slate-700 dark:text-slate-200">{entry.label}</div>
+              <div class="mb-3 ml-2 flex flex-col gap-1.5 border-l border-slate-200 pl-3 dark:border-slate-700">
+                {entry.items.map((item) => (
+                  <div
+                    class={
+                      item.variant === 'index'
+                        ? 'mt-1 border-t border-slate-200 pt-2 dark:border-slate-700'
+                        : item.variant === 'sub'
+                          ? '-mt-1 ml-3'
+                          : undefined
+                    }
+                  >
+                    <a
+                      href={canonicalHref(item.to)}
+                      data-astro-prefetch
+                      class={mobileLinkClass(entry.itemActive(item.to), item.variant)}
+                    >
+                      {item.label}
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </Fragment>
+          ) : (
+            <a
+              href={canonicalHref(entry.to)}
+              data-astro-prefetch
+              class={`block px-1 py-2 text-sm ${
+                isPathActive(pathname, entry.to)
+                  ? 'text-purple-700 dark:text-purple-300 font-medium'
+                  : 'text-slate-700 dark:text-slate-200'
+              }`}
+            >
+              {entry.label}
+            </a>
+          )
+        )
       }
     </div>
   </div>
@@ -359,12 +405,14 @@ const mobileLinkClass = (active: boolean, itemVariant: string) =>
     iconClose?.classList.toggle('hidden', !open);
   });
 
-  // Upgrade dropdown opens on hover/focus-within via CSS alone. The only behavior
-  // that needs JS is Escape, which closes it by moving focus out of the menu.
-  document.querySelector('[data-upgrade-menu]')?.addEventListener('keydown', (event) => {
-    if ((event as KeyboardEvent).key === 'Escape' && document.activeElement instanceof HTMLElement) {
-      document.activeElement.blur();
-    }
+  // The nav dropdowns open on hover/focus-within via CSS alone. The only behavior
+  // that needs JS is Escape, which closes one by moving focus out of it.
+  document.querySelectorAll('[data-nav-menu]').forEach((menu) => {
+    menu.addEventListener('keydown', (event) => {
+      if ((event as KeyboardEvent).key === 'Escape' && document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+    });
   });
 
   // The per-call search button asks the CallPage island to open search (window event).

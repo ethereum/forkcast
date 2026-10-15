@@ -51,6 +51,8 @@ export interface EipAggregateStance {
   eipTitle: string;
   layer: 'EL' | 'CL' | null;
   inclusionStage: string;
+  /** Process or analysis docs, which carry no inclusion decision for a client to support. */
+  isInformational: boolean;
   // Scores and counts below cover client teams plus whichever OTHER teams the reader
   // opted in; with none opted in they are client-only.
   averageScore: number | null;

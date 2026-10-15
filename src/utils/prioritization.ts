@@ -334,6 +334,7 @@ export function calculateEipAggregate(
     eipTitle: eipData ? getLaymanTitle(eipData) : `EIP-${eipId}`,
     layer: determineEipLayer(eipData),
     inclusionStage: eipData ? getInclusionStage(eipData, forkName) : 'Unknown',
+    isInformational: eipData?.type === 'Informational',
     averageScore: calculateAverage(countedStances),
     // Per-layer columns stay layer-pure: a non-client team belongs to neither.
     elAverageScore: calculateAverage(elStances),

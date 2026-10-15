@@ -103,11 +103,14 @@ const readEnum = <T extends string>(value: string | null, allowed: readonly T[])
   allowed.includes(value as T) ? (value as T) : null;
 
 /**
- * What the "Active only" view keeps: every EIP still attached to the fork. An SFI'd EIP
- * stays — it is part of the payload the teams are reporting on, and a fork well into
- * scheduling would otherwise empty out the table it is the record of.
+ * What the "Active only" view keeps: every EIP still attached to the fork and still facing
+ * an inclusion decision. An SFI'd EIP stays — it is part of the payload the teams are
+ * reporting on, and a fork well into scheduling would otherwise empty out the table it is
+ * the record of. An Informational EIP does not: it changes nothing in the fork, so there is
+ * no inclusion for a client team to support or oppose.
  */
 const isActive = (agg: EipAggregateStance): boolean =>
+  !agg.isInformational &&
   agg.inclusionStage !== 'Declined for Inclusion' &&
   agg.inclusionStage !== 'Withdrawn' &&
   agg.inclusionStage !== 'Unknown';

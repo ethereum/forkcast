@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { calculateEipAggregate } from './prioritization';
 import { ClientStance } from '../types/prioritization';
+import { EIP } from '../types/eip';
 
 const stance = (
   clientName: string,
@@ -150,5 +151,26 @@ describe('support and opposition read off the fork scale', () => {
     expect(agg.supportCount).toBe(1);
     expect(agg.neutralCount).toBe(1);
     expect(agg.opposeCount).toBe(1);
+  });
+});
+
+describe('calculateEipAggregate — Informational EIPs', () => {
+  const eip = (type: string): EIP =>
+    ({ id: 8369, title: 'EIP-8369', type, forkRelationships: [] }) as unknown as EIP;
+
+  it('flags an Informational EIP', () => {
+    expect(calculateEipAggregate(8369, [], eip('Informational'), 'hegota').isInformational).toBe(
+      true
+    );
+  });
+
+  it('does not flag a Standards Track EIP', () => {
+    expect(calculateEipAggregate(8369, [], eip('Standards Track'), 'hegota').isInformational).toBe(
+      false
+    );
+  });
+
+  it('does not flag an EIP it has no record for', () => {
+    expect(calculateEipAggregate(8369, [], undefined, 'hegota').isInformational).toBe(false);
   });
 });

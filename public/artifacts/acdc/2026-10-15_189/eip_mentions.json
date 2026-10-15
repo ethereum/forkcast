@@ -1,0 +1,205 @@
+{
+  "meeting": "ACDC #189 - 2026-10-15",
+  "eips": [
+    {
+      "eip": 8282,
+      "title": "Builder Execution Requests",
+      "weight": "mentioned",
+      "summary": "Cited in chat as solving the builder-validator deposit coupling issue after the Glamsterdam fork.",
+      "moments": [
+        {
+          "timestamp": "00:35:22",
+          "context": "Nico Flaig noted in chat that EIP-8282 solves the builder onboarding deposit problem after the fork, implying the current issue is temporary."
+        }
+      ]
+    },
+    {
+      "eip": 8365,
+      "title": "Disallow new 0x00 validators",
+      "weight": "discussed",
+      "summary": "Barnabas proposed changing EIP-8365 so mistaken 0x00 deposits are not burned but instead create inactive validators.",
+      "moments": [
+        {
+          "timestamp": "00:39:23",
+          "context": "Barnabas introduced his concern that the current EIP burns ETH for post-fork 0x00 deposits, including those already in the pending queue from before the fork, and proposed allowing those validators to join without duties instead."
+        },
+        {
+          "timestamp": "00:43:41",
+          "context": "NC agreed that deposits submitted before Hegota should be grandfathered and suggested moving the guard from apply_pending_deposits to process_deposit_request; discussion was deferred for further review."
+        }
+      ]
+    },
+    {
+      "eip": 8025,
+      "title": "Optional Execution Proofs",
+      "weight": "discussed",
+      "summary": "Discussed at length whether to CFI optional execution proofs for Hegota; ultimately left as DFI despite support from some teams.",
+      "moments": [
+        {
+          "timestamp": "00:46:29",
+          "context": "Ignacio presented slides on EIP-8025 readiness across EL and CL clients, arguing for CFI to upstream the execution specs PR and reduce branch maintenance burden."
+        },
+        {
+          "timestamp": "00:54:25",
+          "context": "Lightclient argued in chat against spending time on non-critical non-PQ topics, suggesting optional proofs be shipped without a core EIP."
+        },
+        {
+          "timestamp": "01:03:06",
+          "context": "Lightclient spoke against CFI, saying all large Ethereum features had to wait on their own branches for years; Ignacio countered that CFI would streamline spec integration."
+        },
+        {
+          "timestamp": "01:05:25",
+          "context": "Potuz strongly opposed forcing clients to implement an optional feature and objected to merging it into the Heze fork branch, as it would constrain all future EIP writers."
+        },
+        {
+          "timestamp": "01:09:01",
+          "context": "Stokes concluded there was not enough CL team consensus to CFI; the EIP was marked DFI for today, with a note to explore better spec processes."
+        }
+      ]
+    },
+    {
+      "eip": 8371,
+      "title": "RowDAS - Distributed Blob Reconstruction",
+      "weight": "discussed",
+      "summary": "Csaba presented RowDAS, referred to by name only and never by number; DFI'd for Hegota on low client support.",
+      "moments": [
+        {
+          "timestamp": "01:18:29",
+          "context": "stokes opened the item as \"RowDAS\" with no EIP number given at any point on the call."
+        },
+        {
+          "timestamp": "01:19:03",
+          "context": "Csaba described the goal as fixing two PeerDAS design decisions: excess CPU load on large nodes and the protocol's reliance on those nodes."
+        },
+        {
+          "timestamp": "01:19:57",
+          "context": "Csaba offered a reduced \"B option\" that fixes only the CPU load, via in-protocol duty allocation."
+        },
+        {
+          "timestamp": "01:21:44",
+          "context": "stokes read the client rankings: Nimbus in favor; Teku, Lighthouse and Grandine against; no ranking from Lodestar or Prysm."
+        },
+        {
+          "timestamp": "01:22:29",
+          "context": "With no client team speaking in support, stokes DFI'd it for Hegota, noting blob supply and demand make it not the most urgent EIP."
+        }
+      ]
+    },
+    {
+      "eip": 8148,
+      "title": "Custom sweep threshold for validators",
+      "weight": "mentioned",
+      "summary": "Dima noted in chat that EIP-8148 and EIP-8205 needed discussion but no substantive discussion occurred on the call.",
+      "moments": [
+        {
+          "timestamp": "01:22:21",
+          "context": "Dima said in chat that EIPs 8148 and 8205 needed to be discussed, opposing a suggestion to default-DFI all remaining EIPs."
+        }
+      ]
+    },
+    {
+      "eip": 8359,
+      "title": "Beacon Block Reporting Field",
+      "weight": "discussed",
+      "summary": "Beacon block reporting field for client diversity data was presented by Luca; DFI'd due to lack of strong client support.",
+      "moments": [
+        {
+          "timestamp": "01:23:19",
+          "context": "Luca from Vero described the proposal to add a dedicated beacon block field for client diversity reporting, arguing graffiti is inadequate for complex multi-node setups."
+        },
+        {
+          "timestamp": "01:25:29",
+          "context": "No CL teams spoke in favor; stokes DFI'd the EIP, noting the topic is important but support is insufficient for Hegota."
+        }
+      ]
+    },
+    {
+      "eip": 7716,
+      "title": "Anti-Correlation Attestation Penalties",
+      "weight": "discussed",
+      "summary": "Oisin Kyne presented anti-correlation attestation penalties and asked for CFI; insufficient CL team support led to DFI.",
+      "moments": [
+        {
+          "timestamp": "01:26:34",
+          "context": "Oisin Kyne presented EIP-7716, explaining the proposal to increase inactivity penalties when many validators are offline simultaneously, to incentivize client diversity."
+        },
+        {
+          "timestamp": "01:34:58",
+          "context": "Łukasz Rozmej expressed concern that nobody would notice the penalty cap until a big outage; Oisin argued the financial impact would change behavior."
+        },
+        {
+          "timestamp": "01:36:42",
+          "context": "Stokes concluded there was not enough strong CL team support to CFI; the EIP was DFI'd for Hegota."
+        }
+      ]
+    },
+    {
+      "eip": 8205,
+      "title": "Withdrawal credentials preregistration",
+      "weight": "discussed",
+      "summary": "Dima presented withdrawal credentials preregistration to fix delegated staking front-running; decision deferred to next call.",
+      "moments": [
+        {
+          "timestamp": "01:37:33",
+          "context": "Dima Gusakov presented EIP-8205, explaining the front-running vulnerability in delegated staking deposits and proposing a preregistration system contract similar to EIP-7002 and EIP-7251."
+        },
+        {
+          "timestamp": "01:50:03",
+          "context": "Matthew Keil from Lodestar argued the problem is already solved at the app layer and suggested waiting for PQ deposit contract changes; Dima countered that the issue affects the majority of staked ETH across many protocols."
+        },
+        {
+          "timestamp": "01:56:52",
+          "context": "Greg from Lido requested the final decision be deferred to the next call since time was insufficient; stokes agreed to revisit at the start of next call."
+        }
+      ]
+    },
+    {
+      "eip": 7002,
+      "title": "Execution layer triggerable withdrawals",
+      "weight": "mentioned",
+      "summary": "Referenced as precedent for the system contract pattern proposed in EIP-8205.",
+      "moments": [
+        {
+          "timestamp": "01:42:30",
+          "context": "Dima cited EIP-7002 and EIP-7251 as existing system contracts similar to what EIP-8205 would introduce for preregistration requests."
+        }
+      ]
+    },
+    {
+      "eip": 7251,
+      "title": "Increase the MAX_EFFECTIVE_BALANCE",
+      "weight": "mentioned",
+      "summary": "Referenced alongside EIP-7002 as precedent for the system contract approach in EIP-8205.",
+      "moments": [
+        {
+          "timestamp": "01:42:30",
+          "context": "Dima cited EIP-7251 and EIP-7002 as existing system contracts that the preregistration request contract would closely follow."
+        }
+      ]
+    },
+    {
+      "eip": 4788,
+      "title": "Beacon block root in the EVM",
+      "weight": "mentioned",
+      "summary": "Referenced as the mechanism through which EIP-8205 preregistrations can be proven on-chain.",
+      "moments": [
+        {
+          "timestamp": "01:42:37",
+          "context": "Dima explained that depositors can prove via EIP-4788 that a preregistration exists, guaranteeing correct withdrawal credentials upon deposit."
+        }
+      ]
+    },
+    {
+      "eip": 999,
+      "title": "Restore Contract Code at 0x863DF6BFa4469f3ead0bE8f9F2AAE51c91A907b4",
+      "weight": "mentioned",
+      "summary": "Lion jokingly asked in chat if there was still time to CFI EIP-999.",
+      "moments": [
+        {
+          "timestamp": "01:45:37",
+          "context": "Lion dapplion posted in chat asking if there was still time to CFI EIP-999, apparently as a joke."
+        }
+      ]
+    }
+  ]
+}

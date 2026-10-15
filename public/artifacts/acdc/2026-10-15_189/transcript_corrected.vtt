@@ -54,7 +54,7 @@ stokes: And, yeah, we had the Sepolia fork, seems like it generally went pretty 
 
 14
 00:17:42.200 --> 00:17:48.659
-stokes: Yeah. Time for ready, says Barnabas in the chat. Generally, yeah, the fork went, I think, actually really well.
+stokes: Yeah. Time for Hoodi, says Barnabas in the chat. Generally, yeah, the fork went, I think, actually really well.
 
 15
 00:17:48.800 --> 00:17:52.279
@@ -118,7 +118,7 @@ stokes: Yeah, as soon as we get quorum of clients, for the blog post, we'll go a
 
 30
 00:19:37.810 --> 00:19:46.940
-stokes: But that being said, yeah, let's get them out as quickly as we can because, again, Hoodi's a pretty distributed test net. So
+stokes: But that being said, yeah, let's get them out as quickly as we can because, again, Hoodi's a pretty distributed testnet. So
 
 31
 00:19:47.260 --> 00:19:51.499
@@ -182,11 +182,11 @@ stokes: Possibilities of Glamsterdam.
 
 46
 00:21:07.470 --> 00:21:19.989
-stokes: And, like I said, that is a nice segue into the next, topic here. So… I believe this is Dmitrii. He brought up this issue from the consistent specs that he wanted to discuss.
+stokes: And, like I said, that is a nice segue into the next, topic here. So… I believe this is Dmitrii. He brought up this issue from the consensus-specs that he wanted to discuss.
 
 47
 00:21:20.580 --> 00:21:25.100
-stokes: Yeah, this seems relevant to… Builder departments here.
+stokes: Yeah, this seems relevant to… builder deposits here.
 
 48
 00:21:25.960 --> 00:21:27.170
@@ -226,7 +226,7 @@ Dima Gusakov | Lido: a single deposit in the deposit queue at the time of Glamst
 
 57
 00:23:07.440 --> 00:23:26.790
-Dima Gusakov | Lido: with withdrawal credentials with the prefix of OXOB, which probably stands for builder, then any other deposits that are also in the deposit queue at the time of the hard fork will be considered top-ups, but top-ups not for the validator, but for the builder.
+Dima Gusakov | Lido: with withdrawal credentials with the prefix of 0xB0, which probably stands for builder, then any other deposits that are also in the deposit queue at the time of the hard fork will be considered top-ups, but top-ups not for the validator, but for the builder.
 
 58
 00:23:27.000 --> 00:23:36.909
@@ -262,7 +262,7 @@ Dima Gusakov | Lido: made with validator prefix, not the builder prefix, but the
 
 66
 00:25:10.580 --> 00:25:21.179
-Dima Gusakov | Lido: Which means that, current protection systems on the application layer, for this very thin, like, the single moment of a GlamsterDump hard fork.
+Dima Gusakov | Lido: Which means that, current protection systems on the application layer, for this very thin, like, the single moment of a Glamsterdam hard fork.
 
 67
 00:25:21.180 --> 00:25:37.589
@@ -278,7 +278,7 @@ Dima Gusakov | Lido: like, from the application layer perspective and fairness, 
 
 70
 00:26:00.230 --> 00:26:21.740
-Dima Gusakov | Lido: further deposits with a validator prefix within the withdrawal credentials, instead of crediting those deposits to the builder, credit them to the validator. Because as far as I remember, after Amsterdam Hard Fork, you… what you can do is you can have the builder and the validator with the same public key, so no problem here at all.
+Dima Gusakov | Lido: further deposits with a validator prefix within the withdrawal credentials, instead of crediting those deposits to the builder, credit them to the validator. Because as far as I remember, after Glamsterdam Hard Fork, you… what you can do is you can have the builder and the validator with the same public key, so no problem here at all.
 
 71
 00:26:21.740 --> 00:26:29.369
@@ -474,7 +474,7 @@ Pavel | MixBytes: solves that issue to work around it somehow. And everything lo
 
 119
 00:33:03.300 --> 00:33:14.850
-Pavel | MixBytes: Like, monitor it, how it goes to audit multiple off-chain services, like, signature-based, when you check the deposit route.
+Pavel | MixBytes: Like, monitor it, how it goes to audit multiple off-chain services, like, signature-based, when you check the deposit root.
 
 120
 00:33:15.210 --> 00:33:21.039
@@ -538,11 +538,11 @@ stokes: Barnabas.
 
 135
 00:35:05.920 --> 00:35:15.350
-Barnabas: Just a quick question, whether this would be still a problem post-work, or this is just… No, this is…
+Barnabas: Just a quick question, whether this would be still a problem post-fork, or this is just… No, this is…
 
 136
 00:35:15.350 --> 00:35:23.820
-Dima Gusakov | Lido: Yeah, this issue only occurs at a single block, which is the first block of the new Hartford.
+Dima Gusakov | Lido: Yeah, this issue only occurs at a single block, which is the first block of the new hard fork.
 
 137
 00:35:24.310 --> 00:35:27.930
@@ -710,11 +710,11 @@ Barnabas: But they would not…
 
 178
 00:40:27.040 --> 00:40:40.880
-Barnabas: they would not, do the valet duties. And as soon as they would do a BLS change, then the balance would get re-queued, and it would be basically handled as a…
+Barnabas: they would not, do the validator duties. And as soon as they would do a BLS change, then the balance would get re-queued, and it would be basically handled as a…
 
 179
 00:40:41.360 --> 00:40:52.440
-Barnabas: part of a new deposit. So this way, we cannot have an attack, basically, on the network, where there would be a bunch of 000 validator keys being made, and then.
+Barnabas: part of a new deposit. So this way, we cannot have an attack, basically, on the network, where there would be a bunch of 0x00 validator keys being made, and then.
 
 180
 00:40:53.110 --> 00:40:59.699
@@ -750,7 +750,7 @@ stokes: Yeah, then I guess the ask today is just to say…
 
 188
 00:41:27.180 --> 00:41:30.250
-stokes: you'd like to update the IP with this, and…
+stokes: you'd like to update the EIP with this, and…
 
 189
 00:41:30.570 --> 00:41:35.510
@@ -770,7 +770,7 @@ NC: Why would burning ETH be bad?
 
 193
 00:41:52.190 --> 00:41:58.410
-NC: Because, for example, like, if you submit a deposit with an invalid signature, The EFIS burn.
+NC: Because, for example, like, if you submit a deposit with an invalid signature, The ETH is burned.
 
 194
 00:41:58.920 --> 00:42:02.850
@@ -786,7 +786,7 @@ NC: Why would we have sympathy?
 
 197
 00:42:14.810 --> 00:42:19.290
-NC: to those OXOO, Scenario.
+NC: to those 0x00, Scenario.
 
 198
 00:42:19.830 --> 00:42:27.050
@@ -810,7 +810,7 @@ Barnabas: And Within 40 days, we would have a hard fork.
 
 203
 00:42:57.740 --> 00:43:02.350
-Barnabas: And in 20 days after the fork, you would have 32 burned heat.
+Barnabas: And in 20 days after the fork, you would have 32 burned ETH.
 
 204
 00:43:02.670 --> 00:43:03.790
@@ -826,7 +826,7 @@ Barnabas: Possibly make a deposit where…
 
 207
 00:43:06.450 --> 00:43:14.319
-Barnabas: it was still allowed, and then you go into a fork because of the long deposit queue, and you would get your EF burnt.
+Barnabas: it was still allowed, and then you go into a fork because of the long deposit queue, and you would get your ETH burnt.
 
 208
 00:43:15.040 --> 00:43:16.050
@@ -838,7 +838,7 @@ NC: Yes, I do agree with this point.
 
 210
 00:43:19.640 --> 00:43:25.379
-NC: I think I, I asked this open question on Ethereum Magician.
+NC: I think I, I asked this open question on Ethereum Magicians.
 
 211
 00:43:25.890 --> 00:43:32.250
@@ -846,7 +846,7 @@ NC: a while ago, but nobody answered, but I think essentially what we want here 
 
 212
 00:43:32.380 --> 00:43:40.260
-NC: those 0x00 deposits that were submitted before the Hegota.
+NC: those 0x00 deposits that were submitted before the Hegota fork.
 
 213
 00:43:41.420 --> 00:43:54.329
@@ -902,7 +902,7 @@ stokes: Then, from there, next topic is to continue scoping of the PFI EIPs.
 
 226
 00:45:25.410 --> 00:45:30.790
-stokes: Let me share forecast again because that's been very helpful.
+stokes: Let me share Forkcast again because that's been very helpful.
 
 227
 00:45:32.030 --> 00:45:33.899
@@ -938,7 +938,7 @@ stokes: Okay, cool. Let's see here. So… this is filtered for…
 
 235
 00:46:05.110 --> 00:46:10.069
-stokes: CLEIPs, that are still in PFI stage.
+stokes: CL EIPs, that are still in PFI stage.
 
 236
 00:46:10.700 --> 00:46:14.430
@@ -950,7 +950,7 @@ stokes: In terms of jumping in.
 
 238
 00:46:19.740 --> 00:46:29.219
-stokes: We had started discussing, eighty twenty five optional execution proofs at the very end of the last call, but I just started the conversation.
+stokes: We had started discussing, EIP-8025 optional execution proofs at the very end of the last call, but I just started the conversation.
 
 239
 00:46:29.650 --> 00:46:34.829
@@ -1002,11 +1002,11 @@ ignacio: Attesting as… exactly as they do today. The EIP is very clear that th
 
 251
 00:47:52.080 --> 00:47:57.289
-ignacio: This is a feature that is off by default, so, even for NOTA testers.
+ignacio: This is a feature that is off by default, so, even for node operators.
 
 252
 00:47:57.700 --> 00:48:07.679
-ignacio: They won't be pulling these proofs or something like that. Only Nona testers that are interested in, helping collecting metrics and understand
+ignacio: They won't be pulling these proofs or something like that. Only node operators that are interested in, helping collecting metrics and understand
 
 253
 00:48:07.840 --> 00:48:11.790
@@ -1026,7 +1026,7 @@ ignacio: Mostly on the spec side, or I would say on the EL spec side. So we want
 
 257
 00:48:35.130 --> 00:48:47.580
-ignacio: Mostly this open PR, which has all the changes for D25 in the execution specs. On the CL-spec side, the changes are already upstream as a feature.
+ignacio: Mostly this open PR, which has all the changes for EIP-8025 in the execution specs. On the CL-spec side, the changes are already upstream as a feature.
 
 258
 00:48:47.730 --> 00:48:51.150
@@ -1038,7 +1038,7 @@ ignacio: And… On the right-hand side of this first slide, we have some summary
 
 260
 00:48:58.870 --> 00:49:01.840
-ignacio: on ELCLs and guest programs.
+ignacio: on ELs, CLs and guest programs.
 
 261
 00:49:02.110 --> 00:49:08.829
@@ -1046,7 +1046,7 @@ ignacio: On the EL side, we have already 6 of them, integrated into our Hive das
 
 262
 00:49:09.100 --> 00:49:25.239
-ignacio: EL clients, our main responsibility within the CIP is basically, implementing execution witness generation, which is basically the information the proven needs for proving. And 6 of them are already passing all the tests.
+ignacio: EL clients, our main responsibility within the EIP is basically, implementing execution witness generation, which is basically the information the prover needs for proving. And 6 of them are already passing all the tests.
 
 263
 00:49:25.560 --> 00:49:28.320
@@ -1062,7 +1062,7 @@ ignacio: So we are in a really good shape there. On the CL side, we have already
 
 266
 00:49:43.950 --> 00:49:48.049
-ignacio: We have Prysm already with an open PR based on GLAMPS alarm.
+ignacio: We have Prysm already with an open PR based on Glamsterdam.
 
 267
 00:49:48.250 --> 00:49:51.179
@@ -1070,7 +1070,7 @@ ignacio: We have draft PRC in the ORCLs.
 
 268
 00:49:52.030 --> 00:50:03.429
-ignacio: And on the guest program side and CGVMs, we have multiple combinations of integrations. This is not, like, blocking for AG25, but there's really good progress on that front.
+ignacio: And on the guest program side and zkVMs, we have multiple combinations of integrations. This is not, like, blocking for EIP-8025, but there's really good progress on that front.
 
 269
 00:50:03.780 --> 00:50:14.289
@@ -1082,7 +1082,7 @@ ignacio: Things in more detail.
 
 271
 00:50:18.250 --> 00:50:28.509
-ignacio: So why we we want to CFI 8025 in Hedota if this is like an optional protocol feature? I think this is the main question that people might have in their heads.
+ignacio: So why we we want to CFI 8025 in Hegota if this is like an optional protocol feature? I think this is the main question that people might have in their heads.
 
 272
 00:50:29.150 --> 00:50:38.520
@@ -1146,7 +1146,7 @@ ignacio: A decent amount of work to really maintain this. This is a PR that we h
 
 287
 00:52:23.530 --> 00:52:34.019
-ignacio: At least for… for… for a… for… for a year, and it has been rebased on top of at least, five DevNets in Glamsterdam.
+ignacio: At least for… for… for a… for… for a year, and it has been rebased on top of at least, five devnets in Glamsterdam.
 
 288
 00:52:35.940 --> 00:52:47.480
@@ -1154,7 +1154,7 @@ ignacio: So it's not really like a one-shotted PR or something like that. A lot 
 
 289
 00:52:48.230 --> 00:53:05.920
-ignacio: And these 56 line changes, I think it's really important to stress, because the main point here is that we don't want this EIP to really clash with other EIPs that may get scheduled for HEOTA, so it shouldn't really interfere with other efforts in the fork.
+ignacio: And these 56 line changes, I think it's really important to stress, because the main point here is that we don't want this EIP to really clash with other EIPs that may get scheduled for Hegota, so it shouldn't really interfere with other efforts in the fork.
 
 290
 00:53:06.840 --> 00:53:17.900
@@ -1166,7 +1166,7 @@ ignacio: We might want to do more, experimentation on how ProvingBlocks.
 
 292
 00:53:25.490 --> 00:53:29.120
-ignacio: interact with our upcoming changes, such as PVT.
+ignacio: interact with our upcoming changes, such as PBT.
 
 293
 00:53:29.370 --> 00:53:44.420
@@ -1186,7 +1186,7 @@ ignacio: It would simplify a lot, to really upstream, our work that,
 
 297
 00:54:03.290 --> 00:54:08.039
-ignacio: We feel it's pretty mature and the Steel team has been tracking for a while.
+ignacio: We feel it's pretty mature and the EELS team has been tracking for a while.
 
 298
 00:54:08.350 --> 00:54:20.470
@@ -1202,7 +1202,7 @@ ignacio: And this will also simplify some pipelining of releases, such as releas
 
 301
 00:54:30.120 --> 00:54:39.320
-ignacio: stateless log execution within the main releases from Steel, and we won't have, like, this Umm.
+ignacio: stateless log execution within the main releases from EELS, and we won't have, like, this Umm.
 
 302
 00:54:39.540 --> 00:54:43.330
@@ -1210,7 +1210,7 @@ ignacio: Lagging between, like, 80-25…
 
 303
 00:54:43.460 --> 00:54:50.019
-ignacio: let's say ZKVM releases and main releases, and there's a lot of things that will be more efficient.
+ignacio: let's say zkVM releases and main releases, and there's a lot of things that will be more efficient.
 
 304
 00:54:51.120 --> 00:54:58.899
@@ -1222,7 +1222,7 @@ ignacio: Which were mainly why this should be a core EIP compared to an informat
 
 306
 00:55:06.750 --> 00:55:18.560
-ignacio: My angle to this question is that we want to make sure that at the protocol level, we make clear that OCL is allowed to use proofs for attestation.
+ignacio: My angle to this question is that we want to make sure that at the protocol level, we make clear that no CL is allowed to use proofs for attestation.
 
 307
 00:55:18.720 --> 00:55:20.710
@@ -1262,7 +1262,7 @@ ignacio: So, the main assumption that we always have is that CLs and network ope
 
 316
 00:56:29.070 --> 00:56:40.549
-ignacio: And if someone wants to simply drop IEL, they can already do that by editing their CL source code and simply always attesting yes, and 99% of the time, they will be
+ignacio: And if someone wants to simply drop the EL, they can already do that by editing their CL source code and simply always attesting yes, and 99% of the time, they will be
 
 317
 00:56:40.680 --> 00:56:42.490
@@ -1282,7 +1282,7 @@ ignacio: Side of the story, so into the future.
 
 321
 00:57:14.410 --> 00:57:18.790
-ignacio: And regarding picking CDVMs or these programs, again.
+ignacio: And regarding picking zkVMs or these programs, again.
 
 322
 00:57:18.870 --> 00:57:29.980
@@ -1330,7 +1330,7 @@ stokes: Any client teams want to… oh, yeah, go ahead.
 
 333
 00:58:26.800 --> 00:58:40.889
-ignacio: Yeah, I just want to say that the main interest from our side is to upstream this into the specs. The steel team has a pretty reasonable rule of requiring changes to be CFI to be really upstream.
+ignacio: Yeah, I just want to say that the main interest from our side is to upstream this into the specs. The EELS team has a pretty reasonable rule of requiring changes to be CFI to be really upstream.
 
 334
 00:58:41.070 --> 00:58:45.799
@@ -1398,7 +1398,7 @@ stokes: What their stance is here.
 
 350
 01:00:41.420 --> 01:00:48.530
-stokes: If we go… actually, I guess I can reshare the forecast screen, but yeah, if any ECL teams want to chime in while I'm doing that.
+stokes: If we go… actually, I guess I can reshare the Forkcast screen, but yeah, if any ECL teams want to chime in while I'm doing that.
 
 351
 01:01:09.920 --> 01:01:11.650
@@ -1406,11 +1406,11 @@ stokes: Okay, I lost the chat now.
 
 352
 01:01:14.710 --> 01:01:25.490
-stokes: Are there any ECL teams that want to chime in on this? I pulled up the forecast here because, yeah, going by client rankings, it's pretty mixed.
+stokes: Are there any ECL teams that want to chime in on this? I pulled up the Forkcast here because, yeah, going by client rankings, it's pretty mixed.
 
 353
 01:01:30.660 --> 01:01:34.960
-stokes: Okay, at least call me here from Lighthouse, you know, they obviously support the work.
+stokes: Okay, at least kingy here from Lighthouse, you know, they obviously support the work.
 
 354
 01:01:35.570 --> 01:01:37.319
@@ -1498,11 +1498,11 @@ lightclient: To optionalists, or an optional feature.
 
 375
 01:03:42.870 --> 01:03:44.239
-stokes: Yeah, Yvonne, your hands up.
+stokes: Yeah, Iván, your hand's up.
 
 376
 01:03:45.490 --> 01:04:01.640
-Iván | ethrex: Thanks. Yeah, on the EPIC side, we support moving EIP-8025 to CFI for HIOTA. The CKVM roadmap requires substantial integration and testing work, and we need early commitments from client teams.
+Iván | ethrex: Thanks. Yeah, on the EPIC side, we support moving EIP-8025 to CFI for Hegota. The zkEVM roadmap requires substantial integration and testing work, and we need early commitments from client teams.
 
 377
 01:04:01.980 --> 01:04:03.849
@@ -1518,7 +1518,7 @@ Iván | ethrex: But its support should be an expectation for all clients. Operat
 
 380
 01:04:33.850 --> 01:04:52.680
-Iván | ethrex: I was going to talk about the support this EIP already has in the code that Ignacio already shared. I will share the dashboard Again, the hype tests that are running this. On the EL side, almost every client supports this, and almost everyone is passing all the tests.
+Iván | ethrex: I was going to talk about the support this EIP already has in the code that Ignacio already shared. I will share the dashboard Again, the Hive tests that are running this. On the EL side, almost every client supports this, and almost everyone is passing all the tests.
 
 381
 01:04:53.990 --> 01:05:03.490
@@ -1602,7 +1602,7 @@ lightclient: Because the branches are difficult to manage.
 
 401
 01:07:22.900 --> 01:07:27.619
-ignacio: Right, but who is managing that? It's basically me and Steel Team, right?
+ignacio: Right, but who is managing that? It's basically me and the EELS team, right?
 
 402
 01:07:30.740 --> 01:07:35.989
@@ -1650,7 +1650,7 @@ stokes: so…
 
 413
 01:08:19.990 --> 01:08:26.129
-ignacio: It's not about rebates, it's about, like, complexity of how PAPs interact with each other, too, so it's…
+ignacio: It's not about rebasing, it's about, like, complexity of how EIPs interact with each other, too, so it's…
 
 414
 01:08:26.130 --> 01:08:28.660
@@ -1682,7 +1682,7 @@ stokes: In terms of the other EIPs we should touch on today, I think we should g
 
 421
 01:09:01.799 --> 01:09:13.059
-stokes: What I'm hearing is that, yeah, in terms of this being a CLEIP from the CL clients here today, yeah, it doesn't seem like there's support to CFI this.
+stokes: What I'm hearing is that, yeah, in terms of this being a CL EIP from the CL clients here today, yeah, it doesn't seem like there's support to CFI this.
 
 422
 01:09:13.589 --> 01:09:23.319
@@ -1706,11 +1706,11 @@ stokes: See all teams. If you feel differently,
 
 427
 01:09:40.750 --> 01:09:49.399
-Manu: Yeah, Manu from presenting. So actually, in our ranking, we… said, we…
+Manu: Yeah, Manu from Prysm. So actually, in our ranking, we… said, we…
 
 428
 01:09:50.790 --> 01:10:06.110
-Manu: We did not write a big priority for this, because this EIP, yes, does not require a hard fork. Yes, that was the main reason. However, NITAS and PRISM are actively working on this EIP.
+Manu: We did not write a big priority for this, because this EIP, yes, does not require a hard fork. Yes, that was the main reason. However, NITAS and Prysm are actively working on this EIP.
 
 429
 01:10:06.360 --> 01:10:11.339
@@ -1718,7 +1718,7 @@ Manu: Yes, Lighthouse has merbly CIP in unstable and Prysm has a branch.
 
 430
 01:10:12.610 --> 01:10:20.739
-Manu: And so… Surfing or not, this EIP would not make a big difference about the…
+Manu: And so… CFIing or not, this EIP would not make a big difference about the…
 
 431
 01:10:21.320 --> 01:10:26.209
@@ -1758,7 +1758,7 @@ Enrico Del Fante: But since there is a gossip subnet now that is required by thi
 
 440
 01:11:19.740 --> 01:11:31.290
-Enrico Del Fante: But if this goes in, anyway, I believe all the times must support the new… the new cells, the new topic, and support the dissemination of the proof.
+Enrico Del Fante: But if this goes in, anyway, I believe all the clients must support the new… the new cells, the new topic, and support the dissemination of the proof.
 
 441
 01:11:31.680 --> 01:11:35.660
@@ -1770,7 +1770,7 @@ Manu: I mean, I don't know if it's time to enter too much technical details here
 
 443
 01:11:52.600 --> 01:12:00.760
-Manu: not record ENR, and that's it. And, you know, other PR wanted to… to use as proof, just have to
+Manu: node record, ENR, and that's it. And, you know, other PR wanted to… to use as proof, just have to
 
 444
 01:12:01.780 --> 01:12:07.899
@@ -1786,7 +1786,7 @@ Enrico Del Fante: Oh, okay.
 
 447
 01:12:12.250 --> 01:12:13.720
-Manu: Election approves. So yeah.
+Manu: Execution proofs. So yeah.
 
 448
 01:12:13.720 --> 01:12:18.159
@@ -1806,7 +1806,7 @@ stokes: Okay.
 
 452
 01:12:27.890 --> 01:12:31.990
-stokes: So maybe now a bit stronger support for prism, but otherwise.
+stokes: So maybe now a bit stronger support for Prysm, but otherwise.
 
 453
 01:12:33.130 --> 01:12:38.520
@@ -1842,7 +1842,7 @@ stokes: Potuz, I'm assuming Enrico your hand was from earlier.
 
 461
 01:13:24.660 --> 01:13:39.629
-Potuz: Oh, Enrico was up for earlier. I am against this, if this means merging into HESI. I'm sure that Manu's Manu's branch can be merged and will be merged into Prysm's trunk branch. This will be a feature that we will maintain
+Potuz: Oh, Enrico was up for earlier. I am against this, if this means merging into Heze. I'm sure that Manu's Manu's branch can be merged and will be merged into Prysm's trunk branch. This will be a feature that we will maintain
 
 462
 01:13:39.870 --> 01:13:52.329
@@ -1910,7 +1910,7 @@ stokes: So, I… my read is that people will support DFI. Obviously, there's the
 
 478
 01:15:52.600 --> 01:16:01.949
-stokes: it sounds like maybe there's something we could do in the ELS repo itself to make the work a little bit simpler, so we should definitely explore that.
+stokes: it sounds like maybe there's something we could do in the EELS repo itself to make the work a little bit simpler, so we should definitely explore that.
 
 479
 01:16:02.800 --> 01:16:07.109
@@ -1922,7 +1922,7 @@ stokes: Okay, Mario, last comment.
 
 481
 01:16:10.180 --> 01:16:29.659
-Mario Vega: Yeah, sorry, yeah, basically just want to echo the exact same problem that Potuz is having with merging into main is exactly the same that we're having today on the EL specs. Basically, when you merge something onto the main branch, you're asking the rest of the EIPs to adhere to the… to what's already merged, in this case, CK.
+Mario Vega: Yeah, sorry, yeah, basically just want to echo the exact same problem that Potuz is having with merging into main is exactly the same that we're having today on the EL specs. Basically, when you merge something onto the main branch, you're asking the rest of the EIPs to adhere to the… to what's already merged, in this case, zk
 
 482
 01:16:29.660 --> 01:16:38.500
@@ -2022,11 +2022,11 @@ Csaba: Oh, should be good. Yeah, so… RowDAS has… The goal of fixing,
 
 506
 01:19:15.100 --> 01:19:22.419
-Csaba: past design decision that we made when we introduced Build DAS. It's planning to fix two things.
+Csaba: past design decision that we made when we introduced PeerDAS. It's planning to fix two things.
 
 507
 01:19:22.520 --> 01:19:29.490
-Csaba: One is the access… CPU load that we have on.
+Csaba: One is the excess… CPU load that we have on.
 
 508
 01:19:30.600 --> 01:19:36.380
@@ -2106,11 +2106,11 @@ stokes: I don't think there's been any yet, yeah. But yeah, just going off of th
 
 527
 01:21:44.200 --> 01:21:53.860
-stokes: Yeah, didn't hear from Lodestar Prysm, according to forecast here. Nimbus was in favor, but otherwise, yeah, Teku, Lighthouse, Grandine.
+stokes: Yeah, didn't hear from Lodestar Prysm, according to Forkcast here. Nimbus was in favor, but otherwise, yeah, Teku, Lighthouse, Grandine.
 
 528
 01:21:55.880 --> 01:21:57.260
-stokes: Win against.
+stokes: Were against.
 
 529
 01:21:58.690 --> 01:22:02.090
@@ -2170,7 +2170,7 @@ stokes: Next up, we have EIP-8359. This is BeaconBlock reporting field.
 
 543
 01:23:19.970 --> 01:23:24.139
-stokes: And the champion was Hani Abu.
+stokes: And the champion was hanniabu.
 
 544
 01:23:24.270 --> 01:23:30.240
@@ -2178,7 +2178,7 @@ stokes: Are they here, or is one of the authors here that would like to Say some
 
 545
 01:23:30.810 --> 01:23:35.119
-Luca | Vero: Ani Abu isn't here, as far as I know, but I can… Say a few words.
+Luca | Vero: hanniabu isn't here, as far as I know, but I can… Say a few words.
 
 546
 01:23:35.410 --> 01:23:43.149
@@ -2338,7 +2338,7 @@ Oisin Kyne: We have probably some of the worst client centralization on the netw
 
 585
 01:28:42.560 --> 01:28:55.829
-Oisin Kyne: will cause a liveness issue, and if they fail together, like in Hood or in Holski, we could have the worst-case scenario of, like, you know, the whole thing is screwed. But if we have liveness penalties, the idea is that will push people to
+Oisin Kyne: will cause a liveness issue, and if they fail together, like in Hoodi or in Holesky, we could have the worst-case scenario of, like, you know, the whole thing is screwed. But if we have liveness penalties, the idea is that will push people to
 
 586
 01:28:55.830 --> 01:29:02.710
@@ -2382,7 +2382,7 @@ Oisin Kyne: Sweet. Okay. I won't show too long. This is the one you can mess wit
 
 596
 01:29:51.520 --> 01:30:10.669
-Oisin Kyne: how the CIP works is once you come back under the moving average, you go back to normal penalties. So what that means for a slow responder is, you know, the longer you take to return, more likely it is you're close to today's rules. So relatively speaking, you know, it's actually more favorable to, you know, the small and solo stakers versus the others.
+Oisin Kyne: how the EIP works is once you come back under the moving average, you go back to normal penalties. So what that means for a slow responder is, you know, the longer you take to return, more likely it is you're close to today's rules. So relatively speaking, you know, it's actually more favorable to, you know, the small and solo stakers versus the others.
 
 597
 01:30:10.820 --> 01:30:26.850
@@ -2406,11 +2406,11 @@ stokes: So, yeah, thank you for the overview there.
 
 602
 01:31:00.600 --> 01:31:06.920
-stokes: Any client teams want to speak in favor of this? I can put the forecast page back up.
+stokes: Any client teams want to speak in favor of this? I can put the Forkcast page back up.
 
 603
 01:31:07.550 --> 01:31:13.930
-stokes: But ultimately, it was not rated super well. So I think that would lean DFI for Hegotah.
+stokes: But ultimately, it was not rated super well. So I think that would lean DFI for Hegota.
 
 604
 01:31:14.600 --> 01:31:17.350
@@ -2434,7 +2434,7 @@ stokes: more.
 
 609
 01:31:47.160 --> 01:31:48.260
-Oisin Kyne: As for the invitation, it is.
+Oisin Kyne: As for the implementation, it is.
 
 610
 01:31:48.260 --> 01:31:48.670
@@ -2446,7 +2446,7 @@ Oisin Kyne: It is just like one variable in state and then the one pass through 
 
 612
 01:31:57.840 --> 01:32:14.909
-Oisin Kyne: moving average, so as to whether or not to scale the penalty. The EF protocol team kind of originally deified it by saying it touched slashing, which it didn't. It's just a modifier to the existing inactivity penalty on a correct target and correct source.
+Oisin Kyne: moving average, so as to whether or not to scale the penalty. The EF protocol team kind of originally DFI'd it by saying it touched slashing, which it didn't. It's just a modifier to the existing inactivity penalty on a correct target and correct source.
 
 613
 01:32:15.630 --> 01:32:16.210
@@ -2570,7 +2570,7 @@ stokes: American.
 
 643
 01:35:47.390 --> 01:35:54.450
-Oisin Kyne: Ranabe, but it's it's by ETH price. So it doesn't care if you're if you're consolidated or unconsolidated. It it's indifferent.
+Oisin Kyne: Barnabé, but it's it's by ETH price. So it doesn't care if you're if you're consolidated or unconsolidated. It it's indifferent.
 
 644
 01:35:59.290 --> 01:36:06.029
@@ -2698,11 +2698,11 @@ Dima Gusakov | Lido: by simply putting one ETH deposit in front of the delegator
 
 675
 01:38:58.080 --> 01:39:08.430
-Dima Gusakov | Lido: its own withdrawal credentials. It's… it has been 32 ETH back in the day, now it can be even more if we are talking about OXO2 validators. But…
+Dima Gusakov | Lido: its own withdrawal credentials. It's… it has been 32 ETH back in the day, now it can be even more if we are talking about 0x02 validators. But…
 
 676
 01:39:08.540 --> 01:39:11.320
-Dima Gusakov | Lido: Let's assume for clarity that it's 32E.
+Dima Gusakov | Lido: Let's assume for clarity that it's 32 ETH.
 
 677
 01:39:11.400 --> 01:39:13.139
@@ -2734,7 +2734,7 @@ Dima Gusakov | Lido: So, there are two main solutions here. One is bond or pre-d
 
 684
 01:40:27.800 --> 01:40:41.119
-Dima Gusakov | Lido: make the remaining deposit with Guardians, you check the deposit route. If all the deposits as of the deposit route are good and there are no front runs, you can make your own deposit, checking on-chain that the current deposit route
+Dima Gusakov | Lido: make the remaining deposit with Guardians, you check the deposit root. If all the deposits as of the deposit root are good and there are no front runs, you can make your own deposit, checking on-chain that the current deposit root
 
 685
 01:40:41.120 --> 01:40:44.850
@@ -2778,7 +2778,7 @@ Dima Gusakov | Lido: And how it's achieved within this EIP? Pretty simple, in th
 
 695
 01:42:30.950 --> 01:42:37.780
-Dima Gusakov | Lido: Same way as 70027251 or any other EIP that is using system contract right now, and we have plenty of them.
+Dima Gusakov | Lido: Same way as 7002 and 7251 or any other EIP that is using system contract right now, and we have plenty of them.
 
 696
 01:42:37.780 --> 01:42:52.060
@@ -2786,7 +2786,7 @@ Dima Gusakov | Lido: And then, when you make a deposit, you can prove via 4788 t
 
 697
 01:42:52.480 --> 01:43:10.760
-Dima Gusakov | Lido: Perfect. What's from the implementation side? And even though you might think, oh, this problem has been with us for so long, so the solution must be super complicated, it is not. On execution layer, we just need a pre-registration request contract. Again, very similar to what we already have for 70027251 and others.
+Dima Gusakov | Lido: Perfect. What's from the implementation side? And even though you might think, oh, this problem has been with us for so long, so the solution must be super complicated, it is not. On execution layer, we just need a pre-registration request contract. Again, very similar to what we already have for 7002 and 7251 and others.
 
 698
 01:43:10.770 --> 01:43:31.290
@@ -2798,7 +2798,7 @@ Dima Gusakov | Lido: So, who supports this EIP so far? We've been in talks with 
 
 700
 01:43:43.990 --> 01:44:02.509
-Dima Gusakov | Lido: And I'm not quite sure, like, what should be the correct argument for the EIP to make it through, but if you have, like, major staking protocols here on the screen supporting the EIP, if you have L2BID saying that this is what is actually necessary, then I have no idea what's the better argument here.
+Dima Gusakov | Lido: And I'm not quite sure, like, what should be the correct argument for the EIP to make it through, but if you have, like, major staking protocols here on the screen supporting the EIP, if you have L2BEAT saying that this is what is actually necessary, then I have no idea what's the better argument here.
 
 701
 01:44:02.740 --> 01:44:06.810
@@ -2806,7 +2806,7 @@ Dima Gusakov | Lido: There is also a support from Solo Stakers on HapEVA.net.
 
 702
 01:44:06.870 --> 01:44:30.389
-Dima Gusakov | Lido: And now the final question, why Higota, why not later? Because this is a good argument to always say, oh, let's put it to the other hard fork. Well, Hegota Hard Fork will be fully packed with post-quantum migration, and I take my word, you guys will never accept this EIP for Hegota Hard Fork, because you all will be incredibly busy, as well as we will be, with supporting this post-quantum stuff on the application layer side.
+Dima Gusakov | Lido: And now the final question, why Hegota, why not later? Because this is a good argument to always say, oh, let's put it to the other hard fork. Well, ISTAR Hard Fork will be fully packed with post-quantum migration, and I take my word, you guys will never accept this EIP for ISTAR Hard Fork, because you all will be incredibly busy, as well as we will be, with supporting this post-quantum stuff on the application layer side.
 
 703
 01:44:30.420 --> 01:44:42.220
@@ -2850,7 +2850,7 @@ stokes: Or any other client teams.
 
 713
 01:45:25.450 --> 01:45:29.519
-stokes: Again, I can pull up the forecast page…
+stokes: Again, I can pull up the Forkcast page…
 
 714
 01:45:31.330 --> 01:45:38.270
@@ -2866,7 +2866,7 @@ Dima Gusakov | Lido: like, we understand the way how hard forks work, and we und
 
 717
 01:46:08.060 --> 01:46:16.810
-Dima Gusakov | Lido: And the solution is indeed simple. So deifying it right now would basically mean ignoring the problem that has been with us for 5 years.
+Dima Gusakov | Lido: And the solution is indeed simple. So DFIing it right now would basically mean ignoring the problem that has been with us for 5 years.
 
 718
 01:46:16.810 --> 01:46:41.180
@@ -2894,7 +2894,7 @@ Dima Gusakov | Lido: The system contract, yes, we talked to EL teams, and we tal
 
 724
 01:47:28.050 --> 01:47:33.380
-stokes: Yeah, meditation, Doc. And then Tomer, if you have brief comments.
+stokes: Yeah, meditationduck. And then Tomer, if you have brief comments.
 
 725
 01:47:34.350 --> 01:47:45.569
@@ -2962,7 +2962,7 @@ stokes: It looks like Enrico's dropping, although I think he was one of the clie
 
 741
 01:49:53.630 --> 01:50:01.399
-stokes: Because we did get a strong ranking from TechU. But yeah, I guess it'd be good to hear from other client teams who haven't chimed in yet.
+stokes: Because we did get a strong ranking from Teku. But yeah, I guess it'd be good to hear from other client teams who haven't chimed in yet.
 
 742
 01:50:03.640 --> 01:50:12.350
@@ -3094,11 +3094,11 @@ Matthew Keil: You know, that… and it's not that we don't…
 
 774
 01:55:29.290 --> 01:55:41.289
-Matthew Keil: take the situation seriously, but there is gonna be, as a number of other people like Potuz and Kingi had mentioned, there's gonna be a lot of work done when PQ comes in.
+Matthew Keil: take the situation seriously, but there is gonna be, as a number of other people like Potuz and kingy had mentioned, there's gonna be a lot of work done when PQ comes in.
 
 775
 01:55:41.500 --> 01:55:45.639
-Matthew Keil: Literally in the next fork, we're going to start looking at BQ Keys. So it's…
+Matthew Keil: Literally in the next fork, we're going to start looking at PQ keys. So it's…
 
 776
 01:55:46.830 --> 01:55:49.989
@@ -3134,7 +3134,7 @@ stokes: And yeah, it does seem like a nice path forward here, then, is to take t
 
 784
 01:56:42.280 --> 01:56:46.610
-stokes: jump into the Pu design and then settle this problem. Then.
+stokes: jump into the PQ design and then settle this problem. Then.
 
 785
 01:56:51.150 --> 01:56:52.980

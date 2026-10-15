@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { FUSAKA_PROGRESS, GLAMSTERDAM_PROGRESS, HEGOTA_PROGRESS, UPGRADE_PROCESS_PHASES } from '../../constants/timeline-phases';
 import { generateForkProgress, parseLocalDate, parseShortDate, daysBetween, DEFAULT_PHASE_DURATIONS, PhaseDurations } from './forkDateCalculator';
 import ForkGanttChart from './ForkGanttChart';
+import ActivationSlotPicker from './ActivationSlotPicker';
 import EditableDateCell from './EditableDateCell';
 import { Tooltip } from '../ui';
 import { getUpgradeById } from '../../data/upgrades';
@@ -1223,6 +1224,14 @@ const SchedulePage: React.FC = () => {
             })()}
           />
         </div>
+
+        {/* Activation slot picker */}
+        <ActivationSlotPicker
+          presets={[
+            { label: 'Glamsterdam', date: glamsterdamMainnetDate },
+            { label: 'Hegota', date: hegotaMainnetDate },
+          ]}
+        />
       </div>
     </div>
   );

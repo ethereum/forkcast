@@ -49,6 +49,10 @@ jobs:
           # cap could otherwise fail the fetch). If a refresh fails, the deploy fails —
           # re-run it.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run unit tests
+        run: npm run test:unit
+      - name: Check build output
+        run: npm run test:dist
 
       - name: Setup Pages
         uses: actions/configure-pages@v6

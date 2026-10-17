@@ -6,7 +6,7 @@
  * shell, that legacy URLs still redirect, and that the shipped payload hasn't
  * quietly ballooned.
  *
- * Requires a build first — `npm run build && npx vitest run tests/`.
+ * Requires a build first — `npm run build && npm run test:dist`.
  */
 import { describe, expect, it } from 'vitest';
 import crypto from 'node:crypto';
@@ -15,6 +15,11 @@ import path from 'node:path';
 import zlib from 'node:zlib';
 
 const DIST = path.resolve(import.meta.dirname, '..', 'dist');
+
+// Fail once, legibly, instead of once per test with ENOENT.
+if (!fs.existsSync(DIST)) {
+  throw new Error(`${DIST} not found. Run \`npm run build\` before \`npm run test:dist\`.`);
+}
 
 /** See the "has not changed how the heavy corpus is serialized" test. */
 const COMPILE_SEARCH_CORPUS_SHA256 =
@@ -88,10 +93,6 @@ const EXPECTED_REDIRECTS: Record<string, string> = {
 // ---------------------------------------------------------------------------
 
 describe('build output', () => {
-  it('dist/ directory exists', () => {
-    expect(fs.existsSync(DIST)).toBe(true);
-  });
-
   describe('core pages exist', () => {
     for (const page of CORE_PAGES) {
       it(page, () => {

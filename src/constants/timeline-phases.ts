@@ -2,11 +2,45 @@ import type {
   TimelinePhase,
   ProcessPhase,
   ForkProgress,
-  MacroPhaseConfig
+  MacroPhaseConfig,
+  SubstepDetail
 } from '../types/timeline';
 import devnetLaunches from '../data/generated/devnet-launches.json';
+import { forkMilestones } from '../data/milestones';
+import {
+  BUILD_DATE,
+  addDays,
+  deploymentPhase,
+  formatMilestone,
+  formatRange,
+  mainnetProgress,
+  milestoneStatus,
+  rangeStatus,
+  testnetsProgress,
+  type Milestone
+} from '../utils/milestones';
 
-export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
+/**
+ * A timeline phase for a network deployment, dated and statused from its
+ * milestone. The milestone's note (if any) follows the description.
+ */
+const deployment = (
+  id: string,
+  title: string,
+  description: string,
+  milestone: Milestone,
+  today: string
+): TimelinePhase => {
+  const { dateRange, note, status } = deploymentPhase(milestone, today);
+  return { id, title, dateRange, description: note ? `${description} ${note}` : description, status };
+};
+
+const pectra = forkMilestones.pectra;
+const fusaka = forkMilestones.fusaka;
+const glamsterdam = forkMilestones.glamsterdam;
+const hegota = forkMilestones.hegota;
+
+export const buildGlamsterdamTimelinePhases = (today: string): TimelinePhase[] => [
   {
     id: 'devnets',
     title: 'Devnets',
@@ -14,35 +48,37 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     description: 'Client teams implemented and tested Glamsterdam changes on internal development networks. Devnet-11, the last of the series, ran Sep 9 and has been shut down.',
     status: 'completed'
   },
-  {
-    id: 'plataberget',
-    title: 'Platåberget Testnet Deployment',
-    dateRange: 'Aug 13',
-    description: 'Deploy Glamsterdam to a purpose-built public testnet for initial testing. The network launched Aug 13 and Gloas activated Aug 20.',
-    status: 'completed'
-  },
-  {
-    id: 'sepolia',
-    title: 'Sepolia Testnet Deployment',
-    dateRange: 'Oct 6',
-    description: 'Deploy Glamsterdam to the permissioned validator testnet. The fork activated on schedule Oct 6.',
-    status: 'completed'
-  },
-  {
-    id: 'hoodi',
-    title: 'Hoodi Testnet Deployment',
-    dateRange: 'Oct 26',
-    description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing. The Oct 26 slot was agreed on ACDE 247, with client releases due Oct 16.',
-    status: 'upcoming'
-  },
-  {
-    id: 'mainnet',
-    title: 'Mainnet Deployment',
-    dateRange: 'Q4 2026',
-    description: 'Final deployment of Glamsterdam to Ethereum mainnet after successful testnet validation.',
-    status: 'upcoming'
-  }
+  deployment(
+    'plataberget',
+    'Platåberget Testnet Deployment',
+    'Deploy Glamsterdam to a purpose-built public testnet for initial testing. The network launched Aug 13 and Gloas activated Aug 20.',
+    glamsterdam.plataberget,
+    today
+  ),
+  deployment(
+    'sepolia',
+    'Sepolia Testnet Deployment',
+    'Deploy Glamsterdam to the permissioned validator testnet.',
+    glamsterdam.sepolia,
+    today
+  ),
+  deployment(
+    'hoodi',
+    'Hoodi Testnet Deployment',
+    'Deploy Glamsterdam to the permissionless validator testnet for final testing.',
+    glamsterdam.hoodi,
+    today
+  ),
+  deployment(
+    'mainnet',
+    'Mainnet Deployment',
+    'Final deployment of Glamsterdam to Ethereum mainnet after successful testnet validation.',
+    glamsterdam.mainnet,
+    today
+  )
 ];
+
+export const GLAMSTERDAM_TIMELINE_PHASES = buildGlamsterdamTimelinePhases(BUILD_DATE);
 
 export const PECTRA_TIMELINE_PHASES: TimelinePhase[] = [
   {
@@ -52,27 +88,27 @@ export const PECTRA_TIMELINE_PHASES: TimelinePhase[] = [
     description: 'Client teams implement and test Pectra changes on internal development networks.',
     status: 'completed'
   },
-  {
-    id: 'holesky',
-    title: 'Holešky Testnet Deployment',
-    dateRange: 'Feb 24',
-    description: 'Deploy Pectra to a testnet for initial testing.',
-    status: 'completed'
-  },
-  {
-    id: 'sepolia',
-    title: 'Sepolia Testnet Deployment',
-    dateRange: 'Mar 5',
-    description: 'Deploy Pectra to the permissioned validator testnet.',
-    status: 'completed'
-  },
-  {
-    id: 'mainnet',
-    title: 'Mainnet Deployment',
-    dateRange: 'May 7',
-    description: 'Final deployment of Pectra to Ethereum mainnet after successful testnet validation.',
-    status: 'completed'
-  }
+  deployment(
+    'holesky',
+    'Holešky Testnet Deployment',
+    'Deploy Pectra to a testnet for initial testing.',
+    pectra.holesky,
+    BUILD_DATE
+  ),
+  deployment(
+    'sepolia',
+    'Sepolia Testnet Deployment',
+    'Deploy Pectra to the permissioned validator testnet.',
+    pectra.sepolia,
+    BUILD_DATE
+  ),
+  deployment(
+    'mainnet',
+    'Mainnet Deployment',
+    'Final deployment of Pectra to Ethereum mainnet after successful testnet validation.',
+    pectra.mainnet,
+    BUILD_DATE
+  )
 ];
 
 export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
@@ -83,73 +119,85 @@ export const FUSAKA_TIMELINE_PHASES: TimelinePhase[] = [
     description: 'Client teams implement and test Fusaka changes on internal development networks.',
     status: 'completed'
   },
-  {
-    id: 'holesky',
-    title: 'Holešky Testnet Deployment',
-    dateRange: 'Oct 1',
-    description: 'Deploy Fusaka to a soon-to-be deprecated testnet for initial testing.',
-    status: 'completed'
-  },
-  {
-    id: 'sepolia',
-    title: 'Sepolia Testnet Deployment',
-    dateRange: 'Oct 14',
-    description: 'Deploy Fusaka to the permissioned validator testnet.',
-    status: 'completed'
-  },
-  {
-    id: 'hoodi',
-    title: 'Hoodi Testnet Deployment',
-    dateRange: 'Oct 28',
-    description: 'Deploy Fusaka to the permissionless validator testnet for final testing.',
-    status: 'completed'
-  },
-  {
-    id: 'mainnet',
-    title: 'Mainnet Deployment',
-    dateRange: 'Dec 3',
-    description: 'Final deployment of Fusaka to Ethereum mainnet after successful testnet validation.',
-    status: 'completed'
-  }
+  deployment(
+    'holesky',
+    'Holešky Testnet Deployment',
+    'Deploy Fusaka to a soon-to-be deprecated testnet for initial testing.',
+    fusaka.holesky,
+    BUILD_DATE
+  ),
+  deployment(
+    'sepolia',
+    'Sepolia Testnet Deployment',
+    'Deploy Fusaka to the permissioned validator testnet.',
+    fusaka.sepolia,
+    BUILD_DATE
+  ),
+  deployment(
+    'hoodi',
+    'Hoodi Testnet Deployment',
+    'Deploy Fusaka to the permissionless validator testnet for final testing.',
+    fusaka.hoodi,
+    BUILD_DATE
+  ),
+  deployment(
+    'mainnet',
+    'Mainnet Deployment',
+    'Final deployment of Fusaka to Ethereum mainnet after successful testnet validation.',
+    fusaka.mainnet,
+    BUILD_DATE
+  )
 ];
 
-export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = [
-  {
-    id: 'fork-focus',
-    title: 'Fork Focus Discussion & Headliner Proposals',
-    dateRange: 'Jan 8 - Feb 4',
-    description: 'ACD calls focus on discussing Hegotá\'s high-level goals. Headliner champions present proposals.',
-    status: 'completed'
-  },
-  {
-    id: 'headliner-discussion',
-    title: 'Headliner Discussion & Finalization',
-    dateRange: 'Feb 5 - Mar 26',
-    description: 'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.',
-    status: 'completed'
-  },
-  {
-    id: 'non-headliner-proposals',
-    title: 'Non-Headliner EIP Proposals',
-    dateRange: 'Apr 9 - Aug 6',
-    description: 'Non-headliner EIPs can be proposed for inclusion in Hegotá. Window opens April 9th, deadline August 6th.',
-    status: 'completed'
-  },
-  {
-    id: 'cfi-decisions',
-    title: 'Non-Headliner EIP CFI Decisions',
-    dateRange: 'TBD',
-    description: 'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.',
-    status: 'in-progress'
-  },
-  {
-    id: 'cfi-to-sfi',
-    title: 'CFI → SFI EIP Decisions',
-    dateRange: 'TBD',
-    description: 'As Hegotá devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.',
-    status: 'upcoming'
-  }
+// Each window runs from one milestone to the next; the day after a deadline
+// opens the following window.
+const hegotaWindows: [string, string, Milestone, Milestone | undefined, string][] = [
+  [
+    'fork-focus',
+    'Fork Focus Discussion & Headliner Proposals',
+    hegota.forkFocusStart,
+    hegota.headlinerProposalDeadline,
+    'ACD calls focus on discussing Hegotá\'s high-level goals. Headliner champions present proposals.'
+  ],
+  [
+    'headliner-discussion',
+    'Headliner Discussion & Finalization',
+    { date: addDays(hegota.headlinerProposalDeadline.date, 1) },
+    hegota.headlinerSelectionDeadline,
+    'ACD evaluates candidate headliners, solicits community feedback, and finalizes decisions.'
+  ],
+  [
+    'non-headliner-proposals',
+    'Non-Headliner EIP Proposals',
+    hegota.pfiWindowOpens,
+    hegota.pfiDeadline,
+    'Non-headliner EIPs can be proposed for inclusion in Hegotá. Window opens April 9th, deadline August 6th.'
+  ],
+  [
+    'cfi-decisions',
+    'Non-Headliner EIP CFI Decisions',
+    { date: addDays(hegota.pfiDeadline.date, 1) },
+    hegota.cfiDeadline,
+    'ACDC and ACDE calls select which Proposed for Inclusion EIPs advance to Considered for Inclusion.'
+  ],
+  [
+    'cfi-to-sfi',
+    'CFI → SFI EIP Decisions',
+    hegota.cfiDeadline,
+    undefined,
+    'As Hegotá devnets begin, final decisions on which CFI EIPs will be included in the upgrade\'s devnet.'
+  ]
 ];
+
+export const HEGOTA_TIMELINE_PHASES: TimelinePhase[] = hegotaWindows.map(
+  ([id, title, start, end, description]) => ({
+    id,
+    title,
+    dateRange: formatRange(start, end),
+    description,
+    status: rangeStatus(start, end, BUILD_DATE)
+  })
+);
 
 export const FUSAKA_PROGRESS: ForkProgress = {
   forkName: 'Fusaka',
@@ -167,79 +215,71 @@ export const FUSAKA_PROGRESS: ForkProgress = {
     {
       phaseId: 'development',
       status: 'completed',
-      actualStartDate: 'May 26, 2025',
-      actualEndDate: 'Sep 10, 2025',
+      actualStartDate: formatMilestone(fusaka.devnets[0]),
+      actualEndDate: formatMilestone(fusaka.devnets[fusaka.devnets.length - 1]),
       progressNotes: '6 devnets completed, stable devnet achieved',
-      devnets: [
-        { name: 'Devnet-0', status: 'completed', date: 'May 26, 2025' },
-        { name: 'Devnet-1', status: 'completed', date: 'Jun 9, 2025' },
-        { name: 'Devnet-2', status: 'completed', date: 'Jun 26, 2025' },
-        { name: 'Devnet-3', status: 'completed', date: 'Jul 23, 2025' },
-        { name: 'Devnet-4', status: 'completed', date: 'Aug 8, 2025' },
-        { name: 'Devnet-5', status: 'completed', date: 'Sep 10, 2025' }
-      ]
+      devnets: fusaka.devnets.map((devnet, i) => ({
+        name: `Devnet-${i}`,
+        status: milestoneStatus(devnet, BUILD_DATE),
+        date: formatMilestone(devnet)
+      }))
     },
     {
       phaseId: 'public-testnets',
-      status: 'completed',
-      actualStartDate: 'Oct 1, 2025',
-      actualEndDate: 'Oct 28, 2025',
-      progressNotes: 'Holešky (Oct 1) → Sepolia (Oct 14) → Hoodi (Oct 28)',
-      testnets: [
-        { name: 'Holešky', status: 'completed', date: 'Oct 1, 2025' },
-        { name: 'Sepolia', status: 'completed', date: 'Oct 14, 2025' },
-        { name: 'Hoodi', status: 'completed', date: 'Oct 28, 2025' }
-      ]
+      ...testnetsProgress(
+        [
+          { name: 'Holešky', milestone: fusaka.holesky },
+          { name: 'Sepolia', milestone: fusaka.sepolia },
+          { name: 'Hoodi', milestone: fusaka.hoodi }
+        ],
+        BUILD_DATE
+      )
     },
     {
       phaseId: 'mainnet-deployment',
-      status: 'completed',
-      actualEndDate: 'Dec 3, 2025',
-      progressNotes: 'Mainnet activation complete'
+      ...mainnetProgress(fusaka.mainnet, BUILD_DATE)
     }
   ]
 };
 
+/** A process deadline as a progress substep: its date once agreed, else the proposal. */
+const deadline = (name: string, milestone: Milestone, today: string): SubstepDetail => ({
+  name,
+  status: milestoneStatus(milestone, today),
+  ...(milestone.proposed ? { proposedDate: formatMilestone(milestone) } : { date: formatMilestone(milestone) })
+});
+
+/** Glamsterdam's public testnets in deployment order. Also feeds the testnet banner. */
+export const GLAMSTERDAM_TESTNETS: { name: string; networkId: string; milestone: Milestone }[] = [
+  { name: 'Platåberget', networkId: 'glamsterdam-devnet-8', milestone: glamsterdam.plataberget },
+  { name: 'Sepolia', networkId: 'sepolia', milestone: glamsterdam.sepolia },
+  { name: 'Hoodi', networkId: 'hoodi', milestone: glamsterdam.hoodi }
+];
+
 // Glamsterdam progress with actual dates for completed milestones
-const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
+const buildRawGlamsterdamProgress = (today: string): ForkProgress => ({
   forkName: 'Glamsterdam',
   phases: [
     {
       phaseId: 'headliner-selection',
       status: 'completed',
       actualStartDate: 'June 2025',
-      actualEndDate: 'Aug 14, 2025',
+      actualEndDate: formatMilestone(glamsterdam.headlinerSelectionDeadline),
       progressNotes: 'Headliner proposals received and finalized',
       substeps: [
-        {
-          name: 'Proposal Deadline',
-          status: 'completed',
-          date: 'Jun 20, 2025'
-        },
-        {
-          name: 'Selection Deadline',
-          status: 'completed',
-          date: 'Aug 14, 2025'
-        }
+        deadline('Proposal Deadline', glamsterdam.headlinerProposalDeadline, today),
+        deadline('Selection Deadline', glamsterdam.headlinerSelectionDeadline, today)
       ]
     },
     {
       phaseId: 'eip-selection',
       status: 'completed',
       actualStartDate: 'Aug 2025',
-      actualEndDate: 'Jan 29, 2026',
+      actualEndDate: formatMilestone(glamsterdam.cfiDeadline),
       progressNotes: 'PFI and CFI deadlines completed, SFI decisions finalized',
       substeps: [
-        {
-          name: 'PFI Deadline',
-          status: 'completed',
-          date: 'Oct 30, 2025'
-        },
-        {
-          name: 'CFI Deadline',
-          status: 'completed',
-          date: 'Jan 29, 2026'
-        }
+        deadline('PFI Deadline', glamsterdam.pfiDeadline, today),
+        deadline('CFI Deadline', glamsterdam.cfiDeadline, today)
       ]
     },
     {
@@ -272,38 +312,15 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'public-testnets',
-      status: 'in-progress',
-      actualStartDate: 'Aug 13, 2026',
       projectedDate: 'Q3 2026',
-      progressNotes: 'Platåberget and Sepolia are forked; Hoodi agreed for Oct 26',
-      // Holešky is deprecated, so Glamsterdam gets a purpose-built public testnet
-      // (glamsterdam-devnet-8) in its place.
-      testnets: [
-        { name: 'Platåberget', status: 'completed', date: 'Aug 13, 2026' },
-        {
-          name: 'Sepolia',
-          status: 'completed',
-          // Agreed on ACDC #187 with no objections, and forked on that slot.
-          date: 'Oct 6, 2026',
-          dateSource: 'https://forkcast.org/calls/acdc/187#00:30:33'
-        },
-        {
-          name: 'Hoodi',
-          status: 'upcoming',
-          // Agreed on ACDE #247 with no pushback, after Sepolia forked.
-          date: 'Oct 26, 2026',
-          dateSource: 'https://forkcast.org/calls/acde/247#00:06:44'
-        }
-      ]
+      ...testnetsProgress(GLAMSTERDAM_TESTNETS, today)
     },
     {
       phaseId: 'mainnet-deployment',
-      status: 'upcoming',
-      projectedDate: 'Q4 2026',
-      progressNotes: 'Target mainnet activation Q4 2026'
+      ...mainnetProgress(glamsterdam.mainnet, today)
     }
   ]
-};
+});
 
 const RAW_HEGOTA_PROGRESS: ForkProgress = {
   forkName: 'Hegota',
@@ -311,41 +328,22 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
     {
       phaseId: 'headliner-selection',
       status: 'completed',
-      actualStartDate: 'Jan 8, 2026',
-      actualEndDate: 'Mar 26, 2026',
+      actualStartDate: formatMilestone(hegota.forkFocusStart),
+      actualEndDate: formatMilestone(hegota.headlinerSelectionDeadline),
       progressNotes: 'FOCIL (EIP-7805) and Frame Transaction (EIP-8141) both SFI\'d as headliners',
       substeps: [
-        {
-          name: 'Proposal Deadline',
-          status: 'completed',
-          date: 'Feb 4, 2026'
-        },
-        {
-          name: 'Selection Deadline',
-          status: 'completed',
-          date: 'Mar 26, 2026'
-        }
+        deadline('Proposal Deadline', hegota.headlinerProposalDeadline, BUILD_DATE),
+        deadline('Selection Deadline', hegota.headlinerSelectionDeadline, BUILD_DATE)
       ]
     },
     {
       phaseId: 'eip-selection',
-      status: 'in-progress',
+      status: rangeStatus(hegota.pfiWindowOpens, hegota.cfiDeadline, BUILD_DATE),
       projectedDate: 'Q2-Q3 2026',
       progressNotes: 'Non-headliner EIP proposal window: April 9th – August 6th',
       substeps: [
-        {
-          name: 'PFI Deadline',
-          status: 'completed',
-          date: 'Aug 6, 2026'
-        },
-        {
-          name: 'CFI Deadline',
-          status: 'upcoming',
-          // No specific date was put forward — the stated goal is to CFI before
-          // Devcon (first week of November), and this is the last ACDC/ACDE call
-          // that fits.
-          proposedDate: 'Oct 29, 2026'
-        }
+        deadline('PFI Deadline', hegota.pfiDeadline, BUILD_DATE),
+        deadline('CFI Deadline', hegota.cfiDeadline, BUILD_DATE)
       ]
     },
     {
@@ -375,9 +373,7 @@ const RAW_HEGOTA_PROGRESS: ForkProgress = {
     },
     {
       phaseId: 'mainnet-deployment',
-      status: 'upcoming',
-      projectedDate: 'Q2 2027',
-      progressNotes: 'Target mainnet activation Q2 2027'
+      ...mainnetProgress(hegota.mainnet, BUILD_DATE)
     }
   ]
 };
@@ -409,7 +405,9 @@ function enrichDevnetDates(progress: ForkProgress, forkKey: string): ForkProgres
   };
 }
 
-export const GLAMSTERDAM_PROGRESS = enrichDevnetDates(RAW_GLAMSTERDAM_PROGRESS, 'glamsterdam');
+export const buildGlamsterdamProgress = (today: string): ForkProgress =>
+  enrichDevnetDates(buildRawGlamsterdamProgress(today), 'glamsterdam');
+export const GLAMSTERDAM_PROGRESS = buildGlamsterdamProgress(BUILD_DATE);
 export const HEGOTA_PROGRESS = enrichDevnetDates(RAW_HEGOTA_PROGRESS, 'hegota');
 
 export const UPGRADE_PROCESS_PHASES: ProcessPhase[] = [

@@ -2,6 +2,25 @@
   "eipId": 7928,
   "commits": [
     {
+      "sha": "068e50ad2afa94c3bd967ce584867fb27d371c01",
+      "date": "2026-10-19T17:20:16Z",
+      "message": "Update EIP-7928: align BAL retention with the history expiry window",
+      "author": "nflaig",
+      "prNumber": null,
+      "patch": "@@ -310,7 +310,7 @@ The execution layer provides the RLP-encoded `blockAccessList` to the consensus\n \n The `blockAccessList` field contains the RLP-encoded BAL or `null` for pre-Amsterdam blocks or when data has been pruned.\n \n-The EL MUST retain BALs for at least the duration of the weak subjectivity period (3533 epochs) to support synchronization with re-execution after being offline for less than the WSP.\n+The EL MUST keep BALs available via `engine_getPayloadBodiesBy*V2` for at least `HISTORY_PRUNE_EPOCHS` (14299 epochs), the retention window of block bodies, so that consensus clients can serve full execution payloads for as long as the p2p network requires them.\n \n ### State Transition Function\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "41a838decba33325d01bd99b1cd6072c51214fac",
+      "date": "2026-10-19T08:19:17Z",
+      "message": "Update EIP-7928: Fix block size figure and polish wording",
+      "author": "nerolation",
+      "prNumber": null,
+      "additions": 47,
+      "deletions": 47
+    },
+    {
       "sha": "5ef380124bd68d09c02fa90d0de0f2455f37d5ee",
       "date": "2026-10-06T21:57:47Z",
       "message": "Update EIP-2780: Move to Last Call (#12442)",
@@ -693,16 +712,6 @@
       "prNumber": null,
       "additions": 204,
       "deletions": 0
-    }
-  ],
-  "openPrs": [
-    {
-      "number": 12347,
-      "title": "Update EIP-7928: align BAL retention with the history expiry window",
-      "author": "nflaig",
-      "updatedAt": "2026-10-13T05:52:56Z",
-      "additions": 1,
-      "deletions": 1
     }
   ]
 }

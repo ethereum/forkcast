@@ -1,0 +1,47 @@
+{
+  "meeting": "RPC #037 - 2026-10-19",
+  "sections": [
+    {
+      "heading": "V1 Release Readiness and Meta Issue Status",
+      "summary": "Amsterdam chain upgrade unblocked many items; remaining should-fix-before-V1 issues are not blocking but Chase is not ready to cut a release yet.",
+      "timestamp": "00:03:08",
+      "body": "- Chase merged a large batch of PRs last week and closed out many items on the meta issue, but discovered additional issues during the Amsterdam chain upgrade.\n- None of the newly discovered issues are considered blocking, but some are still open under the \"should fix before V1\" category.\n- The Amsterdam chain upgrade is now complete, which unblocked significant progress.\n- Hive test pass percentages did not change much; Erigon has one open PR causing a test failure.\n- Decision: no V1 release cut yet, but remaining open items will not block a future release."
+    },
+    {
+      "heading": "Issue 915: eth_simulate State Override Edge Case",
+      "summary": "State overrides that create empty accounts produce states impossible on-chain; Felix has been asked to review this niche but complicated problem.",
+      "timestamp": "00:05:37",
+      "body": "- [Issue 915](https://github.com/ethereum/execution-apis/issues/915) involves eth_simulate and eth_call state overrides that can make an account empty, asking clients to simulate a state that cannot exist on-chain.\n- Chase considers this a niche problem and not a blocker for a V1 release.\n- Felix has agreed to look at the issue; Łukasz has also reviewed it.\n- Most remaining should-fix-before-V1 items are pending client team PR merges rather than spec disagreements."
+    },
+    {
+      "heading": "Trace Namespace Spec and Geth Support",
+      "summary": "Geth is the only client not supporting the Trace namespace; lightclient committed to reviewing the 4,000-line go-ethereum PR today.",
+      "timestamp": "00:08:28",
+      "body": "- [Issue 890](https://github.com/ethereum/execution-apis/issues/890) and [PR 895](https://github.com/ethereum/execution-apis/pull/895) cover the Trace namespace spec.\n- Banteg has done extensive work aligning the spec with every client except Geth; all other clients that engaged are in alignment.\n- The execution-APIs spec PR is based on Banteg's go-ethereum PR (35791), so progress is blocked on the Geth team reviewing and merging that PR.\n- lightclient confirmed he will look at it today but noted it is ~4,000 lines of code, so full review will take time.\n- Łukasz raised process concerns about the dependency on Geth for spec progression; Chase acknowledged the concern but said removing Geth from the process is not realistic."
+    },
+    {
+      "heading": "Opcode Tracer Storage Revert Behavior (PR 947 / Issue 949)",
+      "summary": "Post-Amsterdam opcode tracer differences found in storage revert output; Geth already merged a fix, Erigon and Reth have PRs open.",
+      "timestamp": "00:13:21",
+      "body": "- [PR 947](https://github.com/ethereum/execution-apis/pull/947) fixes [issue 949](https://github.com/ethereum/execution-apis/issues/949), clarifying what happens to storage output when a transaction is reverted in the opcode tracer.\n- Geth has already merged the fix; Nethermind and Besu already conform; Erigon and Reth have open PRs.\n- Chase asked for spec verbiage review and approval; once remaining client PRs are merged, the spec PR can be merged."
+    },
+    {
+      "heading": "Schema and Documentation PRs (941, 940, 942, 918, 943)",
+      "summary": "Several small schema and doc PRs were reviewed and approved; 941 to be merged, 940 to be reviewed shortly.",
+      "timestamp": "00:15:56",
+      "body": "- [PR 941](https://github.com/ethereum/execution-apis/pull/941) and [PR 940](https://github.com/ethereum/execution-apis/pull/940) are small schema changes; Chase approved 941 and said he would merge it, and will review 940.\n- [PR 918](https://github.com/ethereum/execution-apis/pull/918) updates examples to use `input` instead of the deprecated `data` property in the generic transaction schema, related to earlier discussion in issue 663.\n  - Agreement that old property names should not appear in examples.\n- [PR 943](https://github.com/ethereum/execution-apis/pull/943) fixes broken links in documentation; approved.\n- [PR 942](https://github.com/ethereum/execution-apis/pull/942) (account overrides without storage) was grouped with these as another small schema change."
+    },
+    {
+      "heading": "New Client Listing Policy (Ethlambda / PR 922)",
+      "summary": "Decision on adding Ethlambda to the spec deferred pending confirmation from Will Corcoran on whether the client will appear in the Glamsterdam blog post.",
+      "timestamp": "00:18:32",
+      "body": "- [PR 922](https://github.com/ethereum/execution-apis/pull/922) proposes adding Ethlambda (`LA`) to the spec's ClientCode list.\n- Ethlambda primarily targets Lean Ethereum (post-quantum Ethereum initiative led by Justin Drake) but has recently started beacon chain work and appears on the network crawler as Amsterdam-ready.\n- lightclient explained the historical heuristic: client listing in execution-APIs follows which clients appear in the official EF blog post announcing network upgrades.\n  - The person likely writing the next blog post is Will Corcoran.\n- Decision: ask Will Corcoran whether Ethlambda will be listed in the Glamsterdam announcement before merging the PR.\n  - If Ethlambda is on the blog post, merge; otherwise, hold off.\n- ethrex (a different client) was noted as being on the Hoodi announcement but is not the client in question here.\n- Lean Ethereum devnets are closed and run by Ethlambda using EF infrastructure."
+    },
+    {
+      "heading": "eth_getLogs V2 Proposal (PR 900)",
+      "summary": "Boma plans to present PR 900 at ACDE; Łukasz urged aligning any new log endpoint with the Trustless Log Index EIP instead.",
+      "timestamp": "00:24:37",
+      "body": "- [PR 900](https://github.com/ethereum/execution-apis/pull/900) proposes an eth_getLogsV2 endpoint.\n- Boma intends to bring this PR to ACDE for broader discussion and decision.\n- Łukasz expressed strong reluctance to add new endpoints that are not compatible with the Trustless Log Index EIP, arguing new work should prioritize trustless compatibility.\n  - He suggested the proposal could potentially be combined with or aligned to the Trustless Log Index approach.\n- lightclient clarified Łukasz's position: the trustless log index should be the preferred direction rather than adding more non-trustless endpoints.\n- Boma acknowledged the feedback and asked if changes are needed before the ACDE presentation; no specific changes were requested beyond the trustless alignment concern."
+    }
+  ]
+}

@@ -2,6 +2,35 @@
   "eipId": 7906,
   "commits": [
     {
+      "sha": "614ed450d05207e2f8d41273ecc82af9d0bf1df5",
+      "date": "2026-10-20T15:21:16Z",
+      "message": "Update EIP-7906: Update authors in EIP-7906",
+      "author": "forshtat",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7906\n title: Transaction Assertions via State Diff Opcode\n description: Opcodes that expose a transaction's state diff to on-chain assertions that can reject the transaction's outcome\n-author: Alex Forshtat (@forshtat), Shahaf Nacson (@shahafn), Dror Tirosh (@drortirosh), Yoav Weiss (@yoavw), Fredrik Svantes (@0xfredrik), Daniil Ankushin (@AnkushinDaniil)\n+author: Alex Forshtat (@forshtat), Shahaf Nacson (@shahafn), Dror Tirosh (@drortirosh), Yoav Weiss (@yoavw), Fredrik Svantes (@0xfredrik), Daniil Ankushin (@AnkushinDaniil), lightclient (@lightclient)\n discussions-to: https://ethereum-magicians.org/t/eip-restricted-behavior-transaction-type/23130\n status: Draft\n type: Standards Track",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "845c9c8cfb41157d5c6bbd866cdcf9b509709dc8",
+      "date": "2026-10-20T15:14:06Z",
+      "message": "Update EIP-7906: include tx.sender in nonces_changed only when its account nonce changes",
+      "author": "AnkushinDaniil",
+      "prNumber": null,
+      "patch": "@@ -131,7 +131,7 @@ A storage wipe can clear slots the transaction never wrote, for example a `CREAT\n \n An address appears in `codes_changed` when its code hash at the time of the `TXTRACE` call differs from its code hash at transaction start. As with `EXTCODEHASH`, the code hash is computed over the code as stored: an [EIP-7702](./eip-7702.md) delegation indicator is hashed itself and is not followed to the code it delegates to. An account that does not exist counts as having the empty-code hash, where `EXTCODEHASH` would return `0`. The table therefore includes contracts created by the transaction, whose `codehash_before` is the empty-code hash, and delegation indicators the transaction installed, changed, or cleared. An account that a `CREATE`/`CREATE2` leaves with empty code is not enumerated, as it has no code change.\n \n-An address appears in `nonces_changed` when its nonce at the time of the `TXTRACE` call differs from its nonce at transaction start. An account that does not exist counts as having nonce `0`. The table always includes `tx.sender`, whose nonce `APPROVE` increments in the validation prefix, and also includes any account that executed `CREATE` or `CREATE2` and any contract the transaction created.\n+An address appears in `nonces_changed` when its nonce at the time of the `TXTRACE` call differs from its nonce at transaction start. An account that does not exist counts as having nonce `0`. The table includes `tx.sender` whenever `APPROVE` increments its account nonce in the validation prefix, and also includes any account that executed `CREATE` or `CREATE2` and any contract the transaction created.\n \n An account that [EIP-6780](./eip-6780.md) deletes at the end of the transaction appears as the execution body left it, since the deletion happens after the last frame. A contract created and destroyed in the same transaction therefore still appears in `codes_changed` and `nonces_changed`.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "899bef0ae0f9358f246e6fe833fe580b0564fbb2",
+      "date": "2026-10-20T14:47:50Z",
+      "message": "Update EIP-7906: 7906 remove txdiff",
+      "author": "lightclient",
+      "prNumber": null,
+      "additions": 67,
+      "deletions": 172
+    },
+    {
       "sha": "5930e94b0cdb7b88f8c96c75555cf4fc2b3cb3b0",
       "date": "2026-10-16T20:17:34Z",
       "message": "Update EIP-7906: rename POST_TX to ASSERT",
@@ -340,14 +369,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12530,
-      "title": "Update EIP-7906: 7906 remove txdiff",
-      "author": "lightclient",
-      "updatedAt": "2026-10-16T20:25:53Z",
-      "additions": 106,
-      "deletions": 211
-    },
     {
       "number": 12304,
       "title": "Update EIP-7906: add POST_TX_EXEMPT frame flag",

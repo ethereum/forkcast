@@ -1,0 +1,177 @@
+{
+  "meeting": "AA #007 - 2026-10-20",
+  "eips": [
+    {
+      "eip": 8250,
+      "title": "Keyed Nonces for Frame Transactions",
+      "weight": "mentioned",
+      "summary": "Toni noted the nonce field naming preference may require an update in EIP-8250.",
+      "moments": [
+        {
+          "timestamp": "00:11:37",
+          "context": "Toni said the leaning toward 'nonce' over 'nonce sequence' might need an update in 8250, and that he would check."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Discussed adding a max fee field to Frame Transactions and whether gas accounting should remain in or be separated from this EIP.",
+      "moments": [
+        {
+          "timestamp": "00:17:16",
+          "context": "Lightclient identified three PRs for the next devnet, starting with the max fee PR that modifies the 8141 Frame Transaction fields."
+        },
+        {
+          "timestamp": "00:21:09",
+          "context": "Lightclient described the max fee update to 8141 as an aggregate cost field across execution, state, and blob gas dimensions."
+        },
+        {
+          "timestamp": "00:42:18",
+          "context": "Justin Florentine said he would consider proposing a PR to 8141 that removes gas accounting and falls back to status quo 8037, but lightclient objected."
+        }
+      ]
+    },
+    {
+      "eip": 7999,
+      "title": "Unified multidimensional fee market",
+      "weight": "discussed",
+      "summary": "Debated whether its unified multidimensional fee market concepts should be integrated into Frame Transactions or kept separate.",
+      "moments": [
+        {
+          "timestamp": "00:19:54",
+          "context": "Lightclient explained the max fee PR originates from EIP-7999 and its goal of simplifying multi-dimensional gas UX for users."
+        },
+        {
+          "timestamp": "00:25:33",
+          "context": "Soispoke raised concerns that 7999 is complex and deserves more scrutiny before being shipped as a PR within frames."
+        },
+        {
+          "timestamp": "00:31:03",
+          "context": "Justin Florentine said he has always preferred 7999 over 8037 and suggested gas accounting should be pulled out of 8141 and handled by 7999 separately."
+        },
+        {
+          "timestamp": "00:39:10",
+          "context": "Lightclient asked whether 7999 was proposed for Hegota; Justin suggested removing gas accounting from 8141 and relying on 7999 instead."
+        },
+        {
+          "timestamp": "00:41:27",
+          "context": "Lightclient said since 7999 was not included in Hegota, someone should make a PR to frames showing what full 7999 integration would look like to compare against the max fee PR."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "Lightclient argued the state gas reservoir approach in 8037 is a hack for one-dimensional transactions and should not carry over to frames.",
+      "moments": [
+        {
+          "timestamp": "00:31:03",
+          "context": "Justin Florentine said 8037 was not nearly as simple as expected and preferred 7999's approach."
+        },
+        {
+          "timestamp": "00:42:37",
+          "context": "Lightclient said 8037 is a hack to make state gas work in a one-dimensional transaction object, and frames should expose the state gas field directly instead."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Lightclient proposed removing the TXDIFF opcode from 7906 in favor of relying solely on TXTRACE; Alex Forshtat raised a pre-state use case against removal.",
+      "moments": [
+        {
+          "timestamp": "00:47:38",
+          "context": "Lightclient presented a PR to 7906 proposing removal of the TXDIFF opcode, arguing TXTRACE covers the same use cases and TXDIFF is just an optimization."
+        },
+        {
+          "timestamp": "00:50:14",
+          "context": "Alex Forshtat argued TXDIFF is needed for checking pre-state of storage slots, such as verifying a proxy's implementation slot was not front-run before the transaction."
+        },
+        {
+          "timestamp": "00:53:03",
+          "context": "Lightclient acknowledged the pre-state use case is valid and decided to table the PR and think about it further before merging."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "discussed",
+      "summary": "Proposed for inclusion in the next devnet alongside SETCODEFROM as critical parts of the PQ transition.",
+      "moments": [
+        {
+          "timestamp": "00:55:47",
+          "context": "Ivan suggested adding SETCODEFROM and 8151 to bogota-devnet-2; lightclient agreed these are pretty critical parts of their PQ transition proposal."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "discussed",
+      "summary": "Proposed for bogota-devnet-2 alongside EIP-8151 and endorsed as a critical part of the PQ transition; also on Spencer's five-EIP list.",
+      "moments": [
+        {
+          "timestamp": "00:55:47",
+          "context": "Iván suggested adding SETCODEFROM and 8151 to bogota-devnet-2; lightclient agreed these are pretty critical parts of their PQ transition proposal."
+        },
+        {
+          "timestamp": "00:56:13",
+          "context": "Spencer listed SETCODEFROM (EIP-8298) among five EIPs he proposed adding to the next devnet for earlier testing."
+        }
+      ]
+    },
+    {
+      "eip": 8131,
+      "title": "Unified Transaction Content Floor",
+      "weight": "mentioned",
+      "summary": "Listed by Spencer as a candidate for the next devnet to enable earlier benchmarking testing.",
+      "moments": [
+        {
+          "timestamp": "00:56:13",
+          "context": "Spencer proposed EIP-8131 Unified Transaction Content Floor for the next devnet to test benchmarking earlier in the cycle."
+        }
+      ]
+    },
+    {
+      "eip": 8279,
+      "title": "Block Access List Byte Floor",
+      "weight": "mentioned",
+      "summary": "Listed by Spencer as a candidate for the next devnet to enable earlier benchmarking testing.",
+      "moments": [
+        {
+          "timestamp": "00:56:13",
+          "context": "Spencer proposed EIP-8279 Block Access List Byte Floor for the next devnet to test benchmarking earlier."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "mentioned",
+      "summary": "Listed by Spencer as critical to test earlier because it requires fork transitions across multiple devnets.",
+      "moments": [
+        {
+          "timestamp": "00:56:13",
+          "context": "Spencer said EIP-8253 bump nonce of zero-nonce storage accounts is critical to add earlier because proper testing requires fork transitions."
+        }
+      ]
+    },
+    {
+      "eip": 4758,
+      "title": "Deactivate SELFDESTRUCT",
+      "weight": "mentioned",
+      "summary": "Listed by Spencer as a candidate for the next devnet because deactivating SELFDESTRUCT reduces the test space.",
+      "moments": [
+        {
+          "timestamp": "00:56:13",
+          "context": "Spencer proposed adding EIP-4758 Deactivate SELFDESTRUCT to the next devnet to reduce the test space earlier."
+        }
+      ]
+    }
+  ]
+}

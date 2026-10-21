@@ -1,0 +1,69 @@
+{
+  "meeting": "P2P #010 - 2026-10-21",
+  "eips": [
+    {
+      "eip": 8334,
+      "title": "Bundled Attestation Propagation",
+      "weight": "discussed",
+      "summary": "Simulation results presented showing bundled attestation propagation reduces bandwidth by nearly half and improves goldfish vote latency by over 20%.",
+      "moments": [
+        {
+          "timestamp": "00:20:02",
+          "context": "Kamil suggested discussing EIP-8334 if time permits; Sukun noted the CL teams he wanted to pitch it to were absent."
+        },
+        {
+          "timestamp": "00:27:32",
+          "context": "Sukun mentioned that doing EIP-8334 eliminates the need for topic prioritization, saving enough bandwidth for vote propagation in the current network."
+        },
+        {
+          "timestamp": "00:33:03",
+          "context": "Sukun presented simulation results with EIP-8334, showing attestation traffic reduced by roughly half and goldfish votes propagating about 20% faster at P99."
+        },
+        {
+          "timestamp": "00:37:48",
+          "context": "Sukun showed comparison graphs of traffic with and without EIP-8334, noting most traffic is FFG votes and EIP-8334 significantly reduces it."
+        },
+        {
+          "timestamp": "00:40:23",
+          "context": "Sukun showed Scenario 3 without EIP-8334 noting it works but is at the edge, and argued EIP-8334 would enable 4-slot rounds with 8-slot finality."
+        }
+      ]
+    },
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "discussed",
+      "summary": "Referenced as a simple near-term step for fast execution payload broadcast that frees bandwidth and could be iterated toward more advanced techniques like zcast.",
+      "moments": [
+        {
+          "timestamp": "00:37:06",
+          "context": "Sukun noted that EIP-8334 frees up bandwidth space that can be used for bigger payloads via 8411 and other things."
+        },
+        {
+          "timestamp": "00:42:47",
+          "context": "Sukun mentioned that with 8411, payload propagation time would be much lower than the 2-second figure shown for a 256KB payload."
+        },
+        {
+          "timestamp": "01:09:37",
+          "context": "Kamil described 8411 as super simple and asked Csaba how zcast techniques could build on it iteratively toward future forks."
+        },
+        {
+          "timestamp": "01:10:01",
+          "context": "Csaba explained that 8411's segmentation gain is the minimum, and several zcast techniques can be applied on top of 8411 as local implementation policy without protocol changes."
+        }
+      ]
+    },
+    {
+      "eip": 8371,
+      "title": "RowDAS - Distributed Blob Reconstruction",
+      "weight": "mentioned",
+      "summary": "Named as one of the sampled-broadcast schemes zcast aims to be able to serve.",
+      "moments": [
+        {
+          "timestamp": "00:56:21",
+          "context": "Csaba listed RowDAS among the schemes zcast should cover: \"sample broadcast as it is done in FullDAS, or to be able to do what RowDAS is doing\"."
+        }
+      ]
+    }
+  ]
+}

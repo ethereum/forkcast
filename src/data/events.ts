@@ -12,6 +12,12 @@ export interface TimelineEvent {
    * Cartographoor snapshot the route set is built from.
    */
   networkId?: string;
+  /**
+   * Watch party / upgrade livestream for the activation. Rendered as a link on
+   * the timeline card only: a feed item's own <link> has to resolve to a page
+   * this site builds, so that stays `/networks/{id}`.
+   */
+  streamUrl?: string;
 }
 
 const FORK_DISPLAY_NAMES: Record<string, string> = {
@@ -170,7 +176,17 @@ export const timelineEvents: TimelineEvent[] = [
     datetime: '2026-10-06 13:53:36',
     title: 'Glamsterdam Live on Sepolia Testnet',
     category: 'testnet',
-    networkId: 'sepolia'
+    networkId: 'sepolia',
+    streamUrl: 'https://www.youtube.com/live/T9sXJYIEDFQ'
+  },
+  {
+    type: 'event',
+    date: '2026-10-26',
+    datetime: '2026-10-26 17:42:48',
+    title: 'Glamsterdam Live on Hoodi Testnet',
+    category: 'testnet',
+    networkId: 'hoodi',
+    streamUrl: 'https://www.youtube.com/live/w6ucv7ShQAk'
   },
   ...generatedDevnetEvents,
 ];

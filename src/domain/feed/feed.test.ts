@@ -229,6 +229,18 @@ describe('buildFeedItems', () => {
       '2025-11-01',
     ]);
   });
+
+  it('holds an activation out of the feed until its date has passed', () => {
+    const scheduled = {
+      stageChanges: [],
+      events: [makeEvent({ title: 'Glamsterdam Live on Hoodi Testnet', date: '2026-10-26' })],
+      callsPublished: [],
+    };
+    expect(buildFeedItems(config(), scheduled, 'https://forkcast.org', '2026-10-21')).toEqual([]);
+    expect(
+      buildFeedItems(config(), scheduled, 'https://forkcast.org', '2026-10-26').map((i) => i.title),
+    ).toEqual(['Glamsterdam Live on Hoodi Testnet']);
+  });
 });
 
 describe('buildRssXml', () => {

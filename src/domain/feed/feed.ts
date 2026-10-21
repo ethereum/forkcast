@@ -105,6 +105,7 @@ export function buildFeedItems(
     callsPublished: CallPublished[];
   },
   site: string,
+  today: string = new Date().toISOString().slice(0, 10),
 ): FeedItem[] {
   const items: FeedItem[] = [];
 
@@ -115,7 +116,11 @@ export function buildFeedItems(
   if (config.networkActivations.enabled) {
     items.push(
       ...sources.events
-        .filter((event) => ACTIVATION_CATEGORIES.has(event.category))
+        // An activation can be entered ahead of its slot so the timeline can
+        // show it coming. The feed item says it *is* live and its GUID embeds
+        // the date, so publishing early both misinforms and re-emits as a
+        // second item if the slot slips — and a published item can't be recalled.
+        .filter((event) => ACTIVATION_CATEGORIES.has(event.category) && event.date <= today)
         .map((event) => timelineEventToFeedItem(event, site)),
     );
   }

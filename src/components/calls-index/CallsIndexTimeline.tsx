@@ -119,8 +119,18 @@ const TimelineItemCard = ({ item, sectionId }: { item: TimelineItem; sectionId: 
             <div className={`h-2.5 w-2.5 flex-shrink-0 rounded-full ${EVENT_DOT_STYLES[item.category]}`}></div>
             <div className="min-w-0">
               <div className="truncate text-sm font-medium text-slate-900 dark:text-slate-100">{item.title}</div>
-              <div className="mt-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
-                {item.category}
+              <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400">
+                <span>{item.category}</span>
+                {item.streamUrl && (
+                  <a
+                    href={item.streamUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="whitespace-nowrap text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+                  >
+                    Livestream ↗
+                  </a>
+                )}
               </div>
             </div>
           </div>

@@ -7,6 +7,8 @@ import {
   findOtherClaimingPr,
   getPendingPullRequestNumber,
   hasCuratedContent,
+  eipSubmissionRejection,
+  isAllocatedEipNumber,
   pendingPullRequest,
   updateExistingEip,
 } from './eip-record-sync.mjs';
@@ -204,7 +206,7 @@ async function fetchEipFromPrBranch(prNumber, eipNumber, headers) {
 /**
  * Process a single PR: fetch its EIP files, parse, and create/update JSON.
  */
-async function processPr(prNumber, headers, trackedEipIds, requiresFilter, decisionEipIds = new Set()) {
+async function processPr(prNumber, headers) {
   const eipNumbers = await fetchPrEipFiles(prNumber, headers);
   if (eipNumbers.length === 0) return { eipNumbers: [] };
 
@@ -220,25 +222,20 @@ async function processPr(prNumber, headers, trackedEipIds, requiresFilter, decis
       );
     }
 
-    // Skip placeholder EIP numbers (TBD, XXXX, 9999, etc.)
-    const eipField = frontmatter.eip;
-    if (eipField && !/^\d+$/.test(String(eipField).trim())) {
-      continue;
-    }
-    if (eipNumber === 9999) {
+    // Placeholders (`eip-9999.md`) and malformed submissions carry a number
+    // that no editor allocated. They have no stable identity to key a record on.
+    if (!isAllocatedEipNumber(eipNumber, frontmatter.eip)) {
       continue;
     }
 
     const mapped = mapOfficialToLocal(frontmatter);
 
-    // In auto-discovery mode, keep an EIP if its requires references a tracked
-    // EIP OR an ACD call has already acted on it (stage-change decision in a
-    // key_decisions.json). Otherwise skip it.
-    if (requiresFilter) {
-      const requires = mapped.requires || [];
-      const referencesTracked = requires.some((id) => trackedEipIds.has(id));
-      const hasDecision = decisionEipIds.has(eipNumber);
-      if (!referencesTracked && !hasDecision) continue;
+    const rejection = eipSubmissionRejection(mapped);
+    if (rejection) {
+      console.log(
+        `  EIP-${eipNumber}: ${rejection}, skipping PR #${prNumber}`,
+      );
+      continue;
     }
 
     candidates.push({ eipNumber, mapped });
@@ -353,13 +350,18 @@ async function main() {
 Fetch EIP PRs
 =============
 
-Discovers EIPs in open PRs that depend on tracked EIPs.
+Discovers EIPs added by open PRs in ethereum/EIPs.
+
+Every added EIPS/eip-{n}.md with an editor-allocated number gets a record.
+Skipped: placeholders (eip-9999.md), submissions whose frontmatter does not
+claim the number in their filename, invented types, and ERCs, which belong
+in ethereum/ERCs.
 
 Usage:
   node scripts/fetch-eip-prs.mjs [options]
 
 Options:
-  --pr=NUMBER  Fetch EIPs from a single PR (skips requires filter)
+  --pr=NUMBER  Fetch EIPs from a single PR
   -h, --help   Show this help message
 
 Environment:
@@ -373,10 +375,10 @@ Environment:
     ...getAuthHeaders(),
   };
 
-  // Single PR mode: skip requires filter, skip manifest
+  // Single PR mode: skip the manifest
   if (options.singlePr) {
     console.log(`Fetching EIPs from PR #${options.singlePr}...`);
-    const result = await processPr(options.singlePr, headers, null, false);
+    const result = await processPr(options.singlePr, headers);
     if (result.eipNumbers.length === 0) {
       console.log('No new EIP files found in this PR.');
     }
@@ -385,10 +387,9 @@ Environment:
   }
 
   // Auto-discovery mode
-  const trackedEipIds = getTrackedEipIds();
   const decisionEipIds = loadDecisionEipIds();
   console.log(
-    `Loaded ${trackedEipIds.size} tracked EIP IDs, ${decisionEipIds.size} decision EIP IDs.`,
+    `Loaded ${getTrackedEipIds().size} tracked EIP IDs, ${decisionEipIds.size} decision EIP IDs.`,
   );
 
   const manifest = loadPrManifest();
@@ -415,13 +416,7 @@ Environment:
     const results = await Promise.all(
       batch.map(async (pr) => {
         try {
-          const result = await processPr(
-            pr.number,
-            headers,
-            trackedEipIds,
-            true,
-            decisionEipIds,
-          );
+          const result = await processPr(pr.number, headers);
           return {
             prNumber: pr.number,
             updatedAt: pr.updatedAt,
@@ -466,7 +461,7 @@ Environment:
         removed += removePendingEipsForPr(
           manifest,
           r.prNumber,
-          'no longer references tracked EIPs',
+          'PR no longer adds a qualifying EIP',
         );
       }
     }
@@ -505,13 +500,7 @@ Environment:
       }
       if (manifest.prs[pr.number]) continue; // already handled by the crawl
 
-      const result = await processPr(
-        pr.number,
-        headers,
-        currentTracked,
-        true,
-        decisionEipIds,
-      );
+      const result = await processPr(pr.number, headers);
       if (result.eipNumbers.length > 0) {
         manifest.prs[pr.number] = {
           updatedAt: pr.updatedAt,

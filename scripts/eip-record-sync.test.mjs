@@ -4,6 +4,9 @@ import {
   findOtherClaimingPr,
   getPendingPullRequestNumber,
   hasCuratedContent,
+  eipSubmissionRejection,
+  isAllocatedEipNumber,
+  isValidEipType,
   pendingPullRequest,
   updateExistingEip,
 } from './eip-record-sync.mjs';
@@ -182,5 +185,98 @@ describe('pending EIP deletion guards', () => {
     const manifest = { prs: { 12099: {}, 12151: { eipNumbers: [] } } };
 
     expect(findOtherClaimingPr(manifest, 12178, 8367)).toBeNull();
+  });
+});
+
+describe('editor-allocated EIP numbers', () => {
+  it('accepts a number that matches its filename', () => {
+    expect(isAllocatedEipNumber(8453, 8453)).toBe(true);
+    expect(isAllocatedEipNumber(8453, '8453')).toBe(true);
+    expect(isAllocatedEipNumber(8453, ' 8453 ')).toBe(true);
+  });
+
+  it('rejects the 9999 placeholder', () => {
+    expect(isAllocatedEipNumber(9999, 9999)).toBe(false);
+  });
+
+  it('rejects eip-0, which passes a bare digit check', () => {
+    expect(isAllocatedEipNumber(0, 0)).toBe(false);
+  });
+
+  it('rejects a file with no eip field in its frontmatter', () => {
+    expect(isAllocatedEipNumber(217191, undefined)).toBe(false);
+    expect(isAllocatedEipNumber(217191, null)).toBe(false);
+  });
+
+  it('rejects out-of-range and non-numeric numbers', () => {
+    expect(isAllocatedEipNumber(217191, 217191)).toBe(false);
+    expect(isAllocatedEipNumber(7702, 'XXXX')).toBe(false);
+    expect(isAllocatedEipNumber(7702, 'TBD')).toBe(false);
+  });
+
+  it('rejects frontmatter that disagrees with the filename', () => {
+    expect(isAllocatedEipNumber(8453, 8452)).toBe(false);
+  });
+});
+
+describe('EIP type validity', () => {
+  it('accepts the three defined types', () => {
+    expect(isValidEipType('Standards Track')).toBe(true);
+    expect(isValidEipType('Meta')).toBe(true);
+    expect(isValidEipType('Informational')).toBe(true);
+  });
+
+  it('rejects an invented type', () => {
+    expect(isValidEipType('Irregular State Transition')).toBe(false);
+  });
+
+  it('rejects a missing type', () => {
+    expect(isValidEipType(undefined)).toBe(false);
+    expect(isValidEipType(null)).toBe(false);
+    expect(isValidEipType('')).toBe(false);
+  });
+});
+
+describe('PR submission rejection', () => {
+  const core = {
+    type: 'Standards Track',
+    category: 'Core',
+    status: 'Draft',
+  };
+
+  it('accepts a Core EIP', () => {
+    expect(eipSubmissionRejection(core)).toBeNull();
+  });
+
+  it('accepts Networking and Interface, which are categories not types', () => {
+    expect(eipSubmissionRejection({ ...core, category: 'Networking' })).toBeNull();
+    expect(eipSubmissionRejection({ ...core, category: 'Interface' })).toBeNull();
+  });
+
+  it('accepts Meta and Informational, which carry no category', () => {
+    expect(
+      eipSubmissionRejection({ type: 'Meta', status: 'Draft' }),
+    ).toBeNull();
+    expect(
+      eipSubmissionRejection({ type: 'Informational', status: 'Draft' }),
+    ).toBeNull();
+  });
+
+  it('rejects an ERC, which belongs in ethereum/ERCs', () => {
+    expect(eipSubmissionRejection({ ...core, category: 'ERC' })).toMatch(
+      /ethereum\/ERCs/,
+    );
+  });
+
+  it('rejects an invented type', () => {
+    expect(
+      eipSubmissionRejection({ ...core, type: 'Irregular State Transition' }),
+    ).toMatch(/not an EIP type/);
+  });
+
+  it('rejects a Moved EIP', () => {
+    expect(eipSubmissionRejection({ ...core, status: 'Moved' })).toMatch(
+      /Moved/,
+    );
   });
 });

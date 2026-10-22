@@ -1,43 +1,25 @@
 {
   "series": "ACDT",
-  "generated": "2026-10-15",
+  "generated": "2026-10-22",
   "lookback_calls": [
-    "ACDT #96",
     "ACDT #97",
     "ACDT #98",
     "ACDT #99",
-    "ACDT #100"
+    "ACDT #100",
+    "ACDT #101"
   ],
   "deferred": [
     {
-      "topic": "BAL collision behavior",
-      "deferred_in": "ACDT #96",
-      "deferred_date": "2026-09-14",
-      "expected_revisit": "pending EIP-8253 in Hegota",
-      "revisited": false,
-      "revisited_in": null,
-      "outcome": null
-    },
-    {
-      "topic": "CL serving window / BAL retention alignment",
+      "topic": "BAL retention alignment with CL serving window",
       "deferred_in": "ACDT #97",
       "deferred_date": "2026-09-21",
-      "expected_revisit": "bring to ACDE before next call",
-      "revisited": false,
-      "revisited_in": null,
-      "outcome": null
+      "expected_revisit": "before next call (via ACDE and async thread)",
+      "revisited": true,
+      "revisited_in": "ACDT #101",
+      "outcome": "Merged at 14,299 epochs; reduction to 8,192 deferred to Hegota (EIP-8252)"
     },
     {
-      "topic": "Repricing decision pending JUMPDEST attack retest without debug tracing",
-      "deferred_in": "ACDT #98",
-      "deferred_date": "2026-09-28",
-      "expected_revisit": "after devnet-8 retest and mainnet shadow fork in ~1.5-2 weeks",
-      "revisited": false,
-      "revisited_in": null,
-      "outcome": null
-    },
-    {
-      "topic": "Proposer selection manipulation bug",
+      "topic": "Proposer selection manipulation bug fix",
       "deferred_in": "ACDT #100",
       "deferred_date": "2026-10-12",
       "expected_revisit": "Hegota (or later)",
@@ -46,19 +28,46 @@
       "outcome": null
     },
     {
-      "topic": "10-second slot duration for quick slots (EIP-8198)",
+      "topic": "10-second slot duration for quick slots",
       "deferred_in": "ACDT #100",
       "deferred_date": "2026-10-12",
       "expected_revisit": "pending broader client readiness",
+      "revisited": true,
+      "revisited_in": "ACDT #101",
+      "outcome": "heze-devnet-2 will not include quick slots; deferred again pending client readiness"
+    },
+    {
+      "topic": "EIP-8253 (nonce bump) and related devnet-2 EIPs",
+      "deferred_in": "ACDT #100",
+      "deferred_date": "2026-10-12",
+      "expected_revisit": "next call",
       "revisited": false,
       "revisited_in": null,
       "outcome": null
     },
     {
-      "topic": "bogota-devnet-2 EIP scope confirmation",
-      "deferred_in": "ACDT #100",
-      "deferred_date": "2026-10-12",
-      "expected_revisit": "next call",
+      "topic": "Builder/validator deposit separation fix",
+      "deferred_in": "ACDT #101",
+      "deferred_date": "2026-10-19",
+      "expected_revisit": null,
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": "Not included in Glamsterdam; not worth delaying Hoodi"
+    },
+    {
+      "topic": "BAL retention reduction to 8,192 epochs (EIP-8252)",
+      "deferred_in": "ACDT #101",
+      "deferred_date": "2026-10-19",
+      "expected_revisit": "Hegota",
+      "revisited": false,
+      "revisited_in": null,
+      "outcome": null
+    },
+    {
+      "topic": "Non-finality pruning edge case for BAL retention",
+      "deferred_in": "ACDT #101",
+      "deferred_date": "2026-10-19",
+      "expected_revisit": null,
       "revisited": false,
       "revisited_in": null,
       "outcome": null

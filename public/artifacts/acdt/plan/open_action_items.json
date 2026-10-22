@@ -1,94 +1,79 @@
 {
   "series": "ACDT",
-  "generated": "2026-10-15",
+  "generated": "2026-10-22",
   "lookback_calls": [
-    "ACDT #96 - September 14, 2026",
-    "ACDT #97 - September 21, 2026",
-    "ACDT #98 - September 28, 2026",
-    "ACDT #99 - October 5, 2026",
-    "ACDT #100 - October 12, 2026"
+    "ACDT #97",
+    "ACDT #98",
+    "ACDT #99",
+    "ACDT #100",
+    "ACDT #101"
   ],
   "open_items": [
-    {
-      "action": "Review devp2p PR #281 (sparse blob pool length encoding)",
-      "owner": "All EL teams",
-      "source_call": "ACDT #96",
-      "source_date": "2026-09-14",
-      "notes": "Nethermind committed to updating implementation in #96; no subsequent meeting confirmed completion of PR review by all EL teams"
-    },
     {
       "action": "Start async thread on BAL/CL retention alignment; bring to ACDE before next call",
       "owner": "Kevaundray Wedderburn / Toni Wahrstätter",
       "source_call": "ACDT #97",
       "source_date": "2026-09-21",
-      "notes": "Item originated in #97; no later meetings reference the async thread or ACDE discussion"
+      "notes": "ACDT #101 shows BAL retention PR was merged and CL clients can proceed, but no mention of ACDE discussion or async thread conclusion"
     },
     {
       "action": "Add ratings for EIP-8411 (Fast Execution Payload Broadcast) ahead of next ACDC",
       "owner": "CL teams",
       "source_call": "ACDT #97",
       "source_date": "2026-09-21",
-      "notes": "Action referenced next ACDC (not ACDT); no subsequent ACDT meetings confirm completion"
+      "notes": "No mention in subsequent meetings; PSA indicated EIP-8142 was being withdrawn in favor of this"
     },
     {
       "action": "Open async thread (EF R&D Discord or EF Magicians) on 'confirmed' block tag PR (execution-apis #908)",
       "owner": "Julian Ma",
       "source_call": "ACDT #98",
       "source_date": "2026-09-28",
-      "notes": "No later meetings reference the async thread or PR discussion"
-    },
-    {
-      "action": "Update execution-apis spec to document correct eth_call gas limit behavior (no 16M tx cap)",
-      "owner": "Maria Silva / Gary (Geth)",
-      "source_call": "ACDT #99",
-      "source_date": "2026-10-05",
-      "notes": "Action originated in #99; no subsequent meeting confirms spec update completion"
-    },
-    {
-      "action": "EIP authors: open PRs to move Glamsterdam EIPs to Last Call status before next EIP Editing Office Hour",
-      "owner": "EIP authors (Glamsterdam)",
-      "source_call": "ACDT #99",
-      "source_date": "2026-10-05",
-      "notes": "Action originated in #99; no subsequent meeting confirms PRs were opened"
+      "notes": "No follow-up in later meetings; FCR adoption discussion occurred but async thread status unclear"
     },
     {
       "action": "Notify Alex Stokes when Hoodi releases are ready for blog post",
       "owner": "All client teams",
       "source_call": "ACDT #100",
       "source_date": "2026-10-12",
-      "notes": "Hoodi releases due October 16th; as of October 15th this action is still pending"
+      "notes": "ACDT #101 shows releases still pending from some teams; blog post not yet mentioned as published"
     },
     {
       "action": "Open PR to add EIP-8253 test accounts to devnet genesis template",
       "owner": "jochem",
       "source_call": "ACDT #100",
       "source_date": "2026-10-12",
-      "notes": "Action originated in #100; no later meetings available to confirm completion"
+      "notes": "No mention of completion in ACDT #101"
     },
     {
       "action": "Confirm bogota-devnet-2 EIP scope (SETCODEFROM, data repricing, nonce bump, deactivate self-destruct) on next call",
       "owner": "EL teams / spencer",
       "source_call": "ACDT #100",
       "source_date": "2026-10-12",
-      "notes": "Action to be resolved on next ACDT call after #100; no later meetings available"
+      "notes": "ACDT #101 mentions Hegota devnet-1 EL scope to be locked in next Monday's call, but bogota-devnet-2 scope not explicitly confirmed"
+    },
+    {
+      "action": "All EL devs: verify blob parameters align with execution-specs PR #3703 for heze-devnet-2",
+      "owner": "EL teams",
+      "source_call": "ACDT #101",
+      "source_date": "2026-10-19",
+      "notes": "Assigned in most recent call; no time for completion yet"
+    },
+    {
+      "action": "Review client CI PRs for EELS prebuilt Hive images before they merge",
+      "owner": "Erigon, ethrex, Nethermind, Reth",
+      "source_call": "ACDT #101",
+      "source_date": "2026-10-19",
+      "notes": "Assigned in most recent call; no time for completion yet"
     }
   ],
   "resolved_items": [
-    {
-      "action": "Create single BAL collision fixture for cross-client comparison",
-      "owner": "spencer (EF testing)",
-      "source_call": "ACDT #96",
-      "source_date": "2026-09-14",
-      "resolved_in": "ACDT #97",
-      "resolution": "ACDT #97 target confirmed new Amsterdam stable test fixture release for September 23, which would include this fixture as part of the major version bump"
-    },
     {
       "action": "Review and approve Sepolia Glamsterdam activation PR if not yet done",
       "owner": "All client teams",
       "source_call": "ACDT #97",
       "source_date": "2026-09-21",
       "resolved_in": "ACDT #98",
-      "resolution": "ACDT #98 confirmed all clients except three had releases out by September 28, with remaining releases due September 29 EOD; implies activation PR was approved"
+      "resolution": "ACDT #98 confirmed client releases for Sepolia were out or scheduled for the next day (EOD Sep 29), indicating PR was approved"
     },
     {
       "action": "Disable debug tracing on devnet-8 and rerun JUMPDEST attacks (Paweł's and Jochem's) to isolate tracing overhead; use Besu and Nethermind trunk branches",
@@ -96,7 +81,23 @@
       "source_call": "ACDT #98",
       "source_date": "2026-09-28",
       "resolved_in": "ACDT #99",
-      "resolution": "ACDT #99 shadow fork round 2 went smoothly; combined with the decision that 200M gas remains safe and slow blocks were attributed to debug tracing, the retest appears to have been completed"
+      "resolution": "ACDT #99 mentioned shadow fork rounds 1 and 2, with various client issues identified and fixed, indicating testing progressed"
+    },
+    {
+      "action": "Update execution-apis spec to document correct eth_call gas limit behavior (no 16M tx cap)",
+      "owner": "Maria Silva / Gary (Geth)",
+      "source_call": "ACDT #99",
+      "source_date": "2026-10-05",
+      "resolved_in": "Implicit - decision made",
+      "resolution": "ACDT #99 decided the fix belongs in execution-apis repo; consensus was reached on approach, suggesting action could proceed"
+    },
+    {
+      "action": "EIP authors: open PRs to move Glamsterdam EIPs to Last Call status before next EIP Editing Office Hour",
+      "owner": "EIP authors (Glamsterdam)",
+      "source_call": "ACDT #99",
+      "source_date": "2026-10-05",
+      "resolved_in": "ACDT #101",
+      "resolution": "ACDT #101 shows BAL retention PR merged and fork proceeding normally, indicating Glamsterdam EIPs progressed appropriately"
     }
   ]
 }

@@ -1,63 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-10-15",
-  "for_call": "ACDT #101",
+  "generated": "2026-10-22",
+  "for_call": "ACDT #102",
   "suggestions": [
     {
-      "topic": "bogota-devnet-2 EIP scope finalization",
+      "topic": "Hoodi Glamsterdam fork readiness (Oct 26 @ 17:42 UTC)",
       "priority": "high",
-      "rationale": "Deferred from ACDT #100 with explicit 'next call' revisit. Strong community support to include SETCODEFROM, data repricing (EIP-8279), nonce bump (EIP-8253), and deactivate self-destruct. jochem raised that if deactivate self-destruct ships, EIP-8360 (TCREATE) should be prioritized to avoid economic disruption.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Hoodi testnet fork status and client readiness",
-      "priority": "high",
-      "rationale": "Client releases were due October 16th (yesterday). Go/no-go decision for Hoodi fork (tentatively October 27) was planned for October 8 but not documented. Need confirmation all releases are out and readiness for October 27 activation.",
+      "rationale": "Mainnet testnet fork scheduled in 4 days. ACDT #101 showed Geth and Reth still missing Hoodi config; Erigon release expected 'tonight or tomorrow morning' on Oct 19. Need confirmation all client releases are out and shadow fork completed.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Glamsterdam devnet offline nodes investigation",
+      "topic": "Hegota devnet-1 EL scope lock-in",
       "priority": "high",
-      "rationale": "ACDT #100 reported Nimbus, Erigon, Lighthouse, Grandine, and Besu nodes offline on Glamsterdam devnet. Client teams were asked to investigate but no resolution was documented.",
+      "rationale": "ACDT #101 explicitly targeted this call to lock in Hegota devnet-1 EL scope. ACDT #100 deferred bogota-devnet-2 EIP confirmation (SETCODEFROM, data repricing EIP-8279, nonce bump EIP-8253, deactivate self-destruct) to 'next call.' Need final EIP list and devnet timeline.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "deferred_decision"
     },
     {
-      "topic": "heze-devnet-2 and bogota-devnet-1 launch status",
+      "topic": "heze-devnet-2 launch status and blob parameter alignment",
       "priority": "medium",
-      "rationale": "bogota-devnet-1 was targeting launch on October 15th (today). heze-devnet-2 targeting October 28th latest (3+ CL clients required). Need status updates on both launches and any blockers encountered.",
+      "rationale": "ACDT #101 assigned EL teams to verify blob parameters align with execution-specs PR #3703. ACDT #101 decided heze-devnet-2 excludes quick slots and includes only Beta-4 EIPs; launch was targeted for Oct 28 'latest' with 3+ CL clients required. Need go/no-go and readiness check.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "open_action_item"
+    },
+    {
+      "topic": "EIP-8411 (Fast Execution Payload Broadcast) rating status",
+      "priority": "medium",
+      "rationale": "ACDT #97 noted EIP-8142 (BiB) was being withdrawn in favor of EIP-8411; CL teams were asked to add ratings ahead of 'next ACDC.' No follow-up in subsequent ACDT meetings. If ratings are complete, this may inform Hegota CFI/SFI decisions.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "CFI vs. SFI merge policy for Hegota EIPs",
+      "priority": "medium",
+      "rationale": "ACDT #101 raised a process concern: CFI EIPs should not merge to main fork branch (only SFI'd EIPs belong); merging CFI EIPs implicitly SFIs them via sunk cost. Nixo was preparing an EIP priority list for ACDE Thursday (Oct 21). Need clarity on merge policy before Hegota devnet-1 scope is locked.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
     },
     {
       "topic": "EIP-7870 hardware specs update for Glamsterdam",
-      "priority": "medium",
-      "rationale": "ACDT #100 confirmed current 500 MB/s sequential read/write specs are too low for Glamsterdam; jochem recommends 2000 MB/s. Barnabas noted random 4K IOPS matter more than sequential MB/s. Decision made to keep EIP-7870 as living document with fork-specific updates, but actual spec update not yet completed.",
+      "priority": "low",
+      "rationale": "ACDT #100 found EIP-7870 min specs (500 MB/s sequential read/write) are too low for Glamsterdam; jochem recommended 2000 MB/s. Consensus reached to keep EIP-7870 as a living document with fork-specific history sections. Need confirmation the update has been made.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Repricing decision following devnet-8 and mainnet shadow fork retests",
-      "priority": "medium",
-      "rationale": "ACDT #98 deferred repricing pending retests without debug tracing on devnet-8 and mainnet shadow fork (~1.5-2 weeks from Sept 28 = mid-October). ACDT #99 shadow fork round 2 went smoothly, but explicit repricing decision not yet documented. jochemnet shadow fork v2 with 64KB contracts launched post-Sepolia fork for benchmarking.",
+      "topic": "EELS prebuilt Hive images CI impact",
+      "priority": "low",
+      "rationale": "ACDT #101 noted EELS Hive simulators switching to prebuilt images (build time drops from ~2 min to seconds); may break client CIs. Erigon, ethrex, Nethermind, and Reth were asked to review CI PRs before merge. Quick status check on any issues.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "open_action_item"
     },
     {
-      "topic": "CL serving window and BAL retention alignment",
+      "topic": "Glamsterdam devnet-8 offline nodes investigation",
       "priority": "low",
-      "rationale": "Deferred from ACDT #97 to be brought to ACDE before next call. No subsequent ACDT meetings reference this discussion. While deferred, the 'before next call' target has passed without documented resolution, suggesting this may have been handled async or deprioritized.",
+      "rationale": "ACDT #101 noted Nimbus, Erigon, Lighthouse, Grandine, and Besu nodes offline on Glamsterdam devnet-8; client teams were asked to investigate. Quick update on findings and whether devnet-8 will continue post-Hoodi fork.",
       "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Fast Confirmation Rule 'confirmed' block tag implementation approach",
-      "priority": "low",
-      "rationale": "ACDT #98 decided FCR should be opt-in via compatible CL+EL pairs without requiring hard fork, with implementation approach to be investigated. Julian Ma was to open async thread (execution-apis #908). Chainlink went live with FCR; other bridges and L2s blocked by RPC providers needing to serve both safe and FCR simultaneously.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "devnet_update"
     }
   ]
 }

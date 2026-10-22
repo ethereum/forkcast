@@ -1,0 +1,177 @@
+{
+  "meeting": "ACDE #248 - 2026-10-22",
+  "eips": [
+    {
+      "eip": 1884,
+      "title": "Repricing for trie-size-dependent opcodes",
+      "weight": "mentioned",
+      "summary": "Referenced by Hubert as a historical precedent where a prior hard fork also caused contract security implications from repricing.",
+      "moments": [
+        {
+          "timestamp": "00:25:48",
+          "context": "Hubert noted that a similar situation occurred with EIP-1884, where a previous hard fork repricing also had contract implications, and a relatively good coverage analysis was done at that time."
+        }
+      ]
+    },
+    {
+      "eip": 7723,
+      "title": "Network Upgrade Inclusion Stages",
+      "weight": "mentioned",
+      "summary": "Spencer quoted EIP-7723 definitions of CFI and SFI stages during the discussion about upgrade inclusion process semantics.",
+      "moments": [
+        {
+          "timestamp": "01:20:52",
+          "context": "Spencer cited EIP-7723's text that CFI signals intent to include in devnets and is similar to 'concept ACK' but not sufficient for mainnet deployment, contributing to the debate about what CFI should mean in practice."
+        }
+      ]
+    },
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "Identified as a core source of the security issues raised by ChainSecurity's analysis of Glamsterdam gas repricing impacts.",
+      "moments": [
+        {
+          "timestamp": "01:26:47",
+          "context": "Lightclient cited 8037 and 8038 as what the repricing risk looks like in practice \u2014 \"anytime we change it, we're risking breaking user contracts, we're risking having security incidents\" \u2014 arguing for minimal protocol change; he had made the same point in chat, that the ChainSecurity findings feel pretty core to 8037/8038."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-access gas cost update",
+      "weight": "discussed",
+      "summary": "Cited alongside EIP-8037 as central to the Glamsterdam repricing security concerns raised by ChainSecurity.",
+      "moments": [
+        {
+          "timestamp": "01:26:47",
+          "context": "Lightclient grouped 8038 with 8037 as the changes now showing the cost of protocol churn, in his argument that every change to Ethereum carries risk of breaking user contracts."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame Transaction devnet progress discussed; interaction with FOCIL not yet ready, and a spec PR for max_fee was proposed for merging.",
+      "moments": [
+        {
+          "timestamp": "01:30:20",
+          "context": "Mario noted that FOCIL and frames have real interaction value justifying a combined devnet, and testing them together makes sense since both are SFI."
+        },
+        {
+          "timestamp": "01:37:50",
+          "context": "Lightclient referenced a frames spec PR he wanted to merge for Bogota devnet 2, noting he addressed a comment from Daniel and considered it ready to include."
+        }
+      ]
+    },
+    {
+      "eip": 8025,
+      "title": "Optional Execution Proofs",
+      "weight": "mentioned",
+      "summary": "Referenced by Kevaundray as an example of an EIP where a prototype is not trivially one prompt away.",
+      "moments": [
+        {
+          "timestamp": "01:36:50",
+          "context": "Kevaundray argued that EIP complexity should factor into CFI decisions, citing EIP-8025 as an example where prototyping is not simple."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "discussed",
+      "summary": "SETCODEFROM was the EIP with clearest consensus for inclusion in Bogota devnet 2; multiple teams expressed readiness.",
+      "moments": [
+        {
+          "timestamp": "01:39:11",
+          "context": "Lightclient said SETCODEFROM and 8151 would be good additions from the Geth perspective for Bogota devnet 2."
+        },
+        {
+          "timestamp": "01:42:05",
+          "context": "Justin Florentine said he would kick out the other three proposed EIPs but would bring in SETCODEFROM, indicating it had the strongest support across teams."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "discussed",
+      "summary": "Proposed for Bogota devnet 2 alongside SETCODEFROM; lightclient preferred shipping these two over the other candidates.",
+      "moments": [
+        {
+          "timestamp": "01:39:11",
+          "context": "Lightclient listed EIP-8151 (Account Code Restricted ecRecover) as one of the EIPs he wanted in Bogota devnet 2."
+        },
+        {
+          "timestamp": "01:45:01",
+          "context": "Lightclient said he would prefer just SETCODEFROM and 8151 but acknowledged the other two are simpler and agreed to include all four."
+        }
+      ]
+    },
+    {
+      "eip": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "weight": "discussed",
+      "summary": "Included in the four-EIP scope for Bogota devnet 2, with desire to test the fork transition for nonce bumping as many times as possible.",
+      "moments": [
+        {
+          "timestamp": "01:39:13",
+          "context": "Jochem-brouwer named EIP-8253 and Spencer listed it as one of four EIPs for Bogota devnet 2, saying they wanted to test the transition of this EIP's fork as many times as possible."
+        }
+      ]
+    },
+    {
+      "eip": 4758,
+      "title": "Deactivate SELFDESTRUCT",
+      "weight": "discussed",
+      "summary": "Listed as one of four EIPs to add to Bogota devnet 2 scope, deactivating SELFDESTRUCT to enable test removal.",
+      "moments": [
+        {
+          "timestamp": "01:39:26",
+          "context": "Spencer listed EIP-4758 (Deactivate SELFDESTRUCT) as one of four EIPs proposed for Bogota devnet 2, noting it allows removal of related tests."
+        }
+      ]
+    },
+    {
+      "eip": 8250,
+      "title": "Keyed Nonces for Frame Transactions",
+      "weight": "mentioned",
+      "summary": "Mentioned as a Frame Transaction add-on EIP that interacts with FOCIL and could enable testing multiple concurrent transactions.",
+      "moments": [
+        {
+          "timestamp": "01:40:19",
+          "context": "Soispoke suggested testing MATCHA and removing the one-transaction-per-sender limit of EIP-8141 to test multiple concurrent transactions using EIP-8250 keyed nonces."
+        },
+        {
+          "timestamp": "01:42:49",
+          "context": "Soispoke noted that FOCIL has interactions with Frame add-on EIPs like 8250 and 8272."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "mentioned",
+      "summary": "Daniil suggested including EIP-7906 without TXDIFF on Bogota devnet 2 alongside signature lengths.",
+      "moments": [
+        {
+          "timestamp": "01:41:29",
+          "context": "Daniil Ankushin asked about adding signature lengths and 7906 without TXDIFF to the devnet scope."
+        }
+      ]
+    },
+    {
+      "eip": 8272,
+      "title": "Recent Roots for Frame Transactions",
+      "weight": "mentioned",
+      "summary": "Named as a Frame Transaction add-on EIP that has interactions with FOCIL.",
+      "moments": [
+        {
+          "timestamp": "01:42:49",
+          "context": "Soispoke listed EIP-8272 alongside EIP-8250 as Frame add-on EIPs that interact with FOCIL."
+        }
+      ]
+    }
+  ]
+}

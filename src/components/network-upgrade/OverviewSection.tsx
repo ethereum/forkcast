@@ -4,6 +4,35 @@ import { EIP } from '../../types';
 import { getInclusionStage } from '../../utils';
 import { ActivationDetails } from '../../data/upgrades';
 import { CopyLinkButton } from '../ui/CopyLinkButton';
+import { GLAMSTERDAM_TESTNETS } from '../../constants/timeline-phases';
+import { BUILD_DATE, callLabel, formatMilestone, milestoneStatus } from '../../utils/milestones';
+
+/**
+ * One sentence per Glamsterdam testnet, from its milestone: when it forked, or
+ * when it's scheduled (citing the call that agreed it) or proposed.
+ */
+const glamsterdamTestnetSentences = (): React.ReactNode[] =>
+  GLAMSTERDAM_TESTNETS.flatMap<React.ReactNode>(({ name, networkId, milestone }, i) => {
+    if (milestoneStatus(milestone, BUILD_DATE) === 'completed') {
+      const link = (
+        <Link
+          to={`/networks/${networkId}`}
+          className="font-semibold underline decoration-1 underline-offset-2 hover:text-purple-900 dark:hover:text-purple-100"
+        >
+          {name}
+        </Link>
+      );
+      const date = formatMilestone(milestone, 'prose');
+      return i === 0
+        ? [<>The first public testnet, {link}, went live on {date}.</>]
+        : [<>{link} followed on {date}.</>];
+    }
+    if (!milestone.date) return [];
+    const date = formatMilestone(milestone, 'prose-short');
+    if (milestone.proposed) return [`${name} is proposed for ${date}.`];
+    const call = callLabel(milestone.source);
+    return [`${name} is scheduled for ${date}${call ? `, agreed on ${call}` : ''}.`];
+  });
 
 interface OverviewSectionProps {
   eips: EIP[];
@@ -127,21 +156,12 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
             </svg>
             <p className="text-purple-800 dark:text-purple-200 text-xs leading-relaxed">
-              The first public testnet,{' '}
-              <Link
-                to="/networks/glamsterdam-devnet-8"
-                className="font-semibold underline decoration-1 underline-offset-2 hover:text-purple-900 dark:hover:text-purple-100"
-              >
-                Platåberget
-              </Link>
-              , went live on August 13, 2026.{' '}
-              <Link
-                to="/networks/sepolia"
-                className="font-semibold underline decoration-1 underline-offset-2 hover:text-purple-900 dark:hover:text-purple-100"
-              >
-                Sepolia
-              </Link>
-              {' '}followed on October 6, 2026. Hoodi is scheduled for October 26, agreed on ACDE 247.
+              {glamsterdamTestnetSentences().map((sentence, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && ' '}
+                  {sentence}
+                </React.Fragment>
+              ))}
             </p>
           </div>
         </div>

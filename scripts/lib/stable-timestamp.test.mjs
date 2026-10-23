@@ -34,5 +34,33 @@ describe('keepTimestampIfUnchanged', () => {
     expect(
       keepTimestampIfUnchanged(next, { id: 'x', eips: [1, 2] }, 'scrapedAt'),
     ).toEqual(next);
+    expect(
+      keepTimestampIfUnchanged(
+        next,
+        { id: 'x', scrapedAt: null, eips: [1, 2] },
+        'scrapedAt',
+      ),
+    ).toEqual(next);
+  });
+
+  it('ignores key order, nested as well as top level', () => {
+    const next = { eips: [1, 2], scrapedAt: 'NEW', id: 'x' };
+    expect(keepTimestampIfUnchanged(next, prev, 'scrapedAt').scrapedAt).toBe(
+      'OLD',
+    );
+    expect(
+      keepTimestampIfUnchanged(
+        { support: { el: 1, cl: 2 }, scrapedAt: 'NEW' },
+        { support: { cl: 2, el: 1 }, scrapedAt: 'OLD' },
+        'scrapedAt',
+      ).scrapedAt,
+    ).toBe('OLD');
+  });
+
+  it('still treats array order as a change', () => {
+    const next = { id: 'x', scrapedAt: 'NEW', eips: [2, 1] };
+    expect(keepTimestampIfUnchanged(next, prev, 'scrapedAt').scrapedAt).toBe(
+      'NEW',
+    );
   });
 });

@@ -15,7 +15,9 @@ export default defineConfig({
       {
         test: {
           name: 'dist',
-          include: ['tests/**/*.test.ts'],
+          // Mirrors the `unit` exclude below, so a test under tests/ can never
+          // fall between the two projects and silently run nowhere.
+          include: ['tests/**/*.{test,spec}.?(c|m)[jt]s?(x)'],
         },
       },
     ],

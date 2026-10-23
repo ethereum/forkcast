@@ -31,15 +31,15 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
   {
     id: 'hoodi',
     title: 'Hoodi Testnet Deployment',
-    dateRange: 'Oct 26',
-    description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing. The Oct 26 slot was agreed on ACDE 247, with client releases due Oct 16.',
+    dateRange: 'TBD',
+    description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing. ACDE 248 postponed the Oct 26 slot to allow time to analyze a security disclosure affecting the repricing EIPs. No new date is set.',
     status: 'upcoming'
   },
   {
     id: 'mainnet',
     title: 'Mainnet Deployment',
-    dateRange: 'Q4 2026',
-    description: 'Final deployment of Glamsterdam to Ethereum mainnet after successful testnet validation.',
+    dateRange: 'TBD',
+    description: 'Final deployment of Glamsterdam to Ethereum mainnet after successful testnet validation. ACDE 248 deferred the date to allow time to analyze a security disclosure affecting the repricing EIPs.',
     status: 'upcoming'
   }
 ];
@@ -275,7 +275,7 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
       status: 'in-progress',
       actualStartDate: 'Aug 13, 2026',
       projectedDate: 'Q3 2026',
-      progressNotes: 'Platåberget and Sepolia are forked; Hoodi agreed for Oct 26',
+      progressNotes: 'Platåberget and Sepolia are forked; Hoodi is postponed with no new date',
       // Holešky is deprecated, so Glamsterdam gets a purpose-built public testnet
       // (glamsterdam-devnet-8) in its place.
       testnets: [
@@ -288,19 +288,21 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
           dateSource: 'https://forkcast.org/calls/acdc/187#00:30:33'
         },
         {
+          // ACDE 248 postponed the agreed Oct 26 slot to allow time to analyze
+          // a security disclosure affecting the repricing EIPs. Keeping Hoodi
+          // on Fusaka also leaves one testnet on each side of the fork, for
+          // comparison. No new date until the analysis lands.
           name: 'Hoodi',
-          status: 'upcoming',
-          // Agreed on ACDE #247 with no pushback, after Sepolia forked.
-          date: 'Oct 26, 2026',
-          dateSource: 'https://forkcast.org/calls/acde/247#00:06:44'
+          status: 'upcoming'
         }
       ]
     },
     {
       phaseId: 'mainnet-deployment',
       status: 'upcoming',
-      projectedDate: 'Q4 2026',
-      progressNotes: 'Target mainnet activation Q4 2026'
+      // ACDE 248 put the rollout on ice. The same analysis also decides whether
+      // the specs change at all, so no date can be set until it lands.
+      progressNotes: 'Deferred while a security disclosure is analyzed'
     }
   ]
 };

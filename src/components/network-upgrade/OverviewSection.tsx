@@ -141,7 +141,9 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               >
                 Sepolia
               </Link>
-              {' '}followed on October 6, 2026. Hoodi is scheduled for October 26, agreed on ACDE 247.
+              {' '}followed on October 6, 2026. Hoodi was due to fork on October 26, but ACDE 248
+              postponed it to allow time to analyze a security disclosure affecting the repricing
+              EIPs. No new date is set.
             </p>
           </div>
         </div>

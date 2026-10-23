@@ -179,15 +179,6 @@ export const timelineEvents: TimelineEvent[] = [
     networkId: 'sepolia',
     streamUrl: 'https://www.youtube.com/live/T9sXJYIEDFQ'
   },
-  {
-    type: 'event',
-    date: '2026-10-26',
-    datetime: '2026-10-26 17:42:48',
-    title: 'Glamsterdam Live on Hoodi Testnet',
-    category: 'testnet',
-    networkId: 'hoodi',
-    streamUrl: 'https://www.youtube.com/live/w6ucv7ShQAk'
-  },
   ...generatedDevnetEvents,
 ];
 

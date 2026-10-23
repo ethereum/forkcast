@@ -2,6 +2,35 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "f1bcca1b56ee91fe115d2a8d8fd731fd6ca38bb3",
+      "date": "2026-10-22T22:15:35Z",
+      "message": "Update EIP-8141: specify GASPRICE under the max_fee budget",
+      "author": "spencer-tb",
+      "prNumber": null,
+      "patch": "@@ -580,6 +580,8 @@ max_cost = required_max_fee + max_priority_fee\n \n The transaction is invalid if `tx.fees.max_fee < required_max_fee`. This check depends only on the transaction and the including block's base fees and is performed before any frame executes. It guarantees `max_cost <= tx.fees.max_fee`.\n \n+`GASPRICE` returns `base_fee_per_gas + max_priority_fee // max_gas`. It depends only on the transaction and the including block's base fees, so every frame observes the same value. Excluding blob fees, the payer pays at least this much per unit of `gas_used`, and exactly this much when `max_fee` covers the full tip.\n+\n ###### Frame gas pools\n \n Each frame executes against two pools, initialized at frame entry:\n@@ -1490,6 +1492,8 @@ Blobs are optional for frame transactions because `FRAME_TX_TYPE` is a general-p\n \n The `ORIGIN` opcode behavior changes for frame transactions, returning the frame's caller rather than the traditional transaction origin. This is consistent with the precedent set by EIP-7702, which already modified `ORIGIN` semantics. Contracts that rely on `ORIGIN = CALLER` for security checks (a discouraged pattern) may behave differently under frame transactions.\n \n+The `GASPRICE` opcode returns a lower bound on the price per gas for frame transactions, as defined in [Fee budget](#fee-budget), since the tip per gas depends on `gas_used`. It is exact whenever `max_fee` covers the full tip. Contracts that reimburse `gas * GASPRICE` may refund slightly less than the gas paid.\n+\n Wallets and gas estimators must produce two-dimensional, per-frame gas estimates: each frame's `limits.execution` covers its execution gas and its `limits.state` covers its state gas, and neither budget can borrow from the other or from other frames. Under-provisioned state gas halts a frame exactly like out-of-gas; over-provisioned budgets are refunded at settlement but raise `required_max_fee`, and with it both the minimum valid `max_fee` and the up-front `max_cost` collected from the payer. When the calldata floor binds, `gas_used` is `calldata_floor_gas + tx_state_gas`, so fee estimation for data-heavy transactions must add the state dimension on top of the floor rather than assuming EIP-7976's transaction-total floor.\n \n Wallets set one `max_fee` budget rather than per-gas caps: the expected cost `max_gas * base_fee_per_gas + blob_gas * blob_base_fee`, plus the intended tip, plus a single buffer for base-fee movement across all resources before inclusion.",
+      "additions": 4,
+      "deletions": 0
+    },
+    {
+      "sha": "d02998e877c6589597f887df324d550a8e07389a",
+      "date": "2026-10-22T19:45:46Z",
+      "message": "Update EIP-8141: Move mode section under Frame definition",
+      "author": "raxhvl",
+      "prNumber": null,
+      "patch": "@@ -101,6 +101,20 @@ Below are high-level definitions of each field in the transaction definition. De\n - `value` -- the amount in wei that should transferred from the `sender` as part of the frame execution.\n - `data` -- the calldata provided to the top level call frame.\n \n+###### Mode\n+\n+The `mode` of each frame sets the context of execution. It allows the protocol to identify\n+the purpose of the frame within the execution loop.\n+\n+| `mode`  | Name           | Summary                                    |\n+|---------|----------------|--------------------------------------------|\n+| 0       | `DEFAULT` mode | Execute frame as `ENTRY_POINT`             |\n+| 1       | `VERIFY` mode  | Frame identifies as transaction validation |\n+| 2       | `SENDER` mode  | Execute frame as `sender`                  |\n+\n+These are the only valid `mode` values. An EIP that extends frame transactions with a new mode adds its value to this set; it does not change how existing values are checked.\n+\n+\n ###### Flags\n \n The `flags` field configures additional execution constraints. Bit positions are zero-based, with the least significant bit numbered `0`.\n@@ -123,17 +137,6 @@ The `flags` field configures additional execution constraints. Bit positions are\n - `msg` -- either empty, indicating the canonical transaction signature hash, or an explicit 32-byte digest.\n - `signature` -- raw signature bytes interpreted according to `scheme`.\n \n-The `mode` of each frame sets the context of execution. It allows the protocol to identify\n-the purpose of the frame within the execution loop.\n-\n-| `mode`  | Name           | Summary                                    |\n-|---------|----------------|--------------------------------------------|\n-| 0       | `DEFAULT` mode | Execute frame as `ENTRY_POINT`             |\n-| 1       | `VERIFY` mode  | Frame identifies as transaction validation |\n-| 2       | `SENDER` mode  | Execute frame as `sender`                  |\n-\n-These are the only valid `mode` values. An EIP that extends frame transactions with a new mode adds its value to this set; it does not change how existing values are checked.\n-\n \n #### Constraints\n ",
+      "additions": 14,
+      "deletions": 11
+    },
+    {
+      "sha": "e19c2a871c0762eaee5429c2e264b66433d2e8be",
+      "date": "2026-10-22T19:16:31Z",
+      "message": "Update EIP-8141: use max_fee to bound cost (#12414)",
+      "author": "lightclient",
+      "prNumber": 12414,
+      "additions": 53,
+      "deletions": 28
+    },
+    {
       "sha": "46005d745a5d921702f12d64a1b85e712e2b6051",
       "date": "2026-10-22T00:27:07Z",
       "message": "Update EIP-8141: commit to elided signature lengths (#12502)",
@@ -716,18 +745,10 @@
       "deletions": 2
     },
     {
-      "number": 12414,
-      "title": "Update EIP-8141: use max_fee to bound cost",
-      "author": "lightclient",
-      "updatedAt": "2026-10-22T13:21:33Z",
-      "additions": 53,
-      "deletions": 28
-    },
-    {
       "number": 12559,
       "title": "Update EIP-8141: price frame and signature entries at the floor",
       "author": "nerolation",
-      "updatedAt": "2026-10-21T08:52:54Z",
+      "updatedAt": "2026-10-22T19:23:50Z",
       "additions": 12,
       "deletions": 14
     },
@@ -735,17 +756,9 @@
       "number": 12506,
       "title": "Update EIP-8141: set code from the default code in SENDER mode",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-10-19T06:26:33Z",
+      "updatedAt": "2026-10-22T22:42:56Z",
       "additions": 34,
       "deletions": 3
-    },
-    {
-      "number": 12236,
-      "title": "Update EIP-8141: Move mode section under Frame definition",
-      "author": "raxhvl",
-      "updatedAt": "2026-10-22T17:00:21Z",
-      "additions": 12,
-      "deletions": 10
     },
     {
       "number": 12494,

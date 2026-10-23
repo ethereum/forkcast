@@ -33,6 +33,7 @@ export interface DevnetSpec {
   id: string;
   title: string;
   sourceUrl: string;
+  /** When the scraped content last changed (not bumped by no-op re-scrapes). */
   scrapedAt: string;
   /** When set, this devnet reuses the spec of another devnet (by ID). */
   sameSpecAs?: string;

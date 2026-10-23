@@ -12,6 +12,7 @@ import {
   renameDevnetSeries,
   renameDevnetSeriesDeep,
 } from './lib/devnet-renames.mjs';
+import { keepTimestampIfUnchanged } from './lib/stable-timestamp.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -329,6 +330,8 @@ async function main() {
     if (!spec.genesisTime && existing.genesisTime) {
       spec.genesisTime = existing.genesisTime;
     }
+    // Don't bump scrapedAt (and trigger a commit + deploy) when nothing changed
+    spec = keepTimestampIfUnchanged(spec, existing, 'scrapedAt');
   }
 
   if (!existsSync(OUTPUT_DIR)) mkdirSync(OUTPUT_DIR, { recursive: true });

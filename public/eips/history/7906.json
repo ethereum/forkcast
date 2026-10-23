@@ -2,6 +2,16 @@
   "eipId": 7906,
   "commits": [
     {
+      "sha": "25ac2920ea3a958911e380498bb7c8fbca201542",
+      "date": "2026-10-23T14:11:51Z",
+      "message": "Update EIP-7906: remove reference to txparam 0x06",
+      "author": "lightclient",
+      "prNumber": null,
+      "patch": "@@ -115,7 +115,7 @@ Each state-change table lists its fields in the same order: `change_address`, th\n \n `TXTRACE` and `EVENTDATACOPY` are valid only for execution inside an `ASSERT` mode frame, as defined above. Executing either of these opcodes in any other context — including legacy transactions, [EIP-1559](./eip-1559.md) transactions, or any other EIP-8141 frame mode — results in an exceptional halt.\n \n-The `gas_pre_charge` parameter is the transaction's `max_cost` as defined in [EIP-8141](./eip-8141.md): the amount collected from the payer when payment is approved, equal to `TXPARAM` param `0x06`. That is `gas_pre_charge = max_gas × max_fee_per_gas + blob_gas × blob_base_fee`, where `max_gas` is EIP-8141's maximum gas, including the calldata floor where it applies. For transactions with blobs attached, it therefore includes the blob fees, priced at the blob base fee.\n+The `gas_pre_charge` parameter is the transaction's `max_cost` as defined in [EIP-8141](./eip-8141.md#fee-budget): the amount collected from the payer when payment is approved. It depends on the including block's base fees and can be less than the transaction's `max_fee`. For transactions with blobs attached, it includes the blob fees, priced at the blob base fee.\n \n The `gas_payer_address` is the target of whichever frame called `APPROVE(APPROVE_PAYMENT)` or `APPROVE(APPROVE_EXECUTION_AND_PAYMENT)`, i.e. the EIP-8141 `payer`, which may or may not be the transaction sender.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "614ed450d05207e2f8d41273ecc82af9d0bf1df5",
       "date": "2026-10-20T15:21:16Z",
       "message": "Update EIP-7906: Update authors in EIP-7906",
@@ -373,7 +383,7 @@
       "number": 12562,
       "title": "Update EIP-7906: say where storage-kept nonce changes appear",
       "author": "AnkushinDaniil",
-      "updatedAt": "2026-10-22T13:21:31Z",
+      "updatedAt": "2026-10-23T10:20:21Z",
       "additions": 1,
       "deletions": 1
     },

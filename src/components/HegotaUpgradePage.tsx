@@ -3,13 +3,14 @@ import { getUpgradeById } from '../data/upgrades';
 import { getUpgradeStatusColor } from '../utils/colors';
 import { canonicalHref } from '../utils/path';
 import ClientPriorityTab from './glamsterdam/ClientPriorityTab';
+import PriorityOrderTab from './glamsterdam/PriorityOrderTab';
 import TestComplexityTab from './glamsterdam/TestComplexityTab';
 import OverviewTab from './hegota/OverviewTab';
 import { UpgradeMascot } from './ui';
 
 const upgrade = getUpgradeById('hegota')!;
 
-export type HegotaTab = 'overview' | 'client-priority' | 'test-complexity';
+export type HegotaTab = 'overview' | 'priority-order' | 'client-priority' | 'test-complexity';
 
 interface TabItem {
   key: HegotaTab;
@@ -19,7 +20,8 @@ interface TabItem {
 
 const tabs: TabItem[] = [
   { key: 'overview', path: '/upgrade/hegota', label: 'Overview' },
-  { key: 'client-priority', path: '/upgrade/hegota/client-priority', label: 'Client Priority' },
+  { key: 'priority-order', path: '/upgrade/hegota/priority-order', label: 'Priority Order' },
+  { key: 'client-priority', path: '/upgrade/hegota/client-priority', label: 'Client Preferences' },
   { key: 'test-complexity', path: '/upgrade/hegota/test-complexity', label: 'Test Complexity' },
 ];
 
@@ -27,6 +29,8 @@ function renderTab(tab: HegotaTab) {
   switch (tab) {
     case 'overview':
       return <OverviewTab />;
+    case 'priority-order':
+      return <PriorityOrderTab fork="hegota" />;
     case 'client-priority':
       return <ClientPriorityTab fork="hegota" />;
     case 'test-complexity':

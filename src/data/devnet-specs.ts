@@ -16,6 +16,9 @@ const specs: DevnetSpec[] = Object.values(modules)
   .map((mod) => (mod as { default: unknown }).default)
   .filter(isDevnetSpec);
 
+/** Every scraped devnet spec, for consumers that query across the set rather than by id. */
+export const devnetSpecs: readonly DevnetSpec[] = specs;
+
 export function getDevnetSpec(id: string): DevnetSpec | undefined {
   return specs.find((s) => s.id === id);
 }

@@ -4,7 +4,7 @@ import { getDevnetSpec, getDevnetSeriesSiblings } from '../data/devnet-specs';
 import { getNetworkEntry, getNetworkMetadata, isPublicNetworkKey } from '../domain/networks/networks';
 import { getPromotedDevnet } from '../domain/networks/promotedDevnets';
 import { buildForkRows, getExecutionGenesisTimestamp, type ForkRow } from '../domain/networks/forkSchedule';
-import { parseMarkdownLinks, parseMarkdownBold, containsMarkdownTable, parseMarkdownTable } from '../utils/markdown';
+import { parseMarkdownLinks, parseMarkdownBold, parseMarkdownCode, containsMarkdownTable, parseMarkdownTable } from '../utils/markdown';
 import type {
   DevnetSpec,
   ClientSupportMatrix,
@@ -548,7 +548,7 @@ function DevnetSpecContent({ spec, networkEntry, metadata }: { spec: DevnetSpec;
                         </Link>
                       </td>
                       <td className="py-2 pr-4 text-slate-700 dark:text-slate-300">
-                        {eip.title}
+                        {parseMarkdownCode(parseMarkdownLinks(eip.title))}
                       </td>
                       <td className="py-2">
                         <StatusBadge status={eip.status} />

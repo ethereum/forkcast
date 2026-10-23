@@ -8,6 +8,12 @@ import {
   parseMetaEip,
   reconcileMetaEip,
 } from './lib/meta-eip.mjs';
+import {
+  fetchPublishedOrder,
+  loadPriorityOrders,
+  reconcileBoard,
+  reconcilePublished,
+} from './lib/priority-order.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -184,14 +190,44 @@ async function auditMetaEips(eips, forkFilter) {
   return results;
 }
 
+// Compare each published priority order against the board it ranks, and against the
+// source list it was transcribed from. Both go stale silently: the board moves on
+// every call, and the source is reranked wherever its maintainer keeps it.
+async function auditPriorityOrders(eips, forkFilter, skipFetch) {
+  const orders = loadPriorityOrders().filter(
+    ({ fork }) => !forkFilter || fork.toLowerCase() === forkFilter.toLowerCase()
+  );
+
+  const results = [];
+  for (const { fork, order } of orders) {
+    const result = { fork, source: order.source, board: reconcileBoard(order, eips) };
+
+    if (skipFetch) {
+      result.skipped = true;
+    } else if (!order.source?.rawUrl) {
+      result.error = 'no source.rawUrl to compare against';
+    } else {
+      try {
+        result.published = reconcilePublished(order, await fetchPublishedOrder(order.source.rawUrl));
+      } catch (error) {
+        result.error = error.message;
+      }
+    }
+    results.push(result);
+  }
+  return results;
+}
+
 function parseArgs() {
   const args = process.argv.slice(2);
-  const options = { fork: null, help: false, skipMeta: false };
+  const options = { fork: null, help: false, skipMeta: false, skipSource: false };
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--fork' || args[i] === '-f') {
       options.fork = args[++i];
     } else if (args[i] === '--no-meta') {
       options.skipMeta = true;
+    } else if (args[i] === '--no-source') {
+      options.skipSource = true;
     } else if (args[i] === '--help' || args[i] === '-h') {
       options.help = true;
     }
@@ -212,6 +248,7 @@ Usage:
 Options:
   -f, --fork <name>   Only check EIPs active in this fork (e.g., Glamsterdam)
       --no-meta       Skip the Hardfork Meta EIP reconciliation (avoids network)
+      --no-source     Skip refetching each priority order's source list (avoids network)
   -h, --help          Show this help message
 
 Checks for:
@@ -224,6 +261,11 @@ Also checks that stage-change decisions recorded in call
 key_decisions.json files are reflected in the EIP forkRelationships,
 and that every EIP listed in a fork's Hardfork Meta EIP is present in
 Forkcast at the same stage or further along.
+
+Checks each published priority order (src/data/priority-order/) against the
+board it ranks and against the source list it was transcribed from,
+reporting EIPs that have left CFI/SFI, are not yet placed, or have been
+added, dropped or reranked at the source.
 
 Reports how many EIPs make up the rank page's board, and how many
 active EIPs are awaiting an upstream spec PR merge.
@@ -326,6 +368,68 @@ async function main() {
     console.log();
   }
 
+  // --- Priority order vs. the board and its source list ---
+  console.log('Priority order');
+  console.log('-'.repeat(40));
+  let priorityOrderIssues = 0;
+  let priorityOrderErrors = 0;
+  const priorityOrders = await auditPriorityOrders(eips, options.fork, options.skipSource);
+  if (priorityOrders.length === 0) {
+    console.log('  None published.');
+  }
+  for (const result of priorityOrders) {
+    const lines = [];
+
+    for (const { layer, moved, unplaced } of result.board) {
+      for (const item of moved) {
+        lines.push(`    ${layer} #${item.eipId} is ranked but now ${item.status} — drop it`);
+      }
+      if (unplaced.length > 0) {
+        lines.push(
+          `    ${layer} not yet ranked: ${unplaced.map(id => `#${id}`).join(', ')}`
+        );
+      }
+    }
+
+    const published = result.published;
+    if (published) {
+      for (const id of published.added) {
+        lines.push(`    source adds #${id}`);
+      }
+      for (const id of published.removed) {
+        lines.push(`    source no longer lists #${id}`);
+      }
+      for (const move of published.reranked) {
+        lines.push(`    source moved #${move.eipId} from ${move.from} to ${move.to}`);
+      }
+      for (const id of published.watchingAdded) {
+        lines.push(`    source is watching #${id}`);
+      }
+      for (const id of published.watchingRemoved) {
+        lines.push(`    source no longer watches #${id}`);
+      }
+      for (const line of published.unparsed) {
+        lines.push(`    unreadable source line: ${line}`);
+      }
+    }
+
+    if (result.error) {
+      console.log(`  ${result.fork} — could not read the source list: ${result.error}`);
+      priorityOrderErrors++;
+    } else if (lines.length === 0) {
+      const checked = result.skipped ? 'board only' : 'board and source';
+      console.log(`  ${result.fork} — up to date (${checked}).`);
+      continue;
+    }
+
+    console.log(`  ${result.fork} (${result.source?.url ?? 'no source'})`);
+    for (const line of lines) {
+      console.log(line);
+      priorityOrderIssues++;
+    }
+  }
+  console.log();
+
   // --- Hardfork Meta EIP reconciliation ---
   let metaIssueCount = 0;
   let metaErrorCount = 0;
@@ -354,11 +458,15 @@ async function main() {
   const hasIssues =
     results.length > 0 ||
     decisionIssues.length > 0 ||
+    priorityOrderIssues > 0 ||
+    priorityOrderErrors > 0 ||
     metaIssueCount > 0 ||
     metaErrorCount > 0;
   console.log(
     `${results.length} EIP(s) with ${totalIssues} data issue(s); ` +
     `${decisionIssues.length} unreflected decision(s); ` +
+    `${priorityOrderIssues} priority order change(s)` +
+    `${priorityOrderErrors > 0 ? ` (${priorityOrderErrors} unchecked)` : ''}; ` +
     `${metaIssueCount} meta EIP gap(s)` +
     `${metaErrorCount > 0 ? `; ${metaErrorCount} meta EIP(s) unchecked` : ''}.`
   );

@@ -170,3 +170,44 @@ export const parseMarkdownBold = (
 
   return result;
 };
+/**
+ * Parse `inline code` spans into <code> elements.
+ *
+ * Processes each string node from a React node array, so it composes after
+ * parseMarkdownLinks: a backtick inside a link's text is left to the link.
+ */
+export const parseMarkdownCode = (
+  nodes: React.ReactNode[],
+): React.ReactNode[] => {
+  const codeRegex = /`([^`]+)`/g;
+  const result: React.ReactNode[] = [];
+
+  nodes.forEach((node, nodeIdx) => {
+    if (typeof node !== 'string') {
+      result.push(node);
+      return;
+    }
+
+    let lastIndex = 0;
+    let match;
+    while ((match = codeRegex.exec(node)) !== null) {
+      if (match.index > lastIndex) {
+        result.push(node.slice(lastIndex, match.index));
+      }
+      result.push(
+        <code
+          key={`code-${nodeIdx}-${match.index}`}
+          className="font-mono text-[0.9em] px-0.5 rounded bg-slate-100 dark:bg-slate-700"
+        >
+          {match[1]}
+        </code>,
+      );
+      lastIndex = match.index + match[0].length;
+    }
+    if (lastIndex < node.length) {
+      result.push(node.slice(lastIndex));
+    }
+  });
+
+  return result;
+};

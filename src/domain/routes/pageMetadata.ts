@@ -79,8 +79,13 @@ export const staticPageMetadata = {
     title: 'Hegotá Upgrade - Forkcast',
     description: 'Hegotá network upgrade: overview, EIP proposals, and test complexity.',
   },
+  hegotaPriorityOrder: {
+    title: 'Hegotá Priority Order - Forkcast',
+    description:
+      'The priority order client and testing teams are asked to review Hegotá CFI EIPs in.',
+  },
   hegotaClientPriority: {
-    title: 'Hegotá Client Priority - Forkcast',
+    title: 'Hegotá Client Preferences - Forkcast',
     description: 'Aggregate view of Ethereum client team stances on EIPs proposed for Hegotá.',
   },
   hegotaTestComplexity: {
@@ -102,7 +107,7 @@ export const staticPageMetadata = {
     description: 'Devnet inclusion status for EIPs proposed for the Glamsterdam network upgrade.',
   },
   glamsterdamClientPriority: {
-    title: 'Glamsterdam Client Priority - Forkcast',
+    title: 'Glamsterdam Client Preferences - Forkcast',
     description: 'Aggregate view of Ethereum client team stances on EIPs proposed for Glamsterdam.',
   },
   glamsterdamTestComplexity: {
@@ -131,6 +136,7 @@ export const staticPageRoutes = {
   pectra: '/upgrade/pectra',
   fusaka: '/upgrade/fusaka',
   hegota: '/upgrade/hegota',
+  hegotaPriorityOrder: '/upgrade/hegota/priority-order',
   hegotaClientPriority: '/upgrade/hegota/client-priority',
   hegotaTestComplexity: '/upgrade/hegota/test-complexity',
   glamsterdam: '/upgrade/glamsterdam',

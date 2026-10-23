@@ -40,7 +40,7 @@ export function parseComplexityMarkdown(
       ...(statedTier && statedTier !== tier ? { statedTier } : {}),
       assessmentUrl:
         options.assessmentUrl ??
-        `https://github.com/ethsteel/pm/blob/main/complexity_assessments/EIPs/EIP-${eipNumber}.md`,
+        `https://github.com/ethspecs/pm/blob/main/complexity_assessments/EIPs/EIP-${eipNumber}.md`,
       ...(options.pullRequest ? { pullRequest: options.pullRequest } : {}),
     };
   } catch {

@@ -150,7 +150,7 @@ export const eipCategories: EipCategory[] = [
 ];
 
 /**
- * Running order for the Client Priority board, walking the biggest themes first.
+ * Running order for the Client Preferences board, walking the biggest themes first.
  * Shared by the grouped table and the presentation, so a reader who saw the deck
  * finds the table in the same shape. A group may merge several categories, which
  * then read as its subheads.

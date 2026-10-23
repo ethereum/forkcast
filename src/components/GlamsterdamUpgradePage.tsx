@@ -28,7 +28,7 @@ const tabs: TabItem[] = [
   { key: 'overview', path: '/upgrade/glamsterdam', label: 'Overview' },
   { key: 'stakeholders', path: '/upgrade/glamsterdam/stakeholders', label: 'Stakeholders' },
   { key: 'devnet-inclusion', path: '/upgrade/glamsterdam/devnet-inclusion', label: 'Devnet Inclusion' },
-  { key: 'client-priority', path: '/upgrade/glamsterdam/client-priority', label: 'Client Priority' },
+  { key: 'client-priority', path: '/upgrade/glamsterdam/client-priority', label: 'Client Preferences' },
   { key: 'test-complexity', path: '/upgrade/glamsterdam/test-complexity', label: 'Test Complexity' },
 ];
 

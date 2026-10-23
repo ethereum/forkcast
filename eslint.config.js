@@ -25,4 +25,21 @@ export default tseslint.config(
       ],
     },
   },
+  {
+    extends: [js.configs.recommended],
+    files: ['scripts/**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      globals: globals.node,
+    },
+    rules: {
+      // Scripts use `const { dropped: _dropped, ...rest } = x` and
+      // `catch (_) {}` for best-effort reads; both are intentional.
+      'no-unused-vars': [
+        'error',
+        { ignoreRestSiblings: true, caughtErrorsIgnorePattern: '^_' },
+      ],
+      'no-empty': ['error', { allowEmptyCatch: true }],
+    },
+  },
 ) 

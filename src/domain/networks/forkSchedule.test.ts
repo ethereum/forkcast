@@ -114,3 +114,17 @@ describe('getExecutionGenesisTimestamp', () => {
     expect(getExecutionGenesisTimestamp(undefined)).toBeNull();
   });
 });
+
+describe('buildForkRows activation', () => {
+  it('compares activation timestamps against now in seconds', () => {
+    const forks = {
+      execution: {
+        past: { block: 1, timestamp: 1_700_000_000 },
+        future: { block: 2, timestamp: 1_900_000_000 },
+      },
+    };
+    const rows = buildForkRows(forks, 1_800_000_000);
+    expect(rows.find((r) => r.execution?.name === 'past')?.activated).toBe(true);
+    expect(rows.find((r) => r.execution?.name === 'future')?.activated).toBe(false);
+  });
+});

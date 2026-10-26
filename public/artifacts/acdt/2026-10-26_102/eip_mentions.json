@@ -1,0 +1,153 @@
+{
+  "meeting": "ACDT #102 - 2026-10-26",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "ChainSecurity bug report on gas repricing interactions discussed; Hoodi scheduling delayed pending audits and outreach to affected contracts.",
+      "moments": [
+        {
+          "timestamp": "00:13:01",
+          "context": "Toni explained that ChainSecurity reported 8037 and 8038 interact with opcodes in unanticipated ways, including gas-left increases and refund-funded execution paths, identifying four breaking coding patterns."
+        },
+        {
+          "timestamp": "00:15:02",
+          "context": "Fredrik said ChainSecurity and Dedaub were engaged for a comprehensive analysis with a two-week ETA, recommending waiting for their report before scheduling Hoodi."
+        },
+        {
+          "timestamp": "00:16:56",
+          "context": "Maria Silva outlined the approach: understand affected contracts, do outreach, default to application-layer fixes, and only consider spec changes as a last resort since they are expensive and could undo the gas limit raise."
+        },
+        {
+          "timestamp": "00:20:04",
+          "context": "Łukasz argued for exploring both spec-change and no-spec-change paths in parallel; Maria responded that his proposed PR bundles too many changes and should be broken down per invariant."
+        },
+        {
+          "timestamp": "00:24:42",
+          "context": "Toni stressed that high-severity findings seem fixable without spec changes and suggested delaying the Hoodi scheduling decision by one to two weeks."
+        },
+        {
+          "timestamp": "00:39:03",
+          "context": "Barnabas jokingly told EL devs to fix 8037 within an hour; Spencer quipped it is perfect as-is."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-Access Gas Cost Update",
+      "weight": "discussed",
+      "summary": "Discussed alongside 8037 as part of the same ChainSecurity bug report on state-access gas cost repricing interactions.",
+      "moments": [
+        {
+          "timestamp": "00:13:01",
+          "context": "Toni said ChainSecurity reported that 8037 and 8038 together interact with opcodes in ways that were not anticipated, leading to the four identified breaking patterns."
+        }
+      ]
+    },
+    {
+      "eip": 7928,
+      "title": "Block-Level Access Lists",
+      "weight": "mentioned",
+      "summary": "Cited in chat as an optimization that becomes pointless if EIP-8037 is pulled and the gas limit cannot be raised.",
+      "moments": [
+        {
+          "timestamp": "00:20:50",
+          "context": "Answering Barnabas's chat question about the cost of pulling 8037 from the fork, gary wrote that otherwise \"we can't raise the gaslimit safely, making the optimizations (such as BAL) meaningless\"."
+        }
+      ]
+    },
+    {
+      "eip": 7732,
+      "title": "Enshrined Proposer-Builder Separation",
+      "weight": "discussed",
+      "summary": "Three ePBS spec gaps worked through: builder onboarding deposits at the fork, unverifiable envelope signatures during backfill, and a gossip bound on payload transaction count.",
+      "moments": [
+        {
+          "timestamp": "00:25:22",
+          "context": "Dima Gusakov (Lido) presented consensus-specs PR 5736: at the Glamsterdam fork only deposits carrying the 0x0B withdrawal-credential prefix should be credited to builders, so a front-run deposit cannot silently fail to produce a validator. Clients agreed to merge it this week."
+        },
+        {
+          "timestamp": "00:39:37",
+          "context": "Justin raised the difficulty of verifying backfilled envelopes for builders that have already exited; Potuz argued the envelope signature exists only for gossip-time DoS protection and should never be verified on backfill, and Sam (Nimbus) agreed to open a spec PR clarifying that."
+        },
+        {
+          "timestamp": "00:49:31",
+          "context": "Justin noted that with ePBS it is easier to broadcast and propagate invalid payloads, which is what motivates Nico's proposed gossip check bounding transaction count by gas limit over minimum transaction gas."
+        }
+      ]
+    },
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "Raised as an interaction risk with the removed getPayload timeout, and later cited as the precedent for keeping a feature out of the main spec until it is SFI'd.",
+      "moments": [
+        {
+          "timestamp": "00:33:39",
+          "context": "Fabio (Besu) raised a possible interaction with FOCIL: an empty block is worthless once an inclusion list has to be satisfied, so the first getPayload response may be delayed while a minimal block carrying the inclusion list transactions is built."
+        },
+        {
+          "timestamp": "00:35:01",
+          "context": "Potuz wrote in chat that he wished FOCIL and especially shorter slots had been thought through better with regard to this getPayload timing interaction."
+        },
+        {
+          "timestamp": "01:03:33",
+          "context": "Mehdi Aouadi (Teku) cited FOCIL as precedent in the shorter-slots merge debate: it was tested but not merged until it was SFI'd, and he argued for doing the same here."
+        }
+      ]
+    },
+    {
+      "eip": 1559,
+      "title": "Fee market change for ETH 1.0 chain",
+      "weight": "mentioned",
+      "summary": "Nico noted the CL already has an EIP-1559 transition rule, as precedent for crossing the EL/CL architectural boundary.",
+      "moments": [
+        {
+          "timestamp": "00:52:28",
+          "context": "When Dustin questioned whether a min-transaction-gas gossip check crosses architectural boundaries, Nico pointed out the CL already enforces an EIP-1559 transition rule."
+        }
+      ]
+    },
+    {
+      "eip": 2780,
+      "title": "Resource-Based Intrinsic Transaction Gas",
+      "weight": "mentioned",
+      "summary": "Jochem cited EIP-2780 as the reason minimum intrinsic gas drops from 21k to 12k with Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "00:52:55",
+          "context": "Jochem noted in chat that the minimum transaction gas is 21k before Glamsterdam and 12k after Glamsterdam due to EIP-2780."
+        }
+      ]
+    },
+    {
+      "eip": 8198,
+      "title": "Quick Slots",
+      "weight": "discussed",
+      "summary": "Whether to merge the shorter-slots machinery into the main Heze spec; no majority agreement, so it stays a feature branch.",
+      "moments": [
+        {
+          "timestamp": "00:55:54",
+          "context": "Barnabas asked what the final form of the consensus spec will be and whether shorter slots can be expected to merge this week; Justin said he did not think there was support for merging it into the Heze spec yet."
+        },
+        {
+          "timestamp": "00:56:42",
+          "context": "Barnabas wrote in chat that 4 clients have already implemented against the Heze spec; Potuz replied he was fine with it being SFI'd at ACD this week, though Justin doubted that would happen."
+        },
+        {
+          "timestamp": "00:57:16",
+          "context": "NC asked in chat whether the group had agreed not to do quick slots in the next devnet, and if so not to merge; Barnabas answered that heze-devnet-2 has been up a week and heze-devnet-3 already runs quick slots, at a 9-second slot duration."
+        },
+        {
+          "timestamp": "01:00:46",
+          "context": "Matthew Keil (Lodestar) said the contention is merging with a changed slot time rather than the machinery itself; Potuz objected that changing the minimal spec times would break Prysm's testing, and Barnabas proposed merging with 6/12 second times unchanged."
+        },
+        {
+          "timestamp": "01:04:15",
+          "context": "Justin concluded it remains a feature until a majority of clients agree to merge it into Heze, deferring further discussion to Discord and ACDC."
+        }
+      ]
+    }
+  ]
+}

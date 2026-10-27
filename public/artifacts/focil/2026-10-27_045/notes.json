@@ -1,0 +1,47 @@
+{
+  "meeting": "FOCIL #045 - 2026-10-27",
+  "sections": [
+    {
+      "heading": "Client Development Updates",
+      "summary": "Nethermind has quick slots and heze-devnet-3 changes ready; Besu still needs quick slots; Lighthouse merging devnet-3 work into unstable; Prysm landing FOCIL in trunk.",
+      "timestamp": "00:04:18",
+      "body": "- Nethermind: implementations of quick slots and heze-devnet-3 changes are complete.\n- Besu: behind schedule due to code refactoring needed for test passing; quick slots feature not yet implemented.\n  - Besu can participate if slot time stays at 12 seconds; otherwise must wait for quick slots implementation.\n- Lighthouse: most work is in the heze-devnet-3 trunk branch; steadily merging updates into unstable.\n- Prysm (via chat): involved in devnet 2/3; currently landing FOCIL code in their trunk branch."
+    },
+    {
+      "heading": "Bid Griefing via Late ILs and Early Bids",
+      "summary": "Consensus leaned toward PR 5741's approach (only timely ILs for bid filtering); decision deferred pending further analysis of bitlist in fork choice.",
+      "timestamp": "00:07:35",
+      "body": "- Nico (Lodestar) identified two griefing vectors in the current FOCIL bid handling spec, addressed in [consensus-specs PR #5740](https://github.com/ethereum/consensus-specs/pull/5740) and [PR #5741](https://github.com/ethereum/consensus-specs/pull/5741).\n- **Griefing vector 1 (late IL release):** A single IL committee member can release an IL very late; the proposer sees it and must satisfy it, invalidating all existing builder bids. A builder colluding with a committee member could exploit this so only their bid is IL-compliant.\n- **Griefing vector 2 (early high bid):** A builder can gossip a very high bid before the IL deadline that it knows won't be selected later, crowding out legitimate bids on P2P.\n- PR 5741 proposes: (a) a P2P gossip rule to ignore bids received before the IL deadline in the previous slot, and (b) the proposer should filter bids against only timely ILs, enforcing the same view as attesters.\n- PR 5740 uses softer \"should do their best\" language for bid selection, which multiple participants found too ambiguous and difficult to implement.\n  - Justin Traglia and Justin Florentine both objected to the vague language and preferred 5741's clear approach.\n  - Justin Traglia also expressed concern that 5740 weakens IL enforcement by making compliance non-mandatory.\n- Nico noted that the timely-only filter lets more bids through, which interacts with the unresolved question of whether proposers should be penalized (reorged) for selecting non-IL-compliant bids.\n- Jihoon suggested the bitlist-in-fork-choice mechanism (previously deprioritized) needs to be revisited alongside this, as it aligns proposer incentives to choose IL-compliant bids.\n- Jihoon proposed splitting 5741 into two PRs — one for the bid propagation window (P2P rule) and one for the only-timely filtering — to merge the less controversial part first. Nico felt the two parts belong together but was open to splitting.\n- Decision deferred: tentative preference for 5741's approach; further discussion planned at Devcon and offline."
+    },
+    {
+      "heading": "IL Deadline Timing for heze-devnet-3",
+      "summary": "The 8s-to-9s IL deadline change (PR 5727) is configurable; devnet-3 currently uses 7500 bps; unclear if the change targets devnet-3 or a future devnet.",
+      "timestamp": "00:11:27",
+      "body": "- Mehdi asked whether the IL deadline change from 8s to 9s ([consensus-specs PR #5727](https://github.com/ethereum/consensus-specs/pull/5727)) should be deployed to heze-devnet-3 or deferred to the next devnet.\n- Jun Song (Prysm) clarified that devnet-3 currently uses 7500 bps, which is configurable from the YAML file at startup.\n- No explicit decision was made on whether to apply PR 5727 to devnet-3."
+    },
+    {
+      "heading": "IL-Unsatisfied Payload as Head Bug",
+      "summary": "Lodestar found a spec bug where an IL-unsatisfied payload can become the head, breaking bid propagation and payload preparation; fix proposed in PR 5769.",
+      "timestamp": "00:25:13",
+      "body": "- Nico discovered during testing that Lodestar picks an IL-unsatisfied payload as head in the current slot, traced to a spec-level bug also independently found by an automated scan.\n- [Consensus-specs PR #5769](https://github.com/ethereum/consensus-specs/pull/5769) proposed as a fix.\n- Two concrete problems arise from the bug:\n  - **Bid propagation:** The `is_bid_compatible_with_head` gossip check rejects bids building on empty (the correct parent when the previous payload is IL-noncompliant), because the node's head still points to the full but noncompliant payload.\n  - **Payload preparation:** Lodestar prepares the payload in the previous slot on the full head, but at slot start `should_extend_payload` returns false for the IL-noncompliant payload, causing a switch to empty — meaning the payload was prepared on the wrong head.\n- Open design question: should an IL-unsatisfied payload ever be set as head via FCU to the EL? Jihoon believes it should not.\n- Nico noted his fix ensures a non-IL-satisfied payload can never become head in the current or next slot, but could still become head in later slots if attesters with a different IL view vote for it.\n- No final decision; participants asked to review the PR and leave comments offline."
+    },
+    {
+      "heading": "FOCIL–FRAME Integration Design",
+      "summary": "Jihoon proposed passing raw ILs (not deduplicated transactions) to the EL, simplifying CL responsibilities; early consensus favors this abstraction over Marc's original approach.",
+      "timestamp": "00:31:06",
+      "body": "- Marc (Nethermind) previously opened PRs for FOCIL–FRAME interaction: [EIPs PR #12394](https://github.com/ethereum/EIPs/pull/12394), [consensus-specs PR #5698](https://github.com/ethereum/consensus-specs/pull/5698), [execution-APIs PR #911](https://github.com/ethereum/execution-apis/pull/911).\n- Jihoon opened alternative PRs exploring a different approach: [consensus-specs PR #5772](https://github.com/ethereum/consensus-specs/pull/5772), [execution-APIs PR #960](https://github.com/ethereum/execution-apis/pull/960).\n- **Key difference:** Jihoon's approach passes raw ILs (not individual IL transactions) from CL to EL via payload attributes and FCU.\n  - The EL handles deduplication, profile-2 transaction gas-limit checks, and returns omission claims.\n  - The CL no longer needs to construct the \"membership\" data structure mapping IL transactions to their source ILs, removing what Jihoon considers an abstraction leak.\n- Trade-off: slightly more engine API bandwidth on average due to duplicate IL transactions across the 16 ILs, but worst-case overhead is 128 kB — approximately 4.4% of a 20M-gas-limit payload (~3 MB), and this ratio shrinks as gas limits increase.\n- Marc agreed the separation is cleaner and worth the bandwidth cost; will review the PR.\n- Mehdi (Teku) expressed a definite preference for the validation abstraction approach.\n- Nico noted this approach could also eliminate `inclusion_list_bits` from the payload attributes SSE event, simplifying the builder notification path.\n- Nethermind and ethrex have existing FOCIL–FRAME prototypes implementing Marc's older spec version; not yet updated.\n- Further discussion planned at Devcon's L1 days in one week."
+    },
+    {
+      "heading": "Hegota-devnet-0 Planning and Schedule",
+      "summary": "FOCIL–FRAME interaction is the primary target for hegota-devnet-0; no firm timeline yet, likely after Devcon.",
+      "timestamp": "00:39:03",
+      "body": "- Once the FOCIL–FRAME design is settled, specs will be finalized and client releases carved for hegota-devnet-0.\n- FOCIL–FRAME is considered the highest-priority item for hegota-devnet-0; exact scope and timeline not yet set.\n- Mehdi confirmed in chat that hegota-devnet-0 is not yet scheduled.\n- Launch expected after Devcon."
+    },
+    {
+      "heading": "Next Meeting Schedule",
+      "summary": "Next FOCIL breakout pushed back one week to November 17 due to Devcon travel.",
+      "timestamp": "00:41:01",
+      "body": "- The originally scheduled next breakout falls one week after Devcon; Jihoon proposed pushing it back by one additional week to November 17.\n- No objections; multiple thumbs-up from participants.\n- Nico noted he will likely be traveling."
+    }
+  ]
+}

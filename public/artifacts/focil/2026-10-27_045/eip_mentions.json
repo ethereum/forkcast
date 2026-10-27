@@ -1,0 +1,69 @@
+{
+  "meeting": "FOCIL #045 - 2026-10-27",
+  "eips": [
+    {
+      "eip": 8198,
+      "title": "Quick Slots",
+      "weight": "discussed",
+      "summary": "Client readiness for quick slots reviewed: Nethermind has it implemented, Besu does not and can only take part if the slot time stays at 12 seconds.",
+      "moments": [
+        {
+          "timestamp": "00:04:32",
+          "context": "Jihoon opened by noting little progress since the Heze devnet 2, naming quick slots before moving to client updates."
+        },
+        {
+          "timestamp": "00:04:54",
+          "context": "Marc reported Nethermind has implementations of quick slots, along with the heze-devnet-3 changes."
+        },
+        {
+          "timestamp": "00:05:13",
+          "context": "Fabio Di Fabio said Besu is behind after a refactor and has not implemented the quick slot feature yet — Besu is fine if the slot time does not change from 12 seconds, otherwise it needs to wait."
+        }
+      ]
+    },
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "The call's subject: two bid-griefing vectors and the 5740-vs-5741 fix, the IL deadline change, and a spec bug letting an IL-unsatisfied payload become head.",
+      "moments": [
+        {
+          "timestamp": "00:08:06",
+          "context": "Nico Flaig walked through two griefing vectors in FOCIL bid handling — a committee member releasing an IL very late to invalidate existing bids, and a builder gossiping a high early bid before the IL deadline to crowd others out."
+        },
+        {
+          "timestamp": "00:11:27",
+          "context": "Mehdi Aouadi asked in chat whether the IL deadline change from 8s to 9s (consensus-specs PR 5727) is scheduled for the next devnet or should go to heze-devnet-3; Jun Song replied that devnet 3 currently uses 7500 bps, configurable from the YAML at startup."
+        },
+        {
+          "timestamp": "00:19:22",
+          "context": "Jihoon proposed a tentative decision to prefer the only-timely approach today and revisit it alongside how the bitlist plays out in fork choice."
+        },
+        {
+          "timestamp": "00:25:22",
+          "context": "Nico reported that Lodestar picks an IL-unsatisfied payload as head in the current slot, a spec bug affecting both the is_bid_compatible_with_head gossip check and payload preparation in the previous slot."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "FOCIL–frame integration: Jihoon proposed passing raw ILs to the EL instead of deduped IL transactions, and the design gates what goes into hegota-devnet-0.",
+      "moments": [
+        {
+          "timestamp": "00:30:59",
+          "context": "Jihoon recapped Marc's earlier PRs to support FOCIL and frames, and introduced his own alternative in which the CL passes whole ILs to the EL rather than IL transactions, moving deduplication and omission claims to the EL."
+        },
+        {
+          "timestamp": "00:38:55",
+          "context": "Jihoon said the devnet schedule depends on settling the design for the FOCIL frame interaction before specs can be finalised and releases carved."
+        },
+        {
+          "timestamp": "00:39:32",
+          "context": "Answering Mehdi's chat question on whether FOCIL <> FRAME lands in hegota-devnet-0, Jihoon said a FOCIL frame would be a target defined as 0, and that it is the item he considers highest priority for that devnet."
+        }
+      ]
+    }
+  ]
+}

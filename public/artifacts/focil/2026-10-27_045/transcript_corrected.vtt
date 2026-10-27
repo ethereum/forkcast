@@ -42,11 +42,11 @@ Jihoon: Welcome, everyone, to FOCIL Breakout.
 
 11
 00:04:25.270 --> 00:04:32.229
-Jihoon: 35. Today, we can discuss client updates and some spec discussions.
+Jihoon: 45. Today, we can discuss client updates and some spec discussions.
 
 12
 00:04:32.670 --> 00:04:39.350
-Jihoon: So we haven't met… we haven't had much progress after FOCIL… DevNet 2.
+Jihoon: So we haven't met… we haven't had much progress after Heze… devnet 2.
 
 13
 00:04:40.080 --> 00:04:41.870
@@ -54,7 +54,7 @@ Jihoon: Definitely was about.
 
 14
 00:04:42.340 --> 00:04:46.350
-Jihoon: Book slots, but still, let's start with client updates.
+Jihoon: Quick slots, but still, let's start with client updates.
 
 15
 00:04:46.600 --> 00:04:49.770
@@ -66,7 +66,7 @@ Marc: On Nethermind's side, we have implementations of, quick slots.
 
 17
 00:04:59.470 --> 00:05:02.260
-Marc: And also the changes for FOCIL devnet 3.
+Marc: And also the changes for heze-devnet-3.
 
 18
 00:05:11.200 --> 00:05:12.080
@@ -110,11 +110,11 @@ Jihoon: Gotcha. Thank you.
 
 28
 00:06:11.300 --> 00:06:25.210
-Rahul Barman: Update from the, Lido side, most of our work is currently present in the, FOCIL devnet 3 trunk branch, and we are steadily emerging, those updates into Unstable as well.
+Rahul Barman: Update from the, Lighthouse side, most of our work is currently present in the, heze-devnet-3 trunk branch, and we are steadily emerging, those updates into Unstable as well.
 
 29
 00:06:35.860 --> 00:06:39.560
-Jihoon: Okay, Gray, any other clients?
+Jihoon: Okay, great, any other clients?
 
 30
 00:07:13.870 --> 00:07:17.150
@@ -126,7 +126,7 @@ Jihoon: Currently landing FOCIL stuff.
 
 32
 00:07:22.140 --> 00:07:26.690
-Jihoon: and trunk branch, involved in debit 2 and 3. Thanks for the update.
+Jihoon: and trunk branch, involved in devnet 2 and 3. Thanks for the update.
 
 33
 00:07:28.480 --> 00:07:35.069
@@ -154,7 +154,7 @@ Nico Flaig: Alright, yeah, so… the first one is the Validate and select bids o
 
 39
 00:08:15.740 --> 00:08:23.289
-Nico Flaig: So while reviewing our FOCIL implementation, I realized you can basically grieve the proposer and build us.
+Nico Flaig: So while reviewing our FOCIL implementation, I realized you can basically grief the proposer and builders.
 
 40
 00:08:23.730 --> 00:08:25.559
@@ -162,7 +162,7 @@ Nico Flaig: In the current design.
 
 41
 00:08:26.010 --> 00:08:40.299
-Nico Flaig: Because the, proposal picks bits, that need to satisfy all the inclusion lists, whether they are timely or not, while, like, attesters only have, like, a subset that is timely.
+Nico Flaig: Because the, proposer picks bids, that need to satisfy all the inclusion lists, whether they are timely or not, while, like, attesters only have, like, a subset that is timely.
 
 42
 00:08:41.100 --> 00:08:42.289
@@ -170,15 +170,15 @@ Nico Flaig: So…
 
 43
 00:08:42.460 --> 00:08:53.529
-Nico Flaig: Basically, the first attack there is that a single member can grieve by, releasing IL really late, and then
+Nico Flaig: Basically, the first attack there is that a single member can grief by, releasing IL really late, and then
 
 44
 00:08:53.670 --> 00:09:06.280
-Nico Flaig: If the proposal ceases it, you invalidate all the bids that exist during bid selection. And even, like, a builder could use this as an advantage if they control a committee member.
+Nico Flaig: If the proposer sees it, you invalidate all the bids that exist during bid selection. And even, like, a builder could use this as an advantage if they control a committee member.
 
 45
 00:09:06.760 --> 00:09:11.070
-Nico Flaig: by, like… because only their bit would be IL compliant.
+Nico Flaig: by, like… because only their bid would be IL compliant.
 
 46
 00:09:11.400 --> 00:09:15.990
@@ -202,7 +202,7 @@ Nico Flaig: enforce that you… it needs to be IL compliant.
 
 51
 00:09:34.890 --> 00:09:49.860
-Nico Flaig: to be gossiped, so you can broadcast a very high bid that you know will not be selected by the proposal later, but it outcrowds all the other bits. So it's a way of creeping other bids.
+Nico Flaig: to be gossiped, so you can broadcast a very high bid that you know will not be selected by the proposer later, but it outcrowds all the other bids. So it's a way of griefing other bids.
 
 52
 00:09:51.360 --> 00:09:55.059
@@ -210,7 +210,7 @@ Nico Flaig: So basically, yeah, the changes just adding?
 
 53
 00:09:55.460 --> 00:10:02.929
-Nico Flaig: one gossip check, which, says ignore bits before the IL due time in the previous slot.
+Nico Flaig: one gossip check, which, says ignore bids before the IL due time in the previous slot.
 
 54
 00:10:03.670 --> 00:10:10.960
@@ -246,7 +246,7 @@ Justin Traglia: I think this is a more logical way of doing it, or a slightly be
 
 62
 00:10:57.990 --> 00:11:04.850
-Jihoon: Yeah, the way I view this is actually the CPRs handle different Problems?
+Jihoon: Yeah, the way I view this is actually the 2 PRs handle different problems?
 
 63
 00:11:05.060 --> 00:11:11.739
@@ -274,7 +274,7 @@ Jihoon: I think… oh, they should be set up.
 
 69
 00:11:35.850 --> 00:11:39.159
-Nico Flaig: Wait, wait, wait. This is not about the proposal, though, right?
+Nico Flaig: Wait, wait, wait. This is not about the proposer, though, right?
 
 70
 00:11:39.540 --> 00:11:46.640
@@ -302,7 +302,7 @@ Jihoon: change.
 
 76
 00:12:00.200 --> 00:12:05.550
-Nico Flaig: Fits a builder, a proposal's supposed to pick during proposal, right?
+Nico Flaig: Fits a builder, a proposer's supposed to pick during proposal, right?
 
 77
 00:12:09.130 --> 00:12:09.920
@@ -318,19 +318,19 @@ Jihoon: not equivocating IL after this PR, is it correct?
 
 80
 00:12:33.910 --> 00:12:46.179
-Nico Flaig: I mean, the builder has the same incentive as a proposal. They want to include as many ILs as they can, right? Because you cannot be sure that you've seen all at the deadline, if there were, like, late ones.
+Nico Flaig: I mean, the builder has the same incentive as a proposer. They want to include as many ILs as they can, right? Because you cannot be sure that you've seen all at the deadline, if there were, like, late ones.
 
 81
 00:12:51.730 --> 00:12:58.579
-Jihoon: I think I misunderstand something, like, what… what does it change with this only timely change in this VR?
+Jihoon: I think I misunderstand something, like, what… what does it change with this only timely change in this PR?
 
 82
 00:13:03.000 --> 00:13:06.170
-Nico Flaig: So in my EPR, right, the current spec…
+Nico Flaig: So in my PR, right, the current spec…
 
 83
 00:13:06.370 --> 00:13:24.050
-Nico Flaig: says a proposer should not pick bits that, don't satisfy their superset of ILs they've seen, right? So if you receive an IL even in the next slot, you should still consider it when you propose a block. That is, like, the current spec.
+Nico Flaig: says a proposer should not pick bids that, don't satisfy their superset of ILs they've seen, right? So if you receive an IL even in the next slot, you should still consider it when you propose a block. That is, like, the current spec.
 
 84
 00:13:24.570 --> 00:13:29.840
@@ -358,7 +358,7 @@ Nico Flaig: The problem is mainly that there's, like, a race, That can happen.
 
 90
 00:14:22.520 --> 00:14:28.040
-Justin Traglia: For $57.40, I'm not quite a fan of the language, like…
+Justin Traglia: For 5740, I'm not quite a fan of the language, like…
 
 91
 00:14:28.290 --> 00:14:33.650
@@ -398,7 +398,7 @@ Jihoon: anymore.
 
 100
 00:15:48.170 --> 00:15:52.970
-Jihoon: Comments? Yeah, maybe preferably from OCL Dev.
+Jihoon: Comments? Yeah, maybe preferably from CL devs.
 
 101
 00:15:56.600 --> 00:16:01.550
@@ -406,15 +406,15 @@ Jihoon: I just wanna double-check before… We decide to merge this in.
 
 102
 00:16:09.100 --> 00:16:17.539
-Nico Flaig: So is there, like, still the intent, as you noted, on the PR, to punish the proposal if… if a wrong bid is selected, or…
+Nico Flaig: So is there, like, still the intent, as you noted, on the PR, to punish the proposer if… if a wrong bid is selected, or…
 
 103
 00:16:19.670 --> 00:16:24.809
-Jihoon: I mean, reordering the Beacon blog if it contains that inclusive bitlist.
+Jihoon: I mean, reorging the beacon block if it contains that inclusive bitlist.
 
 104
 00:16:28.310 --> 00:16:32.680
-Nico Flaig: Yeah, I mean, then it's a bit difficult, right? How do you pick the bit?
+Nico Flaig: Yeah, I mean, then it's a bit difficult, right? How do you pick the bid?
 
 105
 00:16:33.950 --> 00:16:39.070
@@ -430,7 +430,7 @@ Jihoon: Whether to have that change in the future, in the past, we…
 
 108
 00:16:47.730 --> 00:16:53.530
-Jihoon: have this bit.lys, I mean, having bitlaze In fork choice, and…
+Jihoon: have this bitlist, I mean, having bitlist in fork choice, and…
 
 109
 00:16:54.780 --> 00:17:00.810
@@ -446,7 +446,7 @@ Jihoon: Sometime in the future.
 
 112
 00:17:08.550 --> 00:17:15.460
-Jihoon: And… in terms of incentive, I think it is the right way to reorder block, because
+Jihoon: And… in terms of incentive, I think it is the right way to reorg block, because
 
 113
 00:17:15.849 --> 00:17:20.270
@@ -458,7 +458,7 @@ Jihoon: And I think it also aligns builder's incentive more to consider ILs as m
 
 115
 00:17:28.030 --> 00:17:35.650
-Jihoon: But currently, we are not using Bitly's anywhere in the spec, just requiring… I mean, asking, kind of.
+Jihoon: But currently, we are not using bitlists anywhere in the spec, just requiring… I mean, asking, kind of.
 
 116
 00:17:36.160 --> 00:17:39.140
@@ -498,7 +498,7 @@ Justin Traglia: I… I don't know what I was gonna say. I was gonna say in 57…
 
 125
 00:18:27.340 --> 00:18:31.299
-Justin Traglia: I'm also just opposed to making it non-vandatory.
+Justin Traglia: I'm also just opposed to making it non-mandatory.
 
 126
 00:18:31.930 --> 00:18:34.590
@@ -530,7 +530,7 @@ Jihoon: Not defending 5740, but even if he…
 
 133
 00:18:55.490 --> 00:19:08.600
-Jihoon: change it to shoot, protesters. We're gonna vote for the head if it's not IL compliant, so… but I do agree that it is kind of weakening the purpose of IL.
+Jihoon: change it to shoot, attesters. We're gonna vote for the head if it's not IL compliant, so… but I do agree that it is kind of weakening the purpose of IL.
 
 134
 00:19:11.060 --> 00:19:20.269
@@ -538,11 +538,11 @@ Jihoon: And, yeah, as Nico pointed out, I think we also need to consider how Bit
 
 135
 00:19:22.240 --> 00:19:30.319
-Jihoon: Make a tentative decision to prefer $57.41 today, and then see where it lands.
+Jihoon: Make a tentative decision to prefer 5741 today, and then see where it lands.
 
 136
 00:19:32.230 --> 00:19:35.879
-Jihoon: Along with the bitlys and fork choice.
+Jihoon: Along with the bitlist in fork choice.
 
 137
 00:19:36.850 --> 00:19:38.030
@@ -550,7 +550,7 @@ Jihoon: Hi, this is Alan.
 
 138
 00:19:39.830 --> 00:19:47.070
-Nico Flaig: Yeah, I mean, my main concern, right, is my PR makes, lets more bits slip through, basically.
+Nico Flaig: Yeah, I mean, my main concern, right, is my PR makes, lets more bids slip through, basically.
 
 139
 00:19:47.420 --> 00:19:48.469
@@ -558,11 +558,11 @@ Nico Flaig: So it would
 
 140
 00:19:48.690 --> 00:19:56.539
-Nico Flaig: Like, once we change this, that the proposal also gets punished, then you might use a different strategy, how you select bids.
+Nico Flaig: Like, once we change this, that the proposer also gets punished, then you might use a different strategy, how you select bids.
 
 141
 00:19:57.020 --> 00:20:03.740
-Nico Flaig: But yeah, I'm not sure how you would prevent the grieving attacks that I pointed out while also,
+Nico Flaig: But yeah, I'm not sure how you would prevent the griefing attacks that I pointed out while also,
 
 142
 00:20:04.220 --> 00:20:08.209
@@ -582,11 +582,11 @@ Jihoon: Then just putting this… Super, super sad bit list aside, What do we th
 
 146
 00:20:25.140 --> 00:20:29.289
-Jihoon: Considering bits only after this.
+Jihoon: Considering bids only after this.
 
 147
 00:20:30.640 --> 00:20:33.350
-Jihoon: when was it? IR deadline or something?
+Jihoon: when was it? IL deadline or something?
 
 148
 00:20:33.710 --> 00:20:40.019
@@ -598,7 +598,7 @@ Jihoon: Yeah, IL deadline.
 
 150
 00:20:44.700 --> 00:20:49.400
-Jihoon: I mean… A secting bits after the IR deadline.
+Jihoon: I mean… A secting bids after the IL deadline.
 
 151
 00:20:59.660 --> 00:21:00.550
@@ -618,7 +618,7 @@ Justin Traglia: Is that what you're talking about?
 
 155
 00:21:15.470 --> 00:21:28.859
-Jihoon: I'm not following what the second part you're referring to, but what I want to say is that, you know, in the course PR, it changes P2P spec to consider bits only after the IL deadline.
+Jihoon: I'm not following what the second part you're referring to, but what I want to say is that, you know, in the course PR, it changes P2P spec to consider bids only after the IL deadline.
 
 156
 00:21:29.620 --> 00:21:35.819
@@ -634,15 +634,15 @@ Jihoon: Bid propagation window first.
 
 159
 00:21:55.580 --> 00:22:09.340
-Nico Flaig: Right, so there are two parts, so one is when you… what bits you select when you have to propose, so at, like, at the start of the proposal slot, and the other one is on P2P, what bits do we let slip through on gossip in the previous slot?
+Nico Flaig: Right, so there are two parts, so one is when you… what bids you select when you have to propose, so at, like, at the start of the proposal slot, and the other one is on P2P, what bids do we let slip through on gossip in the previous slot?
 
 160
 00:22:10.610 --> 00:22:17.390
-Nico Flaig: But I think you always have to evaluate the bits, on a frozen IL view, so…
+Nico Flaig: But I think you always have to evaluate the bids, on a frozen IL view, so…
 
 161
 00:22:18.070 --> 00:22:26.190
-Nico Flaig: There's, like, a comment from NC. The other thing is, if you've seen all the 16 ILs, I guess you could allow bits earlier.
+Nico Flaig: There's, like, a comment from NC. The other thing is, if you've seen all the 16 ILs, I guess you could allow bids earlier.
 
 162
 00:22:27.330 --> 00:22:30.320
@@ -658,11 +658,11 @@ Jihoon: Are they related to each other in some way?
 
 165
 00:22:42.750 --> 00:22:55.650
-Nico Flaig: I mean, the thing is, right, like, there's no point letting bits in your op pool and, like, outgrow other bits on P2P if you already know you might not pick it, right?
+Nico Flaig: I mean, the thing is, right, like, there's no point letting bids in your op pool and, like, outgrow other bids on P2P if you already know you might not pick it, right?
 
 166
 00:22:56.250 --> 00:23:07.170
-Nico Flaig: Like, at least right now, the bits that are in our pool, we always can consider them during proposal, and you basically pick them by value, or like…
+Nico Flaig: Like, at least right now, the bids that are in our pool, we always can consider them during proposal, and you basically pick them by value, or like…
 
 167
 00:23:07.300 --> 00:23:12.190
@@ -670,7 +670,7 @@ Nico Flaig: it might be with, like, Boost or whatever, but…
 
 168
 00:23:12.740 --> 00:23:18.929
-Nico Flaig: with this and FOCIL, right, you could have bits in your opul that you cannot even pick, so…
+Nico Flaig: with this and FOCIL, right, you could have bids in your op pool that you cannot even pick, so…
 
 169
 00:23:22.750 --> 00:23:24.110
@@ -678,7 +678,7 @@ Jihoon: Yeah, what do I want to say?
 
 170
 00:23:24.110 --> 00:23:26.819
-Nico Flaig: the second, like, briefing point.
+Nico Flaig: the second, like, griefing point.
 
 171
 00:23:27.280 --> 00:23:33.000
@@ -686,7 +686,7 @@ Jihoon: Yeah, maybe we could split your PR into two PRs, like, one about…
 
 172
 00:23:33.230 --> 00:23:43.639
-Jihoon: This bit propagation window, and the other about only timely, and maybe we can merge the, bit propagation window first, if it's…
+Jihoon: This bid propagation window, and the other about only timely, and maybe we can merge the, bid propagation window first, if it's…
 
 173
 00:23:44.770 --> 00:23:53.149
@@ -698,7 +698,7 @@ Jihoon: Circle back to the only timely thing with… more concrete.
 
 175
 00:24:04.140 --> 00:24:06.800
-Jihoon: Suggestion for bitterly and fork choice.
+Jihoon: Suggestion for bitlist in fork choice.
 
 176
 00:24:07.800 --> 00:24:09.609
@@ -714,7 +714,7 @@ Nico Flaig: So I think the P2P rule, is, like, the mandatory one from, like, the
 
 179
 00:24:27.390 --> 00:24:34.960
-Nico Flaig: But it's, if you get bits from external sources, right, like builder, API, Small for that case.
+Nico Flaig: But it's, if you get bids from external sources, right, like builder, API, Small for that case.
 
 180
 00:24:37.130 --> 00:24:43.670
@@ -734,11 +734,11 @@ Jihoon: See what's the right solution.
 
 184
 00:24:58.520 --> 00:25:01.069
-Jihoon: Considering the petalism and the fork choice.
+Jihoon: Considering the bitlist in fork choice.
 
 185
 00:25:01.970 --> 00:25:05.840
-Jihoon: Maybe we can discuss it in DevCon. So, yeah.
+Jihoon: Maybe we can discuss it in Devcon. So, yeah.
 
 186
 00:25:07.710 --> 00:25:13.110
@@ -750,7 +750,7 @@ Jihoon: This one, which is also by Nico. Do you want to also give us some intro?
 
 188
 00:25:22.170 --> 00:25:33.619
-Nico Flaig: So that one I found during testing, which is that I noticed that Lodestar picks a IL unsatisfied payload as had in our current slot.
+Nico Flaig: So that one I found during testing, which is that I noticed that Lodestar picks a IL unsatisfied payload as head in our current slot.
 
 189
 00:25:34.690 --> 00:25:42.580
@@ -790,11 +790,11 @@ Nico Flaig: So, right, we have this,
 
 198
 00:26:26.280 --> 00:26:32.040
-Nico Flaig: the check, which is, like, is bit compatible with HAT, like this one?
+Nico Flaig: the check, which is, like, is_bid_compatible_with_head, like this one?
 
 199
 00:26:32.330 --> 00:26:38.339
-Nico Flaig: Which basically only lets bits pass through that are compatible with your head.
+Nico Flaig: Which basically only lets bids pass through that are compatible with your head.
 
 200
 00:26:38.910 --> 00:26:41.410
@@ -902,7 +902,7 @@ Nico Flaig: payload that doesn't satisfy the IL can never become our head, basic
 
 226
 00:29:52.840 --> 00:30:05.470
-Nico Flaig: But then, in the slot after that, right, if, like, a test does vote for it still, because your node didn't have the… has had a different IL view, for example, then you would still,
+Nico Flaig: But then, in the slot after that, right, if, like, attesters vote for it still, because your node didn't have the… has had a different IL view, for example, then you would still,
 
 227
 00:30:05.750 --> 00:30:09.329
@@ -922,7 +922,7 @@ Jihoon: Please also have some time to look into this and suggest solutions, or l
 
 231
 00:30:36.990 --> 00:30:42.940
-Jihoon: Yeah, before we move to Fossil and frames, does anyone have any PRs, or…
+Jihoon: Yeah, before we move to FOCIL and frames, does anyone have any PRs, or…
 
 232
 00:30:43.300 --> 00:30:44.770
@@ -934,7 +934,7 @@ Jihoon: Otherwise, I think we can move on.
 
 234
 00:30:59.530 --> 00:31:06.139
-Jihoon: So… Previously, Marc proposed PRs to support FOCIL air frames.
+Jihoon: So… Previously, Marc proposed PRs to support FOCIL and frames.
 
 235
 00:31:06.530 --> 00:31:10.089
@@ -954,7 +954,7 @@ Jihoon: The main difference is that my PRs…
 
 239
 00:31:35.480 --> 00:31:44.810
-Jihoon: has led the EL to pass ILs instead of ILT transactions. So, previously, the main motivation was that
+Jihoon: has led the EL to pass ILs instead of IL transactions. So, previously, the main motivation was that
 
 240
 00:31:44.980 --> 00:31:47.350
@@ -970,7 +970,7 @@ Jihoon: That represents which IL transaction belongs to which IL.
 
 243
 00:31:57.450 --> 00:32:09.680
-Jihoon: This was necessary because the EL needs to check profile 2 transactions up to some verified guest limits, but in my opinion, this is leakage, so instead.
+Jihoon: This was necessary because the EL needs to check profile 2 transactions up to some verified gas limits, but in my opinion, this is leakage, so instead.
 
 244
 00:32:09.910 --> 00:32:16.199
@@ -1002,7 +1002,7 @@ Jihoon: which ILs they have to consider for their payloads building.
 
 251
 00:32:54.860 --> 00:33:05.669
-Jihoon: And it was not super straightforward, because the event that builders are listening to emits bidlist, not ILs, so…
+Jihoon: And it was not super straightforward, because the event that builders are listening to emits bitlist, not ILs, so…
 
 252
 00:33:06.160 --> 00:33:10.970
@@ -1082,7 +1082,7 @@ Jihoon: Now doesn't have to care anything about transaction, so they just need t
 
 271
 00:35:16.160 --> 00:35:33.049
-Jihoon: receive ILs, and, you know, of course, they have to check equipocation, so on and so forth, and deadline stuff, committee stuff, of course, but that's all. So, they care about ILs, and they just pass it to EL, and then EL… EL we're gonna take care of
+Jihoon: receive ILs, and, you know, of course, they have to check equivocation, so on and so forth, and deadline stuff, committee stuff, of course, but that's all. So, they care about ILs, and they just pass it to EL, and then EL… EL we're gonna take care of
 
 272
 00:35:33.210 --> 00:35:35.770
@@ -1094,7 +1094,7 @@ Jihoon: The downside of this is it will gonna cons… I think it was gonna consu
 
 274
 00:35:43.810 --> 00:36:00.800
-Jihoon: more engine EIPI bandwidth on average, because there would be some duplicated IL transactions, but the max size of this bandwidth consumption is still 128 kB.
+Jihoon: more engine API bandwidth on average, because there would be some duplicated IL transactions, but the max size of this bandwidth consumption is still 128 kB.
 
 275
 00:36:01.300 --> 00:36:02.390
@@ -1114,7 +1114,7 @@ Jihoon: This max size, at the worst case, is around… 4.4%.
 
 279
 00:36:20.740 --> 00:36:21.980
-Jihoon: of the mix.
+Jihoon: of the max.
 
 280
 00:36:22.220 --> 00:36:25.859
@@ -1122,7 +1122,7 @@ Jihoon: payload size at 200 mil. But given that
 
 281
 00:36:26.440 --> 00:36:30.599
-Jihoon: Given the fact that we were gonna increase DAS limit over time.
+Jihoon: Given the fact that we were gonna increase gas limit over time.
 
 282
 00:36:30.710 --> 00:36:33.629
@@ -1186,7 +1186,7 @@ Jihoon: Okay, yeah, looking forward to discuss this.
 
 297
 00:38:23.000 --> 00:38:29.589
-Jihoon: And offline, in a week, if anyone attends the DEFCON. But, yeah, I'm happy to…
+Jihoon: And offline, in a week, if anyone attends Devcon. But, yeah, I'm happy to…
 
 298
 00:38:30.260 --> 00:38:34.199
@@ -1194,7 +1194,7 @@ Jihoon: Share that more context, or answer any questions.
 
 299
 00:38:55.040 --> 00:39:03.929
-Jihoon: So, regarding the DevNet schedule, once we figure out what kind of design we want to have for this FOCIL frame interaction.
+Jihoon: So, regarding the devnet schedule, once we figure out what kind of design we want to have for this FOCIL frame interaction.
 
 300
 00:39:04.310 --> 00:39:10.870
@@ -1202,7 +1202,7 @@ Jihoon: I think we can… Have the specs ready, and then… Yeah.
 
 301
 00:39:11.140 --> 00:39:18.969
-Jihoon: carve the reliefs, and then try to launch. I go to Definite Zero, probably… After DEF CON.
+Jihoon: carve the reliefs, and then try to launch hegota-devnet-0, probably… after Devcon.
 
 302
 00:39:19.210 --> 00:39:22.099
@@ -1222,7 +1222,7 @@ Jihoon: my understanding. I'm not sure what else we want to put in there, but ye
 
 306
 00:39:50.390 --> 00:39:54.550
-Jihoon: Mainly in FOCIL devnet 0, but…
+Jihoon: Mainly in hegota-devnet-0, but…
 
 307
 00:39:55.120 --> 00:40:00.319
@@ -1262,15 +1262,15 @@ Jihoon: Before we wrap up, does anyone have any questions or comments?
 
 316
 00:41:01.040 --> 00:41:09.450
-Jihoon: Just a little bit of housekeeping stuff, so, next breakout is… One week after DEFCON.
+Jihoon: Just a little bit of housekeeping stuff, so, next breakout is… One week after Devcon.
 
 317
 00:41:10.340 --> 00:41:17.689
-Jihoon: But… As people will be traveling, and probably not so much to talk about Right after DDEFCON.
+Jihoon: But… As people will be traveling, and probably not so much to talk about Right after Devcon.
 
 318
 00:41:18.420 --> 00:41:25.200
-Jihoon: So, I'll suggest to push it back by a week, which is on the 7th, 10th November.
+Jihoon: So, I'll suggest to push it back by a week, which is on the 17th of November.
 
 319
 00:41:27.410 --> 00:41:28.919
@@ -1290,7 +1290,7 @@ Jihoon: Alright, any last comments?
 
 323
 00:41:56.100 --> 00:42:01.469
-Jihoon: Alright then, let's get the wrap in a week, if you plan to attend DEF CON. Otherwise.
+Jihoon: Alright then, let's get the wrap in a week, if you plan to attend Devcon. Otherwise.
 
 324
 00:42:01.570 --> 00:42:04.180
@@ -1298,7 +1298,7 @@ Jihoon: Hope you have a great rest of your day, and…
 
 325
 00:42:04.520 --> 00:42:07.859
-Jihoon: See you on the 7th and 10th. Thank you. Bye-bye.
+Jihoon: See you on the 17th. Thank you. Bye-bye.
 
 326
 00:42:09.280 --> 00:42:10.210

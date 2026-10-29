@@ -30,7 +30,7 @@ stokes: Okay, I was trying to wait until around 40 or so people.
 
 8
 00:05:24.940 --> 00:05:31.130
-stokes: Yeah, like Barnabas said here in the chat, DEFCON is next week, so people may be traveling for that.
+stokes: Yeah, like Barnabas said here in the chat, Devcon is next week, so people may be traveling for that.
 
 9
 00:05:31.570 --> 00:05:35.990
@@ -58,7 +58,7 @@ stokes: And yeah, let's go ahead and get into it. So…
 
 15
 00:06:05.500 --> 00:06:12.059
-stokes: To start, there are a few things that came up with, Big Gossip on Glamsterdam.
+stokes: To start, there are a few things that came up with, bid gossip on Glamsterdam.
 
 16
 00:06:12.650 --> 00:06:19.900
@@ -106,11 +106,11 @@ Justin Traglia: I actually prefer Nico's PR, but I'm curious to hear what client
 
 27
 00:07:17.350 --> 00:07:22.660
-Nico Flaig: Yeah, so it solves the same problem, right? The proposer would accept multiple bits.
+Nico Flaig: Yeah, so it solves the same problem, right? The proposer would accept multiple bids.
 
 28
 00:07:22.960 --> 00:07:32.989
-Nico Flaig: But it basically also makes every other node in the network relay multiple bits of a builder, but at, like, a minimum increment, so…
+Nico Flaig: But it basically also makes every other node in the network relay multiple bids of a builder, but at, like, a minimum increment, so…
 
 29
 00:07:33.170 --> 00:07:38.410
@@ -126,11 +126,11 @@ Nico Flaig: Yeah, there's, like, the formula, it's in the PR.
 
 32
 00:07:53.750 --> 00:07:59.510
-Nico Flaig: So it's like a 3% increment per bit that you need to do as a builder.
+Nico Flaig: So it's like a 3% increment per bid that you need to do as a builder.
 
 33
 00:08:00.210 --> 00:08:04.930
-Nico Flaig: And a minimum of, like, 0.001 EF.
+Nico Flaig: And a minimum of, like, 0.001 ETH.
 
 34
 00:08:05.240 --> 00:08:10.029
@@ -158,7 +158,7 @@ Nico Flaig: It's quite costly because, to increase the bid value, you actually
 
 40
 00:08:45.310 --> 00:08:51.210
-Nico Flaig: Need to increment it by 3%, and if the bid wins, you need to pay that to the proposal.
+Nico Flaig: Need to increment it by 3%, and if the bid wins, you need to pay that to the proposer.
 
 41
 00:08:52.560 --> 00:08:55.210
@@ -174,7 +174,7 @@ Justin Traglia: If you wanted… if a builder were to submit a bid up to half an
 
 44
 00:09:11.070 --> 00:09:17.239
-Justin Traglia: And then if… If its limit were, .05 ETH, that would be 125 bits.
+Justin Traglia: And then if… If its limit were, .05 ETH, that would be 125 bids.
 
 45
 00:09:17.470 --> 00:09:19.449
@@ -202,7 +202,7 @@ Barnabas: Are we comfortable with the 3%, by the way? Just because it's like a w
 
 51
 00:09:57.510 --> 00:10:05.779
-Nico Flaig: So that was what I had for a while in Lodestar, but we can, like, just analyze more Manu data to tweak this.
+Nico Flaig: So that was what I had for a while in Lodestar, but we can, like, just analyze more mainnet data to tweak this.
 
 52
 00:10:07.110 --> 00:10:16.779
@@ -250,11 +250,11 @@ Potuz: I just want to express my dis… my discomfort with this kind of EIPs. We
 
 63
 00:11:23.270 --> 00:11:40.209
-Potuz: There are ways of preventing DOS by adding this minimum increase. However, we are already doing crazy things, like allowing for bits to propagate on their non-finalization, coming from different forks, and we've already seen bugs in our caches.
+Potuz: There are ways of preventing DOS by adding this minimum increase. However, we are already doing crazy things, like allowing for bids to propagate on their non-finalization, coming from different forks, and we've already seen bugs in our caches.
 
 64
 00:11:40.210 --> 00:11:47.620
-Potuz: dealing with these dependent routes, because we decided to go with this design of allowing a lot of bits over P2P.
+Potuz: dealing with these dependent roots, because we decided to go with this design of allowing a lot of bids over P2P.
 
 65
 00:11:47.850 --> 00:11:53.709
@@ -270,7 +270,7 @@ Potuz: It's completely solved at the proposer side. There's no rational reason w
 
 68
 00:12:18.110 --> 00:12:29.449
-Potuz: Even… even… it should be fine, even if we implement Nico's PR. The proposer should not ignore any bit that comes to it anyways, even with lower values.
+Potuz: Even… even… it should be fine, even if we implement Nico's PR. The proposer should not ignore any bid that comes to it anyways, even with lower values.
 
 69
 00:12:29.610 --> 00:12:33.370
@@ -378,7 +378,7 @@ stokes: I guess it would be good, just, yeah, in the event that other client tea
 
 95
 00:14:44.960 --> 00:14:47.569
-stokes: a call out to review Potus's comment.
+stokes: a call out to review Potuz's comment.
 
 96
 00:14:48.030 --> 00:14:51.839
@@ -402,7 +402,7 @@ stokes: Okay Thank you.
 
 101
 00:15:09.560 --> 00:15:12.230
-Enrico Del Fante: Yeah, the only tight defect is… is that…
+Enrico Del Fante: Yeah, the only side effect is… is that…
 
 102
 00:15:13.130 --> 00:15:22.300
@@ -418,11 +418,11 @@ stokes: Sorry, Ms. Steph. You said… could you say that one more time?
 
 105
 00:15:29.260 --> 00:15:32.430
-Enrico Del Fante: Sorry, it probably was far from Mike.
+Enrico Del Fante: Sorry, it probably was far from the mic.
 
 106
 00:15:32.640 --> 00:15:39.880
-Enrico Del Fante: I'm saying that the only head effect could be that there might be some interaction with reference tests, if some clients implement
+Enrico Del Fante: I'm saying that the only side effect could be that there might be some interaction with reference tests, if some clients implement
 
 107
 00:15:40.270 --> 00:15:46.319
@@ -454,7 +454,7 @@ stokes: Cool, okay. Thanks, everyone, for your comments there.
 
 114
 00:16:14.690 --> 00:16:24.390
-stokes: Let's see, I think, yeah, that covered that, and there was one other thing that came up, I think just some nice things for the fork trace here, this was 5770.
+stokes: Let's see, I think, yeah, that covered that, and there was one other thing that came up, I think just some nice things for the fork choice here, this was 5770.
 
 115
 00:16:25.460 --> 00:16:31.220
@@ -502,7 +502,7 @@ stokes: Yeah.
 
 126
 00:17:16.550 --> 00:17:17.730
-stokes: Manu takers?
+stokes: Any takers?
 
 127
 00:17:22.579 --> 00:17:30.270
@@ -534,11 +534,11 @@ stokes: The other thing I wanted to touch on, there was, I think, yeah, just som
 
 134
 00:18:02.180 --> 00:18:08.119
-stokes: Thinking about, CFI to SFI, which actually this should be a gooda thing.
+stokes: Thinking about, CFI to SFI, which actually this should be a Hegota thing.
 
 135
 00:18:08.600 --> 00:18:10.120
-stokes: And not a glimpstream thing?
+stokes: And not a Glamsterdam thing?
 
 136
 00:18:10.920 --> 00:18:14.949
@@ -554,7 +554,7 @@ Barnabas: Maybe just, maybe we can discuss what is the rollout plan here, becaus
 
 139
 00:18:34.230 --> 00:18:38.599
-Barnabas: I expect that we would want to have another DevNet coming up sometime.
+Barnabas: I expect that we would want to have another devnet coming up sometime.
 
 140
 00:18:39.070 --> 00:18:44.680
@@ -562,11 +562,11 @@ Barnabas: Where we can test all of those, we can probably have a new… Better r
 
 141
 00:18:47.810 --> 00:18:58.060
-stokes: Yeah, I think the plan is another Consensus-specs release, and then DevNet could be good. Again, I think these are all pretty backwards compatible, and then, yeah, just a lightweight check on a DevNet would be good.
+stokes: Yeah, I think the plan is another Consensus-specs release, and then devnet could be good. Again, I think these are all pretty backwards compatible, and then, yeah, just a lightweight check on a devnet would be good.
 
 142
 00:18:58.420 --> 00:19:07.460
-Barnabas: Well, there was a PR from Lido that would not be backwards compatible. That would be a consensus-tracking change, so that would need actual explicit testing.
+Barnabas: Well, there was a PR from Lido that would not be backwards compatible. That would be a consensus-breaking change, so that would need actual explicit testing.
 
 143
 00:19:07.720 --> 00:19:09.679
@@ -626,7 +626,7 @@ Barnabas: Yeah, I'm not sure.
 
 157
 00:20:11.030 --> 00:20:18.549
-stokes: Yeah, I mean, I think we'll just do the best we can. Potuz is saying here in the chat that Kurtosis might even be better than a DevNet for that particular thing.
+stokes: Yeah, I mean, I think we'll just do the best we can. Potuz is saying here in the chat that Kurtosis might even be better than a devnet for that particular thing.
 
 158
 00:20:19.750 --> 00:20:24.609
@@ -646,7 +646,7 @@ stokes: Yeah, I think there's enough time to run these trucks.
 
 162
 00:20:42.050 --> 00:20:44.630
-stokes: Okay, any other Glamstream things?
+stokes: Okay, any other Glamsterdam things?
 
 163
 00:20:51.500 --> 00:20:52.290
@@ -666,7 +666,7 @@ stokes: comment on the CFI SFI thing in the wrong spot, but I guess we'll just g
 
 167
 00:21:11.120 --> 00:21:17.770
-stokes: Because, yeah, we've started progress with Hegota DevNets in different forms and fashion.
+stokes: Because, yeah, we've started progress with Hegota devnets in different forms and fashion.
 
 168
 00:21:17.960 --> 00:21:22.230
@@ -682,7 +682,7 @@ stokes: I have a comment here for, you know, my thinking on how to think about t
 
 171
 00:21:35.730 --> 00:21:41.990
-stokes: Which is essentially, like, again, start with the headliners, so have a head go to DevNet with FOCIL and PeerDAS.
+stokes: Which is essentially, like, again, start with the headliners, so have a Hegota devnet with FOCIL and frames.
 
 172
 00:21:42.280 --> 00:21:43.630
@@ -706,7 +706,7 @@ stokes: Have quick slots worked on in parallel, and then merge it back in. Quick
 
 177
 00:22:09.880 --> 00:22:13.509
-stokes: Oh yeah, Hegota, but we'll get to Hego to DevNet soon, I assume.
+stokes: Oh yeah, Heze, but we'll get to Hegota devnet soon, I assume.
 
 178
 00:22:14.200 --> 00:22:18.659
@@ -730,15 +730,15 @@ stokes: NC's asking, when can we make a decision to SFI the two smaller EIPs?
 
 183
 00:22:50.750 --> 00:22:56.900
-stokes: I think we should get a stable Hegota to DevNet first, and then make that decision. That's what I would suggest.
+stokes: I think we should get a stable Hegota devnet first, and then make that decision. That's what I would suggest.
 
 184
 00:22:59.430 --> 00:23:05.729
-Barnabas: They are already merged into the Hegota spec, so I think that would be a… I'm a stick.
+Barnabas: They are already merged into the Heze spec, so I think that would be a… I'm a stick.
 
 185
 00:23:07.260 --> 00:23:12.210
-Justin Traglia: But you don't have to… sorry, it doesn't have to be SFI to be merged to the Hegota.
+Justin Traglia: But you don't have to… sorry, it doesn't have to be SFI to be merged to the Heze spec.
 
 186
 00:23:12.740 --> 00:23:18.479
@@ -774,7 +774,7 @@ stokes: But which were they? It was 8015, and was there another one?
 
 194
 00:24:01.230 --> 00:24:09.029
-Barnabas: Yeah, A to 15, definitely can be acidified now. The other one, I would prefer to make a change to it and then specify it.
+Barnabas: Yeah, 8015, definitely can be SFI'd now. The other one, I would prefer to make a change to it and then specify it.
 
 195
 00:24:10.590 --> 00:24:11.840
@@ -854,7 +854,7 @@ Barnabas: You would still not burn,
 
 214
 00:25:10.770 --> 00:25:14.800
-Barnabas: your ETH if you make a 000 deposit, and
+Barnabas: your ETH if you make a 0x00 deposit, and
 
 215
 00:25:14.910 --> 00:25:18.619
@@ -862,7 +862,7 @@ Barnabas: If there's any queued up deposits, then,
 
 216
 00:25:19.420 --> 00:25:30.749
-Barnabas: Those keto deposits would be still processed as the old mechanism, and new deposits would be burned. That's what NC proposed as the alternative for this.
+Barnabas: Those queued deposits would be still processed as the old mechanism, and new deposits would be burned. That's what NC proposed as the alternative for this.
 
 217
 00:25:34.190 --> 00:25:41.360
@@ -874,11 +874,11 @@ Barnabas: burned the ETH or not burn the ETH after,
 
 219
 00:25:45.570 --> 00:25:50.200
-Barnabas: we remove the 0.0 deposit capabilities.
+Barnabas: we remove the 0x00 deposit capabilities.
 
 220
 00:25:53.520 --> 00:25:58.480
-stokes: And it'll be simplest to leave things as is, but then you'd basically be burning your Ethernet in that point.
+stokes: And it'll be simplest to leave things as is, but then you'd basically be burning your ETH at that point.
 
 221
 00:26:00.770 --> 00:26:01.690
@@ -922,11 +922,11 @@ Barnabas: The goal is that maybe we can have a long-term plan, for post-quantum 
 
 231
 00:26:56.690 --> 00:27:14.480
-Barnabas: commit for the next three forks that, you know, in the following fork, we're gonna be stopping the new 000 validators, and then, in the following fork in I-Star, we can exit all the remaining 000 validators, and then, a fork after, we can remove DPS change.
+Barnabas: commit for the next three forks that, you know, in the following fork, we're gonna be stopping the new 0x00 validators, and then, in the following fork in ISTAR, we can exit all the remaining 0x00 validators, and then, a fork after, we can remove the BLS change.
 
 232
 00:27:14.560 --> 00:27:17.179
-Barnabas: BNS2 execution change completely.
+Barnabas: BLS to execution change completely.
 
 233
 00:27:18.060 --> 00:27:28.720
@@ -942,7 +942,7 @@ Barnabas: What we were planning to do.
 
 236
 00:27:37.290 --> 00:27:43.800
-Ben Adams: Is it… is it common at the moment? Are there many, 00 Validator's been created.
+Ben Adams: Is it… is it common at the moment? Are there many, 0x00 validators been created.
 
 237
 00:27:44.800 --> 00:27:49.699
@@ -1054,7 +1054,7 @@ NC: I also want to point out that, Barnabas' proposal
 
 264
 00:30:18.800 --> 00:30:27.119
-NC: That means that the 000 Validator's balance will be zeroed out, and automatically submit a deposit
+NC: That means that the 0x00 validator's balance will be zeroed out, and automatically submit a deposit
 
 265
 00:30:27.330 --> 00:30:28.720
@@ -1090,7 +1090,7 @@ NC: So… is…
 
 273
 00:30:53.610 --> 00:31:08.669
-NC: In the case that, if the 0800 deposit was really, submitted by mistake, and the user wants a refund instead of a 0801 validator, it will go through the entire deposit queue, and aggravation, and then withdrawal.
+NC: In the case that, if the 0x00 deposit was really, submitted by mistake, and the user wants a refund instead of a 0x01 validator, it will go through the entire deposit queue, and aggravation, and then withdrawal.
 
 274
 00:31:08.870 --> 00:31:12.050
@@ -1098,7 +1098,7 @@ NC: Before they get the ETH back.
 
 275
 00:31:13.450 --> 00:31:30.450
-Barnabas: Yeah, but that's, I think, fine. This was to avoid a possible attack where someone would make a bunch of 0 deposits after this four goes live, and then all of a sudden, it would just do a business change, and all those validators could become active, basically.
+Barnabas: Yeah, but that's, I think, fine. This was to avoid a possible attack where someone would make a bunch of 0 deposits after this fork goes live, and then all of a sudden, it would just do a BLS change, and all those validators could become active, basically.
 
 276
 00:31:30.800 --> 00:31:32.070
@@ -1146,7 +1146,7 @@ stokes: I didn't follow the last part.
 
 287
 00:32:38.320 --> 00:32:41.849
-Barnabas: No, so this is already part of the EPR that I made.
+Barnabas: No, so this is already part of the PR that I made.
 
 288
 00:32:42.170 --> 00:32:43.949
@@ -1154,7 +1154,7 @@ Barnabas: So that if,
 
 289
 00:32:44.130 --> 00:32:56.059
-Barnabas: if you have a 000 validator and you make a BNS change, then it would, go back to the front of the queue, of the deposit queue, and it would have to wait, its activation, just like for a brand new validator.
+Barnabas: if you have a 0x00 validator and you make a BLS change, then it would, go back to the front of the queue, of the deposit queue, and it would have to wait, its activation, just like for a brand new validator.
 
 290
 00:32:57.180 --> 00:33:01.209
@@ -1174,7 +1174,7 @@ Barnabas: Yeah, withdrawing, we'll have to wait for the withdrawable period.
 
 294
 00:33:15.600 --> 00:33:23.149
-Barnabas: But also, with 000, you couldn't have withdrawn your funds to any execution layer address.
+Barnabas: But also, with 0x00, you couldn't have withdrawn your funds to any execution layer address.
 
 295
 00:33:23.280 --> 00:33:28.770
@@ -1198,7 +1198,7 @@ Barnabas: Keep the ethore.
 
 300
 00:33:58.440 --> 00:34:07.190
-Barnabas: our burned 8. That's it. And if… then we can, like, figure out later what… and how we want to keep the eat, not burnt.
+Barnabas: our burned 8. That's it. And if… then we can, like, figure out later what… and how we want to keep the ETH, not burnt.
 
 301
 00:34:08.800 --> 00:34:09.420
@@ -1210,7 +1210,7 @@ stokes: Okay, so… yeah, we should be able to…
 
 303
 00:34:16.719 --> 00:34:21.480
-stokes: For those of us that'll be in DEF CON next week, yeah, we can touch on this in person.
+stokes: For those of us that'll be at Devcon next week, yeah, we can touch on this in person.
 
 304
 00:34:21.900 --> 00:34:29.439
@@ -1238,7 +1238,7 @@ Kevaundray Wedderburn: Yeah, I just wanted to clarify that if we do a blog post 
 
 310
 00:34:52.739 --> 00:35:04.260
-Kevaundray Wedderburn: that start depositing from today would still be accepted. It's only if they deposit after the Hegota to hard fork, right? So they can still be in the deposit queue.
+Kevaundray Wedderburn: that start depositing from today would still be accepted. It's only if they deposit after the Hegota hard fork, right? So they can still be in the deposit queue.
 
 311
 00:35:04.540 --> 00:35:06.639
@@ -1250,7 +1250,7 @@ Kevaundray Wedderburn: to me, it seems like we're just protecting against the pe
 
 313
 00:35:20.500 --> 00:35:27.100
-Kevaundray Wedderburn: it doesn't seem to me like this is the best approach. I mean, I understand not burning EF, but if we give…
+Kevaundray Wedderburn: it doesn't seem to me like this is the best approach. I mean, I understand not burning ETH, but if we give…
 
 314
 00:35:27.450 --> 00:35:31.660
@@ -1274,7 +1274,7 @@ Barnabas: Such and such change.
 
 319
 00:35:52.120 --> 00:36:00.760
-Barnabas: Like, there are definitely tools that have deprecated this functionality already, yet we still see 000 deposits made on mainnet right now.
+Barnabas: Like, there are definitely tools that have deprecated this functionality already, yet we still see 0x00 deposits made on mainnet right now.
 
 320
 00:36:02.770 --> 00:36:10.490
@@ -1290,7 +1290,7 @@ Kevaundray Wedderburn: Because this question will come up whenever we choose to 
 
 323
 00:36:22.090 --> 00:36:24.340
-Barnabas: My point is that we don't burn the heat.
+Barnabas: My point is that we don't burn the ETH.
 
 324
 00:36:24.530 --> 00:36:26.649
@@ -1302,7 +1302,7 @@ stokes: Hello.
 
 326
 00:36:27.080 --> 00:36:34.039
-Barnabas: the Validators active, and they could just migrate to 0.01, and then become a normal Validator that is actually supported.
+Barnabas: the Validators active, and they could just migrate to 0x01, and then become a normal validator that is actually supported.
 
 327
 00:36:35.590 --> 00:36:40.699
@@ -1314,7 +1314,7 @@ stokes: So, in terms of moving forward today, let's just say we'll definitely ma
 
 329
 00:36:47.240 --> 00:36:55.229
-stokes: But, yeah, that means, you know, those of us at DevCon can have these conversations there, and otherwise, yeah, async, we can keep things moving.
+stokes: But, yeah, that means, you know, those of us at Devcon can have these conversations there, and otherwise, yeah, async, we can keep things moving.
 
 330
 00:36:55.760 --> 00:37:04.069
@@ -1338,7 +1338,7 @@ stokes: And… yeah, Barnabas, you had a lot of comments. Let me just see where 
 
 335
 00:37:26.850 --> 00:37:30.890
-Justin Traglia: Could we, go back to specifying AD15.
+Justin Traglia: Could we, go back to specifying 8015.
 
 336
 00:37:31.150 --> 00:37:33.499
@@ -1354,7 +1354,7 @@ stokes: do that.
 
 339
 00:37:35.460 --> 00:37:45.020
-stokes: Yeah, jumping back to 8015, again, yeah, this is, I think, a pretty small change, and it sounds like it would facilitate the testing in DevNets.
+stokes: Yeah, jumping back to 8015, again, yeah, this is, I think, a pretty small change, and it sounds like it would facilitate the testing in devnets.
 
 340
 00:37:46.130 --> 00:37:48.450
@@ -1382,7 +1382,7 @@ stokes: Cool.
 
 346
 00:38:12.360 --> 00:38:20.979
-stokes: Okay, then… Barnabas, you had a comment about, fossil clarification. I think this can be pretty brief. Do you just wanna…
+stokes: Okay, then… Barnabas, you had a comment about, FOCIL clarification. I think this can be pretty brief. Do you just wanna…
 
 347
 00:38:21.350 --> 00:38:22.630
@@ -1390,11 +1390,11 @@ stokes: Give the PSA.
 
 348
 00:38:24.100 --> 00:38:38.009
-Barnabas: Yeah, so I noticed that, in the Engine Fructures update, in the execution API spec, we don't necessarily clarify if we want to rebuild the block with the inclusion list or not.
+Barnabas: Yeah, so I noticed that, in the engine forkchoiceUpdated, in the execution API spec, we don't necessarily clarify if we want to rebuild the block with the inclusion list or not.
 
 349
 00:38:39.010 --> 00:38:51.469
-Barnabas: And I noticed that on DevNet 3, that when I start spamming some transactions in the inclusion list only, then, some of the ELs will basically drop
+Barnabas: And I noticed that on devnet 3, that when I start spamming some transactions in the inclusion list only, then, some of the ELs will basically drop
 
 350
 00:38:51.570 --> 00:38:59.899
@@ -1422,11 +1422,11 @@ NC: I think we probably need, EL's input on this, whether it's okay to implement
 
 356
 00:39:33.990 --> 00:39:35.769
-NC: I think from CO is fine.
+NC: I think from CL is fine.
 
 357
 00:39:39.540 --> 00:39:43.990
-stokes: Yeah, Toni's here in the chat scene, it's… Not that straightforward.
+stokes: Yeah, Toni's here in the chat saying, it's… Not that straightforward.
 
 358
 00:39:53.100 --> 00:39:56.249
@@ -1442,7 +1442,7 @@ stokes: Okay.
 
 361
 00:40:00.140 --> 00:40:09.909
-stokes: Cool, thanks for raising it, but yeah, again, just from the CL side, it sounds… I think, yeah, what you're saying it sounds pretty straightforward, less so maybe on the AL side, so…
+stokes: Cool, thanks for raising it, but yeah, again, just from the CL side, it sounds… I think, yeah, what you're saying it sounds pretty straightforward, less so maybe on the EL side, so…
 
 362
 00:40:10.570 --> 00:40:13.310
@@ -1466,7 +1466,7 @@ stokes: And hopefully we can round that out today.
 
 367
 00:40:39.320 --> 00:40:48.960
-stokes: I will share the forecast list again, like I've been doing. I feel like that's pretty helpful, but I'll need one second to click all the buttons.
+stokes: I will share the Forkcast list again, like I've been doing. I feel like that's pretty helpful, but I'll need one second to click all the buttons.
 
 368
 00:40:50.470 --> 00:40:51.679
@@ -1538,7 +1538,7 @@ Sukun Tarachandani: It will be very quick, yeah. I have only 4 sets.
 
 385
 00:42:08.290 --> 00:42:18.669
-Sukun Tarachandani: So, we basically simulated Decoupled Consensus, which is scheduled for I-Star on a cloud network, thanks to each Barnabs and Barnabas, thank you so much.
+Sukun Tarachandani: So, we basically simulated Decoupled Consensus, which is scheduled for ISTAR on a cloud network, thanks to each Barnabs and Barnabas, thank you so much.
 
 386
 00:42:18.810 --> 00:42:25.039
@@ -1550,11 +1550,11 @@ Sukun Tarachandani: So, the idea is, yeah, basically we stubbed Prysm and just a
 
 388
 00:42:42.580 --> 00:42:51.130
-Sukun Tarachandani: And, basically, the idea is that on this DevNet, we tried to map nodes,
+Sukun Tarachandani: And, basically, the idea is that on this devnet, we tried to map nodes,
 
 389
 00:42:51.470 --> 00:43:15.320
-Sukun Tarachandani: load on a single node to be as much as it would be on a mainnet. So, as you can see on the right side's comparison, in I-Star, we expect a single subnet to have 2,000 validators, and in our simulation, we had 25% more, and then we have a split between home nodes and super nodes. So, I'll basically just show you the benefits of 8334, and basically, the benefits are for home nodes. Like, if you run a super node, you're, like, all good.
+Sukun Tarachandani: load on a single node to be as much as it would be on a mainnet. So, as you can see on the right side's comparison, in ISTAR, we expect a single subnet to have 2,000 validators, and in our simulation, we had 25% more, and then we have a split between home nodes and super nodes. So, I'll basically just show you the benefits of 8334, and basically, the benefits are for home nodes. Like, if you run a super node, you're, like, all good.
 
 390
 00:43:16.030 --> 00:43:31.900
@@ -1574,7 +1574,7 @@ Sukun Tarachandani: So you can see the data usage for a home node. This is stand
 
 394
 00:43:55.670 --> 00:44:20.440
-Sukun Tarachandani: And, like, the outbound is completely choked, it crosses well over a 25 MBPS line. Here, basically, it does cross the 25 MBPS line rather than being flat, because the measurement is done at the time of NQing in the queue, and not at the time of actually sending out, and since my queues were pretty big, so you see it is 40 MBPS outbound, but this actually would have flown off over a period of time.
+Sukun Tarachandani: And, like, the outbound is completely choked, it crosses well over a 25 MBPS line. Here, basically, it does cross the 25 MBPS line rather than being flat, because the measurement is done at the time of enqueuing in the queue, and not at the time of actually sending out, and since my queues were pretty big, so you see it is 40 MBPS outbound, but this actually would have flown off over a period of time.
 
 395
 00:44:20.440 --> 00:44:20.960
@@ -1582,7 +1582,7 @@ Sukun Tarachandani: Okay.
 
 396
 00:44:21.730 --> 00:44:37.999
-Sukun Tarachandani: And basically, yeah, that sort of is the point, that with our current system, we need roughly, like, 40 amps of outbound capacity to make it work, and also, like, it's just generally difficult, and also it interferes with these goldfish votes a lot, which are…
+Sukun Tarachandani: And basically, yeah, that sort of is the point, that with our current system, we need roughly, like, 40 Mbps of outbound capacity to make it work, and also, like, it's just generally difficult, and also it interferes with these goldfish votes a lot, which are…
 
 397
 00:44:38.020 --> 00:44:42.939
@@ -1594,7 +1594,7 @@ Sukun Tarachandani: Yeah, so what 8334 does is this very simple idea that instea
 
 399
 00:45:01.990 --> 00:45:15.479
-Sukun Tarachandani: It reduces bandwidth by half, yeah. So, quickly, basically, this is the home node data usage in that case. It roughly looks similar, but the scale is basically half of the previous one, so that's why this is 20 MBIs.
+Sukun Tarachandani: It reduces bandwidth by half, yeah. So, quickly, basically, this is the home node data usage in that case. It roughly looks similar, but the scale is basically half of the previous one, so that's why this is 20 Mbps.
 
 400
 00:45:15.570 --> 00:45:24.299
@@ -1602,7 +1602,7 @@ Sukun Tarachandani: And this is 10 MBPS here. So, yeah, basically the scale is h
 
 401
 00:45:24.680 --> 00:45:37.060
-Sukun Tarachandani: Yeah, so the lighter one is the first scenario without 8334, the second one is the second scenario with 8334, and, like, that is a lot of difference, and the reason that we want this for I-Star, at least, is that
+Sukun Tarachandani: Yeah, so the lighter one is the first scenario without 8334, the second one is the second scenario with 8334, and, like, that is a lot of difference, and the reason that we want this for ISTAR, at least, is that
 
 402
 00:45:37.130 --> 00:45:45.909
@@ -1618,7 +1618,7 @@ Sukun Tarachandani: Now, I'll leave you with some details in the sense that, lik
 
 405
 00:46:13.640 --> 00:46:29.450
-Sukun Tarachandani: Which is a new system that we are working on, and I would like to propose it to be included with Waggle, and it will be backwards compatible, it does not need to be fork aligned, but the whole thing is that we should get it by I-Star, so that we get a lot of benefits for decoupled Consensus.
+Sukun Tarachandani: Which is a new system that we are working on, and I would like to propose it to be included with Waggle, and it will be backwards compatible, it does not need to be fork aligned, but the whole thing is that we should get it by ISTAR, so that we get a lot of benefits for decoupled Consensus.
 
 406
 00:46:29.590 --> 00:46:40.519
@@ -1646,7 +1646,7 @@ Sukun Tarachandani: Good question, name inspired from. Joao can answer that.
 
 412
 00:47:16.440 --> 00:47:22.409
-stokes: Or, maybe another question here, if we accept the CIP for Hegota, do we… yeah, like, what would.
+stokes: Or, maybe another question here, if we accept the EIP for Hegota, do we… yeah, like, what would.
 
 413
 00:47:22.410 --> 00:47:41.639
@@ -1658,7 +1658,7 @@ Sukun Tarachandani: So, right now, you vote for two… a source and a target, an
 
 415
 00:47:59.190 --> 00:48:06.889
-Sukun Tarachandani: In fact, it is actually so little that come I-Star, if we actually have reasonable adoption, I'll also propose this for PTC and Goldfish Forts.
+Sukun Tarachandani: In fact, it is actually so little that come ISTAR, if we actually have reasonable adoption, I'll also propose this for PTC and Goldfish Forts.
 
 416
 00:48:08.970 --> 00:48:09.680
@@ -1666,7 +1666,7 @@ stokes: Okay.
 
 417
 00:48:10.180 --> 00:48:24.520
-stokes: So, yeah, what we would get now with inclusion in Hegata is just the bandwidth savings for bundling the attestations, and then also it sounds like it definitely lays groundwork for decouple Consensus and later forks, so…
+stokes: So, yeah, what we would get now with inclusion in Hegota is just the bandwidth savings for bundling the attestations, and then also it sounds like it definitely lays groundwork for decoupled consensus and later forks, so…
 
 418
 00:48:25.760 --> 00:48:27.109
@@ -1714,11 +1714,11 @@ Barnabas: Anyone from Lodestar maybe can chime in. They have one of the lowest s
 
 429
 00:49:38.730 --> 00:49:39.869
-stokes: Anyone from Lone Star?
+stokes: Anyone from Lodestar?
 
 430
 00:49:43.140 --> 00:49:44.380
-stokes: Nimbus Grandin.
+stokes: Nimbus, Grandine.
 
 431
 00:49:47.980 --> 00:49:54.260
@@ -1770,7 +1770,7 @@ Sukun Tarachandani: That would update, but that can flow in through the same flo
 
 443
 00:51:37.440 --> 00:51:43.410
-Nico Flaig: Because in Elektra, we went out of our way to not update that, and keep the index around, so…
+Nico Flaig: Because in Electra, we went out of our way to not update that, and keep the index around, so…
 
 444
 00:51:45.900 --> 00:51:53.830
@@ -1838,7 +1838,7 @@ stokes: Although, I guess, yeah, I mean, is there some way for me to know that m
 
 460
 00:53:53.280 --> 00:53:56.200
-stokes: I think you would just have to… it would be scraped to that channel, right?
+stokes: I think you would just have to… it would be subscribed to that channel, right?
 
 461
 00:53:57.380 --> 00:54:04.400
@@ -1926,7 +1926,7 @@ Kevaundray Wedderburn: I can paste in an issue that… error.
 
 482
 00:56:23.850 --> 00:56:29.880
-Kevaundray Wedderburn: Yeah, we spoke quite a lot about the retention window for Amsterdam, so, I think it's ready for consideration.
+Kevaundray Wedderburn: Yeah, we spoke quite a lot about the retention window for Glamsterdam, so, I think it's ready for consideration.
 
 483
 00:56:31.830 --> 00:56:32.420
@@ -1966,7 +1966,7 @@ Kevaundray Wedderburn: Yes, though we've sort of aligned a lot of the windows al
 
 492
 00:57:34.420 --> 00:57:50.849
-Kevaundray Wedderburn: changes things like the history expiry for the EL, the blob… sorry, the bowel retention window, so that's what we did in Glow S, just to align all the windows, and then this basically just brings the number down more. So, it's a single value change.
+Kevaundray Wedderburn: changes things like the history expiry for the EL, the blob… sorry, the bowel retention window, so that's what we did in Gloas, just to align all the windows, and then this basically just brings the number down more. So, it's a single value change.
 
 493
 00:57:51.250 --> 00:57:52.499
@@ -2006,7 +2006,7 @@ Kevaundray Wedderburn: Yeah, no, no…
 
 502
 00:58:33.970 --> 00:58:46.029
-Kevaundray Wedderburn: No strong opinion on the value. I would note that we have a different EIP, by Tony as well, that, is for the reorg…
+Kevaundray Wedderburn: No strong opinion on the value. I would note that we have a different EIP, by Toni as well, that, is for the reorg…
 
 503
 00:58:46.690 --> 00:58:52.670
@@ -2070,7 +2070,7 @@ stokes: Yeah, Dima, I don't know if you'd like to add anything else to here. Oth
 
 518
 01:00:18.650 --> 01:00:33.600
-Dima Gusakov | Lido: Sure, yeah. So, where we ended up last time, as far as I remember, at least, that there is a broad consensus between client teams that the issue that we are trying to solve within this EAP, which is a deposit from Tron vulnerability.
+Dima Gusakov | Lido: Sure, yeah. So, where we ended up last time, as far as I remember, at least, that there is a broad consensus between client teams that the issue that we are trying to solve within this EIP, which is a deposit front-running vulnerability.
 
 519
 01:00:33.770 --> 01:00:36.530
@@ -2178,11 +2178,11 @@ Kevaundray Wedderburn: Yes.
 
 545
 01:04:10.530 --> 01:04:12.380
-stokes: Okay, but then the CIP would…
+stokes: Okay, but then the EIP would…
 
 546
 01:04:12.770 --> 01:04:18.100
-stokes: you know, the intent is to resolve this farming issue, and I guess you're saying none of that work would?
+stokes: you know, the intent is to resolve this front-running issue, and I guess you're saying none of that work would?
 
 547
 01:04:18.600 --> 01:04:19.609
@@ -2278,7 +2278,7 @@ stokes: Okay.
 
 570
 01:07:34.870 --> 01:07:37.440
-stokes: Maybe King Yi doesn't have a mic today.
+stokes: Maybe Kingy doesn't have a mic today.
 
 571
 01:07:38.310 --> 01:07:40.009
@@ -2362,7 +2362,7 @@ stokes: If anything, it sounds like, you know, the commitment that we do have is
 
 591
 01:10:27.680 --> 01:10:34.430
-stokes: And, yeah, again, from the Cordos perspective, I'm not hearing a majority of support for it.
+stokes: And, yeah, again, from the core devs perspective, I'm not hearing a majority of support for it.
 
 592
 01:10:35.590 --> 01:10:38.110
@@ -2430,7 +2430,7 @@ Greg K: or somehow solve it somehow, that's totally fine. What worries me a bit,
 
 608
 01:12:58.700 --> 01:13:23.639
-Greg K: PQ design does not solve it, and if we DFI today, then perhaps we might, get into the situation that this just never gets solved, and whenever this new post-quantum contract is the time to come into place, then again we will not have time, so it will be again the same argument, you know, we have this architecture right now, but let's not make it all more complex, let's not delay the, you know, z star fork, whatever it is at that time.
+Greg K: PQ design does not solve it, and if we DFI today, then perhaps we might, get into the situation that this just never gets solved, and whenever this new post-quantum contract is the time to come into place, then again we will not have time, so it will be again the same argument, you know, we have this architecture right now, but let's not make it all more complex, let's not delay the, you know, ISTAR fork, whatever it is at that time.
 
 609
 01:13:23.640 --> 01:13:31.499
@@ -2462,7 +2462,7 @@ Greg K: good enough for me, I would say. But some of the, you know, for example,
 
 616
 01:14:49.640 --> 01:15:02.249
-Greg K: not important, this is not a problem. So if we can just at least reach a consensus that this is a problem, it's just the timing of Hegota, not optimal, and let's do it in, let's say, JSTAR, or whatever is the post-quantum deposit contract, that's… that could be…
+Greg K: not important, this is not a problem. So if we can just at least reach a consensus that this is a problem, it's just the timing of Hegota, not optimal, and let's do it in, let's say, ISTAR, or whatever is the post-quantum deposit contract, that's… that could be…
 
 617
 01:15:02.340 --> 01:15:04.639
@@ -2478,7 +2478,7 @@ Greg K: Nope.
 
 620
 01:15:09.750 --> 01:15:18.149
-stokes: Well, I think this is what people have been saying. So, you know, they agree with the problem, it sounds like the consensus among Square Devs is to solve this definitely with PQ.
+stokes: Well, I think this is what people have been saying. So, you know, they agree with the problem, it sounds like the consensus among core devs is to solve this definitely with PQ.
 
 621
 01:15:19.030 --> 01:15:28.469
@@ -2534,7 +2534,7 @@ Dima Gusakov | Lido: To fund staff.
 
 634
 01:16:35.600 --> 01:16:46.590
-Dima Gusakov | Lido: From hard debates to a very fun, interesting, and great EIP. Okay, 8148, custom sleep threshold for Validators, and why do we even need it in Habitat?
+Dima Gusakov | Lido: From hard debates to a very fun, interesting, and great EIP. Okay, 8148, custom sweep threshold for validators, and why do we even need it in Hegota?
 
 635
 01:16:46.920 --> 01:16:49.330
@@ -2554,7 +2554,7 @@ Dima Gusakov | Lido: And then we have type 2 validators.
 
 639
 01:17:14.650 --> 01:17:17.900
-Dima Gusakov | Lido: Exactly the same, but with 2048E.
+Dima Gusakov | Lido: Exactly the same, but with 2048 ETH.
 
 640
 01:17:18.890 --> 01:17:26.159
@@ -2562,11 +2562,11 @@ Dima Gusakov | Lido: And… yes, you can move, some stake away from Type 2 Valid
 
 641
 01:17:26.510 --> 01:17:37.429
-Dima Gusakov | Lido: Minimal activation balance of 32 EF, but to do that, you need to do it manually. You need to do a partial withdrawal, which is a subject of an exit queue, you need to do a transaction, and so on and so forth.
+Dima Gusakov | Lido: Minimal activation balance of 32 ETH, but to do that, you need to do it manually. You need to do a partial withdrawal, which is a subject of an exit queue, you need to do a transaction, and so on and so forth.
 
 642
 01:17:37.430 --> 01:17:46.760
-Dima Gusakov | Lido: So, if we speak primarily about this amazing experience illustrated by these animations, we have a choice of 32 or 2048 EF.
+Dima Gusakov | Lido: So, if we speak primarily about this amazing experience illustrated by these animations, we have a choice of 32 or 2048 ETH.
 
 643
 01:17:47.470 --> 01:17:59.660
@@ -2586,7 +2586,7 @@ Dima Gusakov | Lido: But also configurable, so that after you create your custom
 
 647
 01:18:20.310 --> 01:18:26.210
-Dima Gusakov | Lido: Using execution layer contract, somewhat similar to what we have in 7.002, for example.
+Dima Gusakov | Lido: Using execution layer contract, somewhat similar to what we have in 7002, for example.
 
 648
 01:18:28.010 --> 01:18:36.390
@@ -2606,7 +2606,7 @@ Dima Gusakov | Lido: Doing a partial withdrawal before that, and so on.
 
 652
 01:18:56.640 --> 01:18:59.990
-Dima Gusakov | Lido: So let's talk explicitly about the benefits of the CAP.
+Dima Gusakov | Lido: So let's talk explicitly about the benefits of the EIP.
 
 653
 01:19:00.220 --> 01:19:14.299
@@ -2618,7 +2618,7 @@ Dima Gusakov | Lido: Validators. But we still have type 1 and type 2, which…
 
 655
 01:19:18.800 --> 01:19:32.930
-Dima Gusakov | Lido: It's not the best situation in the world. With this EIP, you will only have type 2 that will fit them all, because you can have still… you still can have 32 EF validators if you wish, you can still have 2048 EF validators, and any size of the validator in between.
+Dima Gusakov | Lido: It's not the best situation in the world. With this EIP, you will only have type 2 that will fit them all, because you can have still… you still can have 32 ETH validators if you wish, you can still have 2048 ETH validators, and any size of the validator in between.
 
 656
 01:19:33.610 --> 01:19:46.479
@@ -2634,7 +2634,7 @@ Dima Gusakov | Lido: And the majority of the people I talked to indicated that p
 
 659
 01:20:13.330 --> 01:20:21.699
-Dima Gusakov | Lido: There is a potential to raise MaxCB, because this 2048 ETH limit in the current EIP8148 implementation
+Dima Gusakov | Lido: There is a potential to raise MaxEB, because this 2048 ETH limit in the current EIP8148 implementation
 
 660
 01:20:21.900 --> 01:20:41.560
@@ -2718,7 +2718,7 @@ Dima Gusakov | Lido: current state with two types of withdrawal credentials is m
 
 680
 01:23:45.110 --> 01:23:58.749
-Dima Gusakov | Lido: And Hegota is the best time to have this EIP, because moving forward, you guys will have a lot of work with PQ stuff, and so on and so forth. So, given that the CIP is pretty simple, and Hegota is mostly EL heavy rather than CL-heavy.
+Dima Gusakov | Lido: And Hegota is the best time to have this EIP, because moving forward, you guys will have a lot of work with PQ stuff, and so on and so forth. So, given that the EIP is pretty simple, and Hegota is mostly EL heavy rather than CL-heavy.
 
 681
 01:23:58.910 --> 01:24:02.939
@@ -2746,7 +2746,7 @@ stokes: Okay, thank you.
 
 687
 01:24:32.410 --> 01:24:38.290
-stokes: Yeah, any… any immediate comments? I can get the forecast page back up. Yeah, Manu?
+stokes: Yeah, any… any immediate comments? I can get the Forkcast page back up. Yeah, Manu?
 
 688
 01:24:39.080 --> 01:24:40.580
@@ -2870,7 +2870,7 @@ stokes: And that leaves us with this last EIP, 8411, that we should discuss, and
 
 718
 01:28:02.400 --> 01:28:08.109
-stokes: So, yeah, this is Camille. That is Kamil on the call.
+stokes: So, yeah, this is Kamil. Is Kamil on the call.
 
 719
 01:28:08.110 --> 01:28:09.550
@@ -2914,15 +2914,15 @@ Kamil Salakhiev: propagate any message, it first needs to download this message 
 
 729
 01:29:01.820 --> 01:29:05.539
-Kamil Salakhiev: Hugotta, and also, like, there is potentially,
+Kamil Salakhiev: Hegota, and also, like, there is potentially,
 
 730
 01:29:05.640 --> 01:29:20.420
-Kamil Salakhiev: well, we might, decrease the slot duration. Yeah, this problem for fast-pavel broadcast gets even more important. Yeah, there were, like, some people were curious, like, how much it's important, like, whether we have it…
+Kamil Salakhiev: well, we might, decrease the slot duration. Yeah, this problem for fast payload broadcast gets even more important. Yeah, there were, like, some people were curious, like, how much it's important, like, whether we have it…
 
 731
 01:29:21.160 --> 01:29:40.880
-Kamil Salakhiev: and how… like, what the effect of the EIP, so basically, yeah, that's the comparison, like, if we do just gossip sub, that's my simulations with, like, 4,000 nodes using EIP7870, and we can observe that, yeah, with, even with very pessimistic assumptions, where we have very slow notes, if we have
+Kamil Salakhiev: and how… like, what the effect of the EIP, so basically, yeah, that's the comparison, like, if we do just gossip sub, that's my simulations with, like, 4,000 nodes using EIP-7870, and we can observe that, yeah, with, even with very pessimistic assumptions, where we have very slow nodes, if we have
 
 732
 01:29:40.880 --> 01:29:56.559
@@ -2954,11 +2954,11 @@ stokes: Out of the people who ranked, yeah, it looks like Nimbus wasn't…
 
 739
 01:30:36.280 --> 01:30:39.720
-stokes: super in support, but then Nimbus and Prysm were.
+stokes: super in support, but then Lighthouse and Prysm were.
 
 740
 01:30:40.210 --> 01:30:43.030
-stokes: It'd be good to hear from Grandine and Lodestar Techu.
+stokes: It'd be good to hear from Grandine and Lodestar, Teku.
 
 741
 01:30:55.770 --> 01:30:58.979
@@ -3026,7 +3026,7 @@ stokes: So, okay, then yeah, propose CFI… 8411, any, any final comments?
 
 757
 01:32:06.320 --> 01:32:08.289
-Barnabas: What do we want in the next subnet?
+Barnabas: What do we want in the next devnet?
 
 758
 01:32:09.830 --> 01:32:12.040
@@ -3062,7 +3062,7 @@ stokes: The announcement is that I'll be stepping down as the ACDC moderator.
 
 766
 01:32:48.880 --> 01:32:55.079
-stokes: Replacing me will be Ben Edgington as lead moderator, and Will Kokorin as deputy moderator.
+stokes: Replacing me will be Ben Edgington as lead moderator, and Will Corcoran as deputy moderator.
 
 767
 01:32:55.900 --> 01:33:07.330
@@ -3090,7 +3090,7 @@ stokes: I don't know, Ben, if you have any, anything you'd like to add to that?
 
 773
 01:33:44.200 --> 01:34:00.920
-Ben Edgington: Yeah, thanks so much, Alex. Not gonna lie, I am absolutely terrified. I look forward to, dealing with you all and, this immense privilege. Thank you so much. I do want to say a massive thank you to Alex for committing to finishing off the Hagotoscoping.
+Ben Edgington: Yeah, thanks so much, Alex. Not gonna lie, I am absolutely terrified. I look forward to, dealing with you all and, this immense privilege. Thank you so much. I do want to say a massive thank you to Alex for committing to finishing off the Hegota scoping.
 
 774
 01:34:00.920 --> 01:34:04.709
@@ -3098,7 +3098,7 @@ Ben Edgington: And not dropping me in the deep end. I really appreciate that.
 
 775
 01:34:04.770 --> 01:34:09.849
-Ben Edgington: Looking forward to seeing many of you at DEFCON, and back here again in two weeks. Let's go!
+Ben Edgington: Looking forward to seeing many of you at Devcon, and back here again in two weeks. Let's go!
 
 776
 01:34:11.150 --> 01:34:13.970
@@ -3106,7 +3106,7 @@ stokes: Okay, amazing. Yeah, super excited.
 
 777
 01:34:14.120 --> 01:34:20.300
-stokes: And thank you all. Okay, I'll see many of you at DevCon, and yeah, I'll, I'll see you around.
+stokes: And thank you all. Okay, I'll see many of you at Devcon, and yeah, I'll, I'll see you around.
 
 778
 01:34:20.470 --> 01:34:24.610
@@ -3114,7 +3114,7 @@ stokes: At some point, so… Let's wrap up. Thank you.
 
 779
 01:34:27.700 --> 01:34:28.110
-Kevaundray Wedderburn: Thanks, Alan.
+Kevaundray Wedderburn: Thanks, Alex.
 
 780
 01:34:28.110 --> 01:34:28.670

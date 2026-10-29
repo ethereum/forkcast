@@ -1,0 +1,197 @@
+{
+  "meeting": "ACDC #190 - 2026-10-29",
+  "eips": [
+    {
+      "eip": 8015,
+      "title": "Remove `deposit` and `eth1data` fields",
+      "weight": "discussed",
+      "summary": "SFI'd for Hegota as a small change cleaning up deposit and eth1data fields from beacon state.",
+      "moments": [
+        {
+          "timestamp": "00:23:31",
+          "context": "Barnabas proposed SFI'ing EIP-8015 immediately, noting it is already merged into the Heze spec and being tested."
+        },
+        {
+          "timestamp": "00:37:35",
+          "context": "Discussion returned to EIP-8015; stokes confirmed no opposition and formally moved it to SFI for Hegota."
+        }
+      ]
+    },
+    {
+      "eip": 8365,
+      "title": "Disallow new 0x00 validators",
+      "weight": "discussed",
+      "summary": "Barnabas proposed changes to avoid burning ETH for 0x00 deposits after the fork; decision deferred to next call.",
+      "moments": [
+        {
+          "timestamp": "00:24:49",
+          "context": "Barnabas raised EIP-8365 (disallow new 0x00 validators), presenting his proposal to avoid burning ETH by routing deposits back through the activation queue instead."
+        },
+        {
+          "timestamp": "00:28:04",
+          "context": "Discussion on whether to burn ETH or keep it via Barnabas' activation-gate approach; NC argued for protocol simplicity, Barnabas argued against burning."
+        },
+        {
+          "timestamp": "00:36:27",
+          "context": "Stokes summarized the split opinion and deferred the decision to the next call, suggesting in-person discussion at Devcon."
+        }
+      ]
+    },
+    {
+      "eip": 8334,
+      "title": "Bundled Attestation Propagation",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota after Sukun presented bandwidth savings from bundled attestation propagation simulations.",
+      "moments": [
+        {
+          "timestamp": "00:41:44",
+          "context": "Sukun presented simulation results showing EIP-8334 halves attestation bandwidth for home nodes, critical for decoupled consensus in ISTAR."
+        },
+        {
+          "timestamp": "00:48:57",
+          "context": "Lighthouse and Teku expressed support; Grandine and Lodestar were more cautious. Potuz noted attestation bandwidth is the most important topic to tackle."
+        },
+        {
+          "timestamp": "00:55:06",
+          "context": "Stokes called for CFI; multiple client teams gave thumbs up in chat and EIP-8334 was moved to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 8383,
+      "title": "Reduce CL Block Retention Window",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota as a single config value change reducing the CL block retention window.",
+      "moments": [
+        {
+          "timestamp": "00:55:28",
+          "context": "Kev confirmed the EIP is ready for consideration as a single value change reducing the retention window, building on alignment work done in Gloas."
+        },
+        {
+          "timestamp": "00:57:58",
+          "context": "Lighthouse, Lodestar, and others expressed support for CFI in chat; Nico noted the exact value should be revisited but favored inclusion."
+        },
+        {
+          "timestamp": "00:59:29",
+          "context": "No opposition raised; stokes moved EIP-8383 to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 8252,
+      "title": "Execution-Layer Reorg State Retention Window",
+      "weight": "mentioned",
+      "summary": "Kev cited it as a related EIP for the reorg state retention window that also uses the 8192 value.",
+      "moments": [
+        {
+          "timestamp": "00:58:46",
+          "context": "Kev referenced EIP-8252 by Toni as a related retention window EIP that also uses the 8192 epoch value, suggesting alignment."
+        }
+      ]
+    },
+    {
+      "eip": 8205,
+      "title": "Withdrawal credentials preregistration",
+      "weight": "discussed",
+      "summary": "DFI'd for Hegota; core devs committed to solving the deposit front-running issue with the post-quantum deposit redesign instead.",
+      "moments": [
+        {
+          "timestamp": "01:00:05",
+          "context": "Dima proposed CFI'ing EIP-8205 as a backstop until PQ solves front-running, noting neither current PQ deposit proposal addresses it."
+        },
+        {
+          "timestamp": "01:08:19",
+          "context": "Potuz argued the complexity should wait for PQ when the deposit flow will change anyway; Dima countered that DFI risks the issue never being solved."
+        },
+        {
+          "timestamp": "01:11:28",
+          "context": "Greg K argued for at least a commitment that the issue will be solved in PQ. Stokes concluded by DFI'ing EIP-8205 but recording a strong commitment to resolve it with PQ."
+        }
+      ]
+    },
+    {
+      "eip": 8413,
+      "title": "Decouple Stake from Validator Registration",
+      "weight": "mentioned",
+      "summary": "Kev cited it as the PQ proposal that decouples stake from validator registration but does not solve front-running.",
+      "moments": [
+        {
+          "timestamp": "01:04:02",
+          "context": "Kev identified EIP-8413 as one of the two PQ deposit proposals, noting it disincentivizes but does not solve the front-running issue."
+        }
+      ]
+    },
+    {
+      "eip": 8148,
+      "title": "Custom sweep threshold for validators",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota after Dima presented the benefits of custom sweep thresholds and pointed to a working proof of concept credited to Manu.",
+      "moments": [
+        {
+          "timestamp": "01:16:17",
+          "context": "Dima presented EIP-8148 allowing validators to set a custom sweep threshold between 32 and 2048 ETH, arguing it would drive consolidations and unify withdrawal credential types."
+        },
+        {
+          "timestamp": "01:24:53",
+          "context": "Manu, whom Dima had credited for the proof of concept, said the spec is easy to understand and the consensus-layer implementation straightforward and low-complexity, and pointed to his own proof of concept in DORA."
+        },
+        {
+          "timestamp": "01:27:02",
+          "context": "Lighthouse said they would not block if others favor it; stokes moved EIP-8148 to CFI after seeing broad support."
+        }
+      ]
+    },
+    {
+      "eip": 7002,
+      "title": "Execution layer triggerable withdrawals",
+      "weight": "mentioned",
+      "summary": "Referenced as an existing system contract design analogous to the one proposed in EIP-8148.",
+      "moments": [
+        {
+          "timestamp": "01:22:44",
+          "context": "Dima compared the EIP-8148 system contract to the existing contracts used for EIP-7002 and EIP-7251."
+        }
+      ]
+    },
+    {
+      "eip": 7251,
+      "title": "Increase the MAX_EFFECTIVE_BALANCE",
+      "weight": "mentioned",
+      "summary": "Referenced alongside EIP-7002 as an existing system contract similar to EIP-8148's proposed contract.",
+      "moments": [
+        {
+          "timestamp": "01:22:44",
+          "context": "Dima noted the EIP-8148 system contract is not much different from those used for EIP-7002 or EIP-7251."
+        }
+      ]
+    },
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "discussed",
+      "summary": "CFI'd for Hegota after Kamil presented simulations showing 3x faster payload propagation via chunked shard broadcasting.",
+      "moments": [
+        {
+          "timestamp": "01:28:02",
+          "context": "Kamil presented EIP-8411 (fast execution payload broadcast), showing simulations with 4000 nodes demonstrating at least 3x propagation improvement by chunking payloads."
+        },
+        {
+          "timestamp": "01:30:12",
+          "context": "Multiple client teams expressed CFI support in chat; Potuz called for SFI. Stokes formally moved EIP-8411 to CFI."
+        }
+      ]
+    },
+    {
+      "eip": 7870,
+      "title": "Hardware and Bandwidth Recommendations",
+      "weight": "mentioned",
+      "summary": "Referenced as the hardware and bandwidth recommendation baseline used in EIP-8411 simulations.",
+      "moments": [
+        {
+          "timestamp": "01:29:40",
+          "context": "Kamil mentioned his simulations used EIP-7870 hardware recommendations with 4000 nodes."
+        }
+      ]
+    }
+  ]
+}

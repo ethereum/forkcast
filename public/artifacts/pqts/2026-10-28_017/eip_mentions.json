@@ -1,0 +1,37 @@
+{
+  "meeting": "PQTS #017 - 2026-10-28",
+  "eips": [
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "discussed",
+      "summary": "Testnet v03 on Daisugi runs a simple version of it, and it is the reason the design has no SPHINCS verification precompile.",
+      "moments": [
+        {
+          "timestamp": "00:17:58",
+          "context": "Antonio noted they launched testnet v03 on Daisugi with a simple version of EIP-8288, demonstrating one transaction containing a STARK proof of 20 transaction signatures using SPHINCS."
+        },
+        {
+          "timestamp": "01:04:06",
+          "context": "Answering Daniel Cason's request for a SPHINCS+ verification precompile, Antonio explained that individual signatures are not verified once a transaction is in a block — they are aggregated, and what gets verified is the zero-knowledge proof of the aggregation, so no precompile is planned."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "mentioned",
+      "summary": "Raised from the floor and in chat as a way to bundle transactions and so cut how many signatures a high-volume signer burns per day.",
+      "moments": [
+        {
+          "timestamp": "01:00:05",
+          "context": "Matteo Vicari argued that pairing post-quantum signatures with account abstraction — frame transactions among them — lets a high-volume signer like Circle bundle transactions, which shifts the per-day signature count that drives the lifetime debate. pbark had made the same point in chat a few seconds earlier: \"couldn't you bulk transactions together? (with frames)\"."
+        },
+        {
+          "timestamp": "01:10:53",
+          "context": "Matteo Vena called it a very valid point, saying frame transactions should give an immense benefit and save a large part of the signature budget."
+        }
+      ]
+    }
+  ]
+}

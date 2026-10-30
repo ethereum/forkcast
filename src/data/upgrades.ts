@@ -222,7 +222,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     path: '/upgrade/hegota',
     name: 'Hegotá Upgrade',
     description: 'Future network upgrade currently in early planning stages. Named after the combination of "Heze" (consensus layer upgrade, named after a star) and "Bogotá" (execution layer upgrade, named after a Devcon location).',
-    tagline: 'Headliner selection concluded: FOCIL and Frame Tx SFI\'d as headliners',
+    tagline: 'Headliner selection concluded: FOCIL and Frame Tx SFI\'d',
     status: 'Planning',
     activationDate: '2027',
     projectedActivation: '2027-06-16',

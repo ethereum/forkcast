@@ -2,6 +2,25 @@
   "eipId": 8148,
   "commits": [
     {
+      "sha": "298dd6799a35591506e8d202c23be6aafdc27c14",
+      "date": "2026-10-30T11:21:52Z",
+      "message": "Update EIP-8148: Store sweep threshold in withdrawal credentials",
+      "author": "barnabasbusa",
+      "prNumber": null,
+      "additions": 28,
+      "deletions": 28
+    },
+    {
+      "sha": "2484d1e8eec504adb89a4bc921b91cc855eca81f",
+      "date": "2026-10-30T11:13:25Z",
+      "message": "Update EIP-8148: Specify contract input, log and eth_config key",
+      "author": "barnabasbusa",
+      "prNumber": null,
+      "patch": "@@ -67,10 +67,10 @@ The new set sweep threshold request is an [EIP-7685](./eip-7685.md) request with\n \n 1. `source_address`: `Bytes20`\n 2. `validator_pubkey`: `Bytes48`\n-3. `threshold`: `uint64`\n+3. `threshold`: `uint64`, in Gwei\n \n The [EIP-7685](./eip-7685.md) encoding of a set sweep threshold request is computed as follows.\n-Note that `threshold` is returned by the contract little-endian, and must be encoded as such.\n+Note that `threshold` is returned by the contract little-endian, and must be encoded as such. This differs from the contract input and log, where `threshold` is big-endian.\n \n ```python\n request_type = SET_SWEEP_THRESHOLD_REQUEST_TYPE\n@@ -81,17 +81,25 @@ request_data = read_set_sweep_threshold_requests()\n \n The contract has three different code paths, which can be summarized at a high level as follows:\n \n-1. Add set sweep threshold request - requires a 56-byte input: validator public key concatenated with a big-endian `uint64` threshold value.\n+1. Add set sweep threshold request - requires a 56-byte input: validator public key concatenated with a big-endian `uint64` threshold value in Gwei.\n 2. Fee getter - if the input length is zero, return the current fee required to add a set sweep threshold request.\n 3. System process - if called by the system address, pop off the set sweep threshold requests for the current block from the queue.\n \n ##### Add Set Sweep Threshold Request\n \n-If call data input to the contract is exactly `56` bytes, perform the following:\n+If call data input to the contract is exactly `56` bytes, it is interpreted as:\n+\n+| Bytes   | Field              | Description                  |\n+| ------- | ------------------ | ---------------------------- |\n+| `0:48`  | `validator_pubkey` | 48-byte BLS public key       |\n+| `48:56` | `threshold`        | Big-endian `uint64`, in Gwei |\n+\n+The contract then performs the following:\n \n 1. Ensure enough ETH was sent to cover the current set sweep threshold request fee (`msg.value >= get_fee()`).\n 2. Increase set sweep threshold request count by 1 for the current block.\n 3. Insert a set sweep threshold request into the queue for the source address, validator public key, and the threshold.\n+4. Emit the accepted request as an anonymous log (`LOG0`) with `76` bytes of data: `source_address (20) ++ validator_pubkey (48) ++ threshold (8)`, where `source_address` is `msg.sender` and `threshold` is big-endian as in the input.\n \n Specifically, the functionality is defined in pseudocode as the function `add_set_sweep_threshold_request()`:\n \n@@ -116,6 +124,9 @@ def add_set_sweep_threshold_request(validator_pubkey: Bytes48, threshold: uint64\n     sstore(SET_SWEEP_THRESHOLD_REQUEST_PREDEPLOY_ADDRESS, queue_storage_slot + 1, validator_pubkey[ 0:32])\n     sstore(SET_SWEEP_THRESHOLD_REQUEST_PREDEPLOY_ADDRESS, queue_storage_slot + 2, validator_pubkey[32:48] ++ threshold)\n     sstore(SET_SWEEP_THRESHOLD_REQUEST_PREDEPLOY_ADDRESS, SET_SWEEP_THRESHOLD_REQUEST_QUEUE_TAIL_STORAGE_SLOT, queue_tail_index + 1)\n+\n+    # Emit the accepted request.\n+    log0(msg.sender ++ validator_pubkey ++ threshold)\n ```\n \n ###### Fee calculation\n@@ -596,6 +607,10 @@ Sender: TBD\n Address: TBD\n ```\n \n+##### Chain configuration\n+\n+Clients exposing [EIP-7910](./eip-7910.md) `eth_config` MUST list the contract in `systemContracts` under the key `SET_SWEEP_THRESHOLD_REQUEST_PREDEPLOY_ADDRESS` for every fork in which this EIP is active.\n+\n ### Consensus layer\n \n The defining feature of this EIP is ***allowing validators to set custom sweep thresholds for their withdrawals when using compounding withdrawal credentials (`0x02`)***.",
+      "additions": 19,
+      "deletions": 4
+    },
+    {
       "sha": "59c9869c7bd52f1167be50e86cc3af1e5bb58a19",
       "date": "2026-10-05T16:27:40Z",
       "message": "Update EIP-8148: disabling the queue via non-empty system call",

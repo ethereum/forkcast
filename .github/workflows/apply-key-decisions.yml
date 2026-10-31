@@ -1,0 +1,84 @@
+# .github/workflows/apply-key-decisions.yml
+# Applies stage-change decisions from recent calls' key_decisions.json to the
+# EIP files and opens (or updates) a PR. Decisions are LLM-extracted, so this
+# never pushes to main. If the maintainer already applied them by hand, the
+# script finds nothing new and no PR is opened.
+name: Apply Key Decisions
+
+on:
+  workflow_run:
+    workflows: ['Sync Call Assets from eth/pm']
+    types: [completed]
+  schedule:
+    - cron: '30 6 * * *'
+  workflow_dispatch:
+    inputs:
+      since:
+        description: 'Process calls on/after this date (YYYY-MM-DD); default 14 days ago'
+        required: false
+
+concurrency:
+  group: apply-key-decisions
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout forkcast
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # A short window keeps the bot from re-proposing old decisions the
+      # maintainer deliberately removed or corrected.
+      - name: Apply decisions
+        env:
+          SINCE: ${{ inputs.since }}
+        run: |
+          SINCE="${SINCE:-$(date -u -d '14 days ago' +%F)}"
+          node scripts/apply-key-decisions.mjs --since "$SINCE" --summary "$RUNNER_TEMP/summary.md"
+          cat "$RUNNER_TEMP/summary.md" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Validate EIP data
+        run: npm run compile-eips
+
+      - name: Build PR body
+        run: |
+          {
+            echo 'Stage-change decisions from recent calls'"'"' `key_decisions.json`, applied by `scripts/apply-key-decisions.mjs`.'
+            echo
+            echo 'These are LLM-extracted: check each against the call before merging. Champions are not inferred; for rows marked "needs confirmation", run step 4 of the apply-key-decisions skill or add them by hand.'
+            echo
+            cat "$RUNNER_TEMP/summary.md"
+          } > "$RUNNER_TEMP/body.md"
+
+      # GITHUB_TOKEN works once "Allow GitHub Actions to create and approve pull
+      # requests" is enabled, but PRs it opens don't trigger verify-build. Set
+      # APPLY_DECISIONS_TOKEN (GitHub App or fine-grained PAT) to get CI on them.
+      - name: Open or update PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.APPLY_DECISIONS_TOKEN || github.token }}
+          branch: bot/key-decisions
+          delete-branch: true
+          add-paths: src/data/eips/*.json
+          commit-message: 'data: apply call fork decisions to EIPs'
+          committer: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          author: github-actions[bot] <github-actions[bot]@users.noreply.github.com>
+          title: 'data: apply call fork decisions to EIPs'
+          body-path: ${{ runner.temp }}/body.md

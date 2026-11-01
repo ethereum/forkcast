@@ -2,6 +2,16 @@
   "eipId": 8141,
   "commits": [
     {
+      "sha": "dc5d5fa688b7fe87b95a907fcc128b4fde2f4d2f",
+      "date": "2026-11-01T11:20:25Z",
+      "message": "Update EIP-8141: Transaction nonce check boundary",
+      "author": "raxhvl",
+      "prNumber": null,
+      "patch": "@@ -144,7 +144,7 @@ Some validity constraints can be determined statically. They are outlined below:\n \n ```python\n assert tx.chain_id < 2**256\n-assert tx.nonce < 2**64\n+assert tx.nonce < 2**64 - 1\n assert tx.fees.max_fee < 2**256\n assert tx.fees.max_priority_fee_per_gas < 2**256\n assert len(tx.frames) > 0 and len(tx.frames) <= MAX_FRAMES",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "7372d10a457b29eceb02cd052345af165de1fb60",
       "date": "2026-10-25T11:56:57Z",
       "message": "Update EIP-8141: charge the EIP-8037 legacy share as extra execution gas\"",
@@ -746,14 +756,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12603,
-      "title": "Update EIP-8141: Transaction nonce check boundary",
-      "author": "raxhvl",
-      "updatedAt": "2026-11-01T05:36:48Z",
-      "additions": 1,
-      "deletions": 1
-    },
     {
       "number": 12596,
       "title": "Update EIP-8141: clarify EXTCODEHASH restrictions for precompiles",

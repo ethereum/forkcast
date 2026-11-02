@@ -1,54 +1,61 @@
 {
   "series": "ACDC",
-  "generated": "2026-10-26",
-  "for_call": "ACDC #190",
+  "generated": "2026-11-02",
+  "for_call": "ACDC #191",
   "suggestions": [
     {
-      "topic": "EIP-8205 (withdrawal credentials pre-registration) CFI/DFI decision",
+      "topic": "EIP-8365 0x00 deposit handling: burn vs re-queue decision",
       "priority": "high",
-      "rationale": "Deferred from ACDC #189 with explicit expectation to open next call's scoping session. Majority view leaned DFI pending PQ deposit contract design.",
+      "rationale": "Deferred from ACDC #190 with explicit two-week revisit (matching this call). Choice between burning ETH from post-fork 0x00 deposits versus Barnabas' proposal to re-queue balance as 0x01 deposits. Teams were asked to discuss at Devcon.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Hoodi Glamsterdam fork post-mortem and mainnet readiness assessment",
+      "topic": "Glamsterdam bid gossip specification: PR5774 vs PR5776",
       "priority": "high",
-      "rationale": "Hoodi fork scheduled for today (Oct 26); next call should review fork outcome, builder testing results at transition, and confirm mainnet timeline readiness.",
+      "rationale": "Two competing approaches with fundamental disagreement (Potuz prefers no gossip filtering vs Nico's 3% increment + DOS protection). Teams were asked to review within a few days of Oct 29; needs resolution before Glamsterdam mainnet.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "open_action_item"
     },
     {
-      "topic": "EIP-8383 (Reduce CL block retention window) CFI/DFI decision",
-      "priority": "medium",
-      "rationale": "Deferred from ACDC #188 with instruction for teams to review before next ACDC. No resolution documented in ACDC #189.",
+      "topic": "FOCIL payload rebuild ambiguity and EL team input",
+      "priority": "high",
+      "rationale": "Critical Engine API clarification: some ELs rebuild entire payload on inclusion list update at 6s causing missed blocks; CL expects append-only. Barnabas was to bring this to next ACDE for EL input. Blocking for FOCIL devnet stability.",
       "related_eips": [],
-      "source": "deferred_decision"
+      "source": "open_action_item"
     },
     {
-      "topic": "EIP-8365 revised scope review (guard at process-deposit-request, grandfather pre-fork 0x00 deposits)",
+      "topic": "Glamsterdam devnet status and Lido PR testing",
       "priority": "medium",
-      "rationale": "ACDC #189 requested team review with revisit in 1-2 calls. Barnabas proposed significant changes to allow 0x00 validators in with no duties, enabling BLS change/exit.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "EIP-8411 (Fast Execution Payload Broadcast) CFI decision",
-      "priority": "medium",
-      "rationale": "PFI'd in ACDC #187 with CFI decision explicitly deferred until after other EIPs scoped. Most Hegota scoping decisions now complete.",
-      "related_eips": [],
-      "source": "deferred_decision"
-    },
-    {
-      "topic": "Hegota scope finalization and devnet planning",
-      "priority": "medium",
-      "rationale": "With most CFI/DFI decisions complete (EIP-8015, EIP-8198, EIP-8365 CFI'd; multiple EIPs DFI'd), time to confirm final Hegota scope and initiate devnet planning.",
+      "rationale": "Devnet with Lido's consensus-breaking PR was estimated for Nov 16-20 launch (post-Oct 30 spec release). Status update needed on whether devnet is live, any issues discovered, and readiness for mainnet Glamsterdam.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "Builder circuit breaker effectiveness review post-Sepolia/Hoodi",
+      "topic": "Hegota headliner decision and devnet planning",
+      "priority": "medium",
+      "rationale": "ACDC #190 proposed sequencing (FOCIL + frames first, smaller EIPs next, quick slots in parallel). Multiple EIPs now CFI'd (8015 SFI'd, 8334, 8383, 8148, 8411). Need to confirm scope, select headliners, and plan first devnet timeline.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-8198 quick slots validation for 12→10s reduction",
+      "priority": "medium",
+      "rationale": "CFI'd in ACDC #188 with explicit caveat that 12→10s reduction requires further validation before SFI. PQ/testing concerns were raised by multiple teams. Need status update on validation work and path to SFI.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "PQ deposit contract front-running requirement",
       "priority": "low",
-      "rationale": "ACDC #187 urged teams to implement circuit breakers before testnet forks due to DOS risk from fake builders. Worth confirming effectiveness after Sepolia (Oct 6) and Hoodi (Oct 26) forks.",
+      "rationale": "ACDC #190 established requirement that PQ deposit contract must address deposit front-running (following EIP-8205 DFI). Informational update on whether PQ design work has incorporated this constraint.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Ben Edgington moderator transition",
+      "priority": "low",
+      "rationale": "Ben Edgington takes over as lead ACDC moderator (with Will Corcoran as deputy) starting this call, following Alex Stokes' departure. Brief acknowledgment and any procedural changes.",
       "related_eips": [],
       "source": "ongoing_discussion"
     }

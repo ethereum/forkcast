@@ -32,6 +32,19 @@ export interface PriorityOrderLayer {
   entries: PriorityOrderEntry[];
 }
 
+/**
+ * A layer the order deliberately leaves unranked, listed anyway so the page covers the whole
+ * fork. Its members are derived from the board rather than stored: there is no ordering to
+ * record, and a checked-in list would only be one more thing to keep in step with the stages.
+ */
+export interface UnrankedLayer {
+  layer: PriorityLayer;
+  /** The devnet series this layer's EIPs ship on, as on a ranked layer. */
+  devnetSeries?: string[];
+  /** What the absence of an ordering means for a reader of this layer. */
+  note?: string;
+}
+
 export interface PriorityOrderSource {
   label: string;
   url: string;
@@ -48,6 +61,8 @@ export interface PriorityOrder {
   lastUpdated: string;
   source: PriorityOrderSource;
   layers: PriorityOrderLayer[];
+  /** Layers shown but not ordered, because nobody has published an ordering for them. */
+  unrankedLayers?: UnrankedLayer[];
   /** Why the order covers the layers it does, where a layer is deliberately left out. */
   scopeNote?: string;
   /** EIPs not yet CFI that the list expects to want a slot soon. */
@@ -70,6 +85,26 @@ export const getPriorityOrder = (fork: string): PriorityOrder | null =>
  * is already SFI and still leads the queue, so both stages count.
  */
 export const REVIEWABLE_STAGES = ['Scheduled for Inclusion', 'Considered for Inclusion'];
+
+/**
+ * The EIPs an unranked layer covers: every one of its EIPs that is up for review, by EIP
+ * number. Numeric order is the point — it is the one sequence that makes no claim about
+ * priority, which is the claim this list must not make.
+ */
+export function unrankedLayerEntries(
+  order: PriorityOrder,
+  layer: UnrankedLayer,
+  eips: readonly EIP[]
+): PriorityOrderEntry[] {
+  return eips
+    .filter(
+      (eip) =>
+        eip.layer === layer.layer &&
+        REVIEWABLE_STAGES.includes(getInclusionStage(eip, order.fork))
+    )
+    .map((eip) => ({ eipId: eip.id }))
+    .sort((a, b) => a.eipId - b.eipId);
+}
 
 /** Entries reviewed as one piece of work, and the ranks they span. */
 export interface PriorityOrderGroup {
@@ -106,6 +141,80 @@ export function groupPairedEntries(entries: readonly PriorityOrderEntry[]): Prio
   return groups;
 }
 
+/** What an unranked layer's table can be sorted by. */
+export type UnrankedSortField = 'eip' | 'stage' | 'devnet' | 'avg';
+
+export const UNRANKED_SORT_FIELDS: readonly UnrankedSortField[] = [
+  'eip',
+  'stage',
+  'devnet',
+  'avg',
+];
+
+export type SortDirection = 'asc' | 'desc';
+
+/**
+ * Which way round a column reads on the first click: furthest along and best supported
+ * first, except EIP number, where ascending is how the list is written down.
+ */
+export const UNRANKED_SORT_DIRECTIONS: Record<UnrankedSortField, SortDirection> = {
+  eip: 'asc',
+  stage: 'asc',
+  devnet: 'desc',
+  avg: 'desc',
+};
+
+/**
+ * One row of an unranked layer, with the facts it sorts on resolved. They are gathered by
+ * the page rather than derived here: a stage comes from EIP data, a devnet standing from
+ * the devnet specs and an average from the client-stance board, and threading all three
+ * through this module would buy nothing but the imports.
+ */
+export interface UnrankedRow {
+  entry: PriorityOrderEntry;
+  /** Lower is further along, as `getInclusionStageSortRank` counts it. */
+  stageRank: number;
+  /** Higher is further along: on a network, booked onto a future one, on neither. */
+  devnetRank: number;
+  /** The layer's mean client rating, or null where no team of it has rated the EIP. */
+  average: number | null;
+}
+
+/**
+ * Sorting an unranked layer asserts nothing, which is what makes it safe to offer here and
+ * not on a published ranking: there is no order to overwrite, only a list to look through.
+ */
+export function sortUnrankedRows(
+  rows: readonly UnrankedRow[],
+  field: UnrankedSortField,
+  direction: SortDirection
+): UnrankedRow[] {
+  const sign = direction === 'asc' ? 1 : -1;
+
+  const primary = (a: UnrankedRow, b: UnrankedRow): number => {
+    switch (field) {
+      case 'stage':
+        return a.stageRank - b.stageRank;
+      case 'devnet':
+        return a.devnetRank - b.devnetRank;
+      case 'avg':
+        return (a.average ?? 0) - (b.average ?? 0);
+      case 'eip':
+        return a.entry.eipId - b.entry.eipId;
+    }
+  };
+
+  return [...rows].sort((a, b) => {
+    // An EIP no team of the layer has rated has no place on the scale, so it sits at the
+    // end whichever way the column points rather than reading as the lowest score.
+    if (field === 'avg' && (a.average === null) !== (b.average === null)) {
+      return a.average === null ? 1 : -1;
+    }
+    // EIP number settles every tie, so equal keys never reshuffle between renders.
+    return sign * primary(a, b) || a.entry.eipId - b.entry.eipId;
+  });
+}
+
 /**
  * The order as markdown, shaped like the source list it mirrors so a paste of it reads the
  * way its readers already expect — and so the audit script can parse what comes back.
@@ -113,7 +222,8 @@ export function groupPairedEntries(entries: readonly PriorityOrderEntry[]): Prio
 export function formatPriorityOrder(
   order: PriorityOrder,
   titleFor: (eipId: number) => string | undefined,
-  origin: string
+  origin: string,
+  eips: readonly EIP[]
 ): string {
   const eipUrl = (eipId: number) => `${origin}/eips/${eipId}/`;
 
@@ -135,6 +245,14 @@ export function formatPriorityOrder(
   for (const layer of order.layers) {
     sections.push('', order.layers.length > 1 ? `## ${layer.layer} EIPs` : '## EIPs', '');
     layer.entries.forEach((entry, index) => sections.push(line(entry, `${index + 1}.`)));
+  }
+
+  for (const layer of order.unrankedLayers ?? []) {
+    const entries = unrankedLayerEntries(order, layer, eips);
+    if (entries.length === 0) continue;
+    sections.push('', `## ${layer.layer} EIPs (not ranked)`, '');
+    if (layer.note) sections.push(layer.note, '');
+    for (const entry of entries) sections.push(line(entry, '-'));
   }
 
   if (order.watching && order.watching.length > 0) {

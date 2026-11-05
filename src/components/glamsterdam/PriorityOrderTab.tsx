@@ -242,9 +242,8 @@ const PriorityOrderTab: React.FC<PriorityOrderTabProps> = ({ fork }) => {
    * source list and the Markdown copy: down a table of twenty it reads as twenty asides of
    * differing weight rather than a queue, and it is the queue the page is for.
    *
-   * `alongside` are the ids sharing a unit, whose pairing the row grouping already states —
-   * naming them again on every row was the redundancy that made a pair read as two
-   * unrelated neighbours.
+   * `alongside` are the ids sharing a unit, whose pairing the row grouping already states,
+   * so only a partner outside the unit is named.
    */
   const proposalCell = (entry: PriorityOrderEntry, alongside: readonly number[]) => {
     const eip = eipById.get(entry.eipId);
@@ -526,13 +525,15 @@ const PriorityOrderTab: React.FC<PriorityOrderTabProps> = ({ fork }) => {
       label
     );
 
-  /** What a screen reader is told about a column, where the section sorts by one. */
-  const ariaSort = (shape: SectionShape, field: UnrankedSortField) =>
-    shape.sortable && sortField === field
-      ? sortDirection === 'asc'
-        ? ('ascending' as const)
-        : ('descending' as const)
-      : undefined;
+  /**
+   * What a screen reader is told about a column. A sortable column that isn't the one in
+   * use reports `none` rather than nothing, which is what says it sorts at all.
+   */
+  const ariaSort = (shape: SectionShape, field: UnrankedSortField) => {
+    if (!shape.sortable) return undefined;
+    if (sortField !== field) return 'none' as const;
+    return sortDirection === 'asc' ? ('ascending' as const) : ('descending' as const);
+  };
 
   const tableHead = (shape: SectionShape) => (
     <thead>

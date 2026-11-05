@@ -140,7 +140,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     path: '/upgrade/glamsterdam',
     name: 'Glamsterdam Upgrade',
     description: 'Major network upgrade featuring Block-level Access Lists and ePBS. Named after the combination of "Amsterdam" (execution layer upgrade, named after the previous Devconnect location) and "Gloas" (consensus layer upgrade, named after a star).',
-    tagline: 'Rollout paused while a security disclosure is analyzed',
+    tagline: 'ePBS (EIP-7732) and Block-Level Access Lists (EIP-7928)',
     status: 'Upcoming',
     activationDate: 'TBD',
     projectedActivation: '2026-12-02',

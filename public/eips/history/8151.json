@@ -2,6 +2,16 @@
   "eipId": 8151,
   "commits": [
     {
+      "sha": "af5ea76669821d1eb8dfc60e3373a0a7fa9a7759",
+      "date": "2026-11-05T15:26:46Z",
+      "message": "Update EIP-7851: sync relevant EIP-8298 clarifications before archival",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "patch": "@@ -17,7 +17,7 @@ This EIP modifies the `ecRecover` precompile at address `0x000000000000000000000\n \n ## Motivation\n \n-EOAs can use [EIP-7702](./eip-7702.md) as a bridge to post-quantum authorization. After migration, the account's non-empty code no longer matches the EIP-7702 delegation format `0xef0100 || delegate_address`, so [EIP-3607](./eip-3607.md) disables its ECDSA transaction authority at the protocol level. However, `ecRecover` ignores account state. A quantum-capable attacker deriving the old ECDSA private key could still authorize token transfers through contracts, including [ERC-20](./eip-20.md) `permit` implementations ([ERC-2612](./eip-2612.md)). This EIP applies the same rule to `ecRecover`: recovery returns empty output when the account has non-empty raw code that is not a valid EIP-7702 delegation indicator. As a result, after the account has migrated to post-quantum authorization, the old ECDSA private key can no longer be used for contract authorization that relies on `ecRecover`.\n+EOAs can use [EIP-7702](./eip-7702.md) as a bridge to post-quantum authorization. After migration, the account has regular deployed code instead of an EIP-7702 delegation indicator `0xef0100 || delegate_address`, so [EIP-3607](./eip-3607.md) disables protocol-level ECDSA transaction origination. However, `ecRecover` ignores account state. A quantum-capable attacker deriving the old ECDSA private key could still authorize token transfers through contracts, including [ERC-20](./eip-20.md) `permit` implementations ([ERC-2612](./eip-2612.md)). This EIP applies the same rule to `ecRecover`: recovery returns empty output when the account has non-empty raw code that is not a valid EIP-7702 delegation indicator. As a result, after the account has migrated to post-quantum authorization, the old ECDSA private key can no longer be used for contract authorization that relies on `ecRecover`.\n \n ## Specification\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
       "sha": "e2fad38cfe2d441614fbb3c7eaedce2f661b1886",
       "date": "2026-10-18T18:07:10Z",
       "message": "Update EIP-8151: empty failure output and EIP-8038 access gas",

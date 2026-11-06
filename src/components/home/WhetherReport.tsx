@@ -1,8 +1,12 @@
 import React from 'react';
 import { Link } from '../navigation';
 import { getUpgradePagePath, networkUpgrades, shortUpgradeName } from '../../data/upgrades';
-import { whetherReport, type WhetherReportItem } from '../../data/whether-report';
-import { parseBriefText } from '../../domain/home/briefText';
+import {
+  whetherReport,
+  type WhetherReportAction,
+  type WhetherReportItem,
+} from '../../data/whether-report';
+import { linkKind, parseBriefText } from '../../domain/home/briefText';
 import { formatDate, parseDate } from '../../utils/date';
 
 const upgradeById = new Map(networkUpgrades.map((upgrade) => [upgrade.id, upgrade]));
@@ -66,6 +70,55 @@ const Body: React.FC<{ text: string }> = ({ text }) => (
 );
 
 /**
+ * The asks an item carries, set below its prose as chips rather than left in the sentence
+ * that explains them. A reader scanning the brief should be able to see there is something
+ * to do here without reading to the end of the line.
+ *
+ * A `mailto:` is opened in place: handing an address to the mail client is the whole
+ * action, and a new tab for it would open and sit there empty.
+ */
+const Actions: React.FC<{ actions: readonly WhetherReportAction[] }> = ({ actions }) => {
+  const className =
+    // py-1 rather than py-0.5: 22px of chip is under the 24px minimum target size.
+    'inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium border ' +
+    'border-purple-300 text-purple-700 hover:bg-purple-100 hover:border-purple-400 ' +
+    'dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/40 ' +
+    'focus-visible:outline focus-visible:outline-2 focus-visible:outline-purple-500 transition-colors';
+
+  const chips = actions.flatMap((action) => {
+    const kind = linkKind(action.href);
+    if (!kind) return [];
+
+    const label = (
+      <>
+        {action.label}
+        <span aria-hidden="true">&rarr;</span>
+      </>
+    );
+
+    return [
+      kind === 'internal' ? (
+        <Link key={action.href} to={action.href} className={className}>
+          {label}
+        </Link>
+      ) : (
+        <a
+          key={action.href}
+          href={action.href}
+          {...(kind === 'external' ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          className={className}
+        >
+          {label}
+        </a>
+      ),
+    ];
+  });
+
+  if (chips.length === 0) return null;
+  return <div className="mt-1.5 flex flex-wrap gap-1.5">{chips}</div>;
+};
+
+/**
  * The hand-written summary that opens the homepage. Deliberately the smallest block on the
  * page: one box, one line of chrome, one sentence an item. At the weight of the generated
  * sections below it, it stops reading as a brief.
@@ -122,11 +175,12 @@ const WhetherReport: React.FC = () => {
               >
                 &rarr;
               </span>
-              <span>
+              <div className="min-w-0">
                 <Heading href={href}>{label}</Heading>
                 {': '}
                 <Body text={item.body} />
-              </span>
+                {item.actions && <Actions actions={item.actions} />}
+              </div>
             </li>
           );
         })}

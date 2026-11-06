@@ -1,5 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { parseBriefText } from './briefText';
+import { linkKind, parseBriefText } from './briefText';
+
+describe('linkKind', () => {
+  it('reads the three shapes the page knows how to open', () => {
+    expect(linkKind('/eips/7594')).toBe('internal');
+    expect(linkKind('https://devcon.org')).toBe('external');
+    expect(linkKind('HTTP://example.org')).toBe('external');
+    expect(linkKind('mailto:glamsterdam@ethereum.org')).toBe('mail');
+  });
+
+  it('rejects anything else, including a path that leaves the site', () => {
+    for (const url of ['//evil.example', 'javascript:alert(1)', 'eips/7594', 'mailto:', 'mailto:nope', '']) {
+      expect(linkKind(url), url).toBeNull();
+    }
+  });
+});
 
 describe('parseBriefText', () => {
   it('returns prose with no links as one segment', () => {
@@ -16,6 +31,7 @@ describe('parseBriefText', () => {
     ]);
   });
 
+  // A mailto is a valid link, but only as a call to action, never loose in the prose.
   it('never hands back an href for a URL we do not render', () => {
     for (const url of ['javascript:alert(1)', '//evil.example', 'mailto:a@b.c', 'eips/7594']) {
       const segments = parseBriefText(`go [here](${url})`);

@@ -9,17 +9,31 @@ export interface BriefSegment {
 
 const LINK = /\[([^\]]+)\]\(([^)]+)\)/g;
 
+/** How the page opens a link: in the app, in a new tab, or in a mail client. */
+export type LinkKind = 'internal' | 'external' | 'mail';
+
 /**
- * Whether a link in a brief is one the page will render.
+ * Which of those a URL is, or null where the page will not render it at all.
  *
- * Only two shapes qualify: a site-relative path, and an http(s) URL. A protocol-relative
- * `//host` is rejected even though it starts with a slash, since it reads as a path but
- * leaves the site.
+ * Three shapes qualify: a site-relative path, an http(s) URL, and a mailto address. A
+ * protocol-relative `//host` is rejected even though it starts with a slash, since it
+ * reads as a path but leaves the site.
+ */
+export function linkKind(url: string): LinkKind | null {
+  if (/^https?:\/\//i.test(url)) return 'external';
+  if (/^mailto:[^\s@]+@[^\s@.]+\.[^\s@]+$/i.test(url)) return 'mail';
+  if (url.startsWith('/') && !url.startsWith('//')) return 'internal';
+  return null;
+}
+
+/**
+ * The same question for a link inside the prose, where a mailto does not qualify: an
+ * address belongs in a call to action, which says what the mail is for before it is sent.
  */
 function classify(url: string): { external: boolean } | null {
-  if (/^https?:\/\//i.test(url)) return { external: true };
-  if (url.startsWith('/') && !url.startsWith('//')) return { external: false };
-  return null;
+  const kind = linkKind(url);
+  if (kind === null || kind === 'mail') return null;
+  return { external: kind === 'external' };
 }
 
 /**

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { whetherReport } from './whether-report';
 import { getUpgradePagePath, networkUpgrades } from './upgrades';
-import { parseBriefText } from '../domain/home/briefText';
+import { linkKind, parseBriefText } from '../domain/home/briefText';
 
 /**
  * The brief is hand-written, so these guard the ways a typo would show on the homepage
@@ -57,6 +57,7 @@ describe('the Whether Report', () => {
     for (const item of whetherReport.items) {
       const where = item.fork ?? item.title;
       if (item.title) runs.push([`${where} title`, item.title]);
+      for (const action of item.actions ?? []) runs.push([`${where} action`, action.label]);
       runs.push([
         `${where} body`,
         parseBriefText(item.body)
@@ -79,6 +80,17 @@ describe('the Whether Report', () => {
       expect(written, `${where}: write it as the page, not as the author`).not.toMatch(
         /\b(?:I|me|my|mine|we|our|ours)\b/i
       );
+    }
+  });
+
+  it('gives every call to action a label and a link the page will open', () => {
+    for (const item of whetherReport.items) {
+      for (const action of item.actions ?? []) {
+        const where = `${item.fork ?? item.title}: ${action.label || '(no label)'}`;
+        expect(action.label.trim().length, where).toBeGreaterThan(0);
+        // A chip whose href the page rejects renders as nothing at all, not as plain text.
+        expect(linkKind(action.href), `${where} -> ${action.href}`).not.toBeNull();
+      }
     }
   });
 

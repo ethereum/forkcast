@@ -202,13 +202,6 @@ const PublicNetworkUpgradePage: React.FC<PublicNetworkUpgradePageProps> = ({
     trackUpgradeView(forkName);
   }, [forkName, trackUpgradeView]);
 
-  // Scroll to top when navigating to page (unless there's a hash)
-  useEffect(() => {
-    if (!location.hash) {
-      window.scrollTo(0, 0);
-    }
-  }, [location.pathname, location.hash]);
-
   // Expand collapsed sections before scrolling to an EIP anchor inside them.
   useLayoutEffect(() => {
     const expansion = getAnchorExpansionForHash();

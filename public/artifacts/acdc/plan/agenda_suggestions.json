@@ -1,63 +1,63 @@
 {
   "series": "ACDC",
-  "generated": "2026-11-02",
+  "generated": "2026-11-09",
   "for_call": "ACDC #191",
   "suggestions": [
     {
-      "topic": "EIP-8365 0x00 deposit handling: burn vs re-queue decision",
+      "topic": "EIP-8365: Finalize burn vs. re-queue approach for 0x00 deposits",
       "priority": "high",
-      "rationale": "Deferred from ACDC #190 with explicit two-week revisit (matching this call). Choice between burning ETH from post-fork 0x00 deposits versus Barnabas' proposal to re-queue balance as 0x01 deposits. Teams were asked to discuss at Devcon.",
+      "rationale": "Deferred from ACDC #190 with explicit expectation to resolve at this call after Devcon discussions. Choice between burning ETH (simpler) vs. Barnabas' proposal to re-queue as 0x01 deposits.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Glamsterdam bid gossip specification: PR5774 vs PR5776",
-      "priority": "high",
-      "rationale": "Two competing approaches with fundamental disagreement (Potuz prefers no gossip filtering vs Nico's 3% increment + DOS protection). Teams were asked to review within a few days of Oct 29; needs resolution before Glamsterdam mainnet.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "FOCIL payload rebuild ambiguity and EL team input",
-      "priority": "high",
-      "rationale": "Critical Engine API clarification: some ELs rebuild entire payload on inclusion list update at 6s causing missed blocks; CL expects append-only. Barnabas was to bring this to next ACDE for EL input. Blocking for FOCIL devnet stability.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
       "topic": "Glamsterdam devnet status and Lido PR testing",
-      "priority": "medium",
-      "rationale": "Devnet with Lido's consensus-breaking PR was estimated for Nov 16-20 launch (post-Oct 30 spec release). Status update needed on whether devnet is live, any issues discovered, and readiness for mainnet Glamsterdam.",
+      "priority": "high",
+      "rationale": "ACDC #190 estimated devnet launch Nov 16-20; this call falls within that window. Lido PR is consensus-breaking and requires explicit testing before mainnet consideration.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "devnet_update"
     },
     {
-      "topic": "Hegota headliner decision and devnet planning",
-      "priority": "medium",
-      "rationale": "ACDC #190 proposed sequencing (FOCIL + frames first, smaller EIPs next, quick slots in parallel). Multiple EIPs now CFI'd (8015 SFI'd, 8334, 8383, 8148, 8411). Need to confirm scope, select headliners, and plan first devnet timeline.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "EIP-8198 quick slots validation for 12→10s reduction",
-      "priority": "medium",
-      "rationale": "CFI'd in ACDC #188 with explicit caveat that 12→10s reduction requires further validation before SFI. PQ/testing concerns were raised by multiple teams. Need status update on validation work and path to SFI.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "PQ deposit contract front-running requirement",
-      "priority": "low",
-      "rationale": "ACDC #190 established requirement that PQ deposit contract must address deposit front-running (following EIP-8205 DFI). Informational update on whether PQ design work has incorporated this constraint.",
+      "topic": "Execution payload bid gossip PR resolution (PR5774 vs PR5776)",
+      "priority": "high",
+      "rationale": "ACDC #190 requested client team input 'within a few days' (deadline ~Nov 1-3). No resolution shown; competing approaches (accept-any vs. 3% increment) need consensus before spec release.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Ben Edgington moderator transition",
-      "priority": "low",
-      "rationale": "Ben Edgington takes over as lead ACDC moderator (with Will Corcoran as deputy) starting this call, following Alex Stokes' departure. Brief acknowledgment and any procedural changes.",
+      "topic": "FOCIL payload rebuild ambiguity — EL team feedback",
+      "priority": "medium",
+      "rationale": "ACDC #190 identified Engine API ambiguity causing missed blocks (some ELs rebuild entirely at 6s vs. CL expecting append-only). Action item to raise at ACDE; confirm EL team input received.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Hegota sequencing and next devnet scope",
+      "priority": "medium",
+      "rationale": "ACDC #190 proposed sequencing (FOCIL + frames first, smaller EIPs next, quick slots in parallel). Now that initial CFI/SFI decisions are made, confirm devnet timeline and scope for first Hegota testnet.",
       "related_eips": [],
       "source": "ongoing_discussion"
+    },
+    {
+      "topic": "EIP-8198 (quick slots) validation requirements for SFI",
+      "priority": "medium",
+      "rationale": "CFI'd in ACDC #188 with explicit caveat that 12→10s reduction needs further validation before SFI. Update on testing/simulation progress required to advance to SFI.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Client diversity and moderator transition logistics",
+      "priority": "low",
+      "rationale": "Ben Edgington and Will Corcoran taking over moderation starting this call (two weeks from ACDC #190). Brief transition acknowledgment and logistics confirmation.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "PQ deposit contract front-running requirements",
+      "priority": "low",
+      "rationale": "ACDC #190 established requirement that PQ deposit contract must explicitly address front-running. Informational update on design progress, no immediate decision needed.",
+      "related_eips": [],
+      "source": "open_action_item"
     }
   ]
 }

@@ -31,6 +31,16 @@ Network upgrades with `status`, activation details (block/epoch/slot, once shipp
 - `projectedActivation` (`YYYY-MM-DD`) is Forkcast's working *estimate* of mainnet activation for upgrades that haven't shipped — a planning assumption, never an announced date. Say so when you quote it.
 - `activationDateLabel` is display text, not a parseable date (`"Sep 15, 2022"` for shipped upgrades, `"2027"` for future ones).
 
+### `/api/research.json`
+Exploratory research areas for upgrades beyond the one currently being scoped — decoupled consensus, post-quantum cryptography, partitioned binary tree, privacy, and so on. Each area carries a plain-language `summary` and `description`, the `northStars` it serves, the `layers` it lands in (`CL` consensus, `DL` data, `EL` execution), and `links[]` out to the EIPs and write-ups behind it. Five areas also carry `headliners[]`, naming the strawmap proposals prominent enough to anchor a whole upgrade — each fork gets one consensus and one execution headliner, so it marks what could define a fork, not what matters most, and the areas without one are most of the unglamorous work that ships regardless. Deliberately broad-strokes: each area folds together several proposals, and some are left out.
+
+Three things to carry over when you quote this:
+- **No dates, deliberately.** Which upgrade any of this lands in is unsettled and keeps moving, so no field here assigns one. Don't infer a timeline from the ordering.
+- **No ranking.** `areas` is alphabetical, not sorted by priority, likelihood, or maturity.
+- **One group's view.** Mostly drawn from EF Protocol's strawmap (https://strawmap.org), an opinionated draft rather than a roadmap the ecosystem has signed off on. Agreement across teams is stronger on what the open problems are than on which come first — attribute accordingly.
+
+For what is actually scoped for a named upgrade, use `/api/upgrades.json` and `/api/eips.json`.
+
 ### `/api/eip-stage-changes.json`
 Every EIP with a dated inclusion-stage change, newest first, one row each: `lastStageChange`, `lastStageChangeFork`, `currentStage`. `/api/eips.json` has the same history nested per EIP — this is the flat chronology, so use it to answer "what changed lately" or "what moved in this window" without walking the whole dataset.
 
@@ -107,5 +117,6 @@ A few datasets have no served equivalent. Access via the GitHub API, e.g.
 | One call's transcript      | `GET /artifacts/{series}/{date}_{number}/transcript.vtt`        |
 | When might upgrade X ship? | `GET /api/upgrades.json` → `projectedActivation` (estimate)     |
 | Upcoming agenda context    | `GET /artifacts/{series}/plan/open_action_items.json`           |
+| What might come after the next forks? | `GET /api/research.json` → `areas[]` (exploratory; no dates, no ranking) |
 | Event timeline             | GitHub: `src/data/events.ts`                                    |
 | Pending proposals          | GitHub: `src/data/pending-proposals.ts`                         |

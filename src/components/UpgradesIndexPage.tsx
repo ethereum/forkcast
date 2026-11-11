@@ -218,6 +218,29 @@ const UpgradesIndexPage: React.FC = () => {
           </section>
         )}
 
+        {/* Not an upgrade, so it stays out of `networkUpgrades` — that list feeds the
+            schedule, the cadence charts and /api/upgrades.json, all of which mean
+            "major upgrade". It sits here because /research is where the chain of
+            scoped forks runs out. */}
+        <section className="mb-12">
+          <Link
+            to="/research"
+            className="group flex items-center gap-4 rounded-lg border border-slate-200 bg-white px-5 py-4 transition-colors hover:border-purple-300 dark:border-slate-700 dark:bg-slate-800 dark:hover:border-purple-600"
+          >
+            <div className="min-w-0 flex-1">
+              <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                Research
+              </span>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
+                What's being explored for upgrades past Hegotá — nothing scheduled, nothing ranked.
+              </p>
+            </div>
+            <span className="shrink-0 text-slate-400 group-hover:text-purple-500">
+              <ChevronIcon />
+            </span>
+          </Link>
+        </section>
+
         {liveEntries.length > 0 && (
           <section>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Live</h2>

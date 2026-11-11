@@ -1,0 +1,41 @@
+{
+  "meeting": "ETM #012 - 2026-11-11",
+  "sections": [
+    {
+      "heading": "Optionality EIP Separation and EIP-8491 Status",
+      "summary": "The optionality problem has been factored out of Lucid into standalone EIP-8491, authored by Jannik; feedback still needed.",
+      "timestamp": "00:07:31",
+      "body": "- The optionality problem has been isolated into a separate EIP (EIP-8491) rather than being folded into Lucid (EIP-8184), to reduce cognitive overhead in the already long and complex Lucid EIP.\n- EIP-8491 received its number via [PR #12646](https://github.com/ethereum/EIPs/pull/12646/changes); it was previously referred to as EIPXXXX.\n- Jannik confirmed the technical content is the same as previously proposed: a validator voting contract and the enforcement mechanism for key publisher priority lists. Additional rationale text was added.\n- Justin Florentine provided only syntactical feedback so far; deeper review is still pending.\n- The EIP may be easier to read for those already familiar with Lucid; newcomers may find the combined proposal in Lucid easier to follow."
+    },
+    {
+      "heading": "CL Spec PR Status and Open Issues",
+      "summary": "The CL spec PR (consensus-specs #5403) needs further review; DOMAIN_SEALED_TRANSACTION_KEY_TIMELINESS and key publisher suffix values remain unresolved.",
+      "timestamp": "00:09:28",
+      "body": "- The CL spec PR ([ethereum/consensus-specs#5403](https://github.com/ethereum/consensus-specs/pull/5403)) is not fully implemented; some items are still to-do pending ongoing encrypted mempool design decisions.\n- Justin Traglia provided earlier feedback; Boma (Mercy) addressed those comments and responded to follow-up questions but needs further review from additional people.\n- Boma flagged two specific open items requiring input from client teams or EIP authors:\n  - `DOMAIN_SEALED_TRANSACTION_KEY_TIMELINESS` — the appropriate timeliness value is undetermined and needs a CL dev to weigh in.\n  - Key publisher suffix — also unresolved.\n- Justin Florentine acknowledged the team has been preoccupied with Glamsterdam and committed to finding CL-side reviewers.\n- Boma offered to incorporate EIP-8491 changes (commitments, signature fields, validity checks) into the CL spec as a separate addition; Justin agreed this is fine as long as the changes remain separate from the Lucid spec."
+    },
+    {
+      "heading": "Key Publisher Priority Lists and Optionality Abuse",
+      "summary": "Priority lists address probabilistic front-running but do not solve proposer optionality spam; governance acceptance remains uncertain.",
+      "timestamp": "00:15:01",
+      "body": "- Gottfried raised concerns about the key publisher priority list approach:\n  - It addresses probabilistic front-running (the main user-facing concern where users' funds can be stolen).\n  - It does not address proposer optionality, where participants optimize latency to get transactions included regardless of list position — a more benign but still potentially spam-inducing form of optionality abuse.\n- Governance and political feasibility are also a concern: multiple people have expressed skepticism about whether a validator-voting mechanism for key publisher priority will gain community acceptance.\n- Gottfried acknowledged these are points to keep in mind rather than blocking issues."
+    },
+    {
+      "heading": "Blind Sandwich Paper Assessment",
+      "summary": "The group found the blind sandwich paper's methodology questionable and its Ethereum findings negligible; consensus was to ignore it.",
+      "timestamp": "00:17:10",
+      "body": "- A paper on blind sandwich attacks (shared previously in Telegram) was discussed. It covers multiple chains including Ethereum and Solana.\n- Gottfried's main criticism: the paper lacks null hypothesis testing. It classifies sandwich attacks based on certain criteria but never establishes a baseline for what numbers would look like absent any malicious activity.\n  - A legitimate arbitrage bot could randomly bracket honest transactions without exploiting privileged information, and the paper's methodology might flag these as attacks.\n- The findings on Ethereum were described as \"a bit of a nothing burger\" — very little activity detected, likely because most users rely on private channels.\n- Findings on other chains were described as \"damning\" with rampant sandwiching; the paper also covers Solana.\n- Jannik noted the detected amounts were negligible and likely attributable to information leakage from MEV rebate protocols rather than fundamental protocol vulnerabilities.\n- Justin Florentine suggested the paper could still serve as evidence of trust violations in supposedly private mempools, which could strengthen the case for encrypted mempools.\n- Agreement: the paper should be largely ignored for purposes of this work."
+    },
+    {
+      "heading": "Prototyping Readiness and Resource Constraints",
+      "summary": "No technical blockers to starting EL/CL prototypes, but no team members currently have capacity; work will proceed in the background.",
+      "timestamp": "00:24:16",
+      "body": "- Justin Florentine proposed beginning EL and CL prototype implementations in parallel with ongoing spec review.\n- No technical objections were raised; Jannik agreed it is possible to get started.\n- Justin emphasized that prototyping is strategically valuable: the design phase is a first draft, and prototypes making \"first contact with a devnet\" will reveal aspects of Lucid and the optionality EIP that need to be revised or discarded.\n- No one on the call had immediate capacity to begin prototyping:\n  - Justin Florentine is focused on frames and has at least two higher priorities.\n  - No other participants volunteered available bandwidth.\n- The group acknowledged this as a constraint but not a blocker; prototyping will happen opportunistically in the background."
+    },
+    {
+      "heading": "Shipping Timeline and Post-Quantum Implications",
+      "summary": "Encrypted mempools before I-Star is unrealistic; optimistic target is J-Star, with no schedule pressure warranted.",
+      "timestamp": "00:28:08",
+      "body": "- Boma asked whether upcoming priorities (Hegota, post-quantum cryptography) would affect the encrypted mempool shipping timeline.\n- Gottfried noted that post-quantum timelines are likely to accelerate significantly, requiring the community to \"sprint\" and sacrifice features along the way. Upcoming ACD calls are expected to be contentious on this topic.\n- Agreement: getting encrypted mempools before I-Star is \"completely unrealistic.\"\n  - Justin Florentine added that I-Star itself may no longer be on the table; a realistic optimistic target is J-Star.\n- These calls have been de-scoped to monthly cadence as a touchpoint. No schedule pressure is warranted for encrypted mempool work.\n- Next meeting in one month; prototypes may or may not be ready to discuss."
+    }
+  ]
+}

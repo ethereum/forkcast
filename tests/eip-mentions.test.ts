@@ -28,6 +28,7 @@ const EIPS_DIR = path.join(ROOT, 'src', 'data', 'eips');
  * than an extraction slip that quietly linkifies a PR number.
  */
 const UNTRACKED_PROPOSALS = new Set([
+  1271, // ERC-1271: Standard signature validation method for contracts
   4337, // ERC-4337: Account Abstraction via Entry Point Contract
   5189, // ERC-5189: Account Abstraction endorsed operations
   7562, // ERC-7562: Account Abstraction validation scope rules

@@ -1,0 +1,160 @@
+{
+  "meeting": "ACDC #191 - 2026-11-12",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "mentioned",
+      "summary": "Referenced as part of ongoing EL repricing work with audit reports expected on Monday's ACDT call.",
+      "moments": [
+        {
+          "timestamp": "00:08:10",
+          "context": "Ben noted that work continues on the EL around repricing EIPs 8037 and 8038, with updated blog post linked and audit reports to be discussed on Monday's ACDT call."
+        },
+        {
+          "timestamp": "00:17:34",
+          "context": "Terence speculated about Sepolia's future given decisions around 8037, and Barnabas suggested delaying the block hash check decision until after ACDT based on 8037/8038 outcomes."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-Access Gas Cost Update",
+      "weight": "mentioned",
+      "summary": "Mentioned alongside EIP-8037 as part of ongoing EL repricing work.",
+      "moments": [
+        {
+          "timestamp": "00:08:10",
+          "context": "Ben mentioned 8038 together with 8037 as EL repricing EIPs with continuing work and upcoming audit discussion."
+        }
+      ]
+    },
+    {
+      "eip": 8198,
+      "title": "Quick Slots",
+      "weight": "discussed",
+      "summary": "Quick Slots was DFI'd from Hegota after its champion withdrew it to prioritize post-quantum work.",
+      "moments": [
+        {
+          "timestamp": "00:43:57",
+          "context": "Caspar said ETH Labs' PQ-first framing applies to the EIPs they push, like quick slots, and that they would accordingly withdraw it from Hegota."
+        },
+        {
+          "timestamp": "00:51:16",
+          "context": "Ben, asking whether Hegota's scoping should reopen, noted Caspar had already indicated a willingness to withdraw quick slots. In chat, champion Barnabé Monnot answered \"Barnabe already offered to withdraw Quick Slots\" with \"let its withdrawal not be in vain\"."
+        },
+        {
+          "timestamp": "01:28:38",
+          "context": "Ben formally asked for objections to moving Quick Slots from CFI to DFI. Hearing none, he declared the decision made."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "mentioned",
+      "summary": "Cited in chat as needed on the EL side for PQ safety to disable legacy ecrecover.",
+      "moments": [
+        {
+          "timestamp": "00:55:49",
+          "context": "Kevaundray listed EIP-8151 (disable legacy ecrecover) alongside 8298 as EL-side PQ requirements so EOAs can upgrade."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "mentioned",
+      "summary": "Cited in chat alongside 8151 as needed for PQ safety so EOAs can upgrade via SETCODEFROM.",
+      "moments": [
+        {
+          "timestamp": "00:55:49",
+          "context": "Kevaundray listed EIP-8298 (setcodefrom) alongside 8151 as EL-side PQ requirements so EOAs can upgrade."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "mentioned",
+      "summary": "Vitalik referenced it in chat noting that even post-8288 each inclusion list would need an aggregate STARK.",
+      "moments": [
+        {
+          "timestamp": "00:57:55",
+          "context": "Vitalik noted in chat that even after 8288 (in-mempool aggregation), each inclusion list would still need to contain an aggregate STARK for PQ privacy use cases."
+        }
+      ]
+    },
+    {
+      "eip": 1271,
+      "weight": "mentioned",
+      "summary": "Kevaundray noted in chat that contracts supporting EIP-1271 won't break from ecrecover changes.",
+      "moments": [
+        {
+          "timestamp": "00:59:33",
+          "context": "Kevaundray noted in chat that contracts supporting EIP-1271 (standard signature validation) would not break for ecrecover use cases under the proposed PQ changes."
+        }
+      ]
+    },
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "mentioned",
+      "summary": "Kamil suggested introducing more EIPs in the style of 8411 for fast broadcast of other objects.",
+      "moments": [
+        {
+          "timestamp": "01:03:23",
+          "context": "Kamil proposed in chat that more fast-broadcast-style EIPs like 8411 could be introduced for other P2P objects beyond payloads."
+        }
+      ]
+    },
+    {
+      "eip": 8077,
+      "title": "eth/XX - announce transactions with nonce",
+      "weight": "mentioned",
+      "summary": "Csaba mentioned it in chat as a proposed mempool improvement relevant to P2P handling.",
+      "moments": [
+        {
+          "timestamp": "01:06:14",
+          "context": "Csaba noted in chat that there are mempool improvements proposed such as EIP-8077 for announcing transactions with nonce."
+        }
+      ]
+    },
+    {
+      "eip": 8483,
+      "title": "Post-Quantum Material Registration",
+      "weight": "discussed",
+      "summary": "Post-Quantum Material Registration EIP was proposed for inclusion and accepted as PFI for Hegota.",
+      "moments": [
+        {
+          "timestamp": "01:20:34",
+          "context": "Ben introduced EIP-8483 for PQ material registration as a late proposal for Hegota inclusion and asked Justin Traglia to present it."
+        },
+        {
+          "timestamp": "01:20:55",
+          "context": "Justin Traglia described EIP-8483 as allowing validators and builders to register PQ keys ahead of a future fork, using two new execution request types and system contracts deployable soon."
+        },
+        {
+          "timestamp": "01:22:36",
+          "context": "Potuz commented there is no rush for the fork part but urgency in agreeing on the design, auditing the contract, and committing to a signature scheme for the community."
+        },
+        {
+          "timestamp": "01:28:25",
+          "context": "Ben concluded EIP-8483 is accepted as PFI, with CFI status to be proposed on a future call."
+        }
+      ]
+    },
+    {
+      "eip": 8015,
+      "title": "Remove `deposit` and `eth1data` fields",
+      "weight": "mentioned",
+      "summary": "Barnabas asked in chat whether EIP-8015 could be SFI'd; it may already be.",
+      "moments": [
+        {
+          "timestamp": "01:29:45",
+          "context": "Barnabas asked in chat if 8015 (remove deposit and eth1data fields) could be SFI'd, and Jun Song noted it might already be."
+        }
+      ]
+    }
+  ]
+}

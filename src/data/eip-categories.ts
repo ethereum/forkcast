@@ -124,7 +124,7 @@ export const eipCategories: EipCategory[] = [
   {
     id: 'post-quantum-prep',
     name: 'Post-Quantum Preparation',
-    eips: [8321, 8365, 8367]
+    eips: [8321, 8365, 8367, 8483]
   },
   {
     id: 'staking-features',

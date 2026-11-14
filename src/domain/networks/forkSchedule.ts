@@ -72,6 +72,7 @@ export function getExecutionGenesisTimestamp(forks: NetworkForks | undefined): n
   return timestamps.length === 0 ? null : Math.min(...timestamps);
 }
 
+/** `now` is in seconds, like the activation timestamps. */
 export function buildForkRows(forks: NetworkForks | undefined, now: number): ForkRow[] {
   if (!forks) return [];
 

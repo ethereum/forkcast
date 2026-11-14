@@ -7,6 +7,37 @@ const __dirname = path.dirname(__filename);
 const DEFAULT_ARTIFACTS_DIR = path.join(__dirname, '../../public/artifacts');
 
 /**
+ * Stage-change decisions from one call's parsed key_decisions.json, one
+ * { id, fork, status, call, date, meeting } tuple per affected EIP. `callDir`
+ * is the artifact folder name, `{YYYY-MM-DD}_{numberPadded}`.
+ */
+export function stageChangeTuples(type, callDir, data) {
+  const number = parseInt(callDir.split('_').pop(), 10);
+  const call = `${type}/${number}`;
+  const date = callDir.slice(0, 10);
+  const tuples = [];
+
+  for (const d of data.key_decisions || []) {
+    if (d.type !== 'stage_change') continue;
+    if (!d.fork || !d.stage_change || !d.stage_change.to) continue;
+    if (!Array.isArray(d.eips) || d.eips.length === 0) continue;
+
+    for (const id of d.eips) {
+      tuples.push({
+        id,
+        fork: d.fork,
+        status: d.stage_change.to,
+        call,
+        date,
+        meeting: data.meeting,
+      });
+    }
+  }
+
+  return tuples;
+}
+
+/**
  * Scan every call's key_decisions.json for stage-change decisions, yielding one
  * { id, fork, status, call, date, meeting } tuple per affected EIP.
  */
@@ -35,27 +66,7 @@ export function loadDecisions(artifactsDir = DEFAULT_ARTIFACTS_DIR) {
         continue; // skip malformed files
       }
 
-      // Folder name is `{YYYY-MM-DD}_{numberPadded}`.
-      const number = parseInt(callDir.split('_').pop(), 10);
-      const call = `${type}/${number}`;
-      const date = callDir.slice(0, 10);
-
-      for (const d of data.key_decisions || []) {
-        if (d.type !== 'stage_change') continue;
-        if (!d.fork || !d.stage_change || !d.stage_change.to) continue;
-        if (!Array.isArray(d.eips) || d.eips.length === 0) continue;
-
-        for (const id of d.eips) {
-          tuples.push({
-            id,
-            fork: d.fork,
-            status: d.stage_change.to,
-            call,
-            date,
-            meeting: data.meeting,
-          });
-        }
-      }
+      tuples.push(...stageChangeTuples(type, callDir, data));
     }
   }
 

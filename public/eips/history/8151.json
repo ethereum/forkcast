@@ -2,6 +2,16 @@
   "eipId": 8151,
   "commits": [
     {
+      "sha": "8194528a2ee9a4893a398a5871c470ab0ac3b09a",
+      "date": "2026-11-16T10:09:44Z",
+      "message": "Update EIP-8151: add public mempool rules for recovered signers",
+      "author": "Mannan-Goyal",
+      "prNumber": null,
+      "patch": "@@ -61,6 +61,37 @@ When [EIP-7928](./eip-7928.md) is active, paying the code-check cost is an accou\n - If the account has no other changes, include it with empty change lists.\n - A rejected code check leaves the read in place. An outer scope that later reverts also leaves the read in place. A reverted scope restores `accessed_addresses` to its contents on entry to that scope. Accesses that already existed stay.\n \n+### Public Mempool\n+\n+These rules apply only to public mempool validation of [EIP-8141](./eip-8141.md) frame transactions. They do not affect consensus.\n+\n+With this EIP, `ecRecover` reads the raw code of the address it recovers. A validation prefix that calls `ecRecover` therefore depends on the code of each address it recovers, and that address may be a third party rather than the sender.\n+\n+Only the outcome of the account code check matters. This section calls it the address's code class: permitted (empty code or an EIP-7702 delegation indicator) or rejected (any other code). Moving between empty code and a delegation indicator does not change the class. An address whose private key is known can change class by adopting code, for example with `SETCODEFROM` ([EIP-8298](./eip-8298.md)), and a reorg can change it back.\n+\n+#### Signer Dependencies\n+\n+While simulating the validation prefix, a node should record each address whose raw code `ecRecover` reads, together with its code class, as a signer dependency of the transaction. `tx.sender` is the exception: its code is already a dependency of the transaction, so recovering it adds no signer dependency.\n+\n+A node should revalidate a transaction when the code class of one of its signer dependencies at the new head differs from the recorded class. This applies in either direction, including after a reorg. A block that touches the address but leaves its class unchanged does not require revalidation. A node that skips those revalidations should keep signer dependencies apart from other code dependencies on the same address. An example is the code hash of a `DELEGATECALL` helper tracked under EIP-8298, which still needs code-hash tracking.\n+\n+#### Pending Transaction Limit\n+\n+A node should limit how many pending transactions may depend on any one recovered address, so that one code adoption cannot invalidate an unbounded number of transactions. The limit is split in two by the digest passed to `ecRecover`:\n+\n+- A recovery whose digest is the transaction's canonical signature hash, as returned by `TXPARAM(0x08)`, counts against a reserved share; recoveries over other digests cannot use it. Only the holder of that key can produce such a recovery, by signing this transaction.\n+- A recovery over any other digest counts against a separate, smaller share. When this share is full, nodes may keep the transactions with the highest fees.\n+\n+The split exists because a recovery over any other digest needs nothing new from the key holder. Anyone holding one signature made with a key, for example from an earlier transaction, can pass it to `ecRecover` again in the validation prefix of their own transactions. Anyone who knows the key's public key, which any transaction it has signed reveals, can also construct a `(digest, v, r, s)` tuple that recovers the key's address without the private key, because nothing constrains which digest such a recovery uses. They cannot do this for the transaction's canonical signature hash, which is why only that digest gets the reserved share. Without the split, they could fill the limit for that key's address.\n+\n+The split covers every recovery in the validation prefix, including those in a `deploy` frame or a `pay` frame. Recoveries in a `pay` frame are made by the paymaster's own code. They are counted apart from recoveries in other frames, with the same split, and within each share they count once per paymaster, not once per transaction.\n+\n+#### Canonical Paymaster Signer\n+\n+A node that handles a canonical paymaster `pay` frame without tracing it, for example by direct evaluation, does not see the paymaster's `ecRecover` call. It should add the paymaster's signer to the transaction's signer dependencies explicitly, counted as a `pay` frame recovery over the canonical signature hash, which is the digest the canonical paymaster uses.\n+\n+Like any `pay` frame recovery, the signer counts once per paymaster. A canonical paymaster has no cap on its number of pending transactions, so one code adoption by its signer invalidates all of them. Their number is bounded by that paymaster's balance reservation in EIP-8141, not by this limit, which bounds only how many paymasters may count against one signer.\n+\n ## Rationale\n \n ### Protocol-Level Modification",
+      "additions": 31,
+      "deletions": 0
+    },
+    {
       "sha": "af5ea76669821d1eb8dfc60e3373a0a7fa9a7759",
       "date": "2026-11-05T15:26:46Z",
       "message": "Update EIP-7851: sync relevant EIP-8298 clarifications before archival",
@@ -79,14 +89,6 @@
     }
   ],
   "openPrs": [
-    {
-      "number": 12653,
-      "title": "Update EIP-8151: add public mempool rules for recovered signers",
-      "author": "Mannan-Goyal",
-      "updatedAt": "2026-11-14T20:09:46Z",
-      "additions": 31,
-      "deletions": 0
-    },
     {
       "number": 12605,
       "title": "Update EIP-8151: treat the 0xef0200 opt-out marker as an eligible EOA",

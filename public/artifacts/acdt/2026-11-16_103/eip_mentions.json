@@ -1,0 +1,136 @@
+{
+  "meeting": "ACDT #103 - 2026-11-16",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "Central topic of the call: impact on deployed contracts, broken invariants, audit findings, and whether to proceed with Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "00:17:58",
+          "context": "Danceratopz introduced EIP-8037 and EIP-8038 as proposed Glamsterdam changes that were found to break smart contract invariants late in development."
+        },
+        {
+          "timestamp": "00:20:51",
+          "context": "Marius explained that 8037 and 8038 were proposed in 2025 to enable 3.3-3.5x scaling of Ethereum, significantly reducing costs for most users."
+        },
+        {
+          "timestamp": "00:28:45",
+          "context": "ChainSecurity presented their audit findings, reporting 152 findings from on-chain and off-chain analysis of contracts affected by 8037 and 8038 changes."
+        },
+        {
+          "timestamp": "00:37:40",
+          "context": "Dedaub presented their independent impact study on EIP-8037 and 8038, finding 12 high and 70 medium confirmed findings via decompiled contract analysis and transaction replays."
+        },
+        {
+          "timestamp": "00:50:07",
+          "context": "Jango from Juicebox described how 8037 breaks try/catch composability, allowing users to tune gas to skip composable elements, undermining protocol safety."
+        },
+        {
+          "timestamp": "00:54:32",
+          "context": "Marius argued the affected contracts are a fringe subset of approximately 10-15K out of 90 million, and benefits outweigh the drawbacks."
+        },
+        {
+          "timestamp": "01:22:41",
+          "context": "Mario from the specs team said EIP-8037 left a mark and they will now review every specification change through the lens of the application layer."
+        },
+        {
+          "timestamp": "01:30:42",
+          "context": "Danceratopz said removing 8037 would cause a serious delay to Glamsterdam, potentially half a year, and it is important for sustainable state growth."
+        },
+        {
+          "timestamp": "01:37:59",
+          "context": "Daniel from Uniswap urged that 8037's gas reservoir handling should be reconsidered because it fundamentally breaks try/catch and introduces implicit branching based on user-set gas."
+        },
+        {
+          "timestamp": "01:39:55",
+          "context": "Toni explained that EIP-7825's transaction gas limit cap in the prior fork made 8037 necessary even to deploy max-size contracts, and removing it would reintroduce that limitation."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-Access Gas Cost Update",
+      "weight": "discussed",
+      "summary": "Discussed alongside EIP-8037 as part of the Glamsterdam gas repricing changes that break contract invariants.",
+      "moments": [
+        {
+          "timestamp": "00:17:58",
+          "context": "Danceratopz introduced EIP-8038 together with EIP-8037 as the Glamsterdam changes found to break smart contract invariants."
+        },
+        {
+          "timestamp": "00:20:51",
+          "context": "Marius said 8037 and 8038 together enable significant scaling and cost reductions but break invariants that contracts relied on."
+        },
+        {
+          "timestamp": "00:28:45",
+          "context": "ChainSecurity's audit covered both 8037 and 8038, finding most breakages came from gas cost increases rather than the new reservoir mechanism."
+        },
+        {
+          "timestamp": "00:37:40",
+          "context": "Dedaub presented their impact study covering both EIP-8037 and 8038 changes to gas accounting and refund mechanisms."
+        }
+      ]
+    },
+    {
+      "eip": 7069,
+      "title": "Revamped CALL instructions",
+      "weight": "mentioned",
+      "summary": "Potuz noted finding explicit mentions against gas schedule introspection in EIP-7069.",
+      "moments": [
+        {
+          "timestamp": "01:02:05",
+          "context": "Potuz asked why the gas schedule is not exposed in the EVM, saying he found explicit mentions against this in EIP-7069."
+        }
+      ]
+    },
+    {
+      "eip": 2929,
+      "title": "Gas cost increases for state access opcodes",
+      "weight": "mentioned",
+      "summary": "Cited as the precedent where core devs already accepted that a state-cost increase would break some deployed contracts.",
+      "moments": [
+        {
+          "timestamp": "01:06:46",
+          "context": "Marius said the core dev community made this call before — \"with… 29, 30, with the increase in state access costs\" — knowing some contracts would break, so the absolute-immutability assumption was broken much earlier."
+        }
+      ]
+    },
+    {
+      "eip": 7825,
+      "title": "Transaction Gas Limit Cap",
+      "weight": "mentioned",
+      "summary": "Cited as a prior fork's transaction gas limit cap that made EIP-8037 necessary for deploying large contracts.",
+      "moments": [
+        {
+          "timestamp": "01:39:55",
+          "context": "Toni explained that EIP-7825 in the last fork capped transaction gas, making 8037 necessary to even deploy max-size contracts under the new limit."
+        }
+      ]
+    },
+    {
+      "eip": 4337,
+      "weight": "mentioned",
+      "summary": "Ben Adams noted that moving refunds to end of transaction breaks ERC-4337 bundling and current account abstraction.",
+      "moments": [
+        {
+          "timestamp": "01:42:38",
+          "context": "Ben Adams said moving refund to end of transaction breaks 4337 bundling, causing issues for current account abstraction."
+        }
+      ]
+    },
+    {
+      "eip": 140,
+      "title": "REVERT instruction",
+      "weight": "mentioned",
+      "summary": "Jochem referenced EIP-140 as the REVERT instruction spec when discussing subcall revert behavior.",
+      "moments": [
+        {
+          "timestamp": "01:46:38",
+          "context": "Jochem linked to EIP-140 when clarifying that REVERT puts 0 on the stack with reason in returndata, in context of subcall error handling."
+        }
+      ]
+    }
+  ]
+}

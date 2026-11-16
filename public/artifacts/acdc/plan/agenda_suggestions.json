@@ -1,63 +1,63 @@
 {
   "series": "ACDC",
-  "generated": "2026-11-09",
-  "for_call": "ACDC #191",
+  "generated": "2026-11-16",
+  "for_call": "ACDC #192",
   "suggestions": [
     {
-      "topic": "EIP-8365: Finalize burn vs. re-queue approach for 0x00 deposits",
+      "topic": "EIP-8365: Finalize 0x00 deposit handling (burn vs. re-queue)",
       "priority": "high",
-      "rationale": "Deferred from ACDC #190 with explicit expectation to resolve at this call after Devcon discussions. Choice between burning ETH (simpler) vs. Barnabas' proposal to re-queue as 0x01 deposits.",
+      "rationale": "Deferred from ACDC #190 with explicit two-week revisit window for post-Devcon decision. Core teams need to choose between burning ETH from post-fork 0x00 deposits or implementing Barnabas' re-queue proposal.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Glamsterdam devnet status and Lido PR testing",
+      "topic": "PQ signature scheme public commitment and ecosystem communication",
       "priority": "high",
-      "rationale": "ACDC #190 estimated devnet launch Nov 16-20; this call falls within that window. Lido PR is consensus-breaking and requires explicit testing before mainnet consideration.",
+      "rationale": "ACDC #191 consensus identified this as top priority to enable validator, hardware wallet, and staking pool migration planning. LeanVM audit timeline (Feb 1 start) creates urgency for scheme finalization.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "open_action_item"
     },
     {
-      "topic": "Execution payload bid gossip PR resolution (PR5774 vs PR5776)",
+      "topic": "consensus-specs PR#5770 decision following ACDT/Sepolia resolution",
       "priority": "high",
-      "rationale": "ACDC #190 requested client team input 'within a few days' (deadline ~Nov 1-3). No resolution shown; competing approaches (accept-any vs. 3% increment) need consensus before spec release.",
+      "rationale": "Deferred from #191 pending EL clarity on 8037/8038 and cross-layer ePBS payload handling discussion at Monday ACDT. Decision needed to unblock execution payload gossip validation alignment.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "FOCIL Hegota inclusion decision",
+      "priority": "high",
+      "rationale": "Status contested in #191 with PQ interaction and DC compatibility unclear. Core to Hegota sequencing strategy discussed in #190; CL complexity assessed as manageable but requires final go/no-go.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "Execution payload bid gossip PR resolution (5774 vs 5776)",
+      "priority": "medium",
+      "rationale": "Two competing approaches remain unresolved from #190: Potuz/Justin's proposer-accepts-any vs. Nico's 3% minimum increment. Client teams were asked to weigh in within days but no decision recorded in #191.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "FOCIL payload rebuild ambiguity — EL team feedback",
+      "topic": "PQ deposit contract front-running requirement confirmation",
       "priority": "medium",
-      "rationale": "ACDC #190 identified Engine API ambiguity causing missed blocks (some ELs rebuild entirely at 6s vs. CL expecting append-only). Action item to raise at ACDE; confirm EL team input received.",
+      "rationale": "EIP-8205 DFI'd in #190 with explicit requirement that PQ deposit contract must address front-running. No update on whether PQ design teams have incorporated this constraint.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "Hegota sequencing and next devnet scope",
+      "topic": "Hegota EIP scoping progress: bundled attestations, retention window, custom sweep",
       "priority": "medium",
-      "rationale": "ACDC #190 proposed sequencing (FOCIL + frames first, smaller EIPs next, quick slots in parallel). Now that initial CFI/SFI decisions are made, confirm devnet timeline and scope for first Hegota testnet.",
+      "rationale": "EIPs 8334, 8383, 8148, and 8411 all CFI'd in #190; teams should confirm implementation readiness and any blocking issues before advancing to SFI.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "EIP-8198 (quick slots) validation requirements for SFI",
-      "priority": "medium",
-      "rationale": "CFI'd in ACDC #188 with explicit caveat that 12→10s reduction needs further validation before SFI. Update on testing/simulation progress required to advance to SFI.",
-      "related_eips": [],
-      "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Client diversity and moderator transition logistics",
+      "topic": "PQ Gasper feasibility and DC compatibility roadmap",
       "priority": "low",
-      "rationale": "Ben Edgington and Will Corcoran taking over moderation starting this call (two weeks from ACDC #190). Brief transition acknowledgment and logistics confirmation.",
+      "rationale": "Explored in #191 as potential faster path than FOCIL+DC, but feasibility uncertain. Teams noted aggregation, bandwidth, and non-finality handling all require investigation before commitment.",
       "related_eips": [],
       "source": "ongoing_discussion"
-    },
-    {
-      "topic": "PQ deposit contract front-running requirements",
-      "priority": "low",
-      "rationale": "ACDC #190 established requirement that PQ deposit contract must explicitly address front-running. Informational update on design progress, no immediate decision needed.",
-      "related_eips": [],
-      "source": "open_action_item"
     }
   ]
 }

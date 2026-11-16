@@ -1,82 +1,86 @@
 {
   "series": "ACDC",
-  "generated": "2026-11-09",
+  "generated": "2026-11-16",
   "lookback_calls": [
-    "ACDC #186",
-    "ACDC #187",
-    "ACDC #188",
-    "ACDC #189",
-    "ACDC #190"
+    "ACDC #187 - September 17, 2026",
+    "ACDC #188 - October 1, 2026",
+    "ACDC #189 - October 15, 2026",
+    "ACDC #190 - October 29, 2026",
+    "ACDC #191 - November 12, 2026"
   ],
   "open_items": [
+    {
+      "action": "Update EIP-8365 PR to remove forced exits; bring revised version to next ACDC for CFI",
+      "owner": "NC (EIP-8365 author)",
+      "source_call": "ACDC #187",
+      "source_date": "2026-09-17",
+      "notes": "EIP-8365 discussed in #188 (CFI'd with deposit guard only), #189 (Barnabas proposed alternative design), and #190 (burn vs re-queue decision deferred). The specific action to update the PR and bring it back was not explicitly marked complete."
+    },
     {
       "action": "Review EIP-8365 proposed changes (guard at process-deposit-request, grandfather pre-fork 0x00 deposits); revisit in 1-2 calls",
       "owner": "CL client teams",
       "source_call": "ACDC #189",
       "source_date": "2026-10-15",
-      "notes": "ACDC #190 deferred final decision on whether to burn ETH or re-queue as 0x01 deposits for another two weeks; review remains open"
+      "notes": "EIP-8365 was discussed again in #190 where the burn vs re-queue decision was deferred two weeks (to be resolved at next call after Devcon). No indication that client teams completed their review or that the 1-2 call revisit happened."
     },
     {
       "action": "Explore EL spec branching process improvements to support long-running experimental features without CFI",
       "owner": "EL spec / EELS team",
       "source_call": "ACDC #189",
       "source_date": "2026-10-15",
-      "notes": "Not referenced in ACDC #190; remains open"
+      "notes": "No subsequent meeting mentions this action or any progress on EL spec branching improvements."
     },
     {
       "action": "Client teams review PR5774 vs PR5776 and weigh in on bid gossip approach within a few days",
       "owner": "CL client teams",
       "source_call": "ACDC #190",
       "source_date": "2026-10-29",
-      "notes": "Deadline was 'within a few days' of Oct 29; no resolution shown in provided summaries"
+      "notes": "No resolution mentioned in #191; the competing PRs were not discussed again."
     },
     {
       "action": "Bring FOCIL payload rebuild ambiguity to next ACDE for EL team input",
       "owner": "Barnabas / CL teams",
       "source_call": "ACDC #190",
       "source_date": "2026-10-29",
-      "notes": "To be raised at next ACDE (EL call); no confirmation of completion"
+      "notes": "#191 mentions cross-layer discussion flagged for Monday ACDT (after #191) but no confirmation that this was raised at ACDE or resolved."
     },
     {
       "action": "PQ deposit contract designers must explicitly address deposit front-running; core devs confirm this is a requirement",
       "owner": "PQ research / EF",
       "source_call": "ACDC #190",
       "source_date": "2026-10-29",
-      "notes": "Long-term requirement tied to PQ deposit contract design; no resolution yet"
+      "notes": "No subsequent meeting reports that the PQ deposit contract design has explicitly addressed deposit front-running as required."
+    },
+    {
+      "action": "Join interop channel and discuss oversized/invalid ePBS payload handling; bring findings to Monday ACDT",
+      "owner": "EL and CL client teams",
+      "source_call": "ACDC #191",
+      "source_date": "2026-11-12",
+      "notes": "Action assigned in most recent call; no subsequent meeting to confirm completion."
+    },
+    {
+      "action": "cayman to open PR adding payload root to bid as clean alternative to CL-side RLP/block-hash check",
+      "owner": "cayman (Lodestar)",
+      "source_call": "ACDC #191",
+      "source_date": "2026-11-12",
+      "notes": "Action assigned in most recent call; no subsequent meeting to confirm PR was opened."
+    },
+    {
+      "action": "Commit to PQ signature scheme publicly and communicate to ecosystem (validators, hardware wallet makers, staking pools)",
+      "owner": "EF / core devs",
+      "source_call": "ACDC #191",
+      "source_date": "2026-11-12",
+      "notes": "Action assigned in most recent call; no subsequent meeting to confirm public commitment was made."
     }
   ],
   "resolved_items": [
-    {
-      "action": "Merge consensus-specs parent-hash check PR and cut beta.0 spec release",
-      "owner": "Justin Traglia / spec team",
-      "source_call": "ACDC #186",
-      "source_date": "2026-09-03",
-      "resolved_in": "ACDC #186",
-      "resolution": "Target date was September 3, 2026 (same day); beta.0 release was planned for that day per the meeting"
-    },
-    {
-      "action": "Comment/approve Sepolia October 6 fork date on PM pull request #2205",
-      "owner": "All client teams",
-      "source_call": "ACDC #186",
-      "source_date": "2026-09-03",
-      "resolved_in": "ACDC #187",
-      "resolution": "ACDC #187 confirmed Sepolia fork for October 6 and mentioned merging Meta EIP, indicating the PR approval process completed"
-    },
-    {
-      "action": "Publish Hegota EIP tier rankings with rationale by September 10",
-      "owner": "All CL client teams",
-      "source_call": "ACDC #186",
-      "source_date": "2026-09-03",
-      "resolved_in": "ACDC #187",
-      "resolution": "ACDC #187 held extensive CFI/DFI discussions on multiple Hegota EIPs (September 17), indicating rankings were published and reviewed"
-    },
     {
       "action": "Publish Sepolia fork blog post, update eth-clients repo, and merge Meta EIP for October 6 fork",
       "owner": "stokes / EF",
       "source_call": "ACDC #187",
       "source_date": "2026-09-17",
       "resolved_in": "ACDC #188",
-      "resolution": "ACDC #188 confirmed Sepolia fork occurring October 6; blog post and Meta EIP merge completed as Sepolia shadow fork launched"
+      "resolution": "Sepolia fork occurred successfully on October 6 at 13:53 UTC as scheduled; blog post and meta EIP processes would have been completed as prerequisites."
     },
     {
       "action": "Cut Glamsterdam client releases by September 29 (target sooner for bug bounty/security review window)",
@@ -84,23 +88,15 @@
       "source_call": "ACDC #187",
       "source_date": "2026-09-17",
       "resolved_in": "ACDC #188",
-      "resolution": "ACDC #188 (October 1) discussion of Sepolia shadow fork implies releases were completed before the September 29 deadline"
+      "resolution": "Deadline passed; Sepolia fork launched October 6 successfully, implying releases were completed."
     },
     {
       "action": "Ensure builder circuit breakers are in place before forking testnets",
       "owner": "All CL client teams",
       "source_call": "ACDC #187",
       "source_date": "2026-09-17",
-      "resolved_in": "ACDC #188 / ACDC #189",
-      "resolution": "Sepolia forked successfully October 6 (ACDC #188/189); builder circuit breakers were either implemented or the fork proceeded without incident"
-    },
-    {
-      "action": "Update EIP-8365 PR to remove forced exits; bring revised version to next ACDC for CFI",
-      "owner": "NC (EIP-8365 author)",
-      "source_call": "ACDC #187",
-      "source_date": "2026-09-17",
       "resolved_in": "ACDC #188",
-      "resolution": "ACDC #188 confirmed EIP-8365 was split (deposit guard CFI'd, forced exits deferred); revised PR was presented and CFI'd"
+      "resolution": "Sepolia fork (October 6) and later Hoodi fork (October 26) proceeded without circuit-breaker incidents being reported; implicitly resolved."
     },
     {
       "action": "Nominate client team incident response coordinator via PR to PM repo before end of Monday",
@@ -108,7 +104,7 @@
       "source_call": "ACDC #188",
       "source_date": "2026-10-01",
       "resolved_in": "ACDC #188",
-      "resolution": "Same meeting confirmed coordinators: Pari + Barnabas (DevOps), Mario Vega primary + Justin Traglia backup (Testing), Nikos (Security)"
+      "resolution": "Coordinators confirmed in same meeting: Pari + Barnabas (DevOps), Mario Vega + Justin Traglia (Testing), Nikos (Security)."
     },
     {
       "action": "Review EIP-8383 (Reduce CL block retention window) before next ACDC",
@@ -116,15 +112,15 @@
       "source_call": "ACDC #188",
       "source_date": "2026-10-01",
       "resolved_in": "ACDC #190",
-      "resolution": "ACDC #190 discussed and CFI'd EIP-8383, indicating teams completed their review"
+      "resolution": "EIP-8383 was CFI'd in #190 after teams reviewed it; Lighthouse and Lodestar were in favor."
     },
     {
       "action": "Publish EF blog post for Hoodi once quorum of client releases available",
       "owner": "stokes / EF",
       "source_call": "ACDC #189",
       "source_date": "2026-10-15",
-      "resolved_in": "ACDC #190",
-      "resolution": "ACDC #190 (October 29) discussed Hoodi fork having occurred October 26; blog post was implicitly published before the fork"
+      "resolved_in": "ACDC #189",
+      "resolution": "Hoodi fork occurred successfully on October 26; blog post would have been published as prerequisite."
     }
   ]
 }

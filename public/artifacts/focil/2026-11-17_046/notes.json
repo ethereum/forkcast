@@ -1,0 +1,65 @@
+{
+  "meeting": "FOCIL #046 - 2026-11-17",
+  "sections": [
+    {
+      "heading": "EL Inclusion List Type Simplification and Type-3 Transaction Language",
+      "summary": "PR 956 relaxes IL transaction field validation; PR 957 changes Type-3 exclusion from MUST NOT to SHOULD NOT; EL devs asked to review.",
+      "timestamp": "00:07:28",
+      "body": "- [PR 956](https://github.com/ethereum/execution-apis/pull/956) removes the requirement that the inclusion list transactions field must be `TransactionType`, allowing the EL to tolerate arbitrary bytes instead of invalidating `newPayload` / `forkchoiceUpdated` calls.\n- [PR 957](https://github.com/ethereum/execution-apis/pull/957) changes the language around Type-3 (blob) transactions returned by `getInclusionList` from MUST NOT to SHOULD NOT, since EIP-7805 does not support blob transactions and a hard requirement does not make sense.\n- Both PRs are presented as straightforward spec cleanups; EL devs who have not reviewed them are asked to do so."
+    },
+    {
+      "heading": "Payload Reuse When Only IL Transactions Change",
+      "summary": "No consensus yet on whether to modify FCU or add a new engine API for updating payloads with late-arriving ILs; more EL feedback requested.",
+      "timestamp": "00:09:21",
+      "body": "- [PR 964](https://github.com/ethereum/execution-apis/pull/964) addresses the scenario where the CL starts payload building before all ILs arrive, then sends a second `forkchoiceUpdated` call differing only in inclusion list transactions.\n- Two design options: (1) specify within `forkchoiceUpdated` that if payload attributes differ only by ILs, the EL should update the in-progress payload rather than starting fresh; (2) introduce a dedicated new engine API (e.g. `updatePayloadWithInclusionList`).\n- Besu (Fabio Di Fabio) supports specifying in FCU that the payload ID should not change when only ILs differ, but notes that internally Besu will continue its existing approach of continuously rebuilding blocks in the background and picking the best one at `getPayload` time.\n  - Besu's first built block already includes only IL transactions to return something quickly; adding transactions mid-build would require significant refactoring not planned short-term.\n  - Fabio has no strong preference between modifying FCU vs. a new engine API.\n- Other offline EL feedback relayed by Jihoon: a new engine API might be cleaner from a spec perspective, but another EL dev called it a toss-up.\n- Decision deferred: PR will be socialized in the Discord channel for broader EL developer input."
+    },
+    {
+      "heading": "Honest Validator IL Proposal Timing",
+      "summary": "PR 5792 clarifying that honest validators produce ILs after payload execution (not slot start) has broad support; merge pending a few more CL dev reviews.",
+      "timestamp": "00:17:48",
+      "body": "- [PR 5792](https://github.com/ethereum/consensus-specs/pull/5792) resolves [issue 5738](https://github.com/ethereum/consensus-specs/issues/5738): the spec currently says an honest validator should broadcast an IL at the beginning of the slot, but the intention is to produce it after executing the payload or before the IL deadline minus propagation time.\n- The PR also adds a comment explaining the two-factor clock disparity in the inclusion list handler.\n- Jihoon noted that Lighthouse and Lodestar currently mark ILs as untimely when received before their slot but within clock disparity — a related bug.\n- Prysm (Jun Song) expressed support; Justin Traglia (EF) also approved.\n- No objections raised; Jihoon will collect a few more CL dev reviews before merging."
+    },
+    {
+      "heading": "IL Retention Window Extension",
+      "summary": "PR 5785 extends IL retention from 2 to 3 slots so ILs remain available through enforcement in shouldExtendPayload; two approvals received.",
+      "timestamp": "00:20:35",
+      "body": "- [PR 5785](https://github.com/ethereum/consensus-specs/pull/5785) changes the IL retention window from 2 slots to 3 slots.\n- Rationale: ILs for slot N+1 are broadcast in slot N; payloads for slot N+1 satisfy these ILs; IL enforcement via `shouldExtendPayload` happens in slot N+2. Therefore ILs broadcast in slot N must be retained until slot N+2.\n- Two approvals already on the PR (excluding Jihoon's). Reviewers encouraged to look at it promptly so it can be merged soon."
+    },
+    {
+      "heading": "Head Selection for Non-IL-Compliant Payloads",
+      "summary": "PR 5769 modifies GetPayloadStatusTiebreaker so a non-IL-compliant payload is not returned as head during its own slot; Teku has run it on a devnet.",
+      "timestamp": "00:23:06",
+      "body": "- [PR 5769](https://github.com/ethereum/consensus-specs/pull/5769) prevents a non-IL-compliant payload for slot N from being selected as head during slot N.\n  - Without this fix, `isBidCompatibleWithHead` has no IL checks, so nodes that imported a non-compliant payload would drop all PTC bids that extend it.\n- Three approaches were considered: (1) modify `shouldBuildOnFull` to include an IL check, (2) modify `isBidCompatibleWithHead`, or (3) modify `GetHead` to return empty in this case. The PR implements option (3) via `GetPayloadStatusTiebreaker`.\n- Jihoon prefers putting the IL check closer to the `GetHead` level rather than spreading it across multiple helpers.\n- Teku (Mehdi Aouadi) believed he had already implemented this and run it on a recent devnet, but could not locate the PR link during the call.\n- NC and Justin Traglia expressed support or no objection.\n- Agreement: PR has a green light; will be shared for detailed review and merged before the next breakout."
+    },
+    {
+      "heading": "P2P Bid Propagation and Proposer IL View Deadlines",
+      "summary": "PR 5741 restricts bid gossip to after the IL deadline and has proposers select bids on timely ILs only; a second proposer deadline is debated.",
+      "timestamp": "00:28:47",
+      "body": "- [PR 5741](https://github.com/ethereum/consensus-specs/pull/5741) addresses two attack vectors:\n  - A malicious builder can broadcast a high-value P2P bid before any ILs arrive, outbidding all others and setting an artificially high bar; the PR restricts P2P bid propagation to only after the IL deadline.\n  - A late-broadcasting includer can submit an IL just before a proposer picks a bid, leaving builders insufficient time to include it; the PR changes the honest validator guide to choose bids considering only timely ILs.\n- The second change introduces a potential attack: an IL broadcast close to the deadline might be seen by a majority of attesters but not by the proposer, causing a split view. This motivates re-introducing a second explicit deadline for the proposer (1 second after the IL view freeze deadline), which existed in the original EIP but was removed.\n- [PR 5740](https://github.com/ethereum/consensus-specs/pull/5740) (the alternative \"best effort\" approach) was already closed due to lack of support — it was too vague about what \"best effort\" means for client implementations.\n- Justin Traglia is strongly supportive of PR 5741 over the closed PR 5740.\n- NC noted in chat that having attesters and proposers use different criteria (the `is_timely` check) on ILs is problematic.\n- soispoke replied that the proposer deadline is not really new — it was always part of the design — and should sit later than the attester deadline.\n- Discussion explored whether a third deadline (builder deadline at ~11 seconds, attester view freeze at 12 seconds) could resolve the equivocation split-view issue — if the builder deadline is earlier than the attester equivocation monitoring cutoff, attesters would always have a superset view.\n- Decision deferred: participants asked to review the PR and leave comments; the proposer/builder deadline question needs more thought before the PR can be finalized."
+    },
+    {
+      "heading": "IL Equivocation Proofs in the Envelope",
+      "summary": "Proposal to put IL equivocation proofs (two signed IL headers, 352 bytes pre-PQ) in the envelope drew strong opposition from soispoke as over-complex.",
+      "timestamp": "00:39:00",
+      "body": "- IL equivocations can happen after the IL deadline, and since ILs are not on-chain, attesters may have split views on which includers equivocated.\n- Proposal: include IL equivocation proofs (two signed IL headers per equivocating includer) in the envelope so attesters converge on the same equivocation view.\n  - Size: 352 bytes per equivocation pre-PQ (176 bytes per signed IL header); ~5 KB per equivocation post-PQ with XMSS signatures.\n  - Empty when no equivocation occurs.\n- This would also reduce burden on builders who currently must satisfy both sides of an equivocation to avoid losing attestations from attesters who didn't see the second IL.\n- soispoke expressed strong opposition, arguing the equivocation rule already works fine, the worst case is only 2× network load, and the attack is hard to pull off in practice since it requires precise timing to split views.\n- Jihoon countered that equivocating includers face no punishment and the flakiness is a real concern; adding proofs to the envelope is not very complex.\n- An alternative placement was raised: proofs could go in the bid rather than the envelope.\n- No consensus reached; topic to be revisited. Discussion of whether the second proposer/builder deadline (from PR 5741) might also resolve this by freezing equivocation views before the builder's cutoff was noted as intertwined."
+    },
+    {
+      "heading": "New Gossip Topic for IL Equivocation Proofs",
+      "summary": "A dedicated gossip topic for equivocation proofs could save up to 616 KB per equivocation vs. propagating full ILs, but adds complexity; no decision made.",
+      "timestamp": "00:49:07",
+      "body": "- Suggestion: instead of propagating two full ILs when equivocation occurs, propagate only the equivocation proof (two signed IL headers) on a new gossip topic.\n- Bandwidth savings: full IL is roughly 8–10 KB depending on signature scheme; the proof is ~352 bytes pre-PQ, saving up to 616 KB per equivocation since state proof and transactions are not needed.\n- Trade-off: added protocol complexity for an event (equivocation) expected to be rare.\n- Discussion was timeboxed; no decision reached. The topic is tightly coupled with the equivocation proofs question and the proposer/builder deadline design."
+    },
+    {
+      "heading": "IL Roots in Bids",
+      "summary": "Replacing the IL bitlist in bids with signed IL headers would make builders accountable but adds ~3 KB pre-PQ (~38 KB post-PQ); deferred.",
+      "timestamp": "00:57:49",
+      "body": "- Current design uses a bitlist in the bid to signal which ILs the builder considered, but this doesn't specify *which* IL (problematic during equivocation).\n- Proposal: replace the bitlist with signed IL headers (roots) so builders commit to specific ILs and can prove they did not see certain ILs.\n  - Size impact: 176 bytes per includer (~3 KB total for 16 includers) pre-PQ; ~38 KB with XMSS signatures.\n- soispoke cautioned against evaluating these changes through the lens of XMSS signature sizes before a higher-level discussion of what PQ FOCIL should look like and what should be prioritized.\n  - Noted that an adversary breaking 16 IL signatures simultaneously within 12 seconds to neutralize FOCIL for one slot is extremely costly, suggesting PQ FOCIL may not be the highest priority.\n  - A write-up on PQ FOCIL priorities to be published within 1–2 days."
+    },
+    {
+      "heading": "PQ FOCIL Breakout and Next Steps",
+      "summary": "Agreement to hold a dedicated PQ FOCIL breakout call next week (one week early); Jihoon to create a GitHub issue for pre-call discussion.",
+      "timestamp": "01:01:46",
+      "body": "- Consensus to schedule the next FOCIL Breakout in one week (instead of the usual two-week cadence) focused specifically on PQ FOCIL.\n- Motivation: PQ FOCIL needs to be discussed before the next ACDC call; the topic was raised at the last ACDC but not addressed today due to time.\n- Jihoon will create a GitHub issue for the next breakout; participants asked to share articles, concerns, and analysis regarding PQ FOCIL in advance.\n- soispoke plans to publish a PQ FOCIL write-up imminently.\n- Mehdi Aouadi noted he needs to also attend the PQ-CL call."
+    }
+  ]
+}

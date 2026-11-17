@@ -14,11 +14,11 @@ Jihoon: We have some bunch of PRs to discuss. The goal is to reach to some conse
 
 4
 00:06:57.670 --> 00:07:02.649
-Jihoon: In the last ACDC, there was some concern about P2 FOCIL.
+Jihoon: In the last ACDC, there was some concern about PQ FOCIL.
 
 5
 00:07:02.860 --> 00:07:09.110
-Jihoon: But I honestly don't think that we would have some time to discuss PQF FOCIL today, so…
+Jihoon: But I honestly don't think that we would have some time to discuss PQ FOCIL today, so…
 
 6
 00:07:09.230 --> 00:07:10.749
@@ -38,11 +38,11 @@ Jihoon: So, let's start with Execution Engine. So, the first one that I want to 
 
 10
 00:07:42.970 --> 00:07:50.010
-Jihoon: What the PRR does is… changing the…
+Jihoon: What the PR does is… changing the…
 
 11
 00:07:50.160 --> 00:07:54.069
-Jihoon: Fill the requirement for inclusionist transactions.
+Jihoon: Fill the requirement for inclusion list transactions.
 
 12
 00:07:54.180 --> 00:08:02.140
@@ -50,7 +50,7 @@ Jihoon: So that he can tolerate Random bytes instead of invalidating the…
 
 13
 00:08:03.320 --> 00:08:05.990
-Jihoon: New payload where fork tree is updated called.
+Jihoon: New payload where fork choice is updated called.
 
 14
 00:08:06.220 --> 00:08:16.640
@@ -78,15 +78,15 @@ Jihoon: The second PR is 957.
 
 20
 00:08:39.740 --> 00:08:47.259
-Jihoon: Yeah, so this… what… what SPR does is…
+Jihoon: Yeah, so this… what… what PR does is…
 
 21
 00:08:48.070 --> 00:08:53.799
-Jihoon: Changing must not to should not when it comes to block transactions, because
+Jihoon: Changing must not to should not when it comes to blob transactions, because
 
 22
 00:08:54.330 --> 00:09:06.980
-Jihoon: We don't support… I mean, 7805 doesn't support block transaction, and if you use must not for that requirement, then it doesn't really make sense, so we…
+Jihoon: We don't support… I mean, 7805 doesn't support blob transaction, and if you use must not for that requirement, then it doesn't really make sense, so we…
 
 23
 00:09:07.540 --> 00:09:11.660
@@ -102,7 +102,7 @@ Jihoon: So the main… change that we need to discuss with regard to this PR is 
 
 26
 00:09:37.310 --> 00:09:51.469
-Jihoon: update payload with enclosure list, or something like that, as a new engine API that EL can receive enclosure list transactions and update their payload to be EL compliant.
+Jihoon: update payload with inclusion list, or something like that, as a new engine API that EL can receive inclusion list transactions and update their payload to be EL compliant.
 
 27
 00:09:51.830 --> 00:09:57.319
@@ -130,7 +130,7 @@ Jihoon: So… the main reason behind this change is because CL…
 
 33
 00:10:27.400 --> 00:10:35.170
-Jihoon: We're gonna probably, initiate the payload building process before they have all enclosure list transactions.
+Jihoon: We're gonna probably, initiate the payload building process before they have all inclusion list transactions.
 
 34
 00:10:35.390 --> 00:10:45.100
@@ -142,11 +142,11 @@ Jihoon: then…
 
 36
 00:10:47.230 --> 00:10:59.980
-Jihoon: Usually, ELs derive payload ID from payload attributes, and in this scenario, payload attributes are only differ by enclosure lists, so…
+Jihoon: Usually, ELs derive payload ID from payload attributes, and in this scenario, payload attributes are only differ by inclusion lists, so…
 
 37
 00:11:00.600 --> 00:11:08.719
-Jihoon: It will be a new payload ID, but the intention is just to update your payload with its enclosure lead transactions.
+Jihoon: It will be a new payload ID, but the intention is just to update your payload with its inclusion list transactions.
 
 38
 00:11:09.250 --> 00:11:11.190
@@ -186,7 +186,7 @@ Fabio Di Fabio: Implementation-specific, how this will work internally.
 
 47
 00:12:01.930 --> 00:12:10.869
-Fabio Di Fabio: I think… at some point, Bez will add this opportunity to… new transaction.
+Fabio Di Fabio: I think… at some point, Besu will add this opportunity to… new transaction.
 
 48
 00:12:11.140 --> 00:12:14.609
@@ -222,7 +222,7 @@ Fabio Di Fabio: We can avoid changing the payload ID,
 
 56
 00:13:04.450 --> 00:13:11.449
-Fabio Di Fabio: But internally, actually, the way best work will remain the same.
+Fabio Di Fabio: But internally, actually, the way Besu work will remain the same.
 
 57
 00:13:11.790 --> 00:13:16.170
@@ -286,7 +286,7 @@ Fabio Di Fabio: I'm just saying that probably this will not change.
 
 72
 00:14:30.380 --> 00:14:33.390
-Fabio Di Fabio: for the moment, will not change anything in Basel.
+Fabio Di Fabio: for the moment, will not change anything in Besu.
 
 73
 00:14:33.840 --> 00:14:39.010
@@ -294,7 +294,7 @@ Fabio Di Fabio: In terms of, the ability to add
 
 74
 00:14:39.460 --> 00:14:43.989
-Fabio Di Fabio: inclusion-less transaction to a block that is already being built, so…
+Fabio Di Fabio: inclusion list transaction to a block that is already being built, so…
 
 75
 00:14:45.720 --> 00:14:53.980
@@ -354,7 +354,7 @@ Jihoon: might make it… A little bit cleaner.
 
 89
 00:16:31.530 --> 00:16:38.050
-Jihoon: from EnginePI spec perspective, And…
+Jihoon: from Engine API spec perspective, And…
 
 90
 00:16:40.100 --> 00:16:44.100
@@ -390,7 +390,7 @@ Jihoon: Invite more people to discuss this.
 
 98
 00:17:11.780 --> 00:17:16.730
-Jihoon: Still, if you are in EL Devs, and you haven't looked into the SPR, please…
+Jihoon: Still, if you are in EL Devs, and you haven't looked into the PR, please…
 
 99
 00:17:17.140 --> 00:17:20.030
@@ -402,7 +402,7 @@ Jihoon: And… This is all I got for the EL,
 
 101
 00:17:27.210 --> 00:17:30.220
-Jihoon: Before we jump into the sales section,
+Jihoon: Before we jump into the CL section,
 
 102
 00:17:30.520 --> 00:17:33.269
@@ -414,7 +414,7 @@ Jihoon: Alright, I think we can move on.
 
 104
 00:17:48.520 --> 00:17:56.550
-Jihoon: So… On the sales side, I'd like to start with Small PRs.
+Jihoon: So… On the CL side, I'd like to start with Small PRs.
 
 105
 00:17:56.900 --> 00:18:01.400
@@ -434,15 +434,15 @@ Jihoon: But the intention is to produce IL after executing a payload, or before 
 
 109
 00:18:29.530 --> 00:18:38.020
-Jihoon: And… This PR also adds a comment to the two-factor in collect disparity in the enclosure list handler.
+Jihoon: And… This PR also adds a comment to the two-factor in clock disparity in the inclusion list handler.
 
 110
 00:18:38.920 --> 00:18:52.089
-Jihoon: As a related issue, I also found Lighthouse and Lodestar mark IELTS untimely. They received before their slot, but within collect disparity.
+Jihoon: As a related issue, I also found Lighthouse and Lodestar mark ILs untimely. They received before their slot, but within clock disparity.
 
 111
 00:18:53.150 --> 00:18:59.170
-Jihoon: So, yeah, what do we want to go with SPR? Are we good to merge this in?
+Jihoon: So, yeah, what do we want to go with PR? Are we good to merge this in?
 
 112
 00:19:21.360 --> 00:19:25.140
@@ -466,7 +466,7 @@ Justin Traglia: You and Nico had, I forget what it was about exactly.
 
 117
 00:19:37.620 --> 00:19:39.710
-Justin Traglia: the deadline for IELTS.
+Justin Traglia: the deadline for ILs.
 
 118
 00:19:40.100 --> 00:19:41.649
@@ -494,11 +494,11 @@ Jihoon: Seems like… it has good support, or just… we're lacking off many CL 
 
 124
 00:20:13.270 --> 00:20:18.739
-Jihoon: I'll say it's good to march, but… I'm gonna socialize with this.
+Jihoon: I'll say it's good to merge, but… I'm gonna socialize with this.
 
 125
 00:20:18.850 --> 00:20:22.319
-Jihoon: a few more devs before we margin.
+Jihoon: a few more devs before we merge.
 
 126
 00:20:22.560 --> 00:20:25.480
@@ -514,11 +514,11 @@ Jihoon: It's 57… 85.
 
 129
 00:20:44.850 --> 00:20:55.110
-Jihoon: Currently, it's about aisle retention window. Currently, IELTs are retained for 2 slots, but this PR changes it to 3 slots.
+Jihoon: Currently, it's about IL retention window. Currently, ILs are retained for 2 slots, but this PR changes it to 3 slots.
 
 130
 00:20:55.290 --> 00:21:00.989
-Jihoon: The reason being, IELTs for slot N plus 1 are broadcast in slot N.
+Jihoon: The reason being, ILs for slot N plus 1 are broadcast in slot N.
 
 131
 00:21:01.930 --> 00:21:11.869
@@ -562,7 +562,7 @@ Jihoon: In a couple of days, so that we can make some progress, so… yeah.
 
 141
 00:22:55.310 --> 00:23:03.150
-Jihoon: So, yeah, that's it for… the IL retention window in the OPR,
+Jihoon: So, yeah, that's it for… the IL retention window in the PR,
 
 142
 00:23:06.760 --> 00:23:15.530
@@ -654,11 +654,11 @@ Jihoon: So… I think we can discuss, like, what do we feel about this approach?
 
 164
 00:26:12.100 --> 00:26:15.989
-Jihoon: So ANC in the chat said it makes a lot of sense,
+Jihoon: So NC in the chat said it makes a lot of sense,
 
 165
 00:26:16.700 --> 00:26:21.620
-Jihoon: Do you mean what the SPR chain proposes makes sense, or…
+Jihoon: Do you mean what the PR chain proposes makes sense, or…
 
 166
 00:26:22.860 --> 00:26:28.509
@@ -674,7 +674,7 @@ Jihoon: Do any other CL devs want to weigh in?
 
 169
 00:27:21.080 --> 00:27:23.230
-Jihoon: Did TechCo already implement this?
+Jihoon: Did Teku already implement this?
 
 170
 00:27:23.630 --> 00:27:27.680
@@ -686,7 +686,7 @@ Mehdi Aouadi: Yeah, I think so. I was looking for that,
 
 172
 00:27:35.200 --> 00:27:41.690
-Mehdi Aouadi: Looks like, I think I've implemented this, and it's already running on, Latest dev notes.
+Mehdi Aouadi: Looks like, I think I've implemented this, and it's already running on, latest devnet.
 
 173
 00:27:42.560 --> 00:27:44.049
@@ -718,7 +718,7 @@ Jihoon: So I guess you also think this is the right approach?
 
 180
 00:28:08.540 --> 00:28:17.289
-Mehdi Aouadi: Yeah, I think so, it makes sense. I… it's been a couple of weeks ago, I remember I implemented this, and I run some tests on DevNet, and
+Mehdi Aouadi: Yeah, I think so, it makes sense. I… it's been a couple of weeks ago, I remember I implemented this, and I run some tests on devnet, and
 
 181
 00:28:18.220 --> 00:28:19.869
@@ -750,7 +750,7 @@ Jihoon: The next PR is… 50s… 741.
 
 188
 00:28:59.110 --> 00:29:06.160
-Jihoon: So… IELTs are broadcast for one slot. This is to prevent
+Jihoon: So… ILs are broadcast for one slot. This is to prevent
 
 189
 00:29:07.030 --> 00:29:15.479
@@ -766,7 +766,7 @@ Jihoon: at 12 seconds into the SLOT N, because the block for…
 
 192
 00:29:29.990 --> 00:29:44.109
-Jihoon: N plus 1 might be broadcast at 12 seconds or later, and then if any includeer equival case or whatever, then it might split view before and after, attestation.
+Jihoon: N plus 1 might be broadcast at 12 seconds or later, and then if any includer equivocates or whatever, then it might split view before and after, attestation.
 
 193
 00:29:44.500 --> 00:29:50.110
@@ -786,11 +786,11 @@ Jihoon: Very high value in the beginning of the slot.
 
 197
 00:30:04.470 --> 00:30:11.240
-Jihoon: then this will outbid all other pay-to-peits, and… eventually…
+Jihoon: then this will outbid all other P2P bids, and… eventually…
 
 198
 00:30:12.130 --> 00:30:28.289
-Jihoon: not gonna pick by a proposer, because this bit list is not inclusive, but in the beginning of the slot, there's no IL, so it was gonna be picked by the proposer and other validators, and it's really gonna set the bar for all other P2P bids.
+Jihoon: not gonna pick by a proposer, because this bitlist is not inclusive, but in the beginning of the slot, there's no IL, so it was gonna be picked by the proposer and other validators, and it's really gonna set the bar for all other P2P bids.
 
 199
 00:30:29.120 --> 00:30:35.890
@@ -806,7 +806,7 @@ Jihoon: And… another… part that this PR focuses on is When an includer
 
 202
 00:30:49.820 --> 00:30:56.379
-Jihoon: Let's assume a scenario that an encoder broadcasts its IL very late.
+Jihoon: Let's assume a scenario that an includer broadcasts its IL very late.
 
 203
 00:30:56.720 --> 00:31:00.289
@@ -830,7 +830,7 @@ Jihoon: But a potential problem with this approach is when an IL is broadcast cl
 
 208
 00:31:29.780 --> 00:31:37.140
-Jihoon: Then there could be a case that majority of testers saw it, Before the deadline.
+Jihoon: Then there could be a case that majority of attesters saw it, Before the deadline.
 
 209
 00:31:37.390 --> 00:31:41.240
@@ -842,7 +842,7 @@ Jihoon: We might need to add another deadline for a proposer.
 
 211
 00:31:46.260 --> 00:32:05.820
-Jihoon: If you open up an old EIP, then you can see this deadline, the second deadline for proposer, which is one second after the ILP rephrase deadline. We had had this deadline as back as well, but it was removed to leave it up to clients to choose when to cut off for proposers, but…
+Jihoon: If you open up an old EIP, then you can see this deadline, the second deadline for proposer, which is one second after the IL view freeze deadline. We had had this deadline as back as well, but it was removed to leave it up to clients to choose when to cut off for proposers, but…
 
 212
 00:32:06.550 --> 00:32:09.639
@@ -854,7 +854,7 @@ Jihoon: The second deadline to avoid this attack.
 
 214
 00:32:14.680 --> 00:32:17.110
-Jihoon: So yeah, that's what SPR does.
+Jihoon: So yeah, that's what PR does.
 
 215
 00:32:18.890 --> 00:32:20.720
@@ -898,7 +898,7 @@ Justin Traglia: I'm sorry, I'm talking about… I'm supportive of 5741 over your
 
 225
 00:33:27.580 --> 00:33:38.930
-Jihoon: I've already closed 5740 because we didn't have enough support for it, and what I'm discussing here is what this BR does. It does two things, and…
+Jihoon: I've already closed 5740 because we didn't have enough support for it, and what I'm discussing here is what this PR does. It does two things, and…
 
 226
 00:33:39.260 --> 00:33:41.260
@@ -906,11 +906,11 @@ Jihoon: The first thing is…
 
 227
 00:33:41.450 --> 00:33:52.869
-Jihoon: Allowing P2B bid propagation only after IL deadline. And the second one is accepting changing proposals, I mean, the honest Validator Guide to pick up a bid
+Jihoon: Allowing P2P bid propagation only after IL deadline. And the second one is accepting changing proposals, I mean, the honest Validator Guide to pick up a bid
 
 228
 00:33:53.270 --> 00:33:57.909
-Jihoon: With only timely inclinualists, and…
+Jihoon: With only timely inclusion lists, and…
 
 229
 00:33:58.480 --> 00:34:02.030
@@ -938,7 +938,7 @@ Jihoon: We have a support for having the… New deadline.
 
 235
 00:35:25.800 --> 00:35:27.160
-Jihoon: Oh, so I spoke.
+Jihoon: Oh, soispoke.
 
 236
 00:35:37.150 --> 00:35:45.310
@@ -954,11 +954,11 @@ Jihoon: A bit, because…
 
 239
 00:35:52.050 --> 00:35:58.390
-Jihoon: We believe it is better for proposers to have a little bit more time than our testers, so that
+Jihoon: We believe it is better for proposers to have a little bit more time than attesters, so that
 
 240
 00:35:58.580 --> 00:36:07.039
-Jihoon: proposer and builders will have a, superset view of IELTS over our testers.
+Jihoon: proposer and builders will have a, superset view of ILs over attesters.
 
 241
 00:36:47.830 --> 00:36:49.710
@@ -1034,7 +1034,7 @@ Jihoon: So, we don't have PRs for this topic, we just had… some discussion on 
 
 259
 00:39:09.960 --> 00:39:13.329
-Jihoon: It is about IL equipocation proofs.
+Jihoon: It is about IL equivocation proofs.
 
 260
 00:39:13.900 --> 00:39:19.950
@@ -1042,7 +1042,7 @@ Jihoon: So, IL equivocation can also happen after the IL deadline.
 
 261
 00:39:20.140 --> 00:39:27.169
-Jihoon: And since IELTs are not recorded on-chain, there can be a split view among our testers.
+Jihoon: And since ILs are not recorded on-chain, there can be a split view among attesters.
 
 262
 00:39:27.870 --> 00:39:30.520
@@ -1054,11 +1054,11 @@ Jihoon: And when it comes to the summit included that we civocated late into the
 
 264
 00:39:44.210 --> 00:39:50.839
-Jihoon: There can be a case that some attesters see it, while other testers don't see it.
+Jihoon: There can be a case that some attesters see it, while other attesters don't see it.
 
 265
 00:39:51.100 --> 00:40:01.189
-Jihoon: So to provide our testers the same IL equivocation view, we can include IL equivocation proofs in the envelope.
+Jihoon: So to provide attesters the same IL equivocation view, we can include IL equivocation proofs in the envelope.
 
 266
 00:40:01.270 --> 00:40:08.409
@@ -1066,11 +1066,11 @@ Jihoon: This might also reduce the burden on builders in the very worst case.
 
 267
 00:40:08.430 --> 00:40:21.550
-Jihoon: That builders try to satisfy both equivocating IELTs to make sure that its payload will gonna pass the IL validation, even when some tester
+Jihoon: That builders try to satisfy both equivocating ILs to make sure that its payload will gonna pass the IL validation, even when some tester
 
 268
 00:40:22.470 --> 00:40:26.299
-Jihoon: didn't receive both of equivocating IELTs.
+Jihoon: didn't receive both of equivocating ILs.
 
 269
 00:40:26.740 --> 00:40:33.200
@@ -1078,7 +1078,7 @@ Jihoon: So, the proof would be two signed, IL headers.
 
 270
 00:40:33.510 --> 00:40:40.370
-Jihoon: IL header by a mean you can replace transactions with transaction routes.
+Jihoon: IL header by a mean you can replace transactions with transaction roots.
 
 271
 00:40:40.890 --> 00:40:44.140
@@ -1090,7 +1090,7 @@ Jihoon: IL header is 176 bytes, so this change, we're gonna add 352 bytes per eq
 
 273
 00:40:56.470 --> 00:41:06.430
-Jihoon: And as a side note, post-PQ, it'll be two XMSS signatures, so it will make it around 5 kilobytes per equival occasion.
+Jihoon: And as a side note, post-PQ, it'll be two XMSS signatures, so it will make it around 5 kilobytes per equivocation.
 
 274
 00:41:08.290 --> 00:41:10.360
@@ -1150,15 +1150,15 @@ soispoke: Like, you send the object late, you equivocate late, And then what?
 
 288
 00:43:07.550 --> 00:43:17.280
-Jihoon: then… If you're a builder, and you see… unequivocation in time, then… we're gonna…
+Jihoon: then… If you're a builder, and you see… an equivocation in time, then… we're gonna…
 
 289
 00:43:17.620 --> 00:43:22.829
-Jihoon: not consider any IELTS from that cubicator, right?
+Jihoon: not consider any ILs from that equivocator, right?
 
 290
 00:43:24.080 --> 00:43:33.640
-Jihoon: But some attesters who didn't see that Equification will require you to satisfy that IL, so you might lose some attestations.
+Jihoon: But some attesters who didn't see that equivocation will require you to satisfy that IL, so you might lose some attestations.
 
 291
 00:43:38.180 --> 00:43:44.219
@@ -1170,7 +1170,7 @@ Jihoon: No, it's the opposite, actually.
 
 293
 00:43:48.020 --> 00:43:54.240
-Jihoon: It is because some attesters have an incomplete view of all ILT situation, yeah.
+Jihoon: It is because some attesters have an incomplete view of all IL equivocations, yeah.
 
 294
 00:43:54.650 --> 00:44:00.050
@@ -1178,15 +1178,15 @@ Jihoon: So… You know, it just makes it a little bit flaky.
 
 295
 00:44:00.520 --> 00:44:10.669
-Jihoon: Depending on when the equivocation happens, because we don't have, like, any gadget that makes sure that our testers will have a same view
+Jihoon: Depending on when the equivocation happens, because we don't have, like, any gadget that makes sure that attesters will have a same view
 
 296
 00:44:10.850 --> 00:44:14.180
-Jihoon: on IELTS, because it is not on-chain.
+Jihoon: on ILs, because it is not on-chain.
 
 297
 00:44:14.430 --> 00:44:23.080
-Jihoon: And… having this IL evocation proofs on chain, we're gonna… Tableau attester to have some
+Jihoon: And… having this IL equivocation proofs on chain, we're gonna… Tableau attester to have some
 
 298
 00:44:24.270 --> 00:44:26.550
@@ -1282,7 +1282,7 @@ Jihoon: And there's gonna be… 350 bytes.
 
 321
 00:46:50.100 --> 00:46:53.499
-Jihoon: 3PQ, and 5 kilobytes post-PQ.
+Jihoon: pre-PQ, and 5 kilobytes post-PQ.
 
 322
 00:46:54.300 --> 00:46:55.950
@@ -1290,7 +1290,7 @@ Jihoon: or equivocation.
 
 323
 00:47:01.850 --> 00:47:05.900
-Jihoon: Yes, so if there is no covocation, it's just empty.
+Jihoon: Yes, so if there is no equivocation, it's just empty.
 
 324
 00:47:10.710 --> 00:47:11.550
@@ -1342,7 +1342,7 @@ Jihoon: So… Yeah, I think we can move on to the next topic, which is super rel
 
 336
 00:49:08.620 --> 00:49:15.910
-Jihoon: The next topic is adding a new gossip topic for IL evocation proofs.
+Jihoon: The next topic is adding a new gossip topic for IL equivocation proofs.
 
 337
 00:49:16.510 --> 00:49:23.989
@@ -1390,7 +1390,7 @@ Jihoon: Gives us is reduced bandwidth, and a trade-off here is complexity, And a
 
 348
 00:50:37.030 --> 00:50:42.190
-Jihoon: I think it is reasonable to expect that EL occupation will not gonna happen always.
+Jihoon: I think it is reasonable to expect that IL equivocation will not gonna happen always.
 
 349
 00:50:42.610 --> 00:50:52.280
@@ -1530,7 +1530,7 @@ soispoke: I think it might answer the configuration question as well.
 
 383
 00:54:10.410 --> 00:54:15.539
-Jihoon: But, you know, this IL view phrase deadline for attesters.
+Jihoon: But, you know, this IL view freeze deadline for attesters.
 
 384
 00:54:16.350 --> 00:54:16.920
@@ -1538,7 +1538,7 @@ soispoke: Yeah.
 
 385
 00:54:17.200 --> 00:54:30.970
-Jihoon: doesn't prevent our testers from updating their IL view by equivocation. So if they see some equivocation after the IL deadline, they were gonna update their IL view.
+Jihoon: doesn't prevent attesters from updating their IL view by equivocation. So if they see some equivocation after the IL deadline, they were gonna update their IL view.
 
 386
 00:54:31.730 --> 00:54:34.910
@@ -1562,7 +1562,7 @@ soispoke: After the builder's deadline, if that makes sense.
 
 391
 00:55:04.820 --> 00:55:12.250
-Jihoon: Sorry, I don't follow. How does it happen? Builder deadline is at least one second after a tester's deadline.
+Jihoon: Sorry, I don't follow. How does it happen? Builder deadline is at least one second after an attester's deadline.
 
 392
 00:55:12.750 --> 00:55:15.350
@@ -1578,7 +1578,7 @@ soispoke: Oh, sorry, before, sorry. So one second after the test of the line, an
 
 395
 00:55:27.590 --> 00:55:34.609
-soispoke: And the testers keep monitoring IELTS for equivocations until the end of the slot, but the proposer has to…
+soispoke: And the attesters keep monitoring ILs for equivocations until the end of the slot, but the proposer has to…
 
 396
 00:55:34.930 --> 00:55:43.130
@@ -1586,7 +1586,7 @@ soispoke: Has to… You know, the builder deadline is, like, 11 seconds in.
 
 397
 00:55:45.470 --> 00:55:51.389
-Jihoon: And then, do we have 3 deadlines here? Deadline for our testers, proposer, and builders?
+Jihoon: And then, do we have 3 deadlines here? Deadline for attesters, proposer, and builders?
 
 398
 00:55:51.560 --> 00:56:00.149
@@ -1610,7 +1610,7 @@ Jihoon: Or, builders, I guess, yeah.
 
 403
 00:56:22.410 --> 00:56:35.090
-Jihoon: Oh, I see, I get what you mean, yeah. So, builder deadline is 1 second before the slot, let's say, like, 11 seconds into the slot, and then the testers will kind of cut off their deadline, I mean,
+Jihoon: Oh, I see, I get what you mean, yeah. So, builder deadline is 1 second before the slot, let's say, like, 11 seconds into the slot, and then the attesters will kind of cut off their deadline, I mean,
 
 404
 00:56:35.990 --> 00:56:38.640
@@ -1638,11 +1638,11 @@ Jihoon: Yeah, so, so… The 5th and 6th.
 
 410
 00:57:08.540 --> 00:57:15.680
-Jihoon: topics are for ILT occupation, and this is also related to the second deadline for
+Jihoon: topics are for IL equivocation, and this is also related to the second deadline for
 
 411
 00:57:15.860 --> 00:57:22.090
-Jihoon: proposer and builders, so please keep that in mind when you're reviewing any of the SPRs.
+Jihoon: proposer and builders, so please keep that in mind when you're reviewing any of the PRs.
 
 412
 00:57:27.670 --> 00:57:36.780
@@ -1662,15 +1662,15 @@ Jihoon: the second… sorry, the next item that I wanted to discuss is…
 
 416
 00:57:51.870 --> 00:57:56.580
-Jihoon: replacing IL bit list with IL routes in the bit.
+Jihoon: replacing IL bitlist with IL roots in the bid.
 
 417
 00:57:57.860 --> 00:58:05.729
-Jihoon: We don't have a PR yet, but the idea is making it explicit that which IELTS the builder has considered
+Jihoon: We don't have a PR yet, but the idea is making it explicit that which ILs the builder has considered
 
 418
 00:58:06.340 --> 00:58:17.730
-Jihoon: The main motivation, from my understanding, is that Bitlytes can only signal that some IL has considered, but it doesn't really say which IL it was.
+Jihoon: The main motivation, from my understanding, is that bitlists can only signal that some IL has considered, but it doesn't really say which IL it was.
 
 419
 00:58:17.870 --> 00:58:21.679
@@ -1678,11 +1678,11 @@ Jihoon: And this could be problematic when there was an equivocation.
 
 420
 00:58:22.170 --> 00:58:32.490
-Jihoon: And also… putting… routes in the bid can make builders more accountable, so that they can ally for
+Jihoon: And also… putting… roots in the bid can make builders more accountable, so that they can ally for
 
 421
 00:58:32.720 --> 00:58:36.070
-Jihoon: IELT they… that they didn't see.
+Jihoon: ILs they… that they didn't see.
 
 422
 00:58:36.760 --> 00:58:37.840
@@ -1690,7 +1690,7 @@ Jihoon: And…
 
 423
 00:58:38.800 --> 00:58:53.220
-Jihoon: Our trade-off here is bit size increase. I think the design would be actually signed EL headers, because otherwise builders can forge this information. Then it will gonna add 176 bytes per includer.
+Jihoon: Our trade-off here is bid size increase. I think the design would be actually signed IL headers, because otherwise builders can forge this information. Then it will gonna add 176 bytes per includer.
 
 424
 00:58:53.520 --> 00:58:57.319
@@ -1758,7 +1758,7 @@ soispoke: Which is obviously costly, so I don't know. I feel like we also need t
 
 440
 01:00:59.360 --> 01:01:11.110
-soispoke: you know, what will need to be done, and when for PQ4, but it's always good to, like, think about it, but maybe it needs more attention and more focused, and more high-level discussions.
+soispoke: you know, what will need to be done, and when for PQ FOCIL, but it's always good to, like, think about it, but maybe it needs more attention and more focused, and more high-level discussions.
 
 441
 01:01:13.690 --> 01:01:26.969
@@ -1770,7 +1770,7 @@ Jihoon: make some progress on these PRs. And on the second…
 
 443
 01:01:32.930 --> 01:01:36.080
-Jihoon: And the other prong is actually Pika FOCIL.
+Jihoon: And the other prong is actually PQ FOCIL.
 
 444
 01:01:37.090 --> 01:01:46.409
@@ -1798,7 +1798,7 @@ Jihoon: Yeah.
 
 450
 01:02:27.210 --> 01:02:30.430
-Jihoon: Yeah, there's a PQCL call, I think there is,
+Jihoon: Yeah, there's a PQ CL call, I think there is,
 
 451
 01:02:31.050 --> 01:02:38.160
@@ -1806,7 +1806,7 @@ Jihoon: there's a good support to have this FOCIL Breakout call for PQ FOCIL in 
 
 452
 01:02:38.690 --> 01:02:46.699
-Jihoon: GitHub issue for next… week, please share any articles or concerns regarding PK FOCIL.
+Jihoon: GitHub issue for next… week, please share any articles or concerns regarding PQ FOCIL.
 
 453
 01:02:46.960 --> 01:02:54.560

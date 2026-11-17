@@ -1,0 +1,149 @@
+{
+  "meeting": "AA #008 - 2026-11-17",
+  "eips": [
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "discussed",
+      "summary": "Extensive discussion on making frames forward compatible with 8288 aggregation, likely removing the signature list.",
+      "moments": [
+        {
+          "timestamp": "00:06:06",
+          "context": "Lightclient introduced EIP-8288 as a major outcome from the DevCon Mumbai breakout, describing it as the future aggregation scheme for PQ signatures and ZK proofs in blocks."
+        },
+        {
+          "timestamp": "00:07:04",
+          "context": "Discussion of how 8288 introduces a new frame mode and is at odds with the current signature list approach, and whether to extend the signature list or adopt a new proof frame mode."
+        },
+        {
+          "timestamp": "00:14:47",
+          "context": "Lightclient emphasized the two large spec changes needed before year-end: removing the signature list for 8288 forward compatibility, and deciding on SSZ serialization."
+        },
+        {
+          "timestamp": "00:17:20",
+          "context": "Iván agreed 8288 is too big for Hegota but supports splitting it and shipping a minimal forward-compatible piece now, with a draft proposal coming soon."
+        },
+        {
+          "timestamp": "00:19:01",
+          "context": "Lightclient stated the main goal is that users should not have to change their wallet again when aggregation via 8288 eventually ships."
+        },
+        {
+          "timestamp": "00:20:03",
+          "context": "Toni described how 8288 transactions would come with a sidecar containing signatures, and suggested shipping the sidecar separation before aggregation."
+        },
+        {
+          "timestamp": "00:37:22",
+          "context": "Lightclient confirmed the signature list PR was a quick fix but the right approach is making frames forward compatible with 8288, which is harder."
+        }
+      ]
+    },
+    {
+      "eip": 7906,
+      "title": "Transaction Assertions via State Diff Opcode",
+      "weight": "discussed",
+      "summary": "Discussed interaction with paymastered frame transactions where assert could revert paymaster payments.",
+      "moments": [
+        {
+          "timestamp": "00:10:06",
+          "context": "Lightclient explained that 7906 transaction assertions conflict with paymastered frame transactions because assert reverts all execution frames including the paymaster payment."
+        },
+        {
+          "timestamp": "00:11:11",
+          "context": "Lightclient said he disliked proposed workarounds like non-revertible frame flags, and suggested 7906 may simply not work with paymaster transactions in the public mempool initially."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "mentioned",
+      "summary": "Referenced as the mechanism for converting EOAs to smart accounts before migrating to PQ signers.",
+      "moments": [
+        {
+          "timestamp": "00:33:03",
+          "context": "Ryan described the ideal flow as 7702 converting EOAs to smart accounts, removing ecrecover, and permanently converting to frame transactions with new PQ signers."
+        },
+        {
+          "timestamp": "00:33:09",
+          "context": "Daniil noted in chat that 8151 exempts 7702 delegation indicators, so plain 7702 keeps old permits alive even with 8151."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "discussed",
+      "summary": "Identified as a priority alongside frames for PQ readiness, restricting ecrecover to retire K1 permits.",
+      "moments": [
+        {
+          "timestamp": "00:33:09",
+          "context": "Daniil explained in chat that 8151 exempts 7702 delegation indicators, so old permits stay live under plain 7702; paired with the EIP-8141 PR that installs real code, 8151 kills K1 permits for the full retirement path."
+        },
+        {
+          "timestamp": "00:43:38",
+          "context": "Guru identified 8151 (restricted ecrecover) and SETCODEFROM as the PQ priorities alongside frames that still need hardening before adding more EIPs."
+        }
+      ]
+    },
+    {
+      "eip": 3607,
+      "title": "Reject transactions from senders with deployed code",
+      "weight": "mentioned",
+      "summary": "Cited in chat as the rule that kills K1 transactions once real code is installed via SETCODEFROM.",
+      "moments": [
+        {
+          "timestamp": "00:33:09",
+          "context": "Daniil noted in chat that the EIP-8141 set-code-from PR installs real code, so EIP-3607 kills K1 transactions, complementing 8151 which kills K1 permits."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "mentioned",
+      "summary": "Named alongside 8151 as a PQ readiness priority needing further hardening work.",
+      "moments": [
+        {
+          "timestamp": "00:43:38",
+          "context": "Guru listed SETCODEFROM (8298) together with 8151 as the EIPs that still need hardening before the team takes on additional proposals."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Two open PRs discussed: raising MAX_VERIFY_GAS to 300K, and setting code from the default code in SENDER mode.",
+      "moments": [
+        {
+          "timestamp": "00:45:47",
+          "context": "Daniil presented two PRs updating EIP-8141: one for migration using set code from, and one raising the default verify gas limit from 100K to 300K based on Nethermind benchmarks."
+        },
+        {
+          "timestamp": "00:47:07",
+          "context": "Besu expressed support for the 300K max verify gas increase, noting they hit the same limits in fuzzing, though they want to run it by performance folks."
+        },
+        {
+          "timestamp": "00:47:32",
+          "context": "Toni cautioned that increasing max verify gas also impacts builders in the critical path for FOCIL inclusion list checking, not just the mempool."
+        },
+        {
+          "timestamp": "00:51:25",
+          "context": "Iván asked whether to ship 8141 with 100K or wait; Toni suggested it may be too early to lock in a gas limit before Hegota scope is decided."
+        }
+      ]
+    },
+    {
+      "eip": 8369,
+      "title": "VOPS Profiles for FOCIL Eligibility",
+      "weight": "discussed",
+      "summary": "Justin Zen proposed splitting VOPS verification into STATE and non-STATE to remove the claimed index problem.",
+      "moments": [
+        {
+          "timestamp": "00:54:44",
+          "context": "Justin Zen explained that 8369 requires builders to provide an index for omission checks, a weaker assumption than blobs, and proposed caching the non-state proof check to enable end-of-block verification like normal blobs."
+        }
+      ]
+    }
+  ]
+}

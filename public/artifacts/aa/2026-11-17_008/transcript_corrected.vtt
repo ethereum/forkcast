@@ -46,7 +46,7 @@ marc | wolovim: So I think the first and best thing we can do is to get caught u
 
 12
 00:05:14.850 --> 00:05:20.009
-marc | wolovim: DEVCON and some, R&D L1.
+marc | wolovim: DevCon and some, R&D L1.
 
 13
 00:05:20.350 --> 00:05:27.590
@@ -66,7 +66,7 @@ lightclient: In terms of the Frames discussions, mostly was…
 
 17
 00:05:46.980 --> 00:05:54.629
-lightclient: you know, happening during this, Frames Breakout session that I held during the Thursday of DEF CON.
+lightclient: you know, happening during this, Frames Breakout session that I held during the Thursday of DevCon.
 
 18
 00:05:54.820 --> 00:06:01.409
@@ -146,7 +146,7 @@ lightclient: Or we can kind of go down this path, which is basically how 8288 pr
 
 37
 00:08:20.960 --> 00:08:35.290
-lightclient: signal that this is something that the protocol can potentially aggregate. And how this actually works is still a question. I think there's been a handful of different proposals, and now the latest idea is this, like, lean PCS idea.
+lightclient: signal that this is something that the protocol can potentially aggregate. And how this actually works is still a question. I think there's been a handful of different proposals, and now the latest idea is this, like, LeanPCS idea.
 
 38
 00:08:35.320 --> 00:08:43.809
@@ -158,7 +158,7 @@ lightclient: Implement this in the Frame's envelope so that we basically support
 
 40
 00:08:50.610 --> 00:09:15.600
-lightclient: So that it works today with, you know, ACDSA signatures, with, you know, whatever signature format we're gonna support in frames, and then in the future with SPHINCS and ZK proofs and all that stuff. So that… yeah, that's kind of like a big takeaway that I had from the, the, you know, from Mumbai and from that breakout, is that we need to figure out how to make frames forward compatible with that. So that likely means removing the signature list.
+lightclient: So that it works today with, you know, ECDSA signatures, with, you know, whatever signature format we're gonna support in frames, and then in the future with leanSPHINCS and ZK proofs and all that stuff. So that… yeah, that's kind of like a big takeaway that I had from the, the, you know, from Mumbai and from that breakout, is that we need to figure out how to make frames forward compatible with that. So that likely means removing the signature list.
 
 41
 00:09:15.810 --> 00:09:19.320
@@ -202,11 +202,11 @@ lightclient: Back to the point where the transaction was approved.
 
 51
 00:10:37.060 --> 00:10:45.650
-lightclient: And so, you don't really, you know, you want to be able to use a cert to protect your transaction, but you don't want it to potentially revert Paymaster
+lightclient: And so, you don't really, you know, you want to be able to use assert to protect your transaction, but you don't want it to potentially revert Paymaster
 
 52
 00:10:45.730 --> 00:10:58.950
-lightclient: operation, the Paymaster payment. And so we kind of looked at a few possibilities about how to get around this. We looked at maybe adding a new flag that basically lets you flag that a frame is not allowed to be reverted by a cert.
+lightclient: operation, the Paymaster payment. And so we kind of looked at a few possibilities about how to get around this. We looked at maybe adding a new flag that basically lets you flag that a frame is not allowed to be reverted by assert.
 
 53
 00:10:59.240 --> 00:11:11.410
@@ -330,7 +330,7 @@ marc | wolovim: this, about what the eventual scope of Hegota should be, so I th
 
 83
 00:15:50.350 --> 00:16:06.610
-marc | wolovim: to that effect, you covered a lot of ground there, at least 3 big areas, and highlighted those two large changes, some decisions that could be made before the end of the year, being the 82888 forward compatibility stuff, or SOC hashing.
+marc | wolovim: to that effect, you covered a lot of ground there, at least 3 big areas, and highlighted those two large changes, some decisions that could be made before the end of the year, being the 8288 forward compatibility stuff, or SSZ hashing.
 
 84
 00:16:07.010 --> 00:16:11.269
@@ -350,11 +350,11 @@ Justin Florentine: Yeah, I kind of want to echo, maybe some of the comments that
 
 88
 00:16:44.720 --> 00:16:57.789
-Justin Florentine: whether or not introducing SSZ to get some convenient transaction routing, I think, to me, that's a little bit… that's going in the wrong direction. So that's… that's not something that I find really compelling.
+Justin Florentine: whether or not introducing SSZ to get some convenient transaction roots, I think, to me, that's a little bit… that's going in the wrong direction. So that's… that's not something that I find really compelling.
 
 89
 00:17:09.079 --> 00:17:18.609
-marc | wolovim: Okay, I'm following some conversation in chat. Yvonne, do you want to make your 8288 statements out loud?
+marc | wolovim: Okay, I'm following some conversation in chat. Iván, do you want to make your 8288 statements out loud?
 
 90
 00:17:20.069 --> 00:17:37.799
@@ -378,7 +378,7 @@ Iván | ethrex: the dependency frame.
 
 95
 00:18:10.359 --> 00:18:25.269
-Iván | ethrex: With the links… with only the SPHINCS support. And then, yeah, and in future forks, we can continue iterating on… on this EIP, that… I see the EIP as… as an end goal, more… more than a…
+Iván | ethrex: With the links… with only the leanSPHINCS support. And then, yeah, and in future forks, we can continue iterating on… on this EIP, that… I see the EIP as… as an end goal, more… more than a…
 
 96
 00:18:26.059 --> 00:18:34.989
@@ -394,7 +394,7 @@ Iván | ethrex: the existing ideas of 8288, and try to have the minimal thing we
 
 99
 00:18:50.079 --> 00:18:59.109
-Iván | ethrex: to work on this and see if it makes sense, and I'll be… I'll be opening APR soon, so we can start discussing.
+Iván | ethrex: to work on this and see if it makes sense, and I'll be… I'll be opening a PR soon, so we can start discussing.
 
 100
 00:19:01.170 --> 00:19:09.070
@@ -438,7 +438,7 @@ Toni Wahrstätter: Yeah, so with 8288 transactions, as far as I understand it, t
 
 110
 00:20:03.410 --> 00:20:09.310
-Toni Wahrstätter: And the cycar would actually contain their signature. So there's also this,
+Toni Wahrstätter: And the sidecar would actually contain their signature. So there's also this,
 
 111
 00:20:09.880 --> 00:20:29.099
@@ -490,7 +490,7 @@ lightclient: It's not required for the client to have it in this way, but we can
 
 123
 00:21:39.160 --> 00:21:46.109
-Toni Wahrstätter: Yeah, this can be done too, of course. When I say Saika, I'm still… what I mean is, it's still, like.
+Toni Wahrstätter: Yeah, this can be done too, of course. When I say sidecar, I'm still… what I mean is, it's still, like.
 
 124
 00:21:46.360 --> 00:21:53.550
@@ -506,7 +506,7 @@ Toni Wahrstätter: But yeah, I'm also happy with, just keeping the signatures in
 
 127
 00:22:19.480 --> 00:22:23.979
-marc | wolovim: Bonsai asks, wouldn't the size of the signatures be a problem without aggregation?
+marc | wolovim: Vansh asks, wouldn't the size of the signatures be a problem without aggregation?
 
 128
 00:22:28.000 --> 00:22:30.849
@@ -570,7 +570,7 @@ marc | wolovim: At the risk of…
 
 143
 00:24:22.450 --> 00:24:34.599
-marc | wolovim: introducing an idea that is not quite on topic. Jobud, do you mind if I put you on the spot? I saw that you made a comment in the agenda recently about doing some signature size measurements.
+marc | wolovim: introducing an idea that is not quite on topic. johba, do you mind if I put you on the spot? I saw that you made a comment in the agenda recently about doing some signature size measurements.
 
 144
 00:24:36.540 --> 00:24:38.770
@@ -598,7 +598,7 @@ johba37: Oh, awesome. So my headset is broken, now I know it. Yeah, I don't… I
 
 150
 00:25:14.490 --> 00:25:22.969
-johba37: I basically want to build a hash-based account for SAFE. I have a team where we hold funds, and I want to make a…
+johba37: I basically want to build a hash-based account for Safe. I have a team where we hold funds, and I want to make a…
 
 151
 00:25:23.800 --> 00:25:26.190
@@ -610,7 +610,7 @@ johba37: I've experimented a bit, and I post, I've used…
 
 153
 00:25:33.220 --> 00:25:36.140
-johba37: SPHINCS, but not,
+johba37: leanSPHINCS, but not,
 
 154
 00:25:36.490 --> 00:25:41.740
@@ -634,7 +634,7 @@ johba37: So I'm basically, getting, getting them verified for 75,000 gas.
 
 159
 00:26:07.180 --> 00:26:15.590
-johba37: In the verify frame, and then when I deploy an account, I'm spending $130K.
+johba37: In the verify frame, and then when I deploy an account, I'm spending 130K.
 
 160
 00:26:18.140 --> 00:26:26.330
@@ -714,7 +714,7 @@ johba37: Yeah, alright, cool.
 
 179
 00:28:32.310 --> 00:28:36.109
-marc | wolovim: Great, thank you for sharing, Joba.
+marc | wolovim: Great, thank you for sharing, johba.
 
 180
 00:28:36.660 --> 00:28:42.410
@@ -726,7 +726,7 @@ marc | wolovim: I'll suggest, I guess, we zoom back out a bit and, There's… th
 
 182
 00:28:52.370 --> 00:29:00.239
-marc | wolovim: interest expressed only so far in this meeting to dig into the 8288 code compatibility stuff.
+marc | wolovim: interest expressed only so far in this meeting to dig into the 8288 forward compatibility stuff.
 
 183
 00:29:01.160 --> 00:29:07.019
@@ -746,11 +746,11 @@ Nico: I don't know, but maybe questions to, like, fine, you know? Do you think t
 
 187
 00:29:36.760 --> 00:29:40.549
-Nico: The multi-seat problem, if we fix…
+Nico: The multisig problem, if we fix…
 
 188
 00:29:40.670 --> 00:29:49.640
-Nico: If we enshrine some version of SPHINCS in the frame, yeah, They… Toni was saying.
+Nico: If we enshrine some version of leanSPHINCS in the frame, yeah, They… Toni was saying.
 
 189
 00:29:50.690 --> 00:29:51.640
@@ -766,7 +766,7 @@ marc | wolovim: Toni, did you hear the question?
 
 192
 00:30:08.450 --> 00:30:15.249
-Toni Wahrstätter: Yeah, the question was if we want to enshrine, Link Sphinx as a precompile, right? Did I… did I get that right, Nico?
+Toni Wahrstätter: Yeah, the question was if we want to enshrine, leanSPHINCS as a precompile, right? Did I… did I get that right, Nico?
 
 193
 00:30:17.360 --> 00:30:18.100
@@ -774,11 +774,11 @@ Nico: Yep.
 
 194
 00:30:20.340 --> 00:30:39.620
-Toni Wahrstätter: Yeah, I'm not sure. Like, what is… what… let me… let me ask, back, like, what is the plan when we ship frames? How would users actually use SPHINCS? Would they… or Sphinx? Would they just, use a contract for that, and use the arbitrary
+Toni Wahrstätter: Yeah, I'm not sure. Like, what is… what… let me… let me ask, back, like, what is the plan when we ship frames? How would users actually use leanSPHINCS? Would they… or SPHINCS? Would they just, use a contract for that, and use the arbitrary
 
 195
 00:30:39.760 --> 00:30:48.209
-Toni Wahrstätter: Frame type, is that… or Mets, do you know? Is that, like, the initial plan? Or in this case, if we now do the change, they would just use the proof?
+Toni Wahrstätter: Frame type, is that… or Matt, do you know? Is that, like, the initial plan? Or in this case, if we now do the change, they would just use the proof?
 
 196
 00:30:48.750 --> 00:30:49.819
@@ -786,19 +786,19 @@ Toni Wahrstätter: Frame type.
 
 197
 00:30:51.340 --> 00:31:00.549
-Nico: Yeah, I think we don't… don't need a… maybe we don't need a precompile, but having a frame type and treating it specially, I think, like Client mentioned at some point.
+Nico: Yeah, I think we don't… don't need a… maybe we don't need a precompile, but having a frame type and treating it specially, I think, like lightclient mentioned at some point.
 
 198
 00:31:01.030 --> 00:31:08.549
-Nico: in Dubai, by treating the rinsing signatures in a way that Mixed in cheaper.
+Nico: in Mumbai, by treating the rinsing signatures in a way that Mixed in cheaper.
 
 199
 00:31:08.700 --> 00:31:12.179
-Nico: And maybe a good stack enough to do multi-signal.
+Nico: And maybe a good stack enough to do multisig.
 
 200
 00:31:14.450 --> 00:31:16.979
-Nico: In the canonical manpool.
+Nico: In the canonical mempool.
 
 201
 00:31:17.590 --> 00:31:30.129
@@ -818,7 +818,7 @@ Toni Wahrstätter: to just ignore the call data cost when it comes to the 100K.
 
 205
 00:31:57.220 --> 00:31:58.879
-Toni Wahrstätter: Limit in the manpole.
+Toni Wahrstätter: Limit in the mempool.
 
 206
 00:31:59.010 --> 00:32:04.200
@@ -826,7 +826,7 @@ Toni Wahrstätter: This means, like, signatures are… Free, in that sense, when
 
 207
 00:32:19.750 --> 00:32:29.769
-Toni Wahrstätter: So, it's free in the sense that it doesn't count against the mempo limit of 100K verified gas.
+Toni Wahrstätter: So, it's free in the sense that it doesn't count against the mempool limit of 100K verified gas.
 
 208
 00:32:30.130 --> 00:32:33.760
@@ -862,7 +862,7 @@ Ryan McPeck: And I would… I would also argue, I think it's…
 
 216
 00:33:43.990 --> 00:33:52.659
-Ryan McPeck: you know, being more opinionated would be good here. So, something like… SPHINCS,
+Ryan McPeck: you know, being more opinionated would be good here. So, something like… leanSPHINCS,
 
 217
 00:33:53.400 --> 00:33:57.420
@@ -870,7 +870,7 @@ Ryan McPeck: precompile, I think that would be beneficial.
 
 218
 00:34:03.830 --> 00:34:11.600
-Justin Florentine: So, the main argument against the precompile, and I'm with you on this, I think that we should have one, but it does make zkits a lot more challenging.
+Justin Florentine: So, the main argument against the precompile, and I'm with you on this, I think that we should have one, but it does make zkEVMs a lot more challenging.
 
 219
 00:34:15.239 --> 00:34:15.940
@@ -882,7 +882,7 @@ Nico: Thank you.
 
 221
 00:34:16.619 --> 00:34:22.660
-Justin Florentine: I may be oversimplifying Sansa's argument, but he would prefer it on the EVM from what I recall.
+Justin Florentine: I may be oversimplifying Sanso's argument, but he would prefer it on the EVM from what I recall.
 
 222
 00:34:25.770 --> 00:34:31.299
@@ -894,7 +894,7 @@ Nico: And…
 
 224
 00:34:33.370 --> 00:34:43.200
-Nico: it seems like with LeanPCS, everything should be cheap enough to run in EVM. So if we can avoid it, we will avoid the compliance.
+Nico: it seems like with LeanPCS, everything should be cheap enough to run in EVM. So if we can avoid it, we will avoid the precompile.
 
 225
 00:34:58.560 --> 00:35:01.229
@@ -942,11 +942,11 @@ marc | wolovim: Mario?
 
 236
 00:36:10.920 --> 00:36:16.350
-Mario Vega: Is, yeah, thank you, is SPHINCS still going into the signature list?
+Mario Vega: Is, yeah, thank you, is leanSPHINCS still going into the signature list?
 
 237
 00:36:16.560 --> 00:36:20.370
-Mario Vega: from Likeline's PR, because as I understood.
+Mario Vega: from lightclient's PR, because as I understood.
 
 238
 00:36:20.870 --> 00:36:25.179
@@ -954,11 +954,11 @@ Mario Vega: That's basically everything that you need, right? You don't really n
 
 239
 00:36:25.460 --> 00:36:34.890
-Mario Vega: adding SPHINCS into the signature, then you can basically get everything you need from there. Is this… is this still, considered, or…
+Mario Vega: adding leanSPHINCS into the signature, then you can basically get everything you need from there. Is this… is this still, considered, or…
 
 240
 00:36:35.080 --> 00:36:40.810
-Mario Vega: what's the… What's the plan for your PR lifelines?
+Mario Vega: what's the… What's the plan for your PR, lightclient?
 
 241
 00:36:46.590 --> 00:36:47.610
@@ -966,7 +966,7 @@ lightclient: Sorry, what was that?
 
 242
 00:36:49.840 --> 00:36:54.859
-Mario Vega: The PR that you created for adding SPHINCS into the signature list, is that,
+Mario Vega: The PR that you created for adding leanSPHINCS into the signature list, is that,
 
 243
 00:36:57.020 --> 00:37:02.900
@@ -974,7 +974,7 @@ lightclient: No, no, that was basically just the idea for the…
 
 244
 00:37:03.520 --> 00:37:07.770
-lightclient: fun times we were having in Mumbai, about how to quickly add SPHINCS.
+lightclient: fun times we were having in Mumbai, about how to quickly add leanSPHINCS.
 
 245
 00:37:18.130 --> 00:37:22.530
@@ -990,7 +990,7 @@ lightclient: Which is harder. Like, that is not as easy as adding it to the sign
 
 248
 00:37:40.270 --> 00:37:44.809
-lightclient: But I do think that figuring out how to make this work with 8.28 is the right thing to do.
+lightclient: But I do think that figuring out how to make this work with 8288 is the right thing to do.
 
 249
 00:37:50.520 --> 00:37:53.130
@@ -1002,11 +1002,11 @@ marc | wolovim: For example, if there's gonna be…
 
 251
 00:37:58.550 --> 00:38:04.200
-marc | wolovim: We have no idea when the next DevNet will be ready, but is that something that you would target for the next one?
+marc | wolovim: We have no idea when the next devnet will be ready, but is that something that you would target for the next one?
 
 252
 00:38:06.570 --> 00:38:24.510
-lightclient: I mean, yeah. I think for me, there's a lot of spec changes that need to happen over the next month, and I would probably prefer prioritizing getting the big spec changes done, rather than incremental DevNet updates. I'm not sure if other people feel differently on that.
+lightclient: I mean, yeah. I think for me, there's a lot of spec changes that need to happen over the next month, and I would probably prefer prioritizing getting the big spec changes done, rather than incremental devnet updates. I'm not sure if other people feel differently on that.
 
 253
 00:38:24.690 --> 00:38:31.239
@@ -1022,15 +1022,15 @@ lightclient: But, if not, then I'm not sure we can go much…
 
 256
 00:38:44.090 --> 00:38:50.539
-Justin Florentine: There are, there are recordings on forecast, on the PQ Signatures, working group.
+Justin Florentine: There are, there are recordings on Forkcast, on the PQ Signatures, working group.
 
 257
 00:38:52.300 --> 00:38:53.769
-lightclient: For lean PCS.
+lightclient: For LeanPCS.
 
 258
 00:38:57.310 --> 00:38:59.769
-Justin Florentine: I may be thinking of Spanx, never mind.
+Justin Florentine: I may be thinking of SPHINCS, never mind.
 
 259
 00:39:06.450 --> 00:39:10.530
@@ -1046,11 +1046,11 @@ marc | wolovim: socialize the understanding of LeanPCS so we can make some decis
 
 262
 00:39:23.110 --> 00:39:31.309
-Toni Wahrstätter: Would that… would that even affect us here? Because it feels like, what we eventually choose, if it's, like, Lean Stark or Lean…
+Toni Wahrstätter: Would that… would that even affect us here? Because it feels like, what we eventually choose, if it's, like, lean STARK or Lean…
 
 263
 00:39:31.540 --> 00:39:40.539
-Toni Wahrstätter: zync or lean PCS, it shouldn't matter, right? Like, the object would just be the same, and the frame specs wouldn't really have to adapt.
+Toni Wahrstätter: zync or LeanPCS, it shouldn't matter, right? Like, the object would just be the same, and the frame specs wouldn't really have to adapt.
 
 264
 00:39:41.020 --> 00:39:58.830
@@ -1078,7 +1078,7 @@ marc | wolovim: which, open PRs or suggested, changes Should be prioritized for
 
 270
 00:40:41.170 --> 00:40:43.800
-marc | wolovim: Whenever the next DevNet happens to be.
+marc | wolovim: Whenever the next devnet happens to be.
 
 271
 00:40:44.260 --> 00:40:45.210
@@ -1094,7 +1094,7 @@ marc | wolovim: Asked another way, does anybody have… something they…
 
 274
 00:41:05.250 --> 00:41:08.850
-marc | wolovim: want to propose that we… we prioritize for the next EBNET?
+marc | wolovim: want to propose that we… we prioritize for the next devnet?
 
 275
 00:41:12.770 --> 00:41:18.650
@@ -1110,11 +1110,11 @@ Iván | ethrex: Forward-compatible solution.
 
 278
 00:41:27.960 --> 00:41:30.859
-Iván | ethrex: to… with ACD to 88.
+Iván | ethrex: to… with 8288.
 
 279
 00:41:31.310 --> 00:41:36.909
-Iván | ethrex: In the DevNet specifically, Maybe we can…
+Iván | ethrex: In the devnet specifically, Maybe we can…
 
 280
 00:41:37.150 --> 00:41:45.419
@@ -1126,15 +1126,15 @@ Iván | ethrex: to see which EIPs are we… from the… from the ones that we ar
 
 282
 00:41:55.590 --> 00:41:59.729
-Iván | ethrex: We want to continue adding to the DevNet, because the sooner we…
+Iván | ethrex: We want to continue adding to the devnet, because the sooner we…
 
 283
 00:41:59.970 --> 00:42:15.710
-Iván | ethrex: we freeze the DevNet with features, the sooner we can start testing lots of stuff, edge cases, we'll have more time to think about those, which are important.
+Iván | ethrex: we freeze the devnet with features, the sooner we can start testing lots of stuff, edge cases, we'll have more time to think about those, which are important.
 
 284
 00:42:16.640 --> 00:42:26.150
-Iván | ethrex: But that, yeah, I'll separate on what's prioritized for frames and what's prioritized for the DevNet in that sense. I know if I make any sense, let me know.
+Iván | ethrex: But that, yeah, I'll separate on what's prioritized for frames and what's prioritized for the devnet in that sense. I know if I make any sense, let me know.
 
 285
 00:42:27.340 --> 00:42:28.800
@@ -1142,7 +1142,7 @@ marc | wolovim: Yeah, I'm…
 
 286
 00:42:29.360 --> 00:42:42.559
-marc | wolovim: Obviously, it's a very important question, like, what does the eventual scope of Hegata include, given we just don't have answers today, and I think it'll take at least a couple of weeks,
+marc | wolovim: Obviously, it's a very important question, like, what does the eventual scope of Hegota include, given we just don't have answers today, and I think it'll take at least a couple of weeks,
 
 287
 00:42:42.820 --> 00:42:51.119
@@ -1174,11 +1174,11 @@ marc | wolovim: Go ahead, Guru.
 
 294
 00:43:38.050 --> 00:43:53.610
-Guru: Yeah, zooming out from frames, just frames a little bit, and if you look at the, whole PQ side of things, I guess, frames, like the spec changes plus, the EC recovery IP, I think 8151,
+Guru: Yeah, zooming out from frames, just frames a little bit, and if you look at the, whole PQ side of things, I guess, frames, like the spec changes plus, the ecrecover EIP, I think 8151,
 
 295
 00:43:53.760 --> 00:43:58.809
-Guru: And the set code from, those seem like the priority, and…
+Guru: And SETCODEFROM, those seem like the priority, and…
 
 296
 00:43:58.980 --> 00:44:04.349
@@ -1190,7 +1190,7 @@ Guru: What everyone else feels.
 
 298
 00:44:35.100 --> 00:44:54.380
-Iván | ethrex: Yes, I agree that locking down the spec would make sense. We need to leave one window opened for this late… for this last change to frames to support this forward-compatible solution for native DQ signatures.
+Iván | ethrex: Yes, I agree that locking down the spec would make sense. We need to leave one window opened for this late… for this last change to frames to support this forward-compatible solution for native PQ signatures.
 
 299
 00:44:55.560 --> 00:44:57.029
@@ -1234,7 +1234,7 @@ Daniil Ankushin | Nethermind: Yeah, basically we use set code from, to make it p
 
 309
 00:46:27.790 --> 00:46:37.009
-Daniil Ankushin | Nethermind: To use the… to test a wider spectrum of, scenarios of the next… next DevNet.
+Daniil Ankushin | Nethermind: To use the… to test a wider spectrum of, scenarios of the next… next devnet.
 
 310
 00:46:42.890 --> 00:46:43.990
@@ -1246,7 +1246,7 @@ marc | wolovim: Any quick comments on those?
 
 312
 00:46:53.240 --> 00:47:07.229
-Justin Florentine: Basically likes the increase in max verified gas. We ran into the same limits with some of our fuzzing. 300 seems like a good number. We didn't put a ton of thought into that, though, so we'd like to run that by our performance folks, but I'd merge that.
+Justin Florentine: Besu likes the increase in max verify gas. We ran into the same limits with some of our fuzzing. 300 seems like a good number. We didn't put a ton of thought into that, though, so we'd like to run that by our performance folks, but I'd merge that.
 
 313
 00:47:19.790 --> 00:47:24.409
@@ -1254,11 +1254,11 @@ marc | wolovim: Any other client teams want to weigh in today? Or do you need mo
 
 314
 00:47:26.950 --> 00:47:32.509
-Toni Wahrstätter: Maybe, maybe just to add to this discussion, when we talk about the Max Verify gas loop, we are…
+Toni Wahrstätter: Maybe, maybe just to add to this discussion, when we talk about the max verify gas limit, we are…
 
 315
 00:47:32.690 --> 00:47:35.679
-Toni Wahrstätter: Of course, also talking about the memo, but…
+Toni Wahrstätter: Of course, also talking about the mempool, but…
 
 316
 00:47:36.320 --> 00:47:48.310
@@ -1270,7 +1270,7 @@ Toni Wahrstätter: Then builders will also have more work by, checking if transa
 
 318
 00:47:56.620 --> 00:48:00.480
-Toni Wahrstätter: So just to not forget that it's not just mempole, but it's also
+Toni Wahrstätter: So just to not forget that it's not just mempool, but it's also
 
 319
 00:48:00.870 --> 00:48:04.009
@@ -1310,7 +1310,7 @@ Toni Wahrstätter: Because, of course, it also impacts, how high we can set that
 
 328
 00:49:27.970 --> 00:49:44.949
-Toni Wahrstätter: So, yeah, I would just, for now, keep it at 100K, say we don't count the data to the verify guest limit. This already helps a lot, especially thinking of large signatures. Of course, it doesn't help with the computation that comes with verifying large signatures, but at least
+Toni Wahrstätter: So, yeah, I would just, for now, keep it at 100K, say we don't count the data to the verify gas limit. This already helps a lot, especially thinking of large signatures. Of course, it doesn't help with the computation that comes with verifying large signatures, but at least
 
 329
 00:49:45.000 --> 00:49:54.210
@@ -1330,7 +1330,7 @@ Justin Florentine: Hey, Toni, I got a quick question on that. Why… why does re
 
 333
 00:50:32.340 --> 00:50:36.959
-Toni Wahrstätter: Because call that is not really work for the builder in that sense.
+Toni Wahrstätter: Because call data is not really work for the builder in that sense.
 
 334
 00:50:37.110 --> 00:50:43.459
@@ -1402,11 +1402,11 @@ Mario Vega: Yeah, that's basically it. So, the way I'm thinking it is, like, we 
 
 351
 00:52:34.920 --> 00:52:49.840
-Mario Vega: fixture format or test reference format, that clients can consume, and just validate this sort of things of max purified gas, and so on. It's not directly specification, because it's not consensus, but we could make a new
+Mario Vega: fixture format or test reference format, that clients can consume, and just validate this sort of things of max verify gas, and so on. It's not directly specification, because it's not consensus, but we could make a new
 
 352
 00:52:49.980 --> 00:52:58.999
-Mario Vega: Format that is not, like, it helps you, like, do regression testing and so on for these Memple validation, rules.
+Mario Vega: Format that is not, like, it helps you, like, do regression testing and so on for these mempool validation, rules.
 
 353
 00:52:59.380 --> 00:53:04.869
@@ -1430,7 +1430,7 @@ Mario Vega: That's a great question. I don't think so. It's a small lift. But I'
 
 358
 00:53:44.590 --> 00:53:46.140
-Mario Vega: And that's my wreath at the moment.
+Mario Vega: And that's my read at the moment.
 
 359
 00:53:50.370 --> 00:53:54.650
@@ -1442,11 +1442,11 @@ marc | wolovim: Okay,
 
 361
 00:53:58.850 --> 00:54:02.700
-Justin Florentine: I think Basie would be interested in it as well. I want to think about it a little bit more, though.
+Justin Florentine: I think Besu would be interested in it as well. I want to think about it a little bit more, though.
 
 362
 00:54:05.040 --> 00:54:09.360
-Mario Vega: I can, I can… thank you, thank you, Justine. I can make a,
+Mario Vega: I can, I can… thank you, thank you, Justin. I can make a,
 
 363
 00:54:10.100 --> 00:54:15.650
@@ -1470,7 +1470,7 @@ marc | wolovim: I will drop the contents of that in here, and Justin, I will let
 
 368
 00:54:44.730 --> 00:54:53.750
-Justin Zen: Yeah, yeah, so basically, the problem is for AAVs, and for a WAVs, builder have to provide the index.
+Justin Zen: Yeah, yeah, so basically, the problem is for AA-VOPS, and for a WAVs, builder have to provide the index.
 
 369
 00:54:54.090 --> 00:55:00.849
@@ -1478,7 +1478,7 @@ Justin Zen: To… to verify the… Omissions Frame Transaction.
 
 370
 00:55:01.390 --> 00:55:07.649
-Justin Zen: And it's a weaker assumption comparing to the normal, like, boss. So…
+Justin Zen: And it's a weaker assumption comparing to the normal, like, blobs. So…
 
 371
 00:55:07.920 --> 00:55:11.629
@@ -1486,7 +1486,7 @@ Justin Zen: I think if we have the separation between
 
 372
 00:55:11.750 --> 00:55:17.480
-Justin Zen: stay verified and non-stay verified, then we could have this same…
+Justin Zen: STATE verified and non-STATE verified, then we could have this same…
 
 373
 00:55:17.870 --> 00:55:22.990
@@ -1534,7 +1534,7 @@ marc | wolovim: If not, this is the right time to raise a question.
 
 384
 00:56:51.200 --> 00:57:04.830
-Justin Florentine: Can somebody post, maybe in the ETH R&D, how we're seeing LeanPCS fit into this? I haven't found any writings. I had a clear idea when I thought we were talking about SPHINCS, but the LeanPCS stuff, I think, is a little bit trickier.
+Justin Florentine: Can somebody post, maybe in the ETH R&D, how we're seeing LeanPCS fit into this? I haven't found any writings. I had a clear idea when I thought we were talking about leanSPHINCS, but the LeanPCS stuff, I think, is a little bit trickier.
 
 385
 00:57:05.620 --> 00:57:06.779
@@ -1558,7 +1558,7 @@ marc | wolovim: Daniil?
 
 390
 00:57:33.420 --> 00:57:44.389
-Daniil Ankushin | Nethermind: Yeah, thank you. Since, since post-quantum stuff, has been prioritized, about, other possible AIPs,
+Daniil Ankushin | Nethermind: Yeah, thank you. Since, since post-quantum stuff, has been prioritized, about, other possible EIPs,
 
 391
 00:57:45.140 --> 00:57:55.559
@@ -1590,7 +1590,7 @@ spencer: We're not sure, I guess. Yeah, I guess ACDE and then ACDC would…
 
 398
 00:58:49.970 --> 00:58:53.440
-spencer: close… close the answers on whether Fossil's going.
+spencer: close… close the answers on whether FOCIL's going.
 
 399
 00:58:54.410 --> 00:58:57.410
@@ -1598,7 +1598,7 @@ spencer: going to remain. But yeah, who knows?
 
 400
 00:59:09.940 --> 00:59:21.530
-marc | wolovim: Yep, that is the big question. Bonsh adds a side note, for SPHINCS implementations to switch to the new PQ bindings, since a PR included a breaking change.
+marc | wolovim: Yep, that is the big question. Vansh adds a side note, for leanSPHINCS implementations to switch to the new PQ bindings, since a PR included a breaking change.
 
 401
 00:59:21.650 --> 00:59:25.040

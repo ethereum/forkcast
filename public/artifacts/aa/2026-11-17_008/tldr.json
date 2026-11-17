@@ -4,7 +4,7 @@
     "eip8288_forward_compatibility": [
       {
         "timestamp": "00:06:13",
-        "highlight": "EIP-8288 (leanPCS): frames must be forward-compatible; primary change is removing the signature list in favor of a PROOF frame mode"
+        "highlight": "EIP-8288 (signature and proof aggregation): frames must be forward-compatible; primary change is removing the signature list in favor of a PROOF frame mode"
       },
       {
         "timestamp": "00:09:15",
@@ -18,15 +18,15 @@
     "pq_signatures_and_sphincs": [
       {
         "timestamp": "00:23:03",
-        "highlight": "PQ sigs without aggregation: even several hundred SPHINCS sigs/block is only a few MB; aggregation is for efficiency, not security \u2014 don't block shipping"
+        "highlight": "PQ sigs without aggregation: even several hundred PQ sigs/block is only a few MB; aggregation is for efficiency, not security \u2014 don't block shipping"
       },
       {
         "timestamp": "00:30:51",
-        "highlight": "Proposal: exclude calldata cost from the 100K verify gas mempool limit; large SPHINCS sigs would otherwise consume most of the budget"
+        "highlight": "Proposal: exclude calldata cost from the 100K verify gas mempool limit; large leanSPHINCS sigs would otherwise consume most of the budget"
       },
       {
         "timestamp": "00:34:03",
-        "highlight": "SPHINCS precompile debated; Nico/Sanso prefer EVM execution if leanPCS makes it cheap enough \u2014 avoid precompile if possible"
+        "highlight": "leanSPHINCS precompile debated; Nico/Sanso prefer EVM execution if leanPCS makes it cheap enough \u2014 avoid precompile if possible"
       }
     ],
     "max_verify_gas": [
@@ -86,11 +86,11 @@
   "decisions": [
     {
       "timestamp": "00:09:15",
-      "decision": "Signature list will be removed from frames; replaced with a PROOF frame mode forward-compatible with EIP-8288"
+      "decision": "Direction favoured, not finalized: remove the signature list in favour of a PROOF frame mode forward-compatible with EIP-8288"
     },
     {
       "timestamp": "00:37:23",
-      "decision": "SPHINCS-to-signature-list PR (lightclient's DevCon sketch) is not the target path; 8288-compatible PROOF frame mode is preferred"
+      "decision": "leanSPHINCS-to-signature-list PR (lightclient's DevCon sketch) is not the target path; 8288-compatible PROOF frame mode is preferred"
     },
     {
       "timestamp": "00:14:42",

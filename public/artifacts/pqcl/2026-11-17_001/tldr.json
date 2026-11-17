@@ -8,10 +8,10 @@
       },
       {
         "timestamp": "00:14:33",
-        "highlight": "PQ spec PR built on Pectra; group agreed to rebase on Glamsterdam (decided at DEFCON)"
+        "highlight": "PQ pre-registration spec PR built on Heze; author offered to rebase on Glamsterdam, which today's material already targets (preference stated at Devcon)"
       },
       {
-        "timestamp": "00:26:38",
+        "timestamp": "00:29:32",
         "highlight": "BLS validators unregistered at fork: immediately exited but withdrawal delayed ~8,000 epochs; slashing handled via social consensus only"
       },
       {
@@ -21,19 +21,19 @@
     ],
     "pq_aggregation": [
       {
-        "timestamp": "00:06:22",
-        "highlight": "Proposal: reduce committees 64\u219216 (matching subnets); each committee ~4\u00d7 larger; aggregation cost estimated 2\u20133s on typical validator hardware"
-      },
-      {
-        "timestamp": "01:02:13",
-        "highlight": "Consensus toward 16 subnets / 16 committees / 4 aggregators per committee selected via RANDAO + balance-weighted look-ahead stored in beacon state"
+        "timestamp": "01:02:22",
+        "highlight": "Proposal: reduce committees 64\u219216 (matching subnets); each committee ~4\u00d7 larger; aggregation cost estimated 2\u20132.5s to do a 16\u21921 recursion"
       },
       {
         "timestamp": "01:34:05",
         "highlight": "64 proofs on global topic (~6.25 MiB/slot) identified as primary bandwidth concern; no clean solution reached; flagged as main open blocker"
       },
       {
-        "timestamp": "01:54:13",
+        "timestamp": "01:44:47",
+        "highlight": "Direction of travel floated as the first thing to try: 16 subnets / 16 committees / 4 aggregators per committee via RANDAO + balance-weighted look-ahead in beacon state; not settled"
+      },
+      {
+        "timestamp": "01:50:23",
         "highlight": "If aggregation timing proves infeasible, preference is to skip long-slot workaround and move directly to Decoupled Consensus (DC)"
       }
     ],
@@ -56,14 +56,14 @@
   },
   "action_items": [
     {
-      "timestamp": "01:49:43",
-      "action": "Benchmark aggregation with EL running full block-building workload on representative validator hardware (not isolated)",
-      "owner": "lambdaclass (Tom Wambsgans confirmed); other teams encouraged"
+      "timestamp": "01:53:18",
+      "action": "Benchmark aggregation with EL running side by side, on representative validator hardware rather than in isolation",
+      "owner": "Tom Wambsgans confirmed; Potuz to bring benchmarks from his validating node"
     },
     {
-      "timestamp": "02:02:22",
-      "action": "Stand up globally-distributed devnet to validate aggregation viability on real network topology",
-      "owner": "All PQ client teams"
+      "timestamp": "01:59:32",
+      "action": "Stand up a large, globally distributed devnet to validate aggregation viability on real network topology (raised in chat; no owner assigned)",
+      "owner": "Unassigned"
     }
   ],
   "decisions": [
@@ -80,8 +80,8 @@
       "decision": "CL-gossipped voluntary exits removed; replaced with EL execution requests"
     },
     {
-      "timestamp": "01:02:13",
-      "decision": "Target aggregation topology: 16 subnets, 16 committees, 4 aggregators/committee, RANDAO+balance-weighted selection stored in beacon state"
+      "timestamp": "01:45:36",
+      "decision": "RANDAO (not VRF) agreed for aggregator selection; committee/subnet/aggregator counts remain open pending bandwidth benchmarks"
     }
   ],
   "targets": [

@@ -5,7 +5,7 @@
  * `EipMentions`, say — doesn't pull the 300-entry call list into its bundle.
  * `calls.ts` re-exports both, so existing imports are unaffected.
  */
-export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr' | 'aa' | 'p2p' | 'ssz' | 'ethproofs';
+export type CallType = 'acdc' | 'acde' | 'acdt' | 'epbs' | 'bal' | 'focil' | 'price' | 'tli' | 'pqts' | 'rpc' | 'zkevm' | 'etm' | 'awd' | 'pqi' | 'fcr' | 'aa' | 'p2p' | 'ssz' | 'ethproofs' | 'pqcl';
 
 // Full names for call types (used in tooltips)
 export const callTypeNames: Record<CallType, string> = {
@@ -28,6 +28,7 @@ export const callTypeNames: Record<CallType, string> = {
   p2p: 'P2P Networking',
   ssz: 'SSZ Engine API',
   ethproofs: 'Ethproofs',
+  pqcl: 'PQ-CL Breakout',
 };
 
 /** Falls back to the raw slug for a one-off, which carries its own `name`. */

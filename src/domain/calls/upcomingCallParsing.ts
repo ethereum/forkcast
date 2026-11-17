@@ -41,6 +41,7 @@ const UPCOMING_CALL_SERIES_TO_TYPE: Record<string, CallType> = {
   'frame transaction breakout': 'aa',
   'p2p networking': 'p2p',
   'ssz engine api': 'ssz',
+  'pq-cl breakout': 'pqcl',
 };
 
 const normalizeCallSeries = (series: string): string =>
@@ -95,6 +96,7 @@ const resolveUpcomingCallTypeFromTitle = (title: string): CallType | undefined =
   if (/Fast Confirmation Rule|\(FCR\)/i.test(title)) return 'fcr';
   if (/All\s*Wallet\s*Devs|AllWalletDevs/i.test(title)) return 'awd';
   if (/SSZ Engine API/i.test(title)) return 'ssz';
+  if (/PQ[-\s]?CL/i.test(title)) return 'pqcl';
 
   return undefined;
 };

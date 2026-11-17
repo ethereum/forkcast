@@ -1,0 +1,61 @@
+{
+  "meeting": "PQCL #001 - 2026-11-17",
+  "eips": [
+    {
+      "eip": 8205,
+      "title": "Withdrawal credentials preregistration",
+      "weight": "discussed",
+      "summary": "Discussed as the basis for PQ pre-registration allowing withdrawal credentials to register without depositing 1 ETH.",
+      "moments": [
+        {
+          "timestamp": "00:01:50",
+          "context": "Terence raised the pre-registration mechanism that is in the PQ spec, where a message can be sent before a deposit, and the room identified it as EIP-8205."
+        },
+        {
+          "timestamp": "00:02:25",
+          "context": "Participants discussed the property EIP-8205 provides: enabling a free-of-charge pre-agreement before depositing ETH, removing the race condition with money at stake."
+        },
+        {
+          "timestamp": "00:04:11",
+          "context": "Walked through what EIP-8205 changes: instead of paying one ETH to make the initial registration, a separate contract lets you pre-register. The spec author noted he had modified it to fit PQ."
+        },
+        {
+          "timestamp": "00:04:46",
+          "context": "A participant recalled that the room had agreed to tackle this problem when EIP-8205 was DFI'd for Hegota, without recalling which ACD call that was."
+        },
+        {
+          "timestamp": "00:18:12",
+          "context": "Raised that some people had complained on the EIP wanting the operator to send these messages, so verifying BLS on the EL would let the operator send the pre-registration instead of the withdrawal credentials."
+        }
+      ]
+    },
+    {
+      "eip": 8148,
+      "title": "Custom sweep threshold for validators",
+      "weight": "mentioned",
+      "summary": "Barnabas proposed using EIP-8148 to only allow 0x02 validators and drop 0x01 and consolidations in PQ.",
+      "moments": [
+        {
+          "timestamp": "00:43:31",
+          "context": "Barnabas suggested doing EIP-8148 and only allowing 0x02 style validators, proposing to drop 0x00 and 0x01 credential types and remove consolidations as an option in PQ."
+        },
+        {
+          "timestamp": "00:47:45",
+          "context": "Dima Gusakov of Lido pointed at 8148 again in chat as something worth looking at, without the room taking it up."
+        }
+      ]
+    },
+    {
+      "eip": 8483,
+      "title": "Post-Quantum Material Registration",
+      "weight": "mentioned",
+      "summary": "Ethlambda reported having implemented EIP-8483 on top of Heze and tested LeanVM bindings.",
+      "moments": [
+        {
+          "timestamp": "00:56:03",
+          "context": "Mega from ethlambda stated they have tested LeanVM bindings and implemented EIP-8483 on top of Heze, planning to rebase on Glamsterdam and continue with the rest of the spec."
+        }
+      ]
+    }
+  ]
+}

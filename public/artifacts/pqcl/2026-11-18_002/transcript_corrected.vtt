@@ -58,7 +58,7 @@ Justin Traglia: aggregation in DC, yeah.
 
 15
 00:04:26.200 --> 00:04:37.660
-terence: Yeah, and then there's, aggregation for goldfish boats, and the aggregation for finality boats. So just now, I opened a PR, not a PR, but, like, a VDF between,
+terence: Yeah, and then there's, aggregation for goldfish votes, and the aggregation for finality votes. So just now, I opened a PR, not a PR, but, like, a diff between,
 
 16
 00:04:38.270 --> 00:04:45.839
@@ -98,7 +98,7 @@ Barnabas: If there's only a few of them, that's responsible for that.
 
 25
 00:05:19.540 --> 00:05:34.330
-terence: So for the goldfish vote, it's 512, you still need to aggregate them, and then for the finality votes, it's not a bottleneck anymore, so that's kind of irrelevant. But the goldfish votes is where I don't understand, but anyway, don't want to hijack this meeting rate.
+terence: So for the goldfish vote, it's 512, you still need to aggregate them, and then for the finality votes, it's not a bottleneck anymore, so that's kind of irrelevant. But the goldfish votes is where I don't understand, but anyway, don't want to hijack this meeting, right?
 
 26
 00:05:35.190 --> 00:05:35.810
@@ -530,7 +530,7 @@ Justin Traglia: Okay, let's move on. We can discuss this more later if we want.
 
 133
 00:18:16.110 --> 00:18:27.479
-Justin Traglia: The next change that we made was to reduce the number of attestation committees from 64 to 16. This matches the subnet change that we made earlier at DEF CON.
+Justin Traglia: The next change that we made was to reduce the number of attestation committees from 64 to 16. This matches the subnet change that we made earlier at Devcon.
 
 134
 00:18:27.990 --> 00:18:31.510
@@ -906,11 +906,11 @@ Justin Traglia: Alright, what do you guys want to discuss today? I'll take notes
 
 227
 00:27:04.550 --> 00:27:05.400
-Justin Traglia: Curtis?
+Justin Traglia: Potuz?
 
 228
 00:27:08.750 --> 00:27:25.430
-Potuz: Yeah, so one issue with this thing of, like, sending this best aggregate is that this is going to essentially guarantee that some attestations will be not included in the next lot, and this will force the next proposer to be doing this recursion on the background.
+Potuz: Yeah, so one issue with this thing of, like, sending this best aggregate is that this is going to essentially guarantee that some attestations will be not included in the next slot, and this will force the next proposer to be doing this recursion on the background.
 
 229
 00:27:25.430 --> 00:27:35.399
@@ -934,7 +934,7 @@ Justin Traglia: You said 15?
 
 234
 00:27:57.600 --> 00:28:08.299
-Thomas Coratger: Yeah, Justine, I think this is pretty important to discuss today as well, like, the benchmarks, and the hardware requirements, and what we have observed yesterday, because
+Thomas Coratger: Yeah, Justin, I think this is pretty important to discuss today as well, like, the benchmarks, and the hardware requirements, and what we have observed yesterday, because
 
 235
 00:28:08.420 --> 00:28:14.739
@@ -946,7 +946,7 @@ Potuz: Actually, from the machines that I've been benched, that I've been benchm
 
 237
 00:28:42.870 --> 00:28:57.769
-Thomas Coratger: And you say that for manual machine, it is, like, 15 seconds? Do you know what is so different between your numbers and the manual machine? Probably, it is much, like, much fancier your machine is?
+Thomas Coratger: And you say that for Manu's machine, it is, like, 15 seconds? Do you know what is so different between your numbers and Manu's machine? Probably, it is much, like, much fancier your machine is?
 
 238
 00:29:00.670 --> 00:29:06.319
@@ -970,7 +970,7 @@ Justin Traglia: Hardware for stakers.
 
 243
 00:29:28.570 --> 00:29:41.200
-Potuz: But notice that already 5 seconds is just impossible then to propose. Like, with the current Caspar, with 5 seconds, that is my machine, which I think is the top of the line, would just be impossible to put… to put attestations in blocks.
+Potuz: But notice that already 5 seconds is just impossible then to propose. Like, with the current Gasper, with 5 seconds, that is my machine, which I think is the top of the line, would just be impossible to put… to put attestations in blocks.
 
 244
 00:29:45.970 --> 00:29:49.000
@@ -1210,7 +1210,7 @@ Mikhail Kalinin: Yeah, that's kind of true.
 
 303
 00:37:30.600 --> 00:37:38.179
-Mikhail Kalinin: But with ZRABL Consensus, we don't have to, you know, compromise bandwidth requirements or whatever. We have more freedom.
+Mikhail Kalinin: But with decoupled Consensus, we don't have to, you know, compromise bandwidth requirements or whatever. We have more freedom.
 
 304
 00:37:38.970 --> 00:37:44.050
@@ -1218,7 +1218,7 @@ Mikhail Kalinin: Because we don't have to be very…
 
 305
 00:37:45.260 --> 00:37:51.700
-Mikhail Kalinin: Yeah, there are not that much of a requirement to broadcast a lot of stations.
+Mikhail Kalinin: Yeah, there are not that much of a requirement to broadcast a lot of attestations.
 
 306
 00:37:51.860 --> 00:37:58.030
@@ -1242,11 +1242,11 @@ Potuz: At least I don't see a reason why we should be worried about, like, being
 
 311
 00:38:27.340 --> 00:38:35.039
-Mikhail Kalinin: Yeah, it's basically my thoughts as well, so if we find a solution for, you know, broadcasting attestation-Q-Casper till the end of the SLOT,
+Mikhail Kalinin: Yeah, it's basically my thoughts as well, so if we find a solution for, you know, broadcasting attestation-Q-Gasper till the end of the SLOT,
 
 312
 00:38:37.040 --> 00:38:51.479
-Potuz: from the point of view of Fortress, it does give the proposer a little bit less certainty, because they cannot assert their view by including the attestations in their own block, but I think we're past those kind of considerations.
+Potuz: from the point of view of fork choice, it does give the proposer a little bit less certainty, because they cannot assert their view by including the attestations in their own block, but I think we're past those kind of considerations.
 
 313
 00:39:01.870 --> 00:39:07.579
@@ -1298,7 +1298,7 @@ Kamil Salakhiev: Yeah, one methodology that I was doing is basically just, I had
 
 325
 00:40:48.960 --> 00:40:54.350
-Kamil Salakhiev: I just cloded this PQ gateway that sits in front of the PRISM node, and…
+Kamil Salakhiev: I just cloded this PQ gateway that sits in front of the Prysm node, and…
 
 326
 00:40:54.680 --> 00:41:03.590
@@ -1354,7 +1354,7 @@ Kevaundray Wedderburn: Yeah, maybe we can't get an answer on the call today, but
 
 339
 00:42:24.870 --> 00:42:36.239
-Kevaundray Wedderburn: these DC and Caspar questions are basically related to, networking, and if we can't get confidence in, like, at least choosing a particular answer, it seems like we're just gonna be…
+Kevaundray Wedderburn: these DC and Gasper questions are basically related to, networking, and if we can't get confidence in, like, at least choosing a particular answer, it seems like we're just gonna be…
 
 340
 00:42:36.880 --> 00:42:38.240
@@ -1678,7 +1678,7 @@ Kamil Salakhiev: I don't know, like, what people think about this.
 
 420
 00:50:52.240 --> 00:50:58.510
-Barnabas: I mean, we can also just… Flash… like… Dishonest aggregators, no?
+Barnabas: I mean, we can also just… slash… like… Dishonest aggregators, no?
 
 421
 00:50:59.040 --> 00:51:02.790
@@ -1786,7 +1786,7 @@ Kevaundray Wedderburn: Yeah, so we can make it quicker and it goes back to 2 sec
 
 447
 00:53:58.210 --> 00:54:09.330
-Potuz: I looked at the signing, not even the recursion, but even signing, it seems to me that there's a lot of gains by using the better multi-buffer CMD instructions.
+Potuz: I looked at the signing, not even the recursion, but even signing, it seems to me that there's a lot of gains by using the better multi-buffer SIMD instructions.
 
 448
 00:54:09.540 --> 00:54:16.029
@@ -1802,7 +1802,7 @@ Kevaundray Wedderburn: Right.
 
 451
 00:54:30.590 --> 00:54:40.159
-Tom Wambsgans: In particular, for signing, you can cash, like, you can prepare in advance part of the Mercury, and signing is only,
+Tom Wambsgans: In particular, for signing, you can cache, like, you can prepare in advance part of the Merkle tree, and signing is only,
 
 452
 00:54:40.310 --> 00:54:43.570
@@ -1830,7 +1830,7 @@ Mikhail Kalinin: locally.
 
 458
 00:55:08.660 --> 00:55:26.059
-Tom Wambsgans: When you aggregate, you have… you can choose the rate, the rate of the linear code, Ritz-Leman code, and the smaller the rate is, the smaller the proof is. And a smaller proof is slower to produce, to prove.
+Tom Wambsgans: When you aggregate, you have… you can choose the rate, the rate of the linear code, Reed-Solomon code, and the smaller the rate is, the smaller the proof is. And a smaller proof is slower to produce, to prove.
 
 459
 00:55:26.060 --> 00:55:45.400
@@ -1950,7 +1950,7 @@ Mikhail Kalinin: Wait, so, but, it's… for finality, it's, it's, it's probably 
 
 488
 01:00:12.300 --> 01:00:20.260
-Mikhail Kalinin: In prints something that's principally different, from what we have in PQ-SPR. The main difference is basically that we have, like, head votes.
+Mikhail Kalinin: In prints something that's principally different, from what we have in PQ Gasper. The main difference is basically that we have, like, head votes.
 
 489
 01:00:21.440 --> 01:00:28.029
@@ -1982,7 +1982,7 @@ Mikhail Kalinin: I think that's a big difference here.
 
 496
 01:00:55.920 --> 01:01:10.699
-Mikhail Kalinin: for the fork choice, not for the finality. Even though, like, I believe that on the P2P layer, in the coupled Consensus, we can have some improvements that we are not allowed to have in, you know, in PQ Gasper.
+Mikhail Kalinin: for the fork choice, not for the finality. Even though, like, I believe that on the P2P layer, in the decoupled Consensus, we can have some improvements that we are not allowed to have in, you know, in PQ Gasper.
 
 497
 01:01:10.700 --> 01:01:15.990
@@ -2026,7 +2026,7 @@ Mikhail Kalinin: Huge bandwidth to basically propagate these votes, in time.
 
 507
 01:02:32.120 --> 01:02:40.869
-Mikhail Kalinin: Yeah, so that's the main difference here. And the other stations, they, they can get… we can have a, like.
+Mikhail Kalinin: Yeah, so that's the main difference here. And the other attestations, they, they can get… we can have a, like.
 
 508
 01:02:41.550 --> 01:02:49.550
@@ -2038,7 +2038,7 @@ Justin Traglia: I'd like to take a quick temp check on…
 
 510
 01:03:12.320 --> 01:03:18.929
-Justin Traglia: Who thinks that we should be focusing or spending a few weeks on PQ Caspar, or should we just immediately
+Justin Traglia: Who thinks that we should be focusing or spending a few weeks on PQ Gasper, or should we just immediately
 
 511
 01:03:19.890 --> 01:03:22.049
@@ -2098,7 +2098,7 @@ Potuz: of the… of the hot pad. So it is true that, for validators, it's not so
 
 525
 01:05:00.430 --> 01:05:11.799
-Mikhail Kalinin: Yeah, I think it's a good exercise to try to solve this problem for PQ with the constraints that PQ Gaspar has anyway, so try to think into this on the P2P layer.
+Mikhail Kalinin: Yeah, I think it's a good exercise to try to solve this problem for PQ with the constraints that PQ Gasper has anyway, so try to think into this on the P2P layer.
 
 526
 01:05:14.730 --> 01:05:22.680
@@ -2130,7 +2130,7 @@ Potuz: Would the current bandwidth be enough?
 
 533
 01:06:31.110 --> 01:06:35.060
-Kamil Salakhiev: In my simulations with 13K notes, it was good.
+Kamil Salakhiev: In my simulations with 13K nodes, it was good.
 
 534
 01:06:35.520 --> 01:06:38.059
@@ -2250,7 +2250,7 @@ Justin Traglia: Yeah, I'm not sure.
 
 563
 01:09:41.029 --> 01:09:51.099
-Barnabas: Can I hear you the same kind of logic as we did with BNS segregations, where we are picking, secretly the aggregates per committee?
+Barnabas: Can I hear you the same kind of logic as we did with BLS aggregations, where we are picking, secretly the aggregates per committee?
 
 564
 01:09:51.939 --> 01:09:59.529
@@ -2274,7 +2274,7 @@ Potuz: Can we agree on delayed inclusion?
 
 569
 01:10:41.980 --> 01:10:55.170
-Potuz: and then try to finalize the spec, either today, tomorrow, so that we can actually code and see if this problem is… I mean, try to actually launch a DevNet. If we see it as a blocker immediately, we can just…
+Potuz: and then try to finalize the spec, either today, tomorrow, so that we can actually code and see if this problem is… I mean, try to actually launch a devnet. If we see it as a blocker immediately, we can just…
 
 570
 01:10:55.530 --> 01:11:00.729
@@ -2314,7 +2314,7 @@ ethDreamer (Mark): We go all in on DC.
 
 579
 01:11:29.570 --> 01:11:33.569
-Kamil Salakhiev: But we'll never be able to actually try it at the same scale as Maynet.
+Kamil Salakhiev: But we'll never be able to actually try it at the same scale as mainnet.
 
 580
 01:11:33.750 --> 01:11:35.040
@@ -2342,7 +2342,7 @@ Barnabas: I don't really care about the P2P side.
 
 586
 01:11:57.370 --> 01:12:01.819
-Justin Traglia: Would this be an open DevNet that, like, anyone could join? Or, like, how do we…
+Justin Traglia: Would this be an open devnet that, like, anyone could join? Or, like, how do we…
 
 587
 01:12:02.240 --> 01:12:08.139
@@ -2374,7 +2374,7 @@ Kevaundray Wedderburn: Yeah, I mean, I think this sounds good. I would also ask 
 
 594
 01:13:02.410 --> 01:13:06.889
-Kevaundray Wedderburn: Testing the CPU is, like, something we don't need a DevNet for it.
+Kevaundray Wedderburn: Testing the CPU is, like, something we don't need a devnet for it.
 
 595
 01:13:07.500 --> 01:13:11.820
@@ -2474,7 +2474,7 @@ Kamil Salakhiev: well, reasonably pessimistic assumptions, and still the simulat
 
 619
 01:15:58.700 --> 01:16:04.789
-Kamil Salakhiev: pretty good data point that, yeah, some assumptions about, for example, PQ gaspers are actually feasible.
+Kamil Salakhiev: pretty good data point that, yeah, some assumptions about, for example, PQ Gasper are actually feasible.
 
 620
 01:16:06.340 --> 01:16:21.490
@@ -2486,11 +2486,11 @@ Csaba: Maybe I understand long what was the discussion?
 
 622
 01:16:26.890 --> 01:16:38.449
-Kevaundray Wedderburn: I mean, it'd just be good if we could just have some agreement on how we solve networking questions. Like, if it's not simulations, and we need DevNets, if we need both of them in parallel, if we need, like.
+Kevaundray Wedderburn: I mean, it'd just be good if we could just have some agreement on how we solve networking questions. Like, if it's not simulations, and we need devnets, if we need both of them in parallel, if we need, like.
 
 623
 01:16:38.710 --> 01:16:41.620
-Kevaundray Wedderburn: a particular size DevNets, I don't think it really…
+Kevaundray Wedderburn: a particular size devnets, I don't think it really…
 
 624
 01:16:42.330 --> 01:16:51.180
@@ -2586,7 +2586,7 @@ Kamil Salakhiev: we'll be interchanging some topic, I don't know, like, we have 
 
 647
 01:20:37.120 --> 01:20:46.709
-Kamil Salakhiev: And we know already that we're introducing technical depth by doing that, because this is not the most… well, this is not the best way to large message dissemination.
+Kamil Salakhiev: And we know already that we're introducing technical debt by doing that, because this is not the most… well, this is not the best way to large message dissemination.
 
 648
 01:20:46.960 --> 01:20:50.870
@@ -2670,7 +2670,7 @@ Potuz: what we already have with gossip-sub. So I would try to avoid them if we 
 
 668
 01:22:59.050 --> 01:23:05.329
-Potuz: And as long as we start piling too many of these changes, then I think we all are going to agree we just go with this C instead.
+Potuz: And as long as we start piling too many of these changes, then I think we all are going to agree we just go with DC instead.
 
 669
 01:23:07.350 --> 01:23:17.000
@@ -2698,7 +2698,7 @@ Justin Traglia: Mikhail?
 
 675
 01:23:47.350 --> 01:23:54.330
-Mikhail Kalinin: Yeah, I was going to make, like, a point about… Test NAS, DevNATs, and simulations.
+Mikhail Kalinin: Yeah, I was going to make, like, a point about… testnets, devnets, and simulations.
 
 676
 01:23:54.740 --> 01:24:13.239
@@ -2726,7 +2726,7 @@ Mikhail Kalinin: try to, actually have, like, you know, some load on the EL part
 
 682
 01:25:27.160 --> 01:25:31.869
-Mikhail Kalinin: You know, without a DevNet, and have some reliable results.
+Mikhail Kalinin: You know, without a devnet, and have some reliable results.
 
 683
 01:25:34.430 --> 01:25:39.350
@@ -2734,7 +2734,7 @@ Mikhail Kalinin: That, will tell us, basically, will suggest us that, is it a go
 
 684
 01:25:46.500 --> 01:25:50.750
-Justin Traglia: Yeah, I totally agree. I don't see how we can do this without DevNet testnets.
+Justin Traglia: Yeah, I totally agree. I don't see how we can do this without devnet testnets.
 
 685
 01:25:54.320 --> 01:25:57.970
@@ -2774,7 +2774,7 @@ Justin Traglia: Probably.
 
 694
 01:26:40.950 --> 01:26:52.050
-Csaba: Yeah, so from my point, I think it's good to go with a DevNet, or a testnet, or anyway, some little implementation. We just don't need the large scale.
+Csaba: Yeah, so from my point, I think it's good to go with a devnet, or a testnet, or anyway, some little implementation. We just don't need the large scale.
 
 695
 01:26:52.490 --> 01:26:57.609
@@ -2782,7 +2782,7 @@ Csaba: Which, which simplifies things. And it's good because it just explores
 
 696
 01:26:58.080 --> 01:27:06.740
-Csaba: different bottlenecks and different, constraints. What you typically don't have in the DevNet testnet is… is… is…
+Csaba: different bottlenecks and different, constraints. What you typically don't have in the devnet testnet is… is… is…
 
 697
 01:27:07.080 --> 01:27:15.570
@@ -2798,7 +2798,7 @@ Csaba: But what you do have is… is all the realism of… of this cross-traffic
 
 700
 01:27:35.600 --> 01:27:43.410
-Csaba: I would definitely not disclit the simulations, we should do the simulations, we should do the… the DevNuts?
+Csaba: I would definitely not disclit the simulations, we should do the simulations, we should do the… the devnets?
 
 701
 01:27:43.600 --> 01:27:52.530
@@ -2862,7 +2862,7 @@ Kevaundray Wedderburn: So those are the four points that I think That makes sens
 
 716
 01:29:33.440 --> 01:29:38.639
-Kevaundray Wedderburn: Caba, are you happy taking this methodology apart?
+Kevaundray Wedderburn: Csaba, are you happy taking this methodology apart?
 
 717
 01:29:39.320 --> 01:29:47.190
@@ -2910,7 +2910,7 @@ Kevaundray Wedderburn: Yeah.
 
 728
 01:30:49.130 --> 01:31:00.849
-Kevaundray Wedderburn: And I guess, yeah, Mark, you mentioned that you're okay with VIP coding an implementation based off of the specs. Potuz, you also seem to be happy to do this, so that we can run these on DevNets.
+Kevaundray Wedderburn: And I guess, yeah, Mark, you mentioned that you're okay with vibe coding an implementation based off of the specs. Potuz, you also seem to be happy to do this, so that we can run these on devnets.
 
 729
 01:31:02.710 --> 01:31:05.040
@@ -2918,7 +2918,7 @@ ethDreamer (Mark): And also, isn't there, like, a whole bunch of,
 
 730
 01:31:06.320 --> 01:31:12.150
-ethDreamer (Mark): I don't know, we have, like, ZATU data, right? I mean, maybe collecting some of those metrics should be useful.
+ethDreamer (Mark): I don't know, we have, like, Xatu data, right? I mean, maybe collecting some of those metrics should be useful.
 
 731
 01:31:17.080 --> 01:31:26.900
@@ -2934,7 +2934,7 @@ Kamil Salakhiev: What bandwidth we see now, and then…
 
 734
 01:31:34.780 --> 01:31:40.680
-Kamil Salakhiev: Yeah, do some calculations, calculate, like, how bandwidth would look like with XMS signatures.
+Kamil Salakhiev: Yeah, do some calculations, calculate, like, how bandwidth would look like with XMSS signatures.
 
 735
 01:31:40.920 --> 01:31:46.840
@@ -2978,7 +2978,7 @@ Justin Traglia: And then we can start prototyping.
 
 745
 01:32:51.730 --> 01:32:52.650
-Justin Traglia: Otis?
+Justin Traglia: Potuz?
 
 746
 01:32:53.290 --> 01:33:11.779
@@ -2998,7 +2998,7 @@ Justin Traglia: For all the new stuff ready.
 
 750
 01:33:21.840 --> 01:33:24.000
-Justin Traglia: Like, we can vibecair that as well.
+Justin Traglia: Like, we can vibe code that as well.
 
 751
 01:33:24.000 --> 01:33:27.270
@@ -3010,7 +3010,7 @@ Potuz: that… Yeah, because…
 
 753
 01:33:30.250 --> 01:33:34.459
-Justin Traglia: Exactly, we just need a way of loading the XMS pub keys, or whatever.
+Justin Traglia: Exactly, we just need a way of loading the XMSS pub keys, or whatever.
 
 754
 01:33:34.460 --> 01:33:37.299
@@ -3026,7 +3026,7 @@ Justin Traglia: Oh, I mean, if we can Genesis a PQ, I guess that's fine, too. I 
 
 757
 01:33:47.580 --> 01:33:54.139
-Potuz: It depends on what we want to test. I think at a later DevNet, we are going to want to test the fork.
+Potuz: It depends on what we want to test. I think at a later devnet, we are going to want to test the fork.
 
 758
 01:33:54.330 --> 01:34:07.399
@@ -3058,7 +3058,7 @@ Potuz: What was the question? I didn't understand what Barnabas said.
 
 765
 01:34:27.790 --> 01:34:31.570
-Justin Traglia: Is there a way to generate XMS pub keys yet? Or, sorry, keys yet?
+Justin Traglia: Is there a way to generate XMSS pub keys yet? Or, sorry, keys yet?
 
 766
 01:34:32.360 --> 01:34:37.219
@@ -3142,7 +3142,7 @@ Potuz: With high attestation inclusion in 12 seconds on a chain that is actually
 
 786
 01:36:42.850 --> 01:36:53.480
-Potuz: That's, that is already good enough for us to keep pushing on Caspar. If we cannot, then we should, like, explore how the fork will look with DC.
+Potuz: That's, that is already good enough for us to keep pushing on Gasper. If we cannot, then we should, like, explore how the fork will look with DC.
 
 787
 01:36:59.860 --> 01:37:09.560
@@ -3246,7 +3246,7 @@ Tom Wambsgans: I think we can make, hopefully, closer to 2 to 3 seconds.
 
 812
 01:39:07.010 --> 01:39:12.420
-Mikhail Kalinin: I've seen something different in your benchmark Spotus. I don't know, let's chat offline about it.
+Mikhail Kalinin: I've seen something different in your benchmark Potuz. I don't know, let's chat offline about it.
 
 813
 01:39:16.430 --> 01:39:26.159
@@ -3282,7 +3282,7 @@ Tom Wambsgans: I see. Because, in practice, the, if you go to the, like, the ben
 
 821
 01:40:07.060 --> 01:40:16.840
-Tom Wambsgans: aggregating 1,400 XMSS is the same order of magnitude than recursing 16 to 1. So, I'm a bit surprised that it's one sequence for the XMS.
+Tom Wambsgans: aggregating 1,400 XMSS is the same order of magnitude than recursing 16 to 1. So, I'm a bit surprised that it's one second for the XMSS.
 
 822
 01:40:16.840 --> 01:40:22.710
@@ -3306,7 +3306,7 @@ Mikhail Kalinin: Until… unless we remove the… any aggregation from the hot p
 
 827
 01:40:46.080 --> 01:40:56.670
-Tom Wambsgans: Yeah, okay, fine, but if it's two sequence for 1400 XMSS, it's quite promising. It means that we can probably get similar numbers for recursion, I believe. But I will try to do it and get the numbers for tomorrow.
+Tom Wambsgans: Yeah, okay, fine, but if it's two seconds for 1400 XMSS, it's quite promising. It means that we can probably get similar numbers for recursion, I believe. But I will try to do it and get the numbers for tomorrow.
 
 828
 01:41:00.300 --> 01:41:18.410
@@ -3398,7 +3398,7 @@ Kevaundray Wedderburn: And benchmarking, while it's doing something.
 
 850
 01:43:36.240 --> 01:43:48.599
-Tom Wambsgans: Yeah, I agree. I totally agree. I think what we want to measure is to benchmark 4 cores alone and 4 cores with the remaining 4 cores on DEL, but we'll get the answer tomorrow, maybe tonight.
+Tom Wambsgans: Yeah, I agree. I totally agree. I think what we want to measure is to benchmark 4 cores alone and 4 cores with the remaining 4 cores on EL, but we'll get the answer tomorrow, maybe tonight.
 
 851
 01:44:02.180 --> 01:44:06.909
@@ -3726,7 +3726,7 @@ Justin Traglia: There's 12 more minutes left in the call. What do we want to dis
 
 932
 01:52:19.640 --> 01:52:22.999
-Barnabas: Maybe the 0x02 Validor thing?
+Barnabas: Maybe the 0x02 validator thing?
 
 933
 01:52:23.160 --> 01:52:24.210
@@ -3782,7 +3782,7 @@ Francesco D'Amato: part of the idea was there was, like, I guess the other big, 
 
 946
 01:53:21.770 --> 01:53:37.080
-Francesco D'Amato: About consolidations is this, custom threshold thing, so we… if we're gonna disable 0.01, we could, do this custom threshold feature, and then, yeah, doesn't really seem like there would be too much of a reason not to consolidate.
+Francesco D'Amato: About consolidations is this, custom threshold thing, so we… if we're gonna disable 0x01, we could, do this custom threshold feature, and then, yeah, doesn't really seem like there would be too much of a reason not to consolidate.
 
 947
 01:53:40.300 --> 01:53:47.250
@@ -3830,7 +3830,7 @@ Justin Traglia: Because there'd be fewer validators registering PQ data, or, yea
 
 958
 01:54:38.010 --> 01:54:43.050
-Barnabas: Maybe we can just do twoeths of… 0x02.
+Barnabas: Maybe we can just do two-thirds of… 0x02.
 
 959
 01:54:43.410 --> 01:54:46.900
@@ -3850,7 +3850,7 @@ Barnabas: So instead of looking at the whole Validator set that we have right no
 
 963
 01:55:01.000 --> 01:55:05.859
-Barnabas: And we check if twoeths of those 0.02 Validors have added a peaking.
+Barnabas: And we check if two-thirds of those 0x02 validators have added a PQ key.
 
 964
 01:55:06.010 --> 01:55:06.910
@@ -3926,7 +3926,7 @@ Justin Traglia: Perfect.
 
 982
 01:56:32.060 --> 01:56:40.120
-Kevaundray Wedderburn: But just to be clear, this would potentially mean, adding 8148 into Hegota rate.
+Kevaundray Wedderburn: But just to be clear, this would potentially mean, adding 8148 into H-star, right?
 
 983
 01:56:40.800 --> 01:56:42.179
@@ -3970,7 +3970,7 @@ Justin Traglia: Speaking of this, it's okay that we have this prototyped on top 
 
 993
 01:57:18.480 --> 01:57:21.420
-Justin Traglia: Like, I don't think there's any sense in doing this on top of Hegota.
+Justin Traglia: Like, I don't think there's any sense in doing this on top of Heze.
 
 994
 01:57:21.970 --> 01:57:23.779
@@ -3994,7 +3994,7 @@ Barnabas: Fair.
 
 999
 01:57:29.000 --> 01:57:33.649
-Justin Traglia: the stuff that we're talking about is scheduled or intended for Hegota.
+Justin Traglia: the stuff that we're talking about is scheduled or intended for H-star.
 
 1000
 01:57:43.550 --> 01:57:45.210
@@ -4166,11 +4166,11 @@ Justin Traglia: You think we should remove it, at least.
 
 1042
 02:01:37.500 --> 02:01:51.589
-Potuz: Well, my personal preference would be to just remove those two requests and add two new ones for deposits. It's fine if we don't add them for the DevNet, but I'm asking whether or not we are going to remove the BLS ones for the DevNet.
+Potuz: Well, my personal preference would be to just remove those two requests and add two new ones for deposits. It's fine if we don't add them for the devnet, but I'm asking whether or not we are going to remove the BLS ones for the devnet.
 
 1043
 02:01:53.320 --> 02:02:01.339
-Kevaundray Wedderburn: Yeah, I think it makes sense to remove them for the DevNet, right? We're not adding BLS validators during the DevNet.
+Kevaundray Wedderburn: Yeah, I think it makes sense to remove them for the devnet, right? We're not adding BLS validators during the devnet.
 
 1044
 02:02:05.170 --> 02:02:09.379

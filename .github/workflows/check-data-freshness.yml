@@ -1,0 +1,30 @@
+name: Check Data Freshness
+
+# Fails (and so emails whoever last edited this cron) when upstream data stops
+# arriving: no new ACD calls, stale plan artifacts, sync workflows that haven't
+# succeeded recently, or a failed deploy. See scripts/check-data-freshness.mjs.
+on:
+  schedule:
+    - cron: '30 7 * * *' # daily at 07:30 UTC, after the morning sync runs
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout forkcast
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Check data freshness
+        run: node scripts/check-data-freshness.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

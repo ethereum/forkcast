@@ -1,0 +1,69 @@
+{
+  "meeting": "P2P #011 - 2026-11-18",
+  "eips": [
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "discussed",
+      "summary": "Multiple teams reported working on EIP-8411 implementation, including a Lighthouse prototype using Waggle; its CFI status and scope were discussed.",
+      "moments": [
+        {
+          "timestamp": "00:06:50",
+          "context": "jxs reported working on EIP-8411 implementation."
+        },
+        {
+          "timestamp": "00:07:05",
+          "context": "Kamil said Lighthouse now has an EIP-8411 implementation using Waggle and shared simulation results showing bandwidth savings."
+        },
+        {
+          "timestamp": "00:07:38",
+          "context": "Aarsh Shah from Prysm said they are looking into prototyping EIP-8411 and diving into Waggle."
+        },
+        {
+          "timestamp": "00:09:05",
+          "context": "FLCL from Nethermind said they would check EIP-8411 in detail that week."
+        },
+        {
+          "timestamp": "01:03:42",
+          "context": "Csaba noted in chat that he is preparing a PR to clarify the chunking descriptor and Reed-Solomon scheme for EIP-8411."
+        },
+        {
+          "timestamp": "01:34:41",
+          "context": "Kamil highlighted a PR to update EIP-8411 with Waggle and a Lighthouse implementation PR, noting the EIP is currently CFI but scope may be reconsidered."
+        }
+      ]
+    },
+    {
+      "eip": 8334,
+      "title": "Bundled Attestation Propagation",
+      "weight": "discussed",
+      "summary": "Kamil discussed applying EIP-8334 bundled attestation optimization in simulations but noted it saves less bandwidth with large PQ signatures.",
+      "moments": [
+        {
+          "timestamp": "01:16:16",
+          "context": "Kamil said he tried applying EIP-8334 optimization for bundled attestation broadcast, noting it saves bandwidth by attaching multiple signatures to the same attestation data, but with large PQ signatures the savings are minimal. He built on top of 8334 by collecting signatures every 20 milliseconds before propagating."
+        }
+      ]
+    },
+    {
+      "eip": 7870,
+      "title": "Hardware and Bandwidth Recommendations",
+      "weight": "discussed",
+      "summary": "Debate over whether EIP-7870 bandwidth assumptions are outdated and should be updated, with calls to run simulations using its numbers.",
+      "moments": [
+        {
+          "timestamp": "01:17:08",
+          "context": "Kamil said his simulation used bandwidth numbers more optimistic than EIP-7870 but argued they are realistic for validators with 32 ETH."
+        },
+        {
+          "timestamp": "01:29:54",
+          "context": "Cayman urged in chat that simulations should include EIP-7870-bound nodes, arguing bad numbers would justify updating the bandwidth assumption."
+        },
+        {
+          "timestamp": "01:31:49",
+          "context": "Kamil argued EIP-7870 should be reconsidered since it was presented 21 months ago, citing Nielsen's Law and survey data showing validators report much higher bandwidth than 7870 assumes."
+        }
+      ]
+    }
+  ]
+}

@@ -32,14 +32,14 @@ export const GLAMSTERDAM_TIMELINE_PHASES: TimelinePhase[] = [
     id: 'hoodi',
     title: 'Hoodi Testnet Deployment',
     dateRange: 'TBD',
-    description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing. ACDE 248 postponed the Oct 26 slot to allow time to analyze a security disclosure affecting the repricing EIPs. No new date is set.',
+    description: 'Deploy Glamsterdam to the permissionless validator testnet for final testing. Penciled in for the week of Dec 14, pending a go/no-go on ACDC.',
     status: 'upcoming'
   },
   {
     id: 'mainnet',
     title: 'Mainnet Deployment',
     dateRange: 'TBD',
-    description: 'Final deployment of Glamsterdam to Ethereum mainnet after successful testnet validation. ACDE 248 deferred the date to allow time to analyze a security disclosure affecting the repricing EIPs.',
+    description: 'Final deployment of Glamsterdam to Ethereum mainnet after successful testnet validation. Date not yet set.',
     status: 'upcoming'
   }
 ];
@@ -275,7 +275,7 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
       status: 'in-progress',
       actualStartDate: 'Aug 13, 2026',
       projectedDate: 'Q3 2026',
-      progressNotes: 'Platåberget and Sepolia are forked; Hoodi is postponed with no new date',
+      progressNotes: 'Platåberget and Sepolia are forked; Hoodi penciled in for week of Dec 14',
       // Holešky is deprecated, so Glamsterdam gets a purpose-built public testnet
       // (glamsterdam-devnet-8) in its place.
       testnets: [
@@ -288,10 +288,7 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
           dateSource: 'https://forkcast.org/calls/acdc/187#00:30:33'
         },
         {
-          // ACDE 248 postponed the agreed Oct 26 slot to allow time to analyze
-          // a security disclosure affecting the repricing EIPs. Keeping Hoodi
-          // on Fusaka also leaves one testnet on each side of the fork, for
-          // comparison. No new date until the analysis lands.
+          // Penciled in for the week of Dec 14 on ACDE 249, pending a go/no-go on ACDC.
           name: 'Hoodi',
           status: 'upcoming'
         }
@@ -300,9 +297,7 @@ const RAW_GLAMSTERDAM_PROGRESS: ForkProgress = {
     {
       phaseId: 'mainnet-deployment',
       status: 'upcoming',
-      // ACDE 248 put the rollout on ice. The same analysis also decides whether
-      // the specs change at all, so no date can be set until it lands.
-      progressNotes: 'Deferred while a security disclosure is analyzed'
+      progressNotes: 'Date not yet set'
     }
   ]
 };

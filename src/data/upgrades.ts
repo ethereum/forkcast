@@ -143,7 +143,7 @@ export const networkUpgrades: NetworkUpgrade[] = [
     tagline: 'ePBS (EIP-7732) and Block-Level Access Lists (EIP-7928)',
     status: 'Upcoming',
     activationDate: 'TBD',
-    projectedActivation: '2026-12-02',
+    projectedActivation: '2027-01-27',
     disabled: false,
     metaEipLink: 'https://ethereum-magicians.org/t/eip-7773-glamsterdam-network-upgrade-meta-thread/21195',
     // The only mascot written into a hardfork meta EIP so far: EIP-7773#mascot.

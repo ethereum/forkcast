@@ -124,7 +124,8 @@ export const OverviewSection: React.FC<OverviewSectionProps> = ({
               </Link>
               {' '}followed on October 6, 2026. Hoodi was due to fork on October 26, but ACDE 248
               postponed it to allow time to analyze a security disclosure affecting the repricing
-              EIPs. No new date is set.
+              EIPs. ACDE 249 penciled in the week of December 14, with a final go/no-go on ACDC
+              on November 26.
             </p>
           </div>
         </div>

@@ -1,56 +1,63 @@
 {
   "series": "ACDT",
-  "generated": "2026-11-12",
-  "for_call": "ACDT #103",
+  "generated": "2026-11-19",
+  "for_call": "ACDT #104",
   "suggestions": [
     {
-      "topic": "Hoodi fork rescheduling post-audit",
+      "topic": "EIP-8037/8038 final decision and Hoodi Glamsterdam fork date",
       "priority": "high",
-      "rationale": "EIP-8037/8038 security audit (ChainSecurity + Dedaub) was expected ~2 weeks from Oct 26 (due around Nov 9). Need to review audit findings and set new Hoodi fork date.",
+      "rationale": "ACDT #103 explicitly deferred this decision to ACDE Thursday. ACDT #104 should follow up on ACDE's outcome, finalize client coordination for January 2027 target, and lock in Hoodi testnet date.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Consensus-specs PRs from ACDT #102",
+      "topic": "Glamsterdam audit findings mitigation status update",
       "priority": "high",
-      "rationale": "Two spec PRs assigned in last meeting: envelope signature clarification (Sam/Nimbus) and GetPayload transaction count gossip check (Nico/Lodestar). Status updates needed before Hoodi.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Glamsterdam devnet-8 and Hoodi testnet status",
-      "priority": "medium",
-      "rationale": "devnet-8 was running basic load as of Oct 26; Hoodi client releases were incomplete (Geth, Reth missing config). Check current health and release readiness for shadow fork.",
+      "rationale": "ACDT #103 identified 200+ affected contracts across ChainSecurity, Dedaub, and EF internal audits. Outreach to L2/app teams is ongoing (Rahul assigned). Need status on affected protocol fixes and remaining coordination before mainnet.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "bogota-devnet-2 EIP scope confirmation",
+      "topic": "Process improvements: invariant documentation and automated breakage analysis",
       "priority": "medium",
-      "rationale": "ACDT #100 requested scope confirmation (SETCODEFROM, data repricing EIP-8279, nonce bump EIP-8253, deactivate self-destruct) on next call. Not explicitly locked in #101 or #102.",
+      "rationale": "ACDT #103 surfaced major process gaps. Two specs PRs (#3948, #3982) on deployed-idiom invariants need review/merge. Marius proposed publishing an EIP documenting stable vs. expected-to-change invariants. Agent-swarm analysis will be run systematically going forward.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "heze-devnet-2 launch status",
+      "topic": "Bogota devnet-2 EIP scope confirmation",
       "priority": "medium",
-      "rationale": "Target was Oct 28 latest (ACDT #100); scope changed in #101 to exclude quick slots, only Beta-4 EIPs (FOCIL, remove eth1data, disallow 0x00 validators). Check if devnet launched and current stability.",
+      "rationale": "ACDT #100 requested confirmation of devnet-2 scope (SETCODEFROM, data repricing EIP-8279, nonce bump EIP-8253, deactivate self-destruct) for next call, but it was not addressed in #101-103. If this devnet remains active, scope needs locking.",
       "related_eips": [],
-      "source": "devnet_update"
+      "source": "open_action_item"
+    },
+    {
+      "topic": "Heze devnet-2 status and CL feature branch readiness",
+      "priority": "medium",
+      "rationale": "ACDT #102 left shorter slots as a feature branch pending majority client agreement, deferred to ACDC. Heze devnet-2 planning (FOCIL, remove eth1data, disallow 0x00 validators) needs update on client readiness and launch timing.",
+      "related_eips": [],
+      "source": "deferred_decision"
+    },
+    {
+      "topic": "Builder onboarding fix (PR #5736) merge status and Hoodi shadow fork readiness",
+      "priority": "medium",
+      "rationale": "ACDT #102 approved builder onboarding fix (0x0B-prefixed deposits) for merge 'this week'. ACDT #103 did not confirm merge. Hoodi shadow fork was planned pending client releases; need update on release status and shadow fork timeline.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Consensus-specs PRs for ePBS: envelope signatures and GetPayload gossip check",
+      "priority": "low",
+      "rationale": "ACDT #102 assigned Sam (Nimbus) to clarify envelope signatures are unverifiable during backfill, and Nico (Lodestar) to open GetPayload transaction count gossip check PR. No confirmation in #103; likely completed async but worth quick check-in.",
+      "related_eips": [],
+      "source": "open_action_item"
     },
     {
       "topic": "EIP-7870 hardware specs update for Glamsterdam",
       "priority": "low",
-      "rationale": "Min specs (500 MB/s sequential R/W) identified as too low for Glamsterdam; jochem recommended 2000 MB/s. Living document approach agreed but update not confirmed as completed.",
+      "rationale": "ACDT #100 identified EIP-7870 sequential read/write specs (500 MB/s) are too low for Glamsterdam; jochem recommended 2000 MB/s. Decision made to keep as living document with fork-specific history. Update needs to be completed.",
       "related_eips": [],
       "source": "ongoing_discussion"
-    },
-    {
-      "topic": "Shorter slots feature branch next steps",
-      "priority": "low",
-      "rationale": "Deferred to ACDC for majority client agreement. If ACDC discussed, update ACDT; otherwise defer until client teams have bandwidth to revisit.",
-      "related_eips": [],
-      "source": "deferred_decision"
     }
   ]
 }

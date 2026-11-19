@@ -1,0 +1,187 @@
+{
+  "meeting": "ACDE #249 - 2026-11-19",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "Extensive debate on whether to ship current spec or make changes to mitigate contract breakage before Glamsterdam mainnet.",
+      "moments": [
+        {
+          "timestamp": "00:10:59",
+          "context": "Rahul reported outreach to 50+ companies affected by EIP-8037 repricing, suggesting mid-January as earliest mainnet date since all highs and most mediums said they would be ready by then."
+        },
+        {
+          "timestamp": "00:18:50",
+          "context": "Justin Florentine from Besu argued that breaking try/catch in Solidity via gas accounting changes is more concerning than hard-coded gas pricing breaks, and suggested using the delay time to try to fix the spec."
+        },
+        {
+          "timestamp": "00:20:22",
+          "context": "Lukasz mentioned he proposed spec changes three weeks ago but acknowledged uncertainty about whether full due diligence on alternative breakage was done."
+        },
+        {
+          "timestamp": "00:22:45",
+          "context": "Toni Wahrstaetter cautioned that spec changes could break new invariants and require extensive re-analysis, noting most apps are ready by mid-January."
+        },
+        {
+          "timestamp": "00:27:36",
+          "context": "Dragan Rakita argued there is no silver bullet for two-dimensional gas and the current spec is good enough; any changes would cause delays without protocol-level gains."
+        },
+        {
+          "timestamp": "00:32:17",
+          "context": "Marius van der Wijden explained that the most reasonable spec change—removing in-transaction refunds—would break contracts relying on set-then-clear storage patterns, and drawbacks are not fully understood."
+        },
+        {
+          "timestamp": "00:38:11",
+          "context": "Barnabas pushed to decide today, noting no concrete spec change proposals had been presented after nearly a month. Client team poll showed majority favoring proceeding without changes."
+        },
+        {
+          "timestamp": "00:42:27",
+          "context": "Andrew Ashikhmin from Erigon argued for spending effort on spec changes to preserve smart contract immutability rather than rushing Glamsterdam."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frames transaction EIP discussed as centerpiece of Hegota fork with ongoing spec changes and breakout recap.",
+      "moments": [
+        {
+          "timestamp": "00:49:03",
+          "context": "Ansgar introduced Hegota scope discussion noting frames is already the PQ platform centerpiece; question is whether to reduce scope around it."
+        },
+        {
+          "timestamp": "01:21:23",
+          "context": "Matt gave a frames breakout recap: working on 8288 forward compatibility, considering removing the signature list, and evaluating tree-root-style hashing; spec changes targeted before mid-December."
+        },
+        {
+          "timestamp": "01:23:39",
+          "context": "Nico said in chat that the frames breakout found a way to do PQ multisig with no changes required to Safe or to EIP-8141."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "discussed",
+      "summary": "In-mempool signature aggregation discussed as future-compatibility target for frames design and potential Hegota addition.",
+      "moments": [
+        {
+          "timestamp": "00:56:12",
+          "context": "Ivan said ethrex would leave an open window for an 8288 forward-compatible solution for PQ signatures enshrined in the protocol."
+        },
+        {
+          "timestamp": "00:58:42",
+          "context": "Matt stated there is no way signature aggregation via 8288 will be in Hegota but frames should be future-compatible with it."
+        },
+        {
+          "timestamp": "01:21:32",
+          "context": "Matt reported the frames breakout is working on becoming more forward-compatible with 8288 by potentially changing or removing the signature list."
+        },
+        {
+          "timestamp": "01:23:37",
+          "context": "Ivan described his draft EIP proposal for minimal leanSPHINCS on top of frames designed to be compatible with 8288 for future aggregation."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-Access Gas Cost Update",
+      "weight": "mentioned",
+      "summary": "Referenced alongside EIP-8037 as part of Glamsterdam repricing that was assessed by auditors.",
+      "moments": [
+        {
+          "timestamp": "00:57:04",
+          "context": "Ivan cited the care being taken with 8037 and 8038 for users as the model for other risky EIPs such as 8151."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "discussed",
+      "summary": "Flagged as needing the same careful user-impact analysis as EIP-8037 due to contracts depending on ecRecover.",
+      "moments": [
+        {
+          "timestamp": "00:57:04",
+          "context": "Ivan flagged that EIP-8151 needs the same care regarding user impact as EIP-8037 and 8038."
+        },
+        {
+          "timestamp": "00:58:56",
+          "context": "Kevaundray reported a preliminary scan showing quite a lot of contracts potentially broken by 8151's ecRecover restriction, raising concern it might not make Hegota."
+        }
+      ]
+    },
+    {
+      "eip": 8130,
+      "title": "Keystore Accounts",
+      "weight": "mentioned",
+      "summary": "Mentioned by Mislav as a possible solution for key management needed for smooth PQ wallet transition.",
+      "moments": [
+        {
+          "timestamp": "00:57:43",
+          "context": "Mislav said wallets need key management sorted out for PQ transition, mentioning something like 8130 in the default account path or a similar solution."
+        }
+      ]
+    },
+    {
+      "eip": 7907,
+      "title": "Meter Contract Code Size",
+      "weight": "mentioned",
+      "summary": "Listed by Barnabas as one of three remaining PFI EIPs still to be processed.",
+      "moments": [
+        {
+          "timestamp": "01:00:33",
+          "context": "Barnabas noted only three PFI EIPs remain: 8368, 8372, and 7907."
+        }
+      ]
+    },
+    {
+      "eip": 8368,
+      "title": "CPSB Recalibration for New Gas Limit",
+      "weight": "mentioned",
+      "summary": "Listed by Barnabas as one of three remaining PFI EIPs still to be processed.",
+      "moments": [
+        {
+          "timestamp": "01:00:33",
+          "context": "Barnabas noted only three PFI EIPs remain: 8368, 8372, and 7907."
+        }
+      ]
+    },
+    {
+      "eip": 8372,
+      "title": "Normalized state gas limit",
+      "weight": "mentioned",
+      "summary": "Listed by Barnabas as one of three remaining PFI EIPs still to be processed.",
+      "moments": [
+        {
+          "timestamp": "01:00:33",
+          "context": "Barnabas noted only three PFI EIPs remain: 8368, 8372, and 7907."
+        }
+      ]
+    },
+    {
+      "eip": 1271,
+      "weight": "mentioned",
+      "summary": "Cited as the mechanism for the PQ multisig approach found in the frames breakout.",
+      "moments": [
+        {
+          "timestamp": "01:23:39",
+          "context": "Nico explained in chat that one owner sends the frame transaction from their PQ account and the Safe checks the other owners inside execTransaction through 1271."
+        }
+      ]
+    },
+    {
+      "eip": 4337,
+      "weight": "mentioned",
+      "summary": "Raised as an example of the off-protocol workaround users might build if signature aggregation is not offered.",
+      "moments": [
+        {
+          "timestamp": "01:33:19",
+          "context": "Mislav warned in chat that people might start aggregating themselves and posting atomic 4337 bundles with aggregated proofs if the protocol does not offer it."
+        }
+      ]
+    }
+  ]
+}

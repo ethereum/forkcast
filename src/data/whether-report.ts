@@ -73,18 +73,18 @@ export interface WhetherReport {
 }
 
 export const whetherReport: WhetherReport = {
-  date: '2026-11-12',
+  date: '2026-11-20',
   tagline: 'One half-baked take on the state of protocol development.',
   items: [
     {
       title: 'Devcon',
       href: 'https://devcon.org',
-      body: "Devcon 8 wrapped up in Mumbai, and one priority that came out of it is [accelerating](https://www.youtube.com/watch?v=rqJ5ir-8hAQ) the post-quantum (or \"post-AI\") roadmap. Watch the Devcon 8 talks [here](https://archive.devcon.org/watch/?event=devcon8&sort=eventId&order=desc). Devcon 9 is [headed to Lisbon](https://x.com/EFDevcon/status/2118664094819782946), October 11-13, 2027.",
+      body: "Devcon 8 wrapped up in Mumbai, and one priority that came out of it is [accelerating](https://www.youtube.com/watch?v=rqJ5ir-8hAQ) the post-quantum (or \"post-AI\") roadmap. Watch the Devcon 8 talks [here](https://archive.devcon.org/watch/?event=devcon8&sort=eventId&order=desc). Devcon 9 is [headed to Lisbon](https://x.com/EFDevcon/status/2121216198507643333), October 12-14, 2027.",
     },
     {
       title: 'Shipping Glamsterdam',
       fork: 'glamsterdam',
-      body: "It'll be the [largest upgrade](/cadence) by EIP count in Ethereum history and includes major scaling improvements. Deployed on the Sepolia testnet, but further rollout is [paused](https://blog.ethereum.org/2026/10/22/glamsterdam-hoodi-delay) while a security disclosure is analyzed. EIP-8037 and EIP-8038 break eight invariants that deployed contracts may be relying on. Analysis results to be discussed at ACDT on Monday, Nov 16th.",
+      body: "It'll be the [largest upgrade](/cadence) by EIP count in Ethereum history and includes major scaling improvements. Deployed on the Sepolia testnet, but further rollout is [paused](https://blog.ethereum.org/2026/10/22/glamsterdam-hoodi-delay) while a security disclosure is analyzed. EIP-8037 and EIP-8038 break eight invariants that deployed contracts may be relying on. Analysis results were discussed at ACDT 103 - no easy fixes and spec changes may introduce new bugs and more delays. Most client teams prefer moving ahead with the upgrade after giving the affected teams time to upgrade. Many affected teams have or will upgrade their contracts in the next several weeks. A Hoodi testnet deployment is penciled in for the week of December 14th, but will be confirmed in a coming ACD call.",
       actions: [
         {
           label: 'Check your contracts',
@@ -96,7 +96,12 @@ export const whetherReport: WhetherReport = {
     {
       title: 'Scoping Hegotá',
       fork: 'hegota',
-      body: "On ACDC #191, client teams generally agreed to accelerate the PQ roadmap. The next ACD calls will reopen the scoping discussion and potentially deprioritize many currently considered EIPs. The EL has a (now stale?) [priority order](/upgrade/hegota/priority-order) to work from; the CL hasn't ranked their EIPs yet.",
+      body: "On ACDC #191, client teams generally agreed to accelerate the PQ roadmap. Subsequent ACD calls have reopened the scoping discussion and may result in deprioritizing some currently considered EIPs. The EL has a (now stale?) [priority order](/upgrade/hegota/priority-order) to work from; the CL hasn't ranked their EIPs yet.",
+    },
+    {
+      title: 'PQ-CL Breakout',
+      href: '/calls/pqcl',
+      body: "A new working session on moving the consensus layer to post-quantum signatures kicked off, meeting three times a week. The early calls have worked through how validators register their new keys, what happens to the ones that don't, and whether the new signatures can be aggregated fast enough to keep today's consensus design. A first devnet is in the works.",
     },
   ],
 };

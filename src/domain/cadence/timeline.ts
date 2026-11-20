@@ -46,7 +46,7 @@ export const FORK_SPEC_LINES: Record<string, number> = {
  * anything above; `timeline.test.ts` recomputes it too.
  */
 export const NEXT_FORK_SPEC_LINES: Record<string, number> = {
-  Glamsterdam: 4398,
+  Glamsterdam: 4669,
 };
 
 /**
@@ -66,7 +66,7 @@ export const PLANNED_STATUSES = ['Scheduled', 'Networking'];
  * the test matters more here.
  */
 export const NEXT_FORK_EIP_COUNT: Record<string, number> = {
-  Glamsterdam: 23,
+  Glamsterdam: 25,
 };
 
 /** Strip the trailing "Upgrade" so "Fusaka Upgrade" reads as "Fusaka". */

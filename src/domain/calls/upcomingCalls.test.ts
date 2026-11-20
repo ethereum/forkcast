@@ -109,6 +109,11 @@ All Wallet Devs`;
     ).toBe('awd');
   });
 
+  it('resolves EIP process series before broader title checks claim an EIP they mention', () => {
+    expect(resolveUpcomingCallType('EIP Editing Office Hour #121, EIP-7928 review, Dec 1, 2026')).toBe('eipoh');
+    expect(resolveUpcomingCallType('EIPIP Meeting #133: FOCIL process follow-up, Dec 16, 2026')).toBe('eipip');
+  });
+
   it('falls back to the title when the body series is missing', () => {
     expect(resolveUpcomingCallType('FOCIL Breakout #32, April 07, 2026')).toBe('focil');
   });
@@ -199,6 +204,16 @@ describe('createUpcomingWatchPagePredicate', () => {
 
     expect(hasWatchPage({ type: 'acdc', number: '166' })).toBe(false);
   });
+
+  it('never gives a listing-only series a watch page, even with a video', () => {
+    const hasWatchPage = createUpcomingWatchPagePredicate([
+      upcomingCall({ type: 'eipoh', number: '120', youtubeUrl: 'https://youtu.be/x' }),
+      upcomingCall({ type: 'eipip', number: '133', youtubeUrl: 'https://youtu.be/y' }),
+    ]);
+
+    expect(hasWatchPage({ type: 'eipoh', number: '120' })).toBe(false);
+    expect(hasWatchPage({ type: 'eipip', number: '133' })).toBe(false);
+  });
 });
 
 describe('fetchUpcomingCallsIfAvailable', () => {
@@ -261,6 +276,34 @@ ${series}
 
     expect(calls?.map((call) => call.issueNumber)).toEqual([100, 101]);
   });
+
+  it('lists a listing-only series without looking up its YouTube link', async () => {
+    const fetchMock = vi.fn(async (url: string) => {
+      if (url === 'https://api.github.com/repos/ethereum/pm/issues?state=open&per_page=20') {
+        return {
+          ok: true,
+          json: async () => [
+            {
+              title: 'EIP Editing Office Hour (EIP + ERC ) Meeting #120, January 2, 2099',
+              html_url: 'https://github.com/ethereum/pm/issues/2307',
+              number: 2307,
+              body: `### UTC Date & Time
+
+January 2, 2099, 16:00 UTC`,
+            },
+          ],
+        };
+      }
+
+      return { ok: true, json: async () => [] };
+    });
+    vi.stubGlobal('fetch', fetchMock);
+
+    const calls = await fetchUpcomingCallsIfAvailable();
+
+    expect(calls?.map((call) => call.type)).toEqual(['eipoh']);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('parseUpcomingCallFromIssue', () => {
@@ -313,6 +356,36 @@ All Core Devs - Consensus
 [October 2, 2025, 14:00 UTC](https://example.com)`,
       })
     ).toBeNull();
+  });
+
+  it('parses an EIPIP issue, which has no Call Series section', () => {
+    expect(
+      parseUpcomingCallFromIssue({
+        title: 'EIPIP Meeting #132, Nov 18, 2026',
+        html_url: 'https://github.com/ethereum/pm/issues/2288',
+        number: 2288,
+        body: `### UTC Date & Time
+
+Nov 18, 2026, 16:00 UTC
+
+### Agenda`,
+      })
+    ).toMatchObject({ type: 'eipip', date: '2026-11-18', startTimeUtc: '2026-11-18T16:00:00Z', number: '132' });
+  });
+
+  it('parses an EIP Editing Office Hour issue, which has no Call Series section', () => {
+    expect(
+      parseUpcomingCallFromIssue({
+        title: 'EIP Editing Office Hour (EIP + ERC ) Meeting #120, November 24, 2026',
+        html_url: 'https://github.com/ethereum/pm/issues/2307',
+        number: 2307,
+        body: `### UTC Date & Time
+
+November 24, 2026, 16:00 UTC
+
+### Agenda`,
+      })
+    ).toMatchObject({ type: 'eipoh', date: '2026-11-24', startTimeUtc: '2026-11-24T16:00:00Z', number: '120' });
   });
 
   it('returns null when the title has no call number', () => {

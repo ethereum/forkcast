@@ -1,4 +1,4 @@
-import { protocolCalls, type CallType } from '../../data/calls';
+import { protocolCalls, isListingOnlyCallType, type CallType } from '../../data/calls';
 import { formatDateInTimeZone, getTodayDateString } from '../../utils/localDate';
 import upcomingCallsSnapshot from '../../data/generated/upcoming-calls.json';
 import {
@@ -37,13 +37,18 @@ export const hasUpcomingVideo = (call: Pick<UpcomingCall, 'youtubeUrl'>): boolea
 /**
  * Build a predicate for whether an upcoming call has a static internal watch
  * page. The page exists only when that call was in the build-time snapshot with
- * a video URL. Live-fetched calls may also have videos, but they must link out
- * unless the current static build emitted their `/calls/{type}/{number}` page.
+ * a video URL and its series is not listing-only. Live-fetched calls may also
+ * have videos, but they must link out unless the current static build emitted
+ * their `/calls/{type}/{number}` page.
  */
 export const createUpcomingWatchPagePredicate = (
   snapshot: ReadonlyArray<UpcomingCall>
 ): ((call: Pick<UpcomingCall, 'type' | 'number'>) => boolean) => {
-  const watchPageIds = new Set(snapshot.filter(hasUpcomingVideo).map(upcomingCallId));
+  const watchPageIds = new Set(
+    snapshot
+      .filter((call) => hasUpcomingVideo(call) && !isListingOnlyCallType(call.type))
+      .map(upcomingCallId)
+  );
 
   return (call) => watchPageIds.has(upcomingCallId(call));
 };
@@ -118,7 +123,9 @@ const fetchUpcomingCallsFromGitHub = async (): Promise<UpcomingCall[]> => {
   }
 
   const youtubeUrls = await Promise.all(
-    parsedCalls.map(call => fetchYouTubeFromIssue(call.issueNumber))
+    parsedCalls.map(call =>
+      isListingOnlyCallType(call.type) ? undefined : fetchYouTubeFromIssue(call.issueNumber)
+    )
   );
 
   return parsedCalls

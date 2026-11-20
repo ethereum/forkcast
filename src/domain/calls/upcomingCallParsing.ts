@@ -42,6 +42,11 @@ const UPCOMING_CALL_SERIES_TO_TYPE: Record<string, CallType> = {
   'p2p networking': 'p2p',
   'ssz engine api': 'ssz',
   'pq-cl breakout': 'pqcl',
+  // EIPIP and EIP Editing Office Hour issues carry no Call Series section today;
+  // these match the ACDbot display names should one be added. Until then the
+  // title checks below resolve them.
+  'eipip meeting': 'eipip',
+  'eip editing office hour': 'eipoh',
 };
 
 const normalizeCallSeries = (series: string): string =>
@@ -83,6 +88,10 @@ export const resolveUpcomingCallSchedule = (
 };
 
 const resolveUpcomingCallTypeFromTitle = (title: string): CallType | undefined => {
+  // The EIP process series come first: their titles can name an EIP or topic
+  // (EIP-7928, FOCIL, …) that a later, broader check would claim.
+  if (/\bEIPIP\b/i.test(title)) return 'eipip';
+  if (/EIP Editing Office Hour/i.test(title)) return 'eipoh';
   if (/\(ACDC\)/i.test(title)) return 'acdc';
   if (/\(ACDE\)/i.test(title)) return 'acde';
   if (/\(ACDT\)/i.test(title)) return 'acdt';

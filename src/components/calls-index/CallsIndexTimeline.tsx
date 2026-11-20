@@ -32,7 +32,9 @@ const CALL_TYPE_BORDER_COLORS: Record<CallType, string> = {
   p2p: 'border-l-green-500 dark:border-l-green-400',
   ssz: 'border-l-zinc-500 dark:border-l-zinc-400',
   ethproofs: 'border-l-lime-500 dark:border-l-lime-400',
-  pqcl: 'border-l-neutral-500 dark:border-l-neutral-400'
+  pqcl: 'border-l-neutral-500 dark:border-l-neutral-400',
+  eipip: 'border-l-gray-500 dark:border-l-gray-400',
+  eipoh: 'border-l-gray-500 dark:border-l-gray-400'
 };
 
 const CALL_TYPE_BADGE_COLORS: Record<CallType, string> = {
@@ -55,7 +57,9 @@ const CALL_TYPE_BADGE_COLORS: Record<CallType, string> = {
   p2p: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
   ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300',
   ethproofs: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
-  pqcl: 'bg-neutral-100 dark:bg-neutral-900/30 text-neutral-700 dark:text-neutral-300'
+  pqcl: 'bg-neutral-100 dark:bg-neutral-900/30 text-neutral-700 dark:text-neutral-300',
+  eipip: 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300',
+  eipoh: 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300'
 };
 
 const FALLBACK_BORDER_COLOR = 'border-l-slate-400 dark:border-l-slate-500';

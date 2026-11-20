@@ -173,7 +173,9 @@ const HomePageInner = () => {
     p2p: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300',
     ssz: 'bg-zinc-100 dark:bg-zinc-900/30 text-zinc-700 dark:text-zinc-300',
     ethproofs: 'bg-lime-100 dark:bg-lime-900/30 text-lime-700 dark:text-lime-300',
-    pqcl: 'bg-neutral-100 dark:bg-neutral-900/30 text-neutral-700 dark:text-neutral-300'
+    pqcl: 'bg-neutral-100 dark:bg-neutral-900/30 text-neutral-700 dark:text-neutral-300',
+    eipip: 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300',
+    eipoh: 'bg-gray-100 dark:bg-gray-900/30 text-gray-700 dark:text-gray-300'
   };
 
   return (

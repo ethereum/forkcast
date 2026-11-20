@@ -26,6 +26,7 @@ import {
   parseUpcomingCallFromIssue,
   extractYouTubeUrl,
 } from '../src/domain/calls/upcomingCallParsing.ts';
+import { isListingOnlyCallType } from '../src/data/callSeries.ts';
 import {
   renameDevnetSeries,
   renameDevnetSeriesDeep,
@@ -107,7 +108,11 @@ async function buildUpcomingCalls() {
     foundTypes.add(call.type);
   }
 
-  const youtubeUrls = await Promise.all(parsed.map((call) => fetchYouTubeUrl(call.issueNumber)));
+  // A listing-only series never gets a watch page, so its comments are not
+  // fetched: a failure there must not fail the snapshot.
+  const youtubeUrls = await Promise.all(
+    parsed.map((call) => (isListingOnlyCallType(call.type) ? undefined : fetchYouTubeUrl(call.issueNumber))),
+  );
   return parsed
     .map((call, index) => ({ ...call, youtubeUrl: youtubeUrls[index] }))
     .sort((a, b) => a.date.localeCompare(b.date) || a.issueNumber - b.issueNumber);

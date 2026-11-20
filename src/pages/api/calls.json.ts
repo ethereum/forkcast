@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { callTypeNames, protocolCalls } from '../../data/calls';
+import { callTypeNames, isListingOnlyCallType, protocolCalls } from '../../data/calls';
 
 // Emitted as a static artifact during `astro build`, served at
 // https://forkcast.org/api/calls.json.
@@ -13,7 +13,9 @@ export const GET: APIRoute = () => {
   const payload = {
     generatedAt: new Date().toISOString(),
     count: protocolCalls.length,
-    series: callTypeNames,
+    series: Object.fromEntries(
+      Object.entries(callTypeNames).filter(([type]) => !isListingOnlyCallType(type)),
+    ),
     calls: protocolCalls,
   };
   return new Response(JSON.stringify(payload, null, 2), {

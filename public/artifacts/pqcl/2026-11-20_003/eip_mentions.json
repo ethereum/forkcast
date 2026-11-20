@@ -1,0 +1,138 @@
+{
+  "meeting": "PQCL #003 - 2026-11-20",
+  "eips": [
+    {
+      "eip": 8502,
+      "title": "Dynamic individual consolidation incentive",
+      "weight": "mentioned",
+      "summary": "Anders shared in chat as a new EIP for dynamic individual consolidation incentive to help reduce validator count.",
+      "moments": [
+        {
+          "timestamp": "00:23:58",
+          "context": "Anders linked EIP-8502 in chat in response to Barnabas saying the validator count should be trimmed as much as possible, noting he also has a capping EIP in preparation."
+        }
+      ]
+    },
+    {
+      "eip": 7870,
+      "title": "Hardware and Bandwidth Recommendations",
+      "weight": "mentioned",
+      "summary": "Referenced as the bandwidth requirements standard that gossip-sub aggregation traffic far exceeds.",
+      "moments": [
+        {
+          "timestamp": "00:31:46",
+          "context": "Kamil noted that aggregation traffic with gossip-sub sometimes hits 200-300 megabits, which is way beyond EIP-7870 limits even in its current form."
+        },
+        {
+          "timestamp": "00:44:38",
+          "context": "Mikhail framed simulation results using EIP-7870 node types (attester, local block builder) to describe bandwidth constraints."
+        }
+      ]
+    },
+    {
+      "eip": 8411,
+      "title": "Fast Execution Payload Broadcast",
+      "weight": "mentioned",
+      "summary": "Referenced as an existing Lighthouse implementation using Waggle for fast execution payload broadcast.",
+      "moments": [
+        {
+          "timestamp": "00:34:28",
+          "context": "Kamil noted that Lighthouse already has an EIP-8411 implementation with Waggle, suggesting they could port that approach for PQ proof messages."
+        }
+      ]
+    },
+    {
+      "eip": 8077,
+      "title": "eth/XX - announce transactions with nonce",
+      "weight": "mentioned",
+      "summary": "Cited in chat as an EIP improving networking for the traditional mempool.",
+      "moments": [
+        {
+          "timestamp": "01:03:22",
+          "context": "Csaba mentioned in chat that EIP-8077 is improving on the networking for the traditional mempool, in response to a discussion about whether the PQ networking stack should be reused for mempool transactions."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "mentioned",
+      "summary": "Cited in chat for the networking side of recursive aggregation.",
+      "moments": [
+        {
+          "timestamp": "01:04:04",
+          "context": "Csaba linked an ethresear.ch post on EIP-8288's networking side of recursive aggregation, replying to Barnabas asking whether PQ transactions are also bigger on P2P."
+        }
+      ]
+    },
+    {
+      "eip": 2333,
+      "weight": "mentioned",
+      "summary": "One of the BLS key generation standards that Manu agreed to write post-quantum analogues of.",
+      "moments": [
+        {
+          "timestamp": "01:05:57",
+          "context": "Kev asked in chat whether the 2333/2334/2335 analogues were also covered, alongside the VRF tree ERC Manu had taken on."
+        },
+        {
+          "timestamp": "01:06:06",
+          "context": "Justin read out 2333, 2334 and 2335; Kev described them as the standards for generating a BLS key from a mnemonic and storing it as JSON, and Manu agreed to take them on too."
+        }
+      ]
+    },
+    {
+      "eip": 2334,
+      "weight": "mentioned",
+      "summary": "One of the BLS deterministic account hierarchy standards that Manu agreed to write post-quantum analogues of.",
+      "moments": [
+        {
+          "timestamp": "01:05:57",
+          "context": "Kev asked in chat whether the 2333/2334/2335 analogues were also covered, alongside the VRF tree ERC Manu had taken on."
+        },
+        {
+          "timestamp": "01:06:06",
+          "context": "Justin read out 2333, 2334 and 2335; Kev described them as the standards for generating a BLS key from a mnemonic and storing it as JSON, and Manu agreed to take them on too."
+        }
+      ]
+    },
+    {
+      "eip": 2335,
+      "weight": "mentioned",
+      "summary": "One of the BLS keystore standards that Manu agreed to write post-quantum analogues of.",
+      "moments": [
+        {
+          "timestamp": "01:05:57",
+          "context": "Kev asked in chat whether the 2333/2334/2335 analogues were also covered, alongside the VRF tree ERC Manu had taken on."
+        },
+        {
+          "timestamp": "01:06:06",
+          "context": "Justin read out 2333, 2334 and 2335; Kev described them as the standards for generating a BLS key from a mnemonic and storing it as JSON, and Manu agreed to take them on too."
+        }
+      ]
+    },
+    {
+      "eip": 8148,
+      "title": "Custom sweep threshold for validators",
+      "weight": "discussed",
+      "summary": "Discussed as a prerequisite for requiring 0x02 credentials, since it would let operators keep 32 ETH behaviour after migrating. Justin twice called it 8198 before Kev caught the slip.",
+      "moments": [
+        {
+          "timestamp": "01:08:18",
+          "context": "Barnabas said the staking operators' pushback on a 0x02-only rule would largely go away if 8148 is committed to."
+        },
+        {
+          "timestamp": "01:08:53",
+          "context": "Justin, saying 8198, asked whether it would resolve every operator's concerns; he understood it covered Lido's but not other staking operations'."
+        },
+        {
+          "timestamp": "01:14:04",
+          "context": "Justin asked whether disallowing new 0x01 deposits at H-star would depend on it, again calling it 8198; Kev asked whether he meant 8148, the Lido EIP, and Justin said he was mixing up numbers. Dustin also flagged 8148 in chat."
+        },
+        {
+          "timestamp": "01:16:27",
+          "context": "Mega noted in chat that with 8148, translating 0x01 deposits into 0x02 validators capped at 32 ETH would behave the same as 0x01."
+        }
+      ]
+    }
+  ]
+}

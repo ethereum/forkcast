@@ -44,6 +44,7 @@ const upgradeNavItems: NavMenuItem[] = [
   { to: '/upgrade/hegota', label: 'Hegotá', variant: 'item' },
   { to: '/upgrade/hegota/priority-order', label: 'Priority Order', variant: 'sub' },
   { to: '/upgrade/hegota/client-priority', label: 'Client Preferences', variant: 'sub' },
+  { to: '/research', label: 'Research', variant: 'item' },
   { to: '/upgrades', label: 'View all upgrades', variant: 'index' },
 ];
 
@@ -54,7 +55,10 @@ const upgradeItemActive = (to: string) =>
     ? pathname === to
     : isPathActive(pathname, to);
 
-const upgradesActive = pathname === '/upgrades' || pathname.startsWith('/upgrade/');
+// `/research` hangs off this menu as the step past the forks being scoped, so it
+// lights the parent alongside the upgrade routes.
+const upgradesActive =
+  pathname === '/upgrades' || pathname === '/research' || pathname.startsWith('/upgrade/');
 
 // The forward-looking half of the site: what is being decided and when, rather than
 // what an upgrade already contains.

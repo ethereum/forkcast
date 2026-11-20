@@ -275,6 +275,7 @@ describe('build output', () => {
       { file: 'api/calls.json', collection: 'calls' },
       { file: 'api/upgrades.json', collection: 'upgrades' },
       { file: 'api/eip-stage-changes.json', collection: 'eips' },
+      { file: 'api/research.json', collection: 'areas' },
     ];
 
     for (const { file, collection } of indexes) {

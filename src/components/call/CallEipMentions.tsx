@@ -51,12 +51,17 @@ const CallEipMentions: React.FC<CallEipMentionsProps> = ({ data, onTimestampClic
   };
 
   const discussed = data.eips.filter(mention => mention.weight === 'discussed').length;
+  const passing = data.eips.length - discussed;
+  const tally = [
+    discussed > 0 && `${discussed} discussed`,
+    passing > 0 && `${passing} mentioned in passing`,
+  ].filter(Boolean).join(', ');
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
         <p className="flex-1 min-w-[14rem] text-xs text-slate-500 dark:text-slate-400">
-          Every EIP named on this call — {discussed} discussed, {data.eips.length - discussed} mentioned in passing.
+          Every EIP named on this call — {tally}.
         </p>
         <div className="flex shrink-0 gap-2">
           <button

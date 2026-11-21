@@ -1,0 +1,153 @@
+{
+  "eipId": 7916,
+  "commits": [
+    {
+      "sha": "88da569e65d32ad6efad017f1e40d107f1de8394",
+      "date": "2026-01-15T08:46:48Z",
+      "message": "Update EIP-7916: Merkleize to right",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -42,22 +42,22 @@ The [SSZ Merkleization specification](https://github.com/ethereum/consensus-spec\n   - The merkleization depends on the number of input chunks and is defined recursively:\n     - If `len(chunks) == 0`: the root is a zero value, `Bytes32()`.\n     - Otherwise: compute the root using `hash(a, b)`\n-      - `a`: Recursively merkleize chunks beyond `num_leaves` using `merkleize_progressive(chunks[num_leaves:], num_leaves * 4)`.\n-      - `b`: Merkleize the first up to `num_leaves` chunks as a binary tree using `merkleize(chunks[:num_leaves], num_leaves)`.\n+      - `a`: Merkleize the first up to `num_leaves` chunks as a binary tree using `merkleize(chunks[:num_leaves], num_leaves)`.\n+      - `b`: Recursively merkleize chunks beyond `num_leaves` using `merkleize_progressive(chunks[num_leaves:], num_leaves * 4)`.\n \n This results in a 0-terminated sequence of binary subtrees with increasing leaf count. The deepest subtree is padded with zeroed chunks (virtually for memory efficiency).\n \n ```\n-        root\n-         /\\\n-        /  \\\n-       /\\   1: chunks[0 ..< 1]\n-      /  \\\n-     /\\   4: chunks[1 ..< 5]\n-    /  \\\n-   /\\  16: chunks[5 ..< 21]\n-  /  \\\n- 0   64: chunks[21 ..< 85]\n+                   root\n+                    /\\\n+                   /  \\\n+ 1: chunks[0 ..< 1]   /\\\n+                     /  \\\n+   4: chunks[1 ..< 5]   /\\\n+                       /  \\\n+   16: chunks[5 ..< 21]   /\\\n+                         /  \\\n+    64: chunks[21 ..< 85]    0\n ```\n \n | Depth | Added chunks | Total chunks | Total capacity (bytes) |",
+      "additions": 12,
+      "deletions": 12
+    },
+    {
+      "sha": "ea0f0fb3da860c3b879191e605e490869be59d7c",
+      "date": "2025-11-07T14:49:21Z",
+      "message": "Update EIP-7916: Refine wording in motivation section",
+      "author": "snarls-ff",
+      "prNumber": null,
+      "patch": "@@ -21,13 +21,13 @@ New types are defined to use the progressive Merkle tree shape: `ProgressiveList\n Current SSZ `List[type, N]` types require a predefined capacity `N`, which leads to several issues:\n \n - Inefficient hashing: Lists often contain far fewer elements than their maximum capacity (e.g., [`Transaction`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#custom-types)), resulting in unnecessary zero-padding and dozens of extra hash computations. This is exacerbated when nesting `List[type, N]`, e.g., in a design where each of up to `X` transactions has up to `Y` access lists, each with up to `Z` storage slots.\n-- Arbitrary Limits: The capacity `N` is often chosen arbitrarily (e.g., [`MAX_BYTES_PER_TRANSACTION`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#execution), [`MAX_TRANSACTIONS_PER_PAYLOAD`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#execution)) and set to an artificially large value to anticipate future design space which are not always correct.\n+- Arbitrary Limits: The capacity `N` is often chosen arbitrarily (e.g., [`MAX_BYTES_PER_TRANSACTION`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#execution), [`MAX_TRANSACTIONS_PER_PAYLOAD`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/bellatrix/beacon-chain.md#execution)) and set to artificially large values to anticipate future design space, which are not always correct.\n - Unstable proofs: Modifying `N` across forks (e.g., [`MAX_ATTESTER_SLASHINGS_ELECTRA`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#max-operations-per-block), [`MAX_ATTESTATIONS_ELECTRA`](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/specs/electra/beacon-chain.md#max-operations-per-block)) alters gindices, breaking downstream verifiers.\n \n The progressive Merkle tree shape addresses these by:\n \n - Using a recursive tree structure that progressively grows to the actual leaf count with minimal overhead\n-- Dropping the notion of a maximum capacity, relying instead on practical limits, e.g., SSZ's 4 GB variable offset cap, network payload limits, gas limits, bounds on number of signatures.\n+- Dropping the notion of a maximum capacity, relying instead on practical limits, e.g., SSZ's 4 GB variable offset cap, network payload limits, gas limits, bounds on the number of signatures.\n - Maintaining stable gindices for each element, ensuring provers remain valid as the leaf count changes.\n \n ## Specification",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "d98969d150e3f3ebc3afcd20be4fd8dc4025b783",
+      "date": "2025-10-22T17:13:07Z",
+      "message": "Update EIP-7495: Tests have moved to the other repo",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -154,7 +154,7 @@ The new SSZ types coexist with existing types without conflict and share their s\n ## Test Cases\n \n - `ethereum/remerkleable` contains static tests in `test_impl.py` and `test_typing.py`.\n-- `ethereum/consensus-spec-tests` contains random tests in `tests/general/phase0/ssz_generic`, generated according to a format defined in `ethereum/consensus-specs` (`tests/format/ssz_generic`)\n+- `ethereum/consensus-specs` releases contain random tests in `tests/general/phase0/ssz_generic`, generated according to a format defined in `tests/format/ssz_generic`.\n \n ## Reference Implementation\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "22fe3c47deb65970c80e0011168b0fe6bbe2c9ad",
+      "date": "2025-10-21T14:53:56Z",
+      "message": "Update EIP-7916: Move to Review",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: SSZ ProgressiveList\n description: SSZ types for efficiently hashing short lists\n author: Zsolt Felföldi (@zsfelfoldi), Cayman (@wemeetagain), Etan Kissling (@etan-status)\n discussions-to: https://ethereum-magicians.org/t/eip-7916-ssz-progressivebytelist/23254\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2025-03-24",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "b035a92787d15bafb00419f14ca98b5e0f54761b",
+      "date": "2025-10-07T15:32:54Z",
+      "message": "Update EIP-7916: fixing markdown link",
+      "author": "kianjib7",
+      "prNumber": null,
+      "patch": "@@ -36,7 +36,7 @@ The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"S\n \n ### Progressive Merkle tree\n \n-The [SSZ Merkleization specification)](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#merkleization) is extended with a helper function:\n+The [SSZ Merkleization specification](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#merkleization) is extended with a helper function:\n \n - `merkleize_progressive(chunks, num_leaves=1)`: Given ordered `BYTES_PER_CHUNK`-byte chunks:\n   - The merkleization depends on the number of input chunks and is defined recursively:\n@@ -81,7 +81,7 @@ This results in a 0-terminated sequence of binary subtrees with increasing leaf\n \n ### `ProgressiveList[type]` and `ProgressiveBitlist`\n \n-Two new [SSZ composite types)](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#composite-types) are defined:\n+Two new [SSZ composite types](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#composite-types) are defined:\n \n - **progressive list**: ordered variable-length homogeneous collection, without limit\n   - notation `ProgressiveList[type]`, e.g. `ProgressiveList[uint64]`",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "35afae526c47b055443e0e7d424f3bf1ba6319b7",
+      "date": "2025-08-25T14:15:10Z",
+      "message": "Update EIP-7495: Reinstate 256 field limit for ProgressiveContainer",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -153,7 +153,8 @@ The new SSZ types coexist with existing types without conflict and share their s\n \n ## Test Cases\n \n-See `ethereum/remerkleable`.\n+- `ethereum/remerkleable` contains static tests in `test_impl.py` and `test_typing.py`.\n+- `ethereum/consensus-spec-tests` contains random tests in `tests/general/phase0/ssz_generic`, generated according to a format defined in `ethereum/consensus-specs` (`tests/format/ssz_generic`)\n \n ## Reference Implementation\n ",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "sha": "b726db92a2e2053a1deb61e6b24e683f9ec4aca3",
+      "date": "2025-07-29T10:54:32Z",
+      "message": "Update EIP-7916: Indicate absence of limit explicitly",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -83,9 +83,9 @@ This results in a 0-terminated sequence of binary subtrees with increasing leaf\n \n Two new [SSZ composite types)](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#composite-types) are defined:\n \n-- **progressive list**: ordered variable-length homogeneous collection\n+- **progressive list**: ordered variable-length homogeneous collection, without limit\n   - notation `ProgressiveList[type]`, e.g. `ProgressiveList[uint64]`\n-- **progressive bitlist**: ordered variable-length collection of `boolean` values\n+- **progressive bitlist**: ordered variable-length collection of `boolean` values, without limit\n   - notation `ProgressiveBitlist`\n \n The new types are considered [\"variable-size\"](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#variable-size-and-fixed-size).",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "64032a51b3d3999d4b7aabbfab78f1ca3d6254f0",
+      "date": "2025-07-16T10:13:22Z",
+      "message": "Update EIP-7916: Move reference implementation to ethereum/remerkleable",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -153,11 +153,11 @@ The new SSZ types coexist with existing types without conflict and share their s\n \n ## Test Cases\n \n-See [EIP assets](../assets/eip-7916/tests.patch).\n+See `ethereum/remerkleable`.\n \n ## Reference Implementation\n \n-See [EIP assets](../assets/eip-7916/progressive.py), based on `protolambda/remerkleable`.\n+See `ethereum/remerkleable`.\n \n ## Security Considerations\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "15f847861ed5195590ca7d659989a1914af231a0",
+      "date": "2025-06-29T15:55:54Z",
+      "message": "Update EIP-7916: Tree grows left / Added ProgressiveBitlist",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 94,
+      "deletions": 108
+    },
+    {
+      "sha": "c47c511f72e58b54eabe559d6854bb3509049124",
+      "date": "2025-06-09T12:33:18Z",
+      "message": "Update EIP-7916: Extend tests with nested progressive lists",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -73,7 +73,7 @@ V3: Vector[T, 16]\n V4: Vector[T, 64]\n ```\n \n-- `mix_in_length(merkleize_progressive_list(pack(value)), len(value))` if `value` is an `ProgressiveList[T]` of basic objects\n+- `mix_in_length(merkleize_progressive_list(pack(value)), len(value))` if `value` is a `ProgressiveList[T]` of basic objects\n - `mix_in_length(merkleize_progressive_list([hash_tree_root(element) for element in value]), len(value))` if `value` is a `ProgressiveList[T]` of composite objects\n \n ```python",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "565882cf0997844708d47752eae563f2db7f0744",
+      "date": "2025-04-15T03:32:04Z",
+      "message": "Update EIP-7495: Move to Draft",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -12,7 +12,7 @@ created: 2025-03-24\n \n ## Abstract\n \n-This EIP introduces a new [Simple Serialize (SSZ)](https://github.com/ethereum/consensus-specs/blob/b3e83f6691c61e5b35136000146015653b22ed38/ssz/simple-serialize.md) type, `ProgressiveList[T]`, to represent lists of arbitrary length with stable merkleization. Unlike the existing `List[T, N]` type, which imposes a fixed capacity `N`, `ProgressiveList[T]` supports unbounded growth using a recursive tree structure during merkleization to efficiently handle lists of any size while maintaining stable [generalized indices (gindices)](https://github.com/ethereum/consensus-specs/blob/b3e83f6691c61e5b35136000146015653b22ed38/ssz/merkle-proofs.md#generalized-merkle-tree-index) for individual elements. This enables reduced hash overhead for small lists and avoids arbitrary predefined limits.\n+This EIP introduces a new [Simple Serialize (SSZ)](https://github.com/ethereum/consensus-specs/blob/0cd5dcd26327e49b726e66ca51802c4cd65be889/ssz/simple-serialize.md) type, `ProgressiveList[T]`, to represent lists of arbitrary length with stable merkleization. Unlike the existing `List[T, N]` type, which imposes a fixed capacity `N`, `ProgressiveList[T]` supports unbounded growth using a recursive tree structure during merkleization to efficiently handle lists of any size while maintaining stable [generalized indices (gindices)](https://github.com/ethereum/consensus-specs/blob/0cd5dcd26327e49b726e66ca51802c4cd65be889/ssz/merkle-proofs.md#generalized-merkle-tree-index) for individual elements. This enables reduced hash overhead for small lists and avoids arbitrary predefined limits.\n \n ## Motivation\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "b6b2949324ea155b57d51d1e610c70d7b47f1a5c",
+      "date": "2025-04-13T15:25:41Z",
+      "message": "Update EIP-7916: Add `remerkleable` implementation and tests",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7916\n title: SSZ ProgressiveList\n description: New SSZ type to improve efficiency for short lists\n-author: Zsolt Felföldi (@zsfelfoldi), Cayman (@wemeetagain)\n+author: Zsolt Felföldi (@zsfelfoldi), Cayman (@wemeetagain), Etan Kissling (@etan-status)\n discussions-to: https://ethereum-magicians.org/t/eip-7916-ssz-progressivebytelist/23254\n status: Draft\n type: Standards Track\n@@ -165,6 +165,14 @@ Mixing in successor subtrees ensures predictable gindices and proof sizes.\n \n `ProgressiveList[T]` is a new SSZ type, coexisting with `List[T, N]` and other types without conflict. Its `List`-equivalent serialization ensures compatibility with existing serializers.\n \n+## Test Cases\n+\n+See [EIP assets](../assets/eip-7916/tests.patch).\n+\n+## Reference Implementation\n+\n+See [EIP assets](../assets/eip-7916/progressive.py), based on `protolambda/remerkleable`.\n+\n ## Security Considerations\n \n - Resource limits: The `uint32` limit for variable-length offsets essentially introduces a ~4GB cap when including a `ProgressiveList[T]` within another complex type, but practical limits (e.g., 10MB libp2p messages) apply. Implementations SHOULD enforce context-specific bounds.",
+      "additions": 9,
+      "deletions": 1
+    },
+    {
+      "sha": "d97232bda1e585c59d62d2df0d65d3402a092306",
+      "date": "2025-04-13T15:24:52Z",
+      "message": "Update EIP-7916: Address review feedback",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -67,7 +67,7 @@ ProgressiveList[T]\n      \\/\n     ROOT\n \n-V1: Vector[T, 1]\n+V1: Vector[T, 1]  # Assuming `T` with a 32-byte chunk size; otherwise vectors are scaled accordingly\n V2: Vector[T, 4]\n V3: Vector[T, 16]\n V4: Vector[T, 64]\n@@ -167,7 +167,7 @@ Mixing in successor subtrees ensures predictable gindices and proof sizes.\n \n ## Security Considerations\n \n-- Resource limits: The `uint32` length-prefix caps serialization of variable-length subsections at 4GB, but practical limits (e.g., 10MB libp2p messages) apply. Implementations SHOULD enforce context-specific bounds.\n+- Resource limits: The `uint32` limit for variable-length offsets essentially introduces a ~4GB cap when including a `ProgressiveList[T]` within another complex type, but practical limits (e.g., 10MB libp2p messages) apply. Implementations SHOULD enforce context-specific bounds.\n - Variable proof size: Recursive traversal may increase proof sizes for large indices, though logarithmic in list size due to scaling.\n \n ## Copyright",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "f6f456a0f92324633b45677fbb32641142482927",
+      "date": "2025-03-30T09:57:04Z",
+      "message": "Update EIP-7916: Remove bound parameter and use constant scaling factor",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 125,
+      "deletions": 18
+    },
+    {
+      "sha": "908e1186e158ad5b70e58344ebcd8b54e95413fc",
+      "date": "2025-03-25T13:44:51Z",
+      "message": "Add EIP: SSZ ProgressiveByteList",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -0,0 +1,68 @@\n+---\n+eip: 7916\n+title: SSZ ProgressiveByteList\n+description: New SSZ type to improve efficiency for short lists\n+author: Zsolt Felföldi (@zsfelfoldi)\n+discussions-to: https://ethereum-magicians.org/t/eip-7916-ssz-progressivebytelist/23254\n+status: Draft\n+type: Standards Track\n+category: Core\n+created: 2025-03-24\n+---\n+\n+## Abstract\n+\n+This EIP introduces a new [Simple Serialize (SSZ) type](https://github.com/ethereum/consensus-specs/blob/b3e83f6691c61e5b35136000146015653b22ed38/ssz/simple-serialize.md) to make `List[T, N]` with large capacities `N` more efficient in cases where the list is much shorter than the capacity.\n+\n+## Specification\n+\n+The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"SHOULD NOT\", \"RECOMMENDED\", \"NOT RECOMMENDED\", \"MAY\", and \"OPTIONAL\" in this document are to be interpreted as described in RFC 2119 and RFC 8174.\n+\n+### ProgressiveByteList container\n+\n+`ProgressiveByteList[CAPACITY, COMMON_RATIO]` is defined as a byte list container type that consists of multiple byte vectors of different size. The size of the first vector is 32 bytes (a single chunk) while the size of further vectors is growing according to a geometric sequence with the specified common ratio (a power of 2), with a potential exception for the last vector which might be smaller (but still a power of 2) according to the total number of chunks required for realizing the specified capacity. As shown on the figure below, in the Merkle hashing scheme the smaller vectors are close to the root, allowing less hashing and shorter proofs if the actual list is significantly smaller than the maximum capacity or only the first part of the list needs to be proven.\n+\n+```\n+ProgressiveByteList[3000, 4]\n+\n+       V4  V5\n+        \\  /\n+     V3  \\/\n+      \\  /\n+   V2  \\/\n+    \\  /\n+ V1  \\/\n+  \\  /\n+   \\/  LEN\n+    \\  /\n+     \\/\n+    ROOT\n+\n+V1: ByteVector[32]\n+V2: ByteVector[128]\n+V3: ByteVector[512]\n+V4: ByteVector[2048]\n+V5: ByteVector[512]\n+\n+Fig 1. Merkle hashing scheme of the ProgressiveByteList container\n+```\n+\n+In this example a list with a capacity limit of 3000 is realized using 5 vectors. Note that the last vector is smaller than what would follow in the geometric sequence because the total size of 32+128+512+2048+512 is already enough to store 3000 bytes.\n+\n+## Rationale\n+\n+`ByteList` definitions sometimes are defined with capacities that exceed their typical practical usage, to avoid limiting design space. For example, the [`Transaction`](https://github.com/ethereum/consensus-specs/blob/3c028dc73f5d93defc9bfd38c44784573a0bc70a/specs/bellatrix/beacon-chain.md#custom-types) type has a maximum capacity of 1 GB [`MAX_BYTES_PER_TRANSACTION`](https://github.com/ethereum/consensus-specs/blob/3c028dc73f5d93defc9bfd38c44784573a0bc70a/specs/bellatrix/beacon-chain.md#execution), despite actual transactions often being below 1 KB. This difference results in at least 20 extra hashes for common cases, to offer a design space that is not practically viable.\n+\n+With this EIP, common cases can be hashed more efficiently while not restricting the design space, and while also retaining stable generalized Merkle indices for each individual chunk of the `ByteList`.\n+\n+## Backwards Compatibility\n+\n+The new SSZ type does not interfere with any existing types.\n+\n+## Security Considerations\n+\n+None\n+\n+## Copyright\n+\n+Copyright and related rights waived via [CC0](../LICENSE.md).",
+      "additions": 68,
+      "deletions": 0
+    }
+  ]
+}

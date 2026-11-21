@@ -1,0 +1,311 @@
+{
+  "eipId": 7495,
+  "commits": [
+    {
+      "sha": "3b3c832577ec4205d463d990d52006e299962449",
+      "date": "2026-10-04T15:20:06Z",
+      "message": "Update EIP-7495: Clarify inactive field merkleization",
+      "author": "colinlyguo",
+      "prNumber": null,
+      "patch": "@@ -84,7 +84,7 @@ The [SSZ Merkleization specification](https://github.com/ethereum/consensus-spec\n \n The Merkleization definitions are extended.\n \n-- `mix_in_active_fields(merkleize_progressive([hash_tree_root(element) for element in value]), get_active_fields(value))` if `value` is a progressive container.\n+- `mix_in_active_fields(merkleize_progressive(field_roots), get_active_fields(value))` if `value` is a progressive container, where `field_roots` contains `hash_tree_root(field)` for each active position and `Bytes32()` for each inactive position.\n \n ## Rationale\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "c81d843b3f8aa839fe42911c5b6e501c7d2940a3",
+      "date": "2025-11-11T16:08:46Z",
+      "message": "Update EIP-7495: Move to Review",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: SSZ ProgressiveContainer\n description: SSZ type for forward-compatible containers\n author: Etan Kissling (@etan-status), Cayman (@wemeetagain)\n discussions-to: https://ethereum-magicians.org/t/eip-7495-ssz-progressivecontainer/15476\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2023-08-18",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "d98969d150e3f3ebc3afcd20be4fd8dc4025b783",
+      "date": "2025-10-22T17:13:07Z",
+      "message": "Update EIP-7495: Tests have moved to the other repo",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -111,7 +111,7 @@ The `active_fields` bitvector can be updated to also indicate optionality. Furth\n ## Test Cases\n \n - `ethereum/remerkleable` contains static tests in `test_impl.py` and `test_typing.py`.\n-- `ethereum/consensus-spec-tests` contains random tests in `tests/general/phase0/ssz_generic`, generated according to a format defined in `ethereum/consensus-specs` (`tests/format/ssz_generic`)\n+- `ethereum/consensus-specs` releases contain random tests in `tests/general/phase0/ssz_generic`, generated according to a format defined in `tests/format/ssz_generic`.\n \n ## Reference Implementation\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "52a48bf05eff76a550291cf9d9e4bdc955d9fadb",
+      "date": "2025-09-19T13:35:09Z",
+      "message": "Update EIP-7495: fix formatting of link",
+      "author": "sashass1315",
+      "prNumber": null,
+      "patch": "@@ -31,7 +31,7 @@ The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"S\n \n ### `ProgressiveContainer(active_fields)`\n \n-A new [SSZ composite types)](https://github.com/ethereum/consensus-specs/blob/ad36024441cf910d428d03f87f331fbbd2b3e5f1/ssz/simple-serialize.md#composite-types) is defined:\n+A new [SSZ composite types](https://github.com/ethereum/consensus-specs/blob/ad36024441cf910d428d03f87f331fbbd2b3e5f1/ssz/simple-serialize.md#composite-types) is defined:\n \n - **progressive container**: ordered heterogeneous collection of values with stable Merkleization\n   - python dataclass notation with key-type pairs, e.g.",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "73afcc322708e695d7442e27bb696520c1140302",
+      "date": "2025-09-05T11:28:53Z",
+      "message": "Update EIP-7495: Remove redundant word",
+      "author": "slicesequal",
+      "prNumber": null,
+      "patch": "@@ -90,7 +90,7 @@ The Merkleization definitions are extended.\n \n ### Why is `active_fields` limited to 256 bits?\n \n-256 bits (1 word) allows the mix-in to be simple, consistent with the length mix-in for lists, and is practically sufficient. An alternate design with a `ProgressiveBitlist` mix-in was explored, however deemed too over-engineered as it it would effectively require introducing caches to pre-compute the mix-in's `hash_tree_root` to avoid repeated computations, and also makes verifier logic more complex than necessary.\n+256 bits (1 word) allows the mix-in to be simple, consistent with the length mix-in for lists, and is practically sufficient. An alternate design with a `ProgressiveBitlist` mix-in was explored, however deemed too over-engineered as it would effectively require introducing caches to pre-compute the mix-in's `hash_tree_root` to avoid repeated computations, and also makes verifier logic more complex than necessary.\n \n Even though the 256 field limit includes all fields (including deprecated ones), it is unlikely that many progressive containers come close to reach 256 fields (`BeaconState` currently reaches around 40 fields). If that happens, one can add a `more` field with a nested `ProgressiveContainer`.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "d0b79f9dddf4c09b9ffd81cb08020cb8acc82ca2",
+      "date": "2025-09-02T12:31:30Z",
+      "message": "Add EIP: SSZ CompatibleUnion (#10234)",
+      "author": "etan-status",
+      "prNumber": 10234,
+      "additions": 8,
+      "deletions": 74
+    },
+    {
+      "sha": "96d1e2f27b2e9f8eefa7f71553edbbb94c2f3b9d",
+      "date": "2025-08-28T11:58:33Z",
+      "message": "Update EIP-7495: Mix-in selector for CompatibleUnion",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 24,
+      "deletions": 19
+    },
+    {
+      "sha": "35afae526c47b055443e0e7d424f3bf1ba6319b7",
+      "date": "2025-08-25T14:15:10Z",
+      "message": "Update EIP-7495: Reinstate 256 field limit for ProgressiveContainer",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 29,
+      "deletions": 18
+    },
+    {
+      "sha": "ef6f99191de9ed27c038282c363e49187f1ed416",
+      "date": "2025-08-18T12:55:45Z",
+      "message": "Update EIP-7495: Drop 256 entry limit in ProgressiveContainer",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 28,
+      "deletions": 26
+    },
+    {
+      "sha": "de33cd5e3599cb09f8c8b8fcb08d80f48257cf28",
+      "date": "2025-08-04T13:38:45Z",
+      "message": "Update EIP-6404: Use correct Python syntax for active_fields",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 16,
+      "deletions": 16
+    },
+    {
+      "sha": "4b72809a1d8154e1899b2c91fe18dde861e09680",
+      "date": "2025-07-14T15:21:42Z",
+      "message": "Update EIP-7495: fix typos and link formatting",
+      "author": "kilavvy",
+      "prNumber": null,
+      "patch": "@@ -23,7 +23,7 @@ Further, if multiple versions of an SSZ container coexist at the same time, for\n \n Progressive containers address these shortcomings by:\n \n-- Using the [progressive Merkle tree](./eip-7916.md) structure to progressively grow to the actual field count with minimal overhead, ensuring provers remain valid as the field count chanages.\n+- Using the [progressive Merkle tree](./eip-7916.md) structure to progressively grow to the actual field count with minimal overhead, ensuring provers remain valid as the field count changes.\n - Assigning stable gindices for each field across all versions by allowing gaps in the Merkle tree where a field is absent.\n - Serializing in a compact form where absent fields do not consume space.\n \n@@ -119,7 +119,7 @@ The canonical [JSON mapping](https://github.com/ethereum/consensus-specs/blob/b5\n \n #### Merkleization\n \n-The [SSZ Merkleization specification)](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#merkleization) is extended with two helper functions:\n+The [SSZ Merkleization specification](https://github.com/ethereum/consensus-specs/blob/b5c3b619887c7850a8c1d3540b471092be73ad84/ssz/simple-serialize.md#merkleization) is extended with two helper functions:\n \n - `get_active_fields`: Given a `value` of type `ProgressiveContainer[active_fields]` return `value.__class__.active_fields`.\n - `mix_in_active_fields`: Given a Merkle root `root` and an `active_fields` bitlist return `hash(root, pack_bits(active_fields))`. Note that `active_fields` is restricted to ≤ 256 bits.",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "sha": "01fa73bba14cfaee77de3f954364f53c7180c3ac",
+      "date": "2025-06-30T12:19:31Z",
+      "message": "Update EIP-7495: Use progressive tree shape / Drop optionals",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 86,
+      "deletions": 146
+    },
+    {
+      "sha": "ff6bea3bdfe61bc5e87d76763a1f53398f5a8487",
+      "date": "2025-04-19T05:49:18Z",
+      "message": "Update EIP-7495: fix duplicate eip-7495.md",
+      "author": "zeroprooff",
+      "prNumber": null,
+      "patch": "@@ -39,7 +39,7 @@ The key words \"MUST\", \"MUST NOT\", \"REQUIRED\", \"SHALL\", \"SHALL NOT\", \"SHOULD\", \"S\n \n Similar to the regular [SSZ `Container`](https://github.com/ethereum/consensus-specs/blob/0cd5dcd26327e49b726e66ca51802c4cd65be889/ssz/simple-serialize.md#composite-types), `StableContainer[N]` defines an ordered heterogeneous collection of fields. `N` indicates the potential maximum number of fields to which it can ever grow in the future. `N` MUST be `> 0`.\n \n-All fields of a `StableContainer[N]` MUST be of of type `Optional[T]`. Such fields can either represent a present value of SSZ type `T`, or indicate absence of a value (indicated by `None`). The [default value](https://github.com/ethereum/consensus-specs/blob/0cd5dcd26327e49b726e66ca51802c4cd65be889/ssz/simple-serialize.md#default-values) of an `Optional[T]` is `None`.\n+All fields of a `StableContainer[N]` MUST be of type `Optional[T]`. Such fields can either represent a present value of SSZ type `T`, or indicate absence of a value (indicated by `None`). The [default value](https://github.com/ethereum/consensus-specs/blob/0cd5dcd26327e49b726e66ca51802c4cd65be889/ssz/simple-serialize.md#default-values) of an `Optional[T]` is `None`.\n \n ```python\n class Example(StableContainer[32]):",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "565882cf0997844708d47752eae563f2db7f0744",
+      "date": "2025-04-15T03:32:04Z",
+      "message": "Update EIP-7495: Move to Draft",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 17,
+      "deletions": 15
+    },
+    {
+      "sha": "167b4b57da0d050127cb93acf5858e8d3b028cc3",
+      "date": "2025-02-10T16:05:08Z",
+      "message": "Update EIP-6404: Bump links to tagged beta spec version",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 13,
+      "deletions": 13
+    },
+    {
+      "sha": "2ccac851e7c0389e393f761a5c34d9c8af15e8ff",
+      "date": "2024-10-11T11:05:15Z",
+      "message": "Update EIP-7495: Rename `PendingBalanceDeposit` > `PendingDeposit`",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -213,7 +213,7 @@ Additionally, every time that the number of fields reaches a new power of 2, the\n \n ## Backwards Compatibility\n \n-`StableContainer[N]` and `Profile[B]` are new SSZ types and do not conflict with other SSZ types currently in use.\n+`StableContainer[N]` and `Profile[B]` are new SSZ types and, therefore, do not conflict with other SSZ types currently in use.\n \n ## Test Cases\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "2bcc231cc2185b25e3e422f6816e5aa5384c567e",
+      "date": "2024-10-02T12:15:09Z",
+      "message": "Update EIP-7495: Extend tests and detect errors when coercing profiles",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -205,8 +205,6 @@ There is combinatorial complexity when new optional features are introduced. For\n \n Typically, the individual `Union` cases share some form of thematic overlap, sharing certain fields with each other. In a `Union`, shared fields are not necessarily merkleized at the same [generalized indices](https://github.com/ethereum/consensus-specs/blob/4afe39822c9ad9747e0f5635cca117c18441ec1b/ssz/merkle-proofs.md). Therefore, Merkle proof systems would have to be updated each time that a new flavor is introduced, even when the actual changes are not of interest to the particular system.\n \n-Furthermore, SSZ Union types are currently not used in any final Ethereum specification and do not have a finalized design themselves. The `StableContainer[N]` serializes very similar to current `Union[T, U, V]` proposals, with the difference being a `Bitvector[N]` as a prefix instead of a selector byte. This means that the serialized byte lengths are comparable.\n-\n ### Why not model `Optional[T]` as an SSZ type?\n \n If `Optional[T]` is modeled as an SSZ type, each individual field introduces serialization and merkleization overhead. As an `Optional[T]` would be required to be [\"variable-size\"](https://github.com/ethereum/consensus-specs/blob/4afe39822c9ad9747e0f5635cca117c18441ec1b/ssz/simple-serialize.md#variable-size-and-fixed-size), lots of additional offset bytes would have to be used in the serialization. For merkleization, each individual `Optional[T]` would require mixing in a bit to indicate presence or absence of the value.",
+      "additions": 0,
+      "deletions": 2
+    },
+    {
+      "sha": "83e11f01738635a400d8b6d12c16c06976492cb4",
+      "date": "2024-06-13T06:13:24Z",
+      "message": "Update EIP-7495: Remove redundant `is_active_field` helper",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -75,12 +75,9 @@ Serialization of `StableContainer[N]` is defined similarly to the [existing logi\n - If variable-length fields are serialized, their offsets are relative to the start of serialized active fields, after the `Bitvector[N]`\n \n ```python\n-def is_active_field(element):\n-    return not is_optional(element) or element is not None\n-\n # Determine active fields\n-active_fields = Bitvector[N](([is_active_field(element) for element in value] + [False] * N)[:N])\n-active_values = [element for element in value if is_active_field(element)]\n+active_fields = Bitvector[N](([element is not None for element in value] + [False] * N)[:N])\n+active_values = [element for element in value if element is not None]\n \n # Recursively serialize\n fixed_parts = [serialize(element) if not is_variable_size(element) else None for element in active_values]\n@@ -120,7 +117,7 @@ To merkleize a `StableContainer[N]`, a `Bitvector[N]` is constructed, indicating\n \n Merkleization `hash_tree_root(value)` of an object `value` is extended with:\n \n-- `mix_in_aux(merkleize(([hash_tree_root(element) if is_active_field(element) else Bytes32() for element in value.data] + [Bytes32()] * N)[:N]), hash_tree_root(value.active_fields))` if `value` is a `StableContainer[N]`.\n+- `mix_in_aux(merkleize(([hash_tree_root(element) if element is not None else Bytes32() for element in value.data] + [Bytes32()] * N)[:N]), hash_tree_root(value.active_fields))` if `value` is a `StableContainer[N]`.\n \n ### `Profile[B]`\n ",
+      "additions": 3,
+      "deletions": 6
+    },
+    {
+      "sha": "84f7756446c2f0bd4052d3ebfa0ca8032dec13af",
+      "date": "2024-06-04T19:02:53Z",
+      "message": "Update EIP-7495: Cleanup reference implementation and tests",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -124,16 +124,21 @@ Merkleization `hash_tree_root(value)` of an object `value` is extended with:\n \n ### `Profile[B]`\n \n-`Profile[B]` also defines an ordered heterogeneous collection of fields, a subset of fields of a base `StableContainer[N]` `B`.\n-\n-The rules for construction are:\n+`Profile[B]` also defines an ordered heterogeneous collection of fields, a subset of fields of a base `StableContainer` type `B` with the following constraints:\n \n - Fields in `Profile[B]` correspond to fields with the same field name in `B`.\n-- Fields in `Profile[B]` must be in the same order as in `B`\n-- Fields in the base type `B` MAY be kept `Optional` in `Profile[B]`\n-- Fields in the base type `B` MAY be required in `Profile[B]` by unwrapping them from `Optional`\n-- Fields in the base type `B` MAY be omitted in `Profile[B]`, disallowing their presence in the sub-type\n-- Fields in the base type `B` of type `Optional[T]` with `T` being a nested `StableContainer` MAY have types `Optional[Profile[T]]` (if kept optional), or `Profile[T]` (if it is required)\n+- Fields in `Profile[B]` follow the same order as in `B`.\n+- Fields in the base `StableContainer` type `B` are all `Optional`.\n+  - Fields MAY be disallowed in `Profile[B]` by omitting them.\n+  - Fields MAY be kept optional in `Profile[B]` by retaining them as `Optional`.\n+  - Fields MAY be required in `Profile[B]` by unwrapping them from `Optional`.\n+- All field types in `Profile[B]` MUST be compatible with the corresponding field types in `B`.\n+  - Field types are compatible with themselves.\n+  - `byte` is compatible with `uint8` and vice versa.\n+  - `Bitlist[N]` / `Bitvector[N]` field types are compatible if they share the same capacity `N`.\n+  - `List[T, N]` / `Vector[T, N]` field types are compatible if `T` is compatible and if they also share the same capacity `N`.\n+  - `Container` / `StableContainer[N]` field types are compatible if all inner field types are compatible, if they also share the same field names in the same order, and for `StableContainer[N]` if they also share the same capacity `N`.\n+  - `Profile[X]` field types are compatible with `StableContainer` types compatible with `X`, and are compatible with `Profile[Y]` where `Y` is compatible with `X` if also all inner field types are compatible. Differences solely in optionality do not affect merkleization compatibility.\n \n #### Serialization\n \n@@ -205,7 +210,7 @@ Typically, the individual `Union` cases share some form of thematic overlap, sha\n \n Furthermore, SSZ Union types are currently not used in any final Ethereum specification and do not have a finalized design themselves. The `StableContainer[N]` serializes very similar to current `Union[T, U, V]` proposals, with the difference being a `Bitvector[N]` as a prefix instead of a selector byte. This means that the serialized byte lengths are comparable.\n \n-### Why not a `Container` full of `Optional[T]`?\n+### Why not model `Optional[T]` as an SSZ type?\n \n If `Optional[T]` is modeled as an SSZ type, each individual field introduces serialization and merkleization overhead. As an `Optional[T]` would be required to be [\"variable-size\"](https://github.com/ethereum/consensus-specs/blob/4afe39822c9ad9747e0f5635cca117c18441ec1b/ssz/simple-serialize.md#variable-size-and-fixed-size), lots of additional offset bytes would have to be used in the serialization. For merkleization, each individual `Optional[T]` would require mixing in a bit to indicate presence or absence of the value.\n ",
+      "additions": 14,
+      "deletions": 9
+    },
+    {
+      "sha": "f20b164b00ae5553f7536a6d7a83a0f254455e09",
+      "date": "2024-05-28T17:19:55Z",
+      "message": "Update EIPs: Fix typos in 37 files",
+      "author": "Sajjon",
+      "prNumber": null,
+      "patch": "@@ -197,7 +197,7 @@ The forward-compatible merkleization of `StableContainer` may be desirable even\n \n ### Why not `Union[T, U, V]`?\n \n-There is combinatorial complexity when new optional features are introduced. For example, if there are three transaction types, and then priority fees are introduced as an optional feature, one has to define three additional transaction types to allow inclusion of a priority fee, raising the total to six transaction types. If, subsequently, optional access lists are introduced, that doubles again, to twelve transactoin types.\n+There is combinatorial complexity when new optional features are introduced. For example, if there are three transaction types, and then priority fees are introduced as an optional feature, one has to define three additional transaction types to allow inclusion of a priority fee, raising the total to six transaction types. If, subsequently, optional access lists are introduced, that doubles again, to twelve transaction types.\n \n `Union` also requires each participant of the network to know about all existing `Union` cases. For example, if the execution layer provides transactions via engine API as a `Union`, the consensus layer would also have to know about all concrete `Union` cases, even though it only wishes to package them and forward them. Using `StableContainer[N]` provides a more similar situation as JSON where the underlying type is determined based on the presence / absence of fields and their values.\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "b0c655a71d424b3fc1cbf4482b22e4e3c8276fdd",
+      "date": "2024-05-23T21:59:54Z",
+      "message": "Update EIP-6493: Switch to vector based fees (EIP-7706 w/o calldata fee)",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -143,7 +143,7 @@ Serialization of `Profile[B]` is similar to the one of its base `StableContainer\n \n #### Merkleization\n \n-Merkleization of `Profile[B]` always follows the merkleization of base type `B`.\n+Merkleization of `Profile[B]` follows the merkleization of base type `B`.\n \n ```python\n # Defines the common merkleization format and a portable serialization format",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "d43a39d5ef679e90b6c3a8e2713c43874442e035",
+      "date": "2024-05-16T19:25:04Z",
+      "message": "Update EIP-7495: simplify design, renaming, formatting",
+      "author": "wemeetagain",
+      "prNumber": null,
+      "additions": 47,
+      "deletions": 93
+    },
+    {
+      "sha": "d06f0d2ea423d9230ce2c4acaf465cebd32808d3",
+      "date": "2024-05-15T06:31:52Z",
+      "message": "Update EIP-7495: Rename `Variant` -> `MerkleizeAs` and improve rationale",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 111,
+      "deletions": 41
+    },
+    {
+      "sha": "3b5b911af8e6adbb65a021d2f366c3d23a87e7c6",
+      "date": "2024-05-02T05:31:19Z",
+      "message": "Update EIP-7495: Add `Variant[S]` to abstract",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -2,7 +2,7 @@\n eip: 7495\n title: SSZ StableContainer\n description: New SSZ type to represent a flexible container with stable serialization and merkleization\n-author: Etan Kissling (@etan-status)\n+author: Etan Kissling (@etan-status), Cayman (@wemeetagain)\n discussions-to: https://ethereum-magicians.org/t/eip-7495-ssz-stablecontainer/15476\n status: Review\n type: Standards Track\n@@ -16,6 +16,8 @@ This EIP introduces a new [Simple Serialize (SSZ) type](https://github.com/ether\n \n A `StableContainer[N]` is an SSZ `Container` with stable serialization and merkleization even when individual fields become optional or new fields are introduced in the future.\n \n+Furthermore, to continue supporting versioned containers, e.g., fork-specific consensus data structures, `Variant[S]` is introduced, selecting only a subset of fields of the underlying `StableContainer` `S`. `Variant[S]` shares the merkleization of `S`, but has a more compact serialization and provides better type safety.\n+\n ## Motivation\n \n Stable containers are currently not representable in SSZ. Adding support provides these benefits:",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "sha": "589eb304b8250722bfa6a20f1a6e3a626ac07d81",
+      "date": "2024-04-15T16:59:40Z",
+      "message": "Update EIP-7495: Compact serialization for `Variant[S]`",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 16,
+      "deletions": 9
+    },
+    {
+      "sha": "bba648c4171ceaad644f667191eacac981e3aff6",
+      "date": "2023-11-22T11:37:34Z",
+      "message": "Update EIP-7495: Add `Variant[S]` / `OneOf[S]` type safety layer",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -116,6 +116,48 @@ Merkleization `hash_tree_root(value)` of an object `value` is extended with:\n \n - `mix_in_aux(merkleize(([hash_tree_root(element) if is_active_field(element) else Bytes32() for element in value.data] + [Bytes32()] * N)[:N]), hash_tree_root(value.active_fields))` if `value` is a `StableContainer[N]`.\n \n+### `Variant[S]`\n+\n+For the purpose of type safety, `Variant[S]` is defined to serve as a subset of `StableContainer` `S`. While `S` still determines how the `Variant[S]` is serialized and merkleized, `Variant[S]` MAY implement additional restrictions on valid combinations of fields.\n+\n+- Fields in `Variant[S]` may have a different order than in `S`; the canonical order in `S` is always used for serialization and merkleization regardless of any alternative orders in `Variant[S]`\n+- Fields in `Variant[S]` may be required, despite being optional in `S`\n+- Fields in `Variant[S]` may be missing, despite being optional in `S`\n+- All fields that are required in `S` must be present in `Variant[S]`\n+\n+```python\n+# Serialization and merkleization format\n+class Shape(StableContainer[4]):\n+    side: Optional[uint16]\n+    color: uint8\n+    radius: Optional[uint16]\n+\n+# Valid variants\n+class Square(Variant[Shape]):\n+    side: uint16\n+    color: uint8\n+\n+class Circle(Variant[Shape]):\n+    radius: uint16\n+    color: uint8\n+```\n+\n+In addition, `OneOf[S]` is defined to provide a `select_variant` helper function for determining the `Variant[S]` to use when parsing `S`. The `select_variant` helper function MAY incorporate environmental information, e.g., the fork schedule.\n+\n+```python\n+class AnyShape(OneOf[Shape]):\n+    @classmethod\n+    def select_variant(cls, value: Shape, circle_allowed = True) -> Type[Shape]:\n+        if value.radius is not None:\n+            assert circle_allowed\n+            return Circle\n+        if value.side is not None:\n+            return Square\n+        assert False\n+```\n+\n+The extent and syntax in which `Variant[S]` and `OneOf[S]` are supported MAY differ among underlying SSZ implementations. Where it supports clarity, specifications SHOULD use `Variant[S]` and `OneOf[S]` as defined here.\n+\n ## Rationale\n \n ### What are the problems solved by `StableContainer[N]`?",
+      "additions": 42,
+      "deletions": 0
+    },
+    {
+      "sha": "9c6742ddc3cfc088d321b0b425379d1a9b499609",
+      "date": "2023-10-30T18:49:53Z",
+      "message": "Update EIP-7495: Mention support for optional fields in motivation",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -24,7 +24,7 @@ Stable containers are currently not representable in SSZ. Adding support provide\n \n 2. **Stable merkle proofs:** Merkle proof verifiers that check specific fields of a `StableContainer[N]` do not need continuous updating when future updates introduce additional fields. Common fields always merkleize at the same [generalized indices](https://github.com/ethereum/consensus-specs/blob/67c2f9ee9eb562f7cc02b2ff90d92c56137944e1/ssz/merkle-proofs.md).\n \n-3. **Compact serialization:** SSZ serialization is compact; inactive fields do not consume space.\n+3. **Optional fields:** Current SSZ formats do not support optional fields, prompting designs to use zero values instead. With `StableContainer[N]`, the SSZ serialization is compact; inactive fields do not consume space.\n \n ## Specification\n ",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "1e1fe7b6ea5d96b614280c1812f08f2ae8085104",
+      "date": "2023-09-01T19:04:01Z",
+      "message": "Update EIP-6493: Remove the need for a wrapper type",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 38,
+      "deletions": 37
+    },
+    {
+      "sha": "b170a3b42da1f2540101adf63dd97043eee909f6",
+      "date": "2023-09-01T15:26:14Z",
+      "message": "Update EIP-6493: Rename to `PartialContainer` to `StableContainer`",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 27,
+      "deletions": 27
+    },
+    {
+      "sha": "f59a02f35e9b48cb700dcbcef91a59a707d8d5d0",
+      "date": "2023-08-31T18:01:28Z",
+      "message": "Update EIP-7495: Move to Review",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -4,7 +4,7 @@ title: SSZ PartialContainer\n description: New SSZ type to represent a flexible container with stable serialization and merkleization\n author: Etan Kissling (@etan-status)\n discussions-to: https://ethereum-magicians.org/t/eip-7495-ssz-partialcontainer/15476\n-status: Draft\n+status: Review\n type: Standards Track\n category: Core\n created: 2023-08-18",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "sha": "7b45933917423c452fc377339eb48dd05d51d13f",
+      "date": "2023-08-28T14:39:49Z",
+      "message": "Update EIP-7495: Extend tests and add deserialization to impl",
+      "author": "etan-status",
+      "prNumber": null,
+      "patch": "@@ -141,16 +141,7 @@ Additionally, every time that the number of fields reaches a new power of 2, the\n \n ## Test Cases\n \n-```python\n-@dataclass\n-class Foo:\n-    a: uint64\n-    b: Optional[uint32]\n-    c: Optional[uint16]\n-\n-value = PartialContainer[Foo, 32](a=64, b=None, c=16)\n-assert bytes(serialize(value)).hex() == \"0500000040000000000000001000\"\n-```\n+See [EIP assets](../assets/eip-7495/tests.py).\n \n ## Reference Implementation\n ",
+      "additions": 1,
+      "deletions": 10
+    },
+    {
+      "sha": "a6ee85bddb54565d2bf8dbd24913d446dd6ce110",
+      "date": "2023-08-28T13:34:38Z",
+      "message": "Add EIP: SSZ PartialContainer",
+      "author": "etan-status",
+      "prNumber": null,
+      "additions": 165,
+      "deletions": 0
+    }
+  ]
+}

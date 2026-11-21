@@ -21,11 +21,12 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync } from 
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { parseArgs } from 'node:util';
+import { loadEips, selectInScopeEips } from './lib/plan-eips.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const ARTIFACTS_DIR = join(ROOT, 'public', 'artifacts');
-const EIPS_JSON = join(ROOT, 'src', 'data', 'eips.json');
+const EIPS_DIR = join(ROOT, 'src', 'data', 'eips');
 
 const DEFAULT_MODEL = 'claude-sonnet-4-5-20250929';
 const DEFAULT_LOOKBACK = 5;
@@ -431,46 +432,11 @@ function validateAgenda(data) {
 // ── EIP loading ──
 
 function loadAllEipIds() {
-  if (!existsSync(EIPS_JSON)) return new Set();
-  const eips = JSON.parse(readFileSync(EIPS_JSON, 'utf-8'));
-  return new Set(eips.map(e => e.id));
+  return new Set(loadEips(EIPS_DIR).map(e => e.id));
 }
 
 function loadInScopeEips(callType) {
-  if (!existsSync(EIPS_JSON)) return [];
-
-  const eips = JSON.parse(readFileSync(EIPS_JSON, 'utf-8'));
-  const layerFilter = CALL_TYPE_LAYER[callType] || null;
-
-  const inScope = [];
-  for (const eip of eips) {
-    if (layerFilter && eip.layer && eip.layer !== layerFilter) continue;
-
-    for (const fr of eip.forkRelationships || []) {
-      const hasActiveStatus = fr.statusHistory?.length > 0 &&
-        ['Proposed', 'Considered'].includes(fr.statusHistory[fr.statusHistory.length - 1].status);
-      const isCandidate = fr.isHeadliner || fr.wasHeadlinerCandidate;
-
-      if (hasActiveStatus || isCandidate) {
-        const latestStatus = fr.statusHistory?.length > 0
-          ? fr.statusHistory[fr.statusHistory.length - 1].status
-          : 'Candidate';
-        const stage = latestStatus === 'Considered' ? 'CFI'
-          : latestStatus === 'Proposed' ? 'PFI'
-          : 'Candidate';
-
-        inScope.push({
-          id: eip.id,
-          title: (eip.title || '').replace(/^EIP-\d+:\s*/, ''),
-          fork: fr.forkName,
-          stage,
-        });
-        break;
-      }
-    }
-  }
-
-  return inScope;
+  return selectInScopeEips(loadEips(EIPS_DIR), CALL_TYPE_LAYER[callType] || null);
 }
 
 // ── Extraction runners ──

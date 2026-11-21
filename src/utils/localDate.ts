@@ -1,3 +1,5 @@
+import { formatISODate } from './date';
+
 const dateFormatCache = new Map<string, Intl.DateTimeFormat>();
 
 const getDateFormatter = (timeZone: string): Intl.DateTimeFormat => {
@@ -14,16 +16,6 @@ const getDateFormatter = (timeZone: string): Intl.DateTimeFormat => {
   return fmt;
 };
 
-const formatDatePartsAsIso = (year: string, month: string, day: string): string => `${year}-${month}-${day}`;
-
-const formatLocalDateAsIso = (date: Date): string => {
-  const year = String(date.getFullYear());
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-
-  return formatDatePartsAsIso(year, month, day);
-};
-
 const formatTimeZoneDateAsIso = (date: Date, timeZone: string): string => {
   const parts = getDateFormatter(timeZone).formatToParts(date);
   const year = parts.find((part) => part.type === 'year')?.value;
@@ -31,14 +23,14 @@ const formatTimeZoneDateAsIso = (date: Date, timeZone: string): string => {
   const day = parts.find((part) => part.type === 'day')?.value;
 
   if (!year || !month || !day) {
-    return formatLocalDateAsIso(date);
+    return formatISODate(date);
   }
 
-  return formatDatePartsAsIso(year, month, day);
+  return `${year}-${month}-${day}`;
 };
 
 export const formatDateInTimeZone = (date: Date, timeZone?: string): string => {
-  if (!timeZone) return formatLocalDateAsIso(date);
+  if (!timeZone) return formatISODate(date);
 
   return formatTimeZoneDateAsIso(date, timeZone);
 };

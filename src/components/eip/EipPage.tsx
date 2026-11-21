@@ -77,9 +77,6 @@ export const EipPage: React.FC<{ id: string }> = ({ id }) => {
   const nextEip = currentIndex < sortedEips.length - 1 ? sortedEips[currentIndex + 1] : null;
 
   const tabBarRef = React.useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   useEffect(() => {
     if (hasFaqQuestionParam && tabBarRef.current) {

@@ -353,15 +353,6 @@ const EipsIndexPage: React.FC = () => {
     }, { replace: true });
   };
 
-  // Helper to format date as YYYY-MM-DD
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
   // Stage color helper
   const getStageColor = (stage: string) => {
     switch (stage) {
@@ -808,7 +799,7 @@ const EipsIndexPage: React.FC = () => {
 
                             return statusWithDate?.date ? (
                               <span className="text-xs text-slate-500 dark:text-slate-400">
-                                {formatDate(statusWithDate.date)}
+                                {statusWithDate.date}
                               </span>
                             ) : (
                               <span className="text-xs text-slate-400 dark:text-slate-400">—</span>
@@ -820,7 +811,7 @@ const EipsIndexPage: React.FC = () => {
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap">
                         <span className="text-xs text-slate-500 dark:text-slate-400">
-                          {formatDate(eip.createdDate)}
+                          {eip.createdDate}
                         </span>
                       </td>
                     </tr>
@@ -898,10 +889,10 @@ const EipsIndexPage: React.FC = () => {
                 {/* Dates */}
                 <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                   {statusWithDate?.date && (
-                    <span>Stage change {formatDate(statusWithDate.date)}</span>
+                    <span>Stage change {statusWithDate.date}</span>
                   )}
                   <span className="text-slate-400 dark:text-slate-400">
-                    Created {formatDate(eip.createdDate)}
+                    Created {eip.createdDate}
                   </span>
                 </div>
               </Link>

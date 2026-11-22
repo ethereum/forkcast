@@ -2,6 +2,16 @@
   "eipId": 8024,
   "commits": [
     {
+      "sha": "875fcf6d084c096195fec170310514444f537133",
+      "date": "2026-11-22T14:16:25Z",
+      "message": "Update EIP-8024: number the steps once, and name the step that halts",
+      "author": "tcoratger",
+      "prNumber": null,
+      "patch": "@@ -49,30 +49,30 @@ Formally, when `code[pc]` is one of these opcodes, the VM executes as follows:\n     3. If `90 < x < 128`, halt with exceptional failure.\n     4. Let `n = decode_single(x)`.\n     5. If `n > len(stack)`, halt with exceptional failure.\n-    5. Push `stack[top - n + 1]` on the stack.\n-    6. Set `pc = pc + 2`.\n+    6. Push `stack[top - n + 1]` on the stack.\n+    7. Set `pc = pc + 2`.\n - `SWAPN`:\n     1. Charge 3 gas.\n     2. Let `x = code[pc + 1]`.\n     3. If `90 < x < 128`, halt with exceptional failure.\n     4. Let `n = decode_single(x)`.\n     5. If `n + 1 > len(stack)`, halt with exceptional failure.\n-    5. Swap `stack[top - n]` and `stack[top]`.\n-    6. Set `pc = pc + 2`.\n+    6. Swap `stack[top - n]` and `stack[top]`.\n+    7. Set `pc = pc + 2`.\n - `EXCHANGE`:\n     1. Charge 3 gas.\n     2. Let `x = code[pc + 1]`.\n     3. If `81 < x < 128`, halt with exceptional failure.\n     4. Let `n, m = decode_pair(x)`.\n     5. If `m + 1 > len(stack)`, halt with exceptional failure.\n-    5. Swap `stack[top - n]` and `stack[top - m]`.\n-    6. Set `pc = pc + 2`.\n+    6. Swap `stack[top - n]` and `stack[top - m]`.\n+    7. Set `pc = pc + 2`.\n \n `code[pc + 1]` evaluates to `0` if beyond the end of the code, matching `PUSH` behavior.\n \n `top` denotes the index of the value at the top of the stack.\n \n-`JUMPDEST` analysis is unchanged. In particular, if `code[i]` is at an instruction boundary and is one of these opcodes, and `code[i + 1]` is `0x5b` (`JUMPDEST`), then `code[i + 1]` is a valid jump target. Note that in this case the execution of `code[i]` would halt at step 2 above (because `x = code[i + 1] = 0x5b = 91`). Disassemblers must decode such `code[i]` as `INVALID` (or `INVALID_DUPN`, etc.) and `code[i + 1]` as `JUMPDEST`.\n+`JUMPDEST` analysis is unchanged. In particular, if `code[i]` is at an instruction boundary and is one of these opcodes, and `code[i + 1]` is `0x5b` (`JUMPDEST`), then `code[i + 1]` is a valid jump target. Note that in this case the execution of `code[i]` would halt at step 3 above (because `x = code[i + 1] = 0x5b = 91`). Disassemblers must decode such `code[i]` as `INVALID` (or `INVALID_DUPN`, etc.) and `code[i + 1]` as `JUMPDEST`.\n \n The auxiliary functions `decode_single` and `decode_pair` are defined by the following Python code:\n ",
+      "additions": 7,
+      "deletions": 7
+    },
+    {
       "sha": "f1ade090fd315895461fc3e249cb1a675aeb55a9",
       "date": "2026-10-22T14:08:27Z",
       "message": "Update EIP-2780: Align titles and descriptions of Glamsterdam EIPs (#12561)",

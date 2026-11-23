@@ -38,6 +38,13 @@ const CATEGORY_TEXT_COLORS: Record<string, string> = {
   perf: 'text-rose-600 dark:text-rose-400',
   nft: 'text-emerald-600 dark:text-emerald-400',
   ssz: 'text-blue-600 dark:text-blue-400',
+  daisugi: 'text-cyan-600 dark:text-cyan-400',
+};
+
+// Card descriptions for series cartographoor doesn't list, which is otherwise where they come from.
+const UNLISTED_SERIES_DESCRIPTIONS: Record<string, string> = {
+  daisugi:
+    'Post-quantum transaction devnets: frame transactions with recursive STARK aggregation of post-quantum signatures (EIP-8288), on an experimental CL fork that is not a scheduled mainnet upgrade.',
 };
 
 const GROUP_ACCENT: Record<string, string> = {
@@ -71,6 +78,8 @@ interface DevnetCardItem {
   activeKeys: string[];
   /** Non-null when a local spec exists for a version cartographoor has never seen, i.e. one that hasn't launched yet. */
   upcomingSpecId: string | null;
+  /** Spec ids, version descending, for a series cartographoor doesn't list at all. Launch status unknown, so no badge. */
+  specKeys: string[];
 }
 
 /**
@@ -95,6 +104,7 @@ function buildCardItems(activeSeries: ActiveDevnetSeries[], inactiveSeries: Inac
       description: s.description,
       activeKeys: s.activeKeys,
       upcomingSpecId: upcomingSpec?.id ?? null,
+      specKeys: [],
     };
   });
 
@@ -108,8 +118,31 @@ function buildCardItems(activeSeries: ActiveDevnetSeries[], inactiveSeries: Inac
         description: s.description,
         activeKeys: [],
         upcomingSpecId: upcomingSpec.id,
+        specKeys: [],
       });
     }
+  }
+
+  // A series with specs but no cartographoor entry at all (daisugi, a PQ devnet
+  // written up outside ethpandaops' notes) still gets a card, listing its specs.
+  const listed = new Set([...activeSeries, ...inactiveSeries].map((s) => s.categoryKey));
+  const unlisted = new Map<string, { id: string; version: number }[]>();
+  for (const specId of allSpecIds) {
+    const parsed = parseNetworkKey(specId);
+    if (!parsed || listed.has(parsed.categoryKey)) continue;
+    const specs = unlisted.get(parsed.categoryKey) ?? [];
+    specs.push({ id: specId, version: parsed.version });
+    unlisted.set(parsed.categoryKey, specs);
+  }
+  for (const [categoryKey, specs] of unlisted) {
+    items.push({
+      categoryKey,
+      displayName: categoryKey,
+      description: UNLISTED_SERIES_DESCRIPTIONS[categoryKey] ?? '',
+      activeKeys: [],
+      upcomingSpecId: null,
+      specKeys: specs.sort((a, b) => b.version - a.version).map((s) => s.id),
+    });
   }
 
   items.sort((a, b) => a.displayName.localeCompare(b.displayName));
@@ -157,6 +190,16 @@ function SeriesCard({ item }: { item: DevnetCardItem }) {
             </span>
           </div>
         )}
+        {item.specKeys.map((key) => (
+          <div key={key} className="flex items-center gap-1.5">
+            <Link
+              to={`/networks/${key}`}
+              className="text-xs font-mono font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+            >
+              {key}
+            </Link>
+          </div>
+        ))}
         {item.activeKeys.map((key) => {
           const promoted = getPromotedDevnet(key);
           const shadowFork = shadowForkLabel(key);
@@ -278,8 +321,8 @@ function InactiveCard({ item }: { item: InactiveDevnetSeries }) {
 
 const NetworksIndexPage: React.FC = () => {
   const { publicNetworks, activeSeries, inactiveSeries, loading, error } = useNetworks();
-  const [showInactive, setShowInactive] = useState(true);
-  const [showRetired, setShowRetired] = useState(true);
+  const [showInactive, setShowInactive] = useState(false);
+  const [showRetired, setShowRetired] = useState(false);
   const cardItems = buildCardItems(activeSeries, inactiveSeries);
   const isForkAffiliated = (key: string) =>
     HEGOTA_CATEGORIES.has(key) || GLAMSTERDAM_CATEGORIES.has(key) || FUSAKA_CATEGORIES.has(key) || PECTRA_CATEGORIES.has(key) || DENCUN_CATEGORIES.has(key);

@@ -34,7 +34,12 @@ if (!/^[a-z0-9-]+$/.test(id)) {
   process.exit(1);
 }
 
-const DOWNLOAD_URL = `https://notes.ethereum.org/@ethpandaops/${id}/download`;
+// HackMD namespace per series. Specs live under @ethpandaops unless a series is
+// written up elsewhere: daisugi's (a PQ devnet not tied to a fork) are pk910's.
+const HACKMD_NAMESPACES = { daisugi: 'pk910' };
+const series = id.replace(/-devnet-\d+$/, '');
+const SOURCE_URL = `https://notes.ethereum.org/@${HACKMD_NAMESPACES[series] ?? 'ethpandaops'}/${id}`;
+const DOWNLOAD_URL = `${SOURCE_URL}/download`;
 const NETWORKS_URL =
   'https://ethpandaops-platform-production-cartographoor.ams3.digitaloceanspaces.com/networks.json';
 
@@ -243,7 +248,7 @@ function parseSpecReferences(md) {
  */
 function parseSameSpecAs(md) {
   const match = md.match(
-    /same spec as \[([^\]]+)\]\(https?:\/\/notes\.ethereum\.org\/@ethpandaops\/([a-z0-9-]+)\)/i,
+    /same spec as \[([^\]]+)\]\(https?:\/\/notes\.ethereum\.org\/@[\w-]+\/([a-z0-9-]+)\)/i,
   );
   if (!match) return null;
   const linkText = match[1].trim();
@@ -275,7 +280,7 @@ async function main() {
     spec = {
       id,
       title: parseTitle(md),
-      sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
+      sourceUrl: SOURCE_URL,
       scrapedAt: new Date().toISOString(),
       sameSpecAs,
       announcements: [],
@@ -289,7 +294,7 @@ async function main() {
     spec = {
       id,
       title: parseTitle(md),
-      sourceUrl: `https://notes.ethereum.org/@ethpandaops/${id}`,
+      sourceUrl: SOURCE_URL,
       scrapedAt: new Date().toISOString(),
       announcements: parseAnnouncements(md),
       eips: parseEipTable(md),

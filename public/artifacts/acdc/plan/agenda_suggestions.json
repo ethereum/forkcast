@@ -1,63 +1,63 @@
 {
   "series": "ACDC",
-  "generated": "2026-11-16",
+  "generated": "2026-11-23",
   "for_call": "ACDC #192",
   "suggestions": [
     {
-      "topic": "EIP-8365: Finalize 0x00 deposit handling (burn vs. re-queue)",
+      "topic": "EIP-8365: Finalize 0x00 deposit handling (burn vs re-queue balance as 0x01)",
       "priority": "high",
-      "rationale": "Deferred from ACDC #190 with explicit two-week revisit window for post-Devcon decision. Core teams need to choose between burning ETH from post-fork 0x00 deposits or implementing Barnabas' re-queue proposal.",
+      "rationale": "Deferred from ACDC #190 with explicit two-week revisit timeline. Decision between burning ETH (simpler) vs Barnabas' proposal to re-queue balance was to be discussed at Devcon and resolved this call.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "PQ signature scheme public commitment and ecosystem communication",
+      "topic": "Post-quantum signature scheme commitment and ecosystem communication plan",
       "priority": "high",
-      "rationale": "ACDC #191 consensus identified this as top priority to enable validator, hardware wallet, and staking pool migration planning. LeanVM audit timeline (Feb 1 start) creates urgency for scheme finalization.",
+      "rationale": "Identified as top priority by Potuz in ACDC #191. Ecosystem (validators, hardware wallets, staking pools) needs public commitment to begin migration planning. LeanVM audit timeline (Feb 1) adds urgency.",
       "related_eips": [],
       "source": "open_action_item"
     },
     {
-      "topic": "consensus-specs PR#5770 decision following ACDT/Sepolia resolution",
+      "topic": "consensus-specs PR#5770 decision: execution payload gossip validation",
       "priority": "high",
-      "rationale": "Deferred from #191 pending EL clarity on 8037/8038 and cross-layer ePBS payload handling discussion at Monday ACDT. Decision needed to unblock execution payload gossip validation alignment.",
+      "rationale": "Deferred in ACDC #191 pending Monday ACDT discussion and Sepolia/EIP-8037/8038 resolution. Competing alternative (cayman's payload-root-in-bid PR) also in play. Cross-layer alignment needed.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "FOCIL Hegota inclusion decision",
-      "priority": "high",
-      "rationale": "Status contested in #191 with PQ interaction and DC compatibility unclear. Core to Hegota sequencing strategy discussed in #190; CL complexity assessed as manageable but requires final go/no-go.",
+      "topic": "FOCIL scope and PQ compatibility for Hegota",
+      "priority": "medium",
+      "rationale": "Status contested in ACDC #191. CL complexity manageable but PQ interaction and DC compatibility unclear. Decision deferred to future call; sequencing affects Hegota timeline.",
       "related_eips": [],
       "source": "deferred_decision"
     },
     {
-      "topic": "Execution payload bid gossip PR resolution (5774 vs 5776)",
+      "topic": "Hegota headliner decisions: PQ-DC vs PQ Gasper feasibility",
       "priority": "medium",
-      "rationale": "Two competing approaches remain unresolved from #190: Potuz/Justin's proposer-accepts-any vs. Nico's 3% minimum increment. Client teams were asked to weigh in within days but no decision recorded in #191.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "PQ deposit contract front-running requirement confirmation",
-      "priority": "medium",
-      "rationale": "EIP-8205 DFI'd in #190 with explicit requirement that PQ deposit contract must address front-running. No update on whether PQ design teams have incorporated this constraint.",
-      "related_eips": [],
-      "source": "open_action_item"
-    },
-    {
-      "topic": "Hegota EIP scoping progress: bundled attestations, retention window, custom sweep",
-      "priority": "medium",
-      "rationale": "EIPs 8334, 8383, 8148, and 8411 all CFI'd in #190; teams should confirm implementation readiness and any blocking issues before advancing to SFI.",
+      "rationale": "ACDC #191 explored PQ Gasper as faster path but feasibility uncertain (aggregation, bandwidth, non-finality handling all require investigation). BLS-DC declared dead; DC work must be PQ-DC. Core architectural decision needed.",
       "related_eips": [],
       "source": "ongoing_discussion"
     },
     {
-      "topic": "PQ Gasper feasibility and DC compatibility roadmap",
+      "topic": "ePBS oversized/invalid payload handling cross-layer resolution",
+      "priority": "medium",
+      "rationale": "ACDC #191 flagged malicious payload testing showing up to 12s EL execution times. Action item to discuss in interop channel and bring to ACDT Monday. Need EL/CL alignment on handling strategy.",
+      "related_eips": [],
+      "source": "open_action_item"
+    },
+    {
+      "topic": "EIP-8483 (PQ material registration) CFI consideration",
+      "priority": "medium",
+      "rationale": "PFI'd out of band in ACDC #191. System contract deployable immediately once PQ scheme finalized; hard fork only copies data to beacon state. Natural next stage progression.",
+      "related_eips": [],
+      "source": "ongoing_discussion"
+    },
+    {
+      "topic": "Glamsterdam devnet-11 status and mainnet readiness assessment",
       "priority": "low",
-      "rationale": "Explored in #191 as potential faster path than FOCIL+DC, but feasibility uncertain. Teams noted aggregation, bandwidth, and non-finality handling all require investigation before commitment.",
+      "rationale": "Consensus-specs release occurred Oct 30; Lido PR requires explicit devnet testing with estimated launch Nov 16-20. Update on devnet progress and any blocking issues.",
       "related_eips": [],
-      "source": "ongoing_discussion"
+      "source": "devnet_update"
     }
   ]
 }

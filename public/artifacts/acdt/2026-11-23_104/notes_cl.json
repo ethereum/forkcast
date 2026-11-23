@@ -1,0 +1,47 @@
+{
+  "meeting": "ACDT #104 - 2026-11-23 (CL Breakout)",
+  "sections": [
+    {
+      "heading": "Envelope Equivocation: PR 5820 vs RLP (PR 5770)",
+      "summary": "Most CL teams favor PR 5820 (payload_root) over RLP for Glamsterdam, but Prysm needs weeks to implement; decision deferred to ACDC Thursday.",
+      "timestamp": "00:00:25",
+      "body": "- [PR 5820](https://github.com/ethereum/consensus-specs/pull/5820) replaces the RLP-based envelope equivocation fix ([PR 5770](https://github.com/ethereum/consensus-specs/pull/5770)) with a payload_root approach; also requires companion PRs for [beacon APIs](https://github.com/ethereum/beacon-APIs/pull/677) and [builder-specs](https://github.com/ethereum/builder-specs/pull/176).\n- Barnabas proposed in chat doing 5770 (RLP) for Glamsterdam and 5820 in Heze; Nico replied that would be a lot more work than doing 5820 now, and Dustin and Mark backed 5820 now.\n- Lodestar (cayman): recommended doing 5820 now; most clients have already looked into implementing it; acknowledges lateness but argues the right fix avoids future tech debt.\n- Lighthouse (Mark): already implemented 5820 last week; net result is ~1,000 lines lighter; considers implementation straightforward and mostly deletion of code.\n- Lodestar (Nico): minimal approach is updating to new spec; full simplification (validator signing flow, remote signing removal) can come later; estimates having something working today or tomorrow.\n- Teku (Enrico): has not started implementation but completed analysis; estimates 1–2 days of testing would likely be enough; believes cache mitigations are tractable.\n- Prysm (Potuz): needs a few weeks; significant work to remove signature-verification-based caches that were designed to only be DoSable by builders; removing the current working implementation is the biggest cost.\n  - Stressed that this is a consensus-breaking change requiring API changes, cache redesign, and proper testing.\n  - Acknowledged being outvoted but insisted Hoodi will be delayed — no realistic way to ship Hoodi this year if 5820 is adopted.\n- raxhvl shared a [security write-up](https://notes.raxhvl.com/epbs-payload-pairing) analyzing DoS implications of removing the envelope signature; concluded everything looks manageable but asked clients to review.\n- Most clients prefer 5820; Jihoon suggested clients (including Prysm) could start working on it, with the formal decision deferred to ACDC call on Thursday, as delaying Hoodi / Glamsterdam is a governance decision that cannot be made in this breakout."
+    },
+    {
+      "heading": "Sepolia Testnet Implications",
+      "summary": "If PR 5820 is adopted, Sepolia would likely need to be killed; multiple teams expressed support for sunsetting it.",
+      "timestamp": "00:02:53",
+      "body": "- Barnabas raised the question of how to handle Sepolia if the consensus-breaking change (5820) is adopted.\n- Lodestar (cayman): willing to cut a separate image just for Sepolia if needed, but also fine killing it.\n- Dustin: noted that EL teams had already accepted killing Sepolia over smaller spec changes (EIP-8037); same logic applies here.\n- NC pointed out Sepolia is already end-of-life soon; Dustin confirmed it is 5 or 6 years old and was originally scheduled for sunsetting around now.\n- A [Sepolia replacement/sunsetting discussion](https://ethereum-magicians.org/t/sepolia-testnet-replacement-sunsetting/28647) was linked by Jihoon.\n- Barnabas cautioned that killing testnets in a bear market draws complaints from teams lacking bandwidth to migrate.\n- Nico suggested running old releases on Sepolia since app devs don't care about the latest fork; Barnabas agreed this could work while Heze is being set up."
+    },
+    {
+      "heading": "DoS Mitigation and Payload Cache Design",
+      "summary": "Teams discussed cache-based mitigations for the unsigned envelope DoS vector introduced by PR 5820; attack is considered difficult but not impossible.",
+      "timestamp": "00:05:53",
+      "body": "- Lighthouse (Mark): implemented a queue-based mitigation — evicts earliest envelopes; attacker must send enough envelopes after the real one arrives but before the block arrives; limited to one envelope per peer, requiring many sybil peers.\n- Potuz: clarified that the vulnerable window is not about wall-clock timing but peer-to-peer propagation order; when builder broadcasts block and payload simultaneously, some peers always receive the payload before the block.\n- Teku (Enrico): argued that an attacker would need to time a competing payload precisely at the right moment for the right peer subset; causing real damage is very difficult.\n- Potuz: countered that the attacker only needs to target the next proposer and only needs to be peered with them (not staked), which is a weaker security assumption than the current signature-based design.\n- Mark: noted the attack is attributable — garbage payloads can be detected and peers downscored.\n- Potuz: agreed downscoring is possible but requires keeping peer-to-payload mappings in cache, which adds to the implementation complexity that will delay Prysm."
+    },
+    {
+      "heading": "Hoodi Testnet Timeline Impact",
+      "summary": "Adopting PR 5820 almost certainly pushes Hoodi past December; Prysm estimates several weeks of implementation plus testing time.",
+      "timestamp": "00:16:00",
+      "body": "- Nico asked when Hoodi is; Dustin noted no date has been set; Ben Edgington cited a penciled-in date of week of December 14 from ACDE.\n- Dustin disputed the \"penciling\" characterization — said only one or two people suggested it; historically Hoodi-type testnets have launched with 2–3 weeks lead time.\n- Potuz: December is impossible; Hoodi requires releases several weeks before forking because staking pools rely on it, and the testnet is fully decentralized.\n- Mark: estimated 5820 would push things back a week or two; Potuz disagreed — a couple of weeks for implementation plus testing time means no Hoodi this year.\n- Barnabas: confirmed Hoodi won't happen this year if 5820 is adopted.\n- Jihoon: acknowledged the timeline concern and noted that the final decision on delaying Hoodi/Glamsterdam must go through ACDC as a governance decision."
+    },
+    {
+      "heading": "Devnet for PR 5820",
+      "summary": "PandaOps can spin up a small devnet this week for 5820 testing; Prysm would join once ready.",
+      "timestamp": "00:20:11",
+      "body": "- Cayman asked about PandaOps' willingness to run a small devnet for 5820.\n- Barnabas: confirmed it is absolutely necessary and can be spun up this week, possibly tomorrow, once clients have implementations ready.\n  - Noted that all clients except Prysm appear to have implementations ready or nearly ready; Prysm can be onboarded once they are done.\n- Jihoon: cautioned that even with a devnet, all CL teams must be onboarded before Glamsterdam can proceed to mainnet, so the ACDC decision is still the gating factor."
+    },
+    {
+      "heading": "PR 5802: Transaction Count Limit by Parent Gas Limit",
+      "summary": "PR 5802 limits execution payload transaction count by parent gas limit to prevent DoS; Lodestar has implemented it, needs broader review.",
+      "timestamp": "00:21:25",
+      "body": "- [PR 5802](https://github.com/ethereum/consensus-specs/pull/5802) (Nico): limits the transaction count in execution payload envelopes by the parent payload's gas limit; addresses several DoS cases.\n- Lodestar has implemented it; described as quite simple — only requires access to parent gas limit, which they had in fork choice.\n- Potuz and Pawan previously expressed support; broader client review still needed.\n- Nico: if not added to the spec as a reject condition, it could alternatively be an ignore rule, but having it in the spec allows a reject, which is preferable.\n- Dustin and Enrico both indicated in chat that the PR makes sense."
+    },
+    {
+      "heading": "PR 5803: Stricter Bid Ignore Rules",
+      "summary": "PR 5803 tightens P2P bid propagation rules to prevent free spam bids on unreorgable branches and before PTC deadlines.",
+      "timestamp": "00:22:27",
+      "body": "- [PR 5803](https://github.com/ethereum/consensus-specs/pull/5803) (Nico): adds ignore rules to prevent builders from bidding on branches where the head is not reorgable, and from sending bids before the PTC vote deadline.\n  - Currently builders can bid arbitrarily in these windows at no cost, spamming the network.\n- The change is backward compatible — an ignore rule, not a reject — so it can be implemented and rolled out at any time without coordination.\n- Nodes implementing it simply propagate fewer bids.\n- Both Dustin and Enrico expressed support in chat; broader review still requested."
+    }
+  ]
+}

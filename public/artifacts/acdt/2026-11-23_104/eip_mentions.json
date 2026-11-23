@@ -1,0 +1,244 @@
+{
+  "meeting": "ACDT #104 - 2026-11-23",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "Extensive discussion on whether to change the spec, specifically the reservoir mechanism and broken invariants, with a decision tree presented.",
+      "moments": [
+        {
+          "timestamp": "00:14:59",
+          "context": "Rahul presented compiled feedback from teams including Uniswap, Zerodev, Enso, Cowswap, Safe, and ChainSecurity on the EIP-8037 spec, noting complaints about broken invariants like gas-left going up and try-catch being fundamentally broken."
+        },
+        {
+          "timestamp": "00:25:32",
+          "context": "Andrew from Erigon suggested removing controversial bits like the reservoir mechanism from EIP-8037 to break fewer invariants, noting it complicates FOCIL."
+        },
+        {
+          "timestamp": "00:27:06",
+          "context": "Maria explained the reservoir is needed because without it the transaction gas limit would need to be raised to ~100 million for contract deployment, defeating block-level access list parallelization."
+        },
+        {
+          "timestamp": "00:31:19",
+          "context": "Toni presented a decision tree of potential spec changes, concluding no silver bullet exists and recommending no spec change, as any change would require re-analysis by all affected apps."
+        },
+        {
+          "timestamp": "00:36:03",
+          "context": "Łukasz noted he found no transactions that couldn't be fixed by raising the gas limit but was not entirely sold on either keeping or changing the spec."
+        },
+        {
+          "timestamp": "00:38:09",
+          "context": "Toni warned that forcing users to specify higher gas limits could open griefing vectors against bundlers, referencing past ERC-4337 issues with the opaque reservoir."
+        },
+        {
+          "timestamp": "00:41:06",
+          "context": "Maria argued the current design philosophy of immediate refunds is better than deferring to end-of-transaction, and with affected developers already fixing their code, there is no benefit to rehashing the spec."
+        }
+      ]
+    },
+    {
+      "eip": 8038,
+      "title": "State-Access Gas Cost Update",
+      "weight": "mentioned",
+      "summary": "Listed alongside EIP-8037 as a feedback topic on the agenda but not separately discussed.",
+      "moments": [
+        {
+          "timestamp": "00:14:59",
+          "context": "Mario introduced the agenda item as EIP-8037 and EIP-8038 feedback from teams, but all subsequent discussion focused on 8037."
+        }
+      ]
+    },
+    {
+      "eip": 4337,
+      "weight": "mentioned",
+      "summary": "Cited by Toni as a past problem area for EIP-8037's opaque reservoir, in the context of bundler griefing.",
+      "moments": [
+        {
+          "timestamp": "00:37:54",
+          "context": "Toni said one of the past issues with 8037 had been around 4337: because the reservoir is opaque to gas used, forcing higher gas limits could open griefing vectors against bundlers."
+        }
+      ]
+    },
+    {
+      "eip": 8151,
+      "title": "Account Code Restricted ecRecover",
+      "weight": "mentioned",
+      "summary": "Mentioned as an area needing better preparation and application compatibility testing for Hegota.",
+      "moments": [
+        {
+          "timestamp": "00:50:22",
+          "context": "Ivan from ethrex said they support prioritizing frame hardening and application compatibility especially around EIP-8151, and the chat said 'Let's do better for 8151.'"
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "discussed",
+      "summary": "Central to the frames forward-compatibility debate, discussing leanSPHINCS, leanPCS, aggregation, proof frames versus signature lists.",
+      "moments": [
+        {
+          "timestamp": "00:51:23",
+          "context": "Ivan from ethrex said he would propose an EIP for Hegota that takes leanSPHINCS from 8288 and does the minimal thing to have it natively, keeping extensibility for 8288."
+        },
+        {
+          "timestamp": "00:54:05",
+          "context": "lightclient said the primary goal for any devnet 3 is figuring out how to make frames forward compatible with EIP-8288, and spec questions remain open."
+        },
+        {
+          "timestamp": "01:09:35",
+          "context": "lightclient confirmed the main spec work needed is specifying how frames will be forward compatible with 8288 and what direction 8288 is going, noting leanPCS is a development of the last 1.5 weeks."
+        },
+        {
+          "timestamp": "01:14:44",
+          "context": "lightclient opened the EL breakout asking whether leanPCS is the way to plan for aggregation and permissionless cryptography, and whether proof frames or signature lists are the better design for 8288 compatibility."
+        },
+        {
+          "timestamp": "01:24:11",
+          "context": "Ivan explained that leanSPHINCS and leanPCS claims will coexist under 8288, with leanPCS used more by privacy protocols while regular users use leanSPHINCS signatures."
+        },
+        {
+          "timestamp": "01:29:01",
+          "context": "Toni noted that in 8288 the proof frame required the target address to be empty, and both proof frame and signature list approaches could work with any lean* scheme."
+        }
+      ]
+    },
+    {
+      "eip": 8131,
+      "title": "Unified Transaction Content Floor",
+      "weight": "mentioned",
+      "summary": "Proposed by Nethermind for Bogota devnet 3 as a scaling EIP that could be delivered cheaply on top of Glamsterdam.",
+      "moments": [
+        {
+          "timestamp": "00:52:32",
+          "context": "Łukasz from Nethermind proposed EIP-8131 Unified Transaction Content Floor alongside 8279 and 7907 for Bogota devnet 3, saying they are not big EIPs and are important for scaling."
+        }
+      ]
+    },
+    {
+      "eip": 8279,
+      "title": "Block Access List Byte Floor",
+      "weight": "mentioned",
+      "summary": "Proposed by Nethermind for Bogota devnet 3 as a scaling EIP alongside 8131 and 7907.",
+      "moments": [
+        {
+          "timestamp": "00:52:32",
+          "context": "Łukasz proposed EIP-8279 Block Access List Byte Floor for Bogota devnet 3, calling it important for unblocking scaling."
+        }
+      ]
+    },
+    {
+      "eip": 7907,
+      "title": "Meter Contract Code Size",
+      "weight": "mentioned",
+      "summary": "Proposed by Nethermind as a PFI candidate for safer scaling in Hegota.",
+      "moments": [
+        {
+          "timestamp": "00:52:32",
+          "context": "Łukasz proposed EIP-7907 Meter Contract Code Size, noting it is still PFI, as a potential addition for safe scaling in Bogota devnet 3."
+        }
+      ]
+    },
+    {
+      "eip": 8077,
+      "title": "eth/XX - announce transactions with nonce",
+      "weight": "discussed",
+      "summary": "Besu considered proposing it for devnet 3 but decided against it pending clarity on mempool rule simplification.",
+      "moments": [
+        {
+          "timestamp": "00:55:42",
+          "context": "Justin from Besu said EIP-8077 is interesting but would not propose it for devnet 3 if mempool rules are going to be dialed back, wanting to wait for that discussion first."
+        }
+      ]
+    },
+    {
+      "eip": 5920,
+      "title": "PAY opcode",
+      "weight": "mentioned",
+      "summary": "Proposed by Erigon as a cleanup EIP for Bogota devnet 3.",
+      "moments": [
+        {
+          "timestamp": "01:00:02",
+          "context": "Andrew from Erigon proposed adding EIP-5920 PAY opcode and EIP-7668 as cleanup EIPs for a small Bogota devnet 3 improvement."
+        }
+      ]
+    },
+    {
+      "eip": 7668,
+      "title": "Remove bloom filters",
+      "weight": "mentioned",
+      "summary": "Proposed by Erigon and EthPandaOps as a cleanup EIP to remove bloom filters for Bogota devnet 3.",
+      "moments": [
+        {
+          "timestamp": "01:00:02",
+          "context": "Andrew from Erigon proposed EIP-7668 removing bloom filters for Bogota devnet 3."
+        },
+        {
+          "timestamp": "01:05:14",
+          "context": "Stefan from EthPandaOps listed remove bloom filters as one of two new simple EIPs in the proposed Bogota devnet 3 scope document."
+        }
+      ]
+    },
+    {
+      "eip": 4758,
+      "title": "Deactivate SELFDESTRUCT",
+      "weight": "discussed",
+      "summary": "Discussed whether to keep or remove the SELFDESTRUCT deactivation from the devnet scope, with TCREATE as a companion.",
+      "moments": [
+        {
+          "timestamp": "01:03:06",
+          "context": "Jochem from the specs team said EIP-4758 is already in Bogota devnet 2, and if there is a devnet 3, they want either 4758 removed or 4758 kept alongside EIP-8360 TCREATE to give the app layer a replacement pattern."
+        },
+        {
+          "timestamp": "01:06:10",
+          "context": "Andrew from Erigon agreed removing SELFDESTRUCT is super important as it complicates the codebase, supporting inclusion of TCREATE alongside 4758."
+        }
+      ]
+    },
+    {
+      "eip": 8360,
+      "title": "TCREATE Opcode",
+      "weight": "discussed",
+      "summary": "Proposed as a necessary companion to EIP-4758 to provide the native CREATE+SELFDESTRUCT pattern replacement.",
+      "moments": [
+        {
+          "timestamp": "01:03:06",
+          "context": "Jochem said if there is a Bogota devnet 3, they want EIP-8360 TCREATE added alongside EIP-4758 to give app layer the CREATE+SELFDESTRUCT pattern."
+        },
+        {
+          "timestamp": "01:06:10",
+          "context": "Andrew from Erigon said he is totally in favor of including EIP-8360 TCREATE in a minimum Bogota devnet 3 with PQ changes."
+        }
+      ]
+    },
+    {
+      "eip": 8298,
+      "title": "SETCODEFROM Code Reuse Instruction",
+      "weight": "mentioned",
+      "summary": "Guru noted it is already in Bogota devnet 2 and urged clients to decide on SFI status since EOA-to-smart-account migration depends on it.",
+      "moments": [
+        {
+          "timestamp": "01:04:02",
+          "context": "Guru said EIP-8298 SETCODEFROM is already in Bogota devnet 2, but many EOA migration solutions for frames depend on whether it gets SFI'd, and asked clients to review it for a decision at next ACDE."
+        }
+      ]
+    },
+    {
+      "eip": 8141,
+      "title": "Frame Transaction",
+      "weight": "discussed",
+      "summary": "Frame transaction EIP discussed as the base being modified to support proof frame machinery for PQ compatibility.",
+      "moments": [
+        {
+          "timestamp": "01:43:38",
+          "context": "Kevaundray asked if lightclient was thinking of modifying EIP-8141 to add proof frame machinery; lightclient confirmed that is where he is leaning."
+        },
+        {
+          "timestamp": "01:44:16",
+          "context": "lightclient suggested the PQ-EL and 8141 chat channels as places to continue the discussion."
+        }
+      ]
+    }
+  ]
+}

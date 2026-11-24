@@ -1,0 +1,85 @@
+{
+  "id": "bogota-devnet-3",
+  "title": "bogota-devnet-3",
+  "sourceUrl": "https://notes.ethereum.org/@ethpandaops/bogota-devnet-3",
+  "scrapedAt": "2026-11-24T18:25:50.763Z",
+  "announcements": [
+    "**Proposed scope** for [ACDT #104](https://github.com/ethereum/pm/issues/2306). Launch is **TBD** (targeting mid-December 2026 after [ACDE #250](https://github.com/ethereum/pm/issues/2316) confirms Hegotá EL scope).",
+    "**Scope.** Focused PQ + Frames EL-only devnet while CL settles FOCIL at ACDC. Carries forward the [bogota-devnet-2](https://notes.ethereum.org/@ethpandaops/bogota-devnet-2) EIPs with post-devnet-2 fixes, adds native **leanSPHINCS** to EIP-8141 ([PR-12616](https://github.com/ethereum/EIPs/pull/12616) / [EELS#3957](https://github.com/ethereum/execution-specs/pull/3957)) and two low-complexity cleanups (**EIP-7668**, **EIP-3298**), and swaps **EIP-4758** (Deactivate `SELFDESTRUCT`) for **EIP-8360** (`TCREATE`) so contract devs get a migration path before `SELFDESTRUCT` is deactivated. The EL activates **Bogota** at the Heze fork epoch while the CL stays on Gloas (`FRAMES_ENABLED=true`).",
+    "Frame txs are **not compatible with devnet-2**: adds `LEANSPHINCS` (`scheme=0x3`) to EIP-8141 ([PR-12616](https://github.com/ethereum/EIPs/pull/12616)), raises `MAX_VERIFY_GAS` to `300_000` ([PR-12644](https://github.com/ethereum/EIPs/pull/12644)), and statically rejects unapprovable `SENDER` frames ([PR-12656](https://github.com/ethereum/EIPs/pull/12656))."
+  ],
+  "eips": [
+    {
+      "number": 8141,
+      "title": "Frame Transaction: native `LEANSPHINCS` scheme ([PR-12616](https://github.com/ethereum/EIPs/pull/12616) / [EELS#3957](https://github.com/ethereum/execution-specs/pull/3957)), nonce check boundary (`dc5d5fa6`), EIP-8037 share (`7372d10a`), static rejection of unapprovable `SENDER` frames ([PR-12656](https://github.com/ethereum/EIPs/pull/12656)), `MAX_VERIFY_GAS=300_000` ([PR-12644](https://github.com/ethereum/EIPs/pull/12644)), mempool ecrecover signer dependency ([PR-12670](https://github.com/ethereum/EIPs/pull/12670))",
+      "status": "updated",
+      "url": "https://eips.ethereum.org/EIPS/eip-8141"
+    },
+    {
+      "number": 8250,
+      "title": "Keyed Nonces: single-use keyed txs pass static and mempool checks ([PR-12659](https://github.com/ethereum/EIPs/pull/12659))",
+      "status": "updated",
+      "url": "https://eips.ethereum.org/EIPS/eip-8250"
+    },
+    {
+      "number": 8272,
+      "title": "Recent Roots",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-8272"
+    },
+    {
+      "number": 7906,
+      "title": "Transaction Assertions: storage-kept nonce changes clarification (`9099f412`)",
+      "status": "updated",
+      "url": "https://eips.ethereum.org/EIPS/eip-7906"
+    },
+    {
+      "number": 8298,
+      "title": "SETCODEFROM (`0xA7`)",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-8298"
+    },
+    {
+      "number": 8151,
+      "title": "Account Code Restricted ecRecover: public mempool rules for recovered signers (`8194528a`)",
+      "status": "updated",
+      "url": "https://eips.ethereum.org/EIPS/eip-8151"
+    },
+    {
+      "number": 8253,
+      "title": "Bump nonce of zero-nonce storage accounts",
+      "status": null,
+      "url": "https://eips.ethereum.org/EIPS/eip-8253"
+    },
+    {
+      "number": 8360,
+      "title": "TCREATE Opcode ([EELS#3888](https://github.com/ethereum/execution-specs/pull/3888))",
+      "status": "new",
+      "url": "https://eips.ethereum.org/EIPS/eip-8360"
+    },
+    {
+      "number": 7668,
+      "title": "Remove bloom filters ([EELS#3719](https://github.com/ethereum/execution-specs/pull/3719))",
+      "status": "new",
+      "url": "https://eips.ethereum.org/EIPS/eip-7668"
+    },
+    {
+      "number": 3298,
+      "title": "Remove storage-clear refund and refund cap ([EELS#3733](https://github.com/ethereum/execution-specs/pull/3733))",
+      "status": "new",
+      "url": "https://eips.ethereum.org/EIPS/eip-3298"
+    }
+  ],
+  "elClientSupport": {
+    "clients": [],
+    "matrix": []
+  },
+  "clClientSupport": {
+    "clients": [],
+    "matrix": []
+  },
+  "specReferences": {
+    "consensusSpecs": null,
+    "executionSpecs": null
+  }
+}

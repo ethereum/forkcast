@@ -1,0 +1,53 @@
+{
+  "meeting": "FOCIL #047 - 2026-11-24",
+  "sections": [
+    {
+      "heading": "PQ Transactions in Inclusion Lists",
+      "summary": "The 8 KB IL limit fits about one PQ transaction per IL, allowing up to 16 per slot without spec changes.",
+      "timestamp": "00:08:13",
+      "body": "- PQ EL signatures are expected to be 5-7 KB each, meaning worst case only one PQ transaction fits per inclusion list under the current 8 KB size limit.\n- With 16 IL committee members, up to 16 individual PQ transactions could be force-included per slot, which is considered adequate for early PQ adoption when few users will opt for PQ signatures.\n- No FOCIL mechanism changes are required for this basic level of PQ transaction inclusion; it works with the existing design.\n- Including PQ transactions at scale (many per IL) requires each IL to carry a STARK proof (~300 KB), which demands significant networking redesign.\n  - This is only feasible after EIP-8288 aggregation and PQ CL proof infrastructure are both shipped.\n  - The network would already need to handle large proofs on both EL and CL layers before FOCIL proof inclusion is practical."
+    },
+    {
+      "heading": "Switching IL Signatures to Lean XMSS",
+      "summary": "Replacing BLS with lean XMSS adds 2.4 KB per IL and appears feasible with current P2P stack, but urgency is debated.",
+      "timestamp": "00:14:43",
+      "body": "- Switching IL signatures from BLS to lean XMSS adds 2.4 KB to each inclusion list, which is manageable within the current propagation window (6-9 seconds into the slot).\n- Thomas argued this is not urgent because a quantum attacker targeting FOCIL would need to crack keys of all 16 includers to equivocate for a single slot — low reward compared to attacking consensus or stealing funds.\n- NC and Jun Song disagreed in chat, arguing postponing the switch just leaves unfinished work for later.\n- Jihoon noted the switch should happen after lean XMSS is finalized and confirmed for CL use; the cryptographic schemes (both Lean Sphinx and lean XMSS) are still in flux.\n- Thomas acknowledged that if lean XMSS is used elsewhere on the CL, adding it to FOCIL should not be a large incremental effort, but cautioned against letting it block the fork if the signature scheme is not yet ready."
+    },
+    {
+      "heading": "EIP-8288 Phasing and Timeline",
+      "summary": "EIP-8288 is being split into three sub-EIPs: Lean Sphinx (possibly H-star), mempool aggregation via LeanVM (I-star target), and lean PCS proofs (I-star or J-star).",
+      "timestamp": "00:17:15",
+      "body": "- EIP-8288 is being rewritten into sub-EIPs because the original is too large to reason about as a single proposal.\n- Part 1 — Lean Sphinx: individual PQ signatures for EL transactions, possibly shipping in H-star. Expected before aggregation is available.\n- Part 2 — Mempool recursive aggregation (LeanVM): target I-star, estimated mid-2028. LeanVM formal verification and multiple implementations expected ready by July 2027.\n- Part 3 — Lean PCS (arbitrary proof aggregation): at best I-star, more likely J-star, as it is less urgent than signatures and aggregation.\n- It is considered likely that PQ EL (Lean Sphinx without aggregation) ships before EIP-8288 aggregation, meaning individual large PQ signatures will exist in the mempool for a period.\n- During this interim period, FOCIL can include a small number of unaggregated PQ transactions per IL without modification."
+    },
+    {
+      "heading": "Bandwidth and IL Size Concerns Post-PQ",
+      "summary": "Including STARK proofs in ILs (~300 KB each, 16 per slot) would massively increase CL bandwidth; this is deferred until proof networking infrastructure exists.",
+      "timestamp": "00:24:34",
+      "body": "- Mikhail raised concern that transitioning from raw PQ signatures to STARK proofs in ILs could suddenly increase each IL from ~7 KB to ~300 KB, straining CL bandwidth already under pressure from PQ consensus changes.\n- Thomas clarified that FOCIL does not need to include proofs until after both EIP-8288 aggregation and PQ CL with aggregation are shipped; until then, raw individual transactions suffice.\n- By the time proof inclusion in ILs is needed, the network should already be redesigned to handle large proof objects on both layers.\n- Adjustable parameters to manage bandwidth: reducing IL committee size (trading off some censorship resistance), extending propagation windows, and bounding IL gas.\n- Jihoon proposed a delayed inclusion constraint (n+1 slot instead of immediate next slot) to gain 12 extra seconds of propagation time, acknowledging this sacrifices a core EIP-7805 design value.\n  - PQ Gasper already uses delayed aggregates inclusion with up to 18 seconds for propagation as precedent."
+    },
+    {
+      "heading": "FOCIL Impact on Frames and Hegota Scoping",
+      "summary": "FOCIL in Hegota would delay frames somewhat, but Thomas argued the knock-on delay to the PQ fork is minimal, as PQ CL is far out.",
+      "timestamp": "00:38:01",
+      "body": "- Thomas acknowledged FOCIL will add some delay to frames due to increased testing surface, but argued the delay would not significantly impact the PQ I-star fork timeline.\n- The PQ CL component (whether PQ Gasper or PQDC) is expected to take considerable time regardless, reducing the marginal cost of shipping FOCIL alongside frames.\n- Justin Florentine (Besu) noted that given how far along FOCIL already is, dropping it from Hegota would not meaningfully speed up PQ CL work.\n- Marc (EL perspective) said the interaction between FOCIL and EIP-8288 aggregation will be the hardest part, but breaking 8288 into sub-EIPs simplifies things; he would support it.\n- The ACDC call on Thursday (November 26) will discuss Hegota scoping, but a final decision is expected on December 10 to allow US-based developers (absent for Thanksgiving) to participate."
+    },
+    {
+      "heading": "IL Equivocation Under PQ",
+      "summary": "Equivocation with 300 KB STARK-carrying ILs could flood the network; propagating only IL headers as equivocation evidence is a potential future optimization.",
+      "timestamp": "00:48:47",
+      "body": "- If ILs carry STARK proofs and an includer equivocates, the network must handle double the already-large objects.\n- Jihoon proposed propagating IL equivocation evidence as headers only, dropping transaction and proof bytes, saving approximately 308×2 KB per equivocation.\n- This optimization is not considered necessary before the STARK proof era and adds protocol complexity (new gossipsub topic).\n- Agreement that this belongs in the design space for future PQ FOCIL with proof inclusion, not for near-term shipping."
+    },
+    {
+      "heading": "PQ Gasper vs. PQDC Decision",
+      "summary": "PQ Gasper is running on pq-devnet-0 but faces significant compromises; if still questionable in 2-3 months, the team may switch to PQDC.",
+      "timestamp": "00:51:55",
+      "body": "- Etan noted in chat that the decision between PQ Gasper and PQDC has not been made; NC added that a PQDC spec does not even exist yet.\n- pq-devnet-0 is currently running PQ Gasper; networking appears likely to be the main bottleneck but real numbers are still needed.\n- Mikhail shared his personal view: PQ Gasper is feasible but likely requires uncomfortable compromises — longer slots, higher bandwidth requirements, or more advanced pubsub protocols.\n  - If PQ Gasper still looks questionable in 2-3 months (by January), the team should consider switching to PQDC.\n  - Advanced pubsub protocols would benefit PQDC as well but may be a hard requirement for PQ Gasper.\n- Mehdi Aouadi stated in chat that PQ Gasper is \"not looking great\" based on the last 3 PQ sessions and devnet-0, and that PQDC would be better but more expensive; PQ Gasper could serve as a catastrophic fallback.\n- Thomas raised the question of how much PQ Gasper work transfers to PQDC; Jihoon noted that some (devnet benchmarks) transfers well, but PQ Gasper-specific hacks likely do not.\n- Jihoon urged timeboxing PQ Gasper-specific non-transferable work to avoid spending months on a potential dead end."
+    },
+    {
+      "heading": "Next Call Scheduling",
+      "summary": "Next FOCIL breakout scheduled for December 8 (two weeks), before the December 10 ACDC where the final Hegota scoping decision is expected.",
+      "timestamp": "01:00:31",
+      "body": "- Jihoon proposed meeting in two weeks (December 8) rather than one week; Thomas (in chat) had no strong preference on timing but wanted one more call before Christmas.\n- The December 8 breakout falls before the December 10 ACDC call where the final decision on FOCIL in Hegota is expected.\n- ACDC calls may pause for a few weeks at year-end (as happened in 2025); FOCIL breakouts would likely pause in sync.\n- Whether FOCIL breakouts continue after the ACDC decision depends on the outcome — if FOCIL is dropped from Hegota, breakouts may no longer be needed."
+    }
+  ]
+}

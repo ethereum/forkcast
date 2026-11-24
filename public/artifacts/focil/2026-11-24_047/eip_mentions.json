@@ -1,0 +1,73 @@
+{
+  "meeting": "FOCIL #047 - 2026-11-24",
+  "eips": [
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "Entire call centered on FOCIL's post-quantum transition, Hegota scoping, and whether to defer or ship it alongside frames.",
+      "moments": [
+        {
+          "timestamp": "00:06:46",
+          "context": "Jihoon opened the call noting a proposal to defer FOCIL from Hegota in favor of going all-in on PQ consensus, with a final decision expected on the December 10 ACDC call."
+        },
+        {
+          "timestamp": "00:08:33",
+          "context": "soispoke presented slides breaking PQ FOCIL into two parts: PQ-signed transactions fitting in ILs (feasible now, ~1 per IL) and ILs themselves carrying PQ signatures or STARK proofs (much harder, deferred)."
+        },
+        {
+          "timestamp": "00:12:05",
+          "context": "soispoke argued that 16 committee members each including one PQ transaction per slot is sufficient initially, before aggregation exists."
+        },
+        {
+          "timestamp": "00:14:43",
+          "context": "soispoke discussed replacing BLS IL signatures with lean XMSS, adding 2.4 KB per IL, arguing it is not urgent because attacking FOCIL via quantum is impractical compared to attacking consensus."
+        },
+        {
+          "timestamp": "00:29:43",
+          "context": "soispoke noted that shipping FOCIL alongside frames will cause some delay but argued it would not necessarily delay the PQ I-star fork given how far away PQCL work is."
+        },
+        {
+          "timestamp": "00:44:04",
+          "context": "Jihoon suggested delaying IL enforcement to slot n+2 instead of n+1 to gain 12 more seconds of propagation time for large STARK proofs, acknowledging it sacrifices a core EIP-7805 design value."
+        },
+        {
+          "timestamp": "00:52:05",
+          "context": "Justin Florentine questioned whether dropping FOCIL from Hegota would actually save meaningful time given FOCIL is already far along and PQCL decisions remain unresolved."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "discussed",
+      "summary": "Discussed extensively as the dependency enabling PQ transaction aggregation on the EL and eventual STARK-based ILs for FOCIL.",
+      "moments": [
+        {
+          "timestamp": "00:12:05",
+          "context": "soispoke said FOCIL can include individual PQ transactions now but needs EIP-8288 aggregation before ILs can carry STARK proofs at scale."
+        },
+        {
+          "timestamp": "00:17:15",
+          "context": "Mikhail asked how likely PQ EL would ship without 8288; soispoke said quite likely because users will want lean Sphinx signatures before LeanVM is ready."
+        },
+        {
+          "timestamp": "00:19:43",
+          "context": "soispoke outlined three phases of 8288: lean Sphinx (possibly H-star), mempool recursive aggregation via LeanVM (I-star target, ~mid-2028), and lean PCS arbitrary proofs (I-star or J-star)."
+        },
+        {
+          "timestamp": "00:21:22",
+          "context": "Mikhail asked whether after 8288 the mempool would have only STARK batches; soispoke clarified that raw-signature transactions would still exist on first hop, allowing FOCIL includers to pick them up."
+        },
+        {
+          "timestamp": "00:37:36",
+          "context": "soispoke acknowledged that figuring out what FOCIL looks like post-8288 and post-PQCL is impossible today but worth exploring in each scenario."
+        },
+        {
+          "timestamp": "00:41:17",
+          "context": "Marc said breaking 8288 into sub-EIPs simplifies reasoning and that the interaction between FOCIL and aggregation will be the hardest part."
+        }
+      ]
+    }
+  ]
+}

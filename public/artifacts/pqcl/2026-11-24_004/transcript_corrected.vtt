@@ -38,11 +38,11 @@ Kevaundray Wedderburn: Related to this.
 
 10
 00:05:58.650 --> 00:06:10.329
-Kevaundray Wedderburn: Okay, I think we have enough people here. Welcome to PQCL Breakout Call Number 4. I'll be taking over from Justin Traglio for this week.
+Kevaundray Wedderburn: Okay, I think we have enough people here. Welcome to PQCL Breakout Call Number 4. I'll be taking over from Justin Traglia for this week.
 
 11
 00:06:10.400 --> 00:06:23.420
-Kevaundray Wedderburn: My goal is to have these calls be done as efficiently and as quickly as possible, so we may finish in one hour instead of two, so we can start going back to the DevNets.
+Kevaundray Wedderburn: My goal is to have these calls be done as efficiently and as quickly as possible, so we may finish in one hour instead of two, so we can start going back to the devnets.
 
 12
 00:06:23.860 --> 00:06:32.819
@@ -50,19 +50,19 @@ Kevaundray Wedderburn: I wrote out a list of… I wrote out a list of, items tha
 
 13
 00:06:33.090 --> 00:06:43.140
-Kevaundray Wedderburn: on Discord, on the DevNets and clients, the specs, LeanVM, the stake and contracts, because I know some people are working on that, and then just networking.
+Kevaundray Wedderburn: on Discord, on the devnets and clients, the specs, LeanVM, the stake and contracts, because I know some people are working on that, and then just networking.
 
 14
 00:06:43.500 --> 00:06:50.449
-Kevaundray Wedderburn: so, just to start from the top, Barnabas, can you give us an update on the DevNets?
+Kevaundray Wedderburn: so, just to start from the top, Barnabas, can you give us an update on the devnets?
 
 15
 00:06:50.600 --> 00:07:01.179
-Kevaundray Wedderburn: And what we potentially will be adding in the next DevNet, if it's done, my understanding is that we don't have full interop between the clients, that we won't.
+Kevaundray Wedderburn: And what we potentially will be adding in the next devnet, if it's done, my understanding is that we don't have full interop between the clients, that we won't.
 
 16
 00:07:02.100 --> 00:07:21.709
-Barnabas: Yeah, so, the current .NET, some clients had version 15, some clients had version 16, but this did not cause a consensus split, like, we were expecting, because we just, I think it was just an optimization, basically, that some clients implemented, some clients did not.
+Barnabas: Yeah, so, the current devnet, some clients had version 15, some clients had version 16, but this did not cause a consensus split, like, we were expecting, because we just, I think it was just an optimization, basically, that some clients implemented, some clients did not.
 
 17
 00:07:23.720 --> 00:07:31.809
@@ -90,7 +90,7 @@ Barnabas: So, that's… that's where we just got stuck, and then,
 
 23
 00:08:19.590 --> 00:08:29.459
-Barnabas: Some attestation just came in super late, and that led to, like, a massive reorg that guests just couldn't handle, or didn't want to handle.
+Barnabas: Some attestation just came in super late, and that led to, like, a massive reorg that Geth just couldn't handle, or didn't want to handle.
 
 24
 00:08:30.190 --> 00:08:33.500
@@ -98,7 +98,7 @@ Barnabas: Better, said that way, I think.
 
 25
 00:08:34.049 --> 00:08:42.839
-Barnabas: We have since changed the, max, reorg depth on gas to allow, basically, infinite reorbs.
+Barnabas: We have since changed the, max, reorg depth on Geth to allow, basically, infinite reorgs.
 
 26
 00:08:43.419 --> 00:08:47.040
@@ -122,7 +122,7 @@ Tom Wambsgans: To load in the cache the next subtree.
 
 31
 00:09:12.960 --> 00:09:15.119
-Tom Wambsgans: Do you know if crayons are using it?
+Tom Wambsgans: Do you know if clients are using it?
 
 32
 00:09:21.130 --> 00:09:24.369
@@ -134,7 +134,7 @@ Barnabas: Yeah, so, like, Prysm was one of the,
 
 34
 00:09:28.780 --> 00:09:32.540
-Barnabas: One of the notes that did not pre-generate all the keys that they needed.
+Barnabas: One of the nodes that did not pre-generate all the keys that they needed.
 
 35
 00:09:33.010 --> 00:09:33.870
@@ -150,7 +150,7 @@ Tom Wambsgans: And, have it in the cache, I guess.
 
 38
 00:09:49.200 --> 00:09:56.620
-Manu: Yeah, exactly, for… Kays which are depending on a SLOT or an epoch is something we should definitely do.
+Manu: Yeah, exactly, for… Keys which are depending on a SLOT or an epoch is something we should definitely do.
 
 39
 00:09:59.340 --> 00:10:08.190
@@ -170,7 +170,7 @@ Kevaundray Wedderburn: Barnabas, I think he's…
 
 43
 00:10:19.620 --> 00:10:34.900
-Tom Wambsgans: I think it's big… the issue is that there is a lot of machines on a single… a lot of data on a single machine, and thus, everyone caching at the… everyone rebuilding the subscript at the same time makes it slow, but in practice, if it's only a single machine on a
+Tom Wambsgans: I think it's big… the issue is that there is a lot of machines on a single… a lot of data on a single machine, and thus, everyone caching at the… everyone rebuilding the subtree at the same time makes it slow, but in practice, if it's only a single machine on a
 
 44
 00:10:34.900 --> 00:10:43.680
@@ -178,11 +178,11 @@ Tom Wambsgans: with a single validator, it should be fine, like, it should be, I
 
 45
 00:10:43.940 --> 00:10:45.429
-Tom Wambsgans: Generer deceptrie.
+Tom Wambsgans: generate the subtree.
 
 46
 00:10:49.680 --> 00:11:01.779
-Kevaundray Wedderburn: Let me see… So apart from this, Barnabas, I think you said that, you've modified GAF to have… to basically be able to infinitely… to reorg infinitely into the past.
+Kevaundray Wedderburn: Let me see… So apart from this, Barnabas, I think you said that, you've modified Geth to have… to basically be able to infinitely… to reorg infinitely into the past.
 
 47
 00:11:02.390 --> 00:11:05.350
@@ -218,7 +218,7 @@ Kevaundray Wedderburn: Thanks, Barnabas.
 
 55
 00:11:44.570 --> 00:11:48.530
-Kevaundray Wedderburn: I agree with Tony, the… well, yeah.
+Kevaundray Wedderburn: I agree with Toni, the… well, yeah.
 
 56
 00:11:49.820 --> 00:11:53.000
@@ -250,7 +250,7 @@ Csaba: Okay.
 
 63
 00:12:38.210 --> 00:12:41.299
-Barnabas: And guess was just not happy with anything over 32.
+Barnabas: And Geth was just not happy with anything over 32.
 
 64
 00:12:41.510 --> 00:12:47.300
@@ -330,7 +330,7 @@ Barnabas: Can we…
 
 83
 00:14:40.850 --> 00:14:46.170
-Barnabas: Can we change the lean VM in a running .NET without a fork?
+Barnabas: Can we change the lean VM in a running devnet without a fork?
 
 84
 00:14:48.160 --> 00:14:48.659
@@ -338,7 +338,7 @@ Barnabas: to the University.
 
 85
 00:14:48.660 --> 00:14:55.230
-Kevaundray Wedderburn: Maybe we'll… maybe we can get to the LeanVM part, just so that we finish off this DevNet section.
+Kevaundray Wedderburn: Maybe we'll… maybe we can get to the LeanVM part, just so that we finish off this devnet section.
 
 86
 00:14:55.330 --> 00:14:58.649
@@ -350,7 +350,7 @@ Kevaundray Wedderburn: Does one day seem reasonable for all the… every other c
 
 88
 00:15:06.250 --> 00:15:10.630
-Kevaundray Wedderburn: Manu says yes, Kayman, you…
+Kevaundray Wedderburn: Manu says yes, Cayman, you…
 
 89
 00:15:11.750 --> 00:15:18.309
@@ -382,7 +382,7 @@ Kevaundray Wedderburn: if…
 
 96
 00:15:53.880 --> 00:16:00.000
-Kevaundray Wedderburn: Yeah, if Agnes is not here, I think we should be able to just push forward, and then Nimbus can catch up, I guess.
+Kevaundray Wedderburn: Yeah, if Agnish is not here, I think we should be able to just push forward, and then Nimbus can catch up, I guess.
 
 97
 00:16:01.990 --> 00:16:04.660
@@ -390,7 +390,7 @@ Kevaundray Wedderburn: Okay, so one day is pretty good.
 
 98
 00:16:07.700 --> 00:16:25.669
-Kevaundray Wedderburn: On to the next, instead of the specs, I'll do the LeanVM item, because I think maybe there might be quite a few… quite a bit of discussion around this aggregator role. So Emil, do you have an update on LeanVM? And then on Barnabas… Barnabas' question on updating LeanVM?
+Kevaundray Wedderburn: On to the next, instead of the specs, I'll do the LeanVM item, because I think maybe there might be quite a few… quite a bit of discussion around this aggregator role. So Emile, do you have an update on LeanVM? And then on Barnabas… Barnabas' question on updating LeanVM?
 
 99
 00:16:31.610 --> 00:16:37.180
@@ -398,7 +398,7 @@ Tom Wambsgans: Sure, so, there is this new update, the 0.17
 
 100
 00:16:37.610 --> 00:16:41.549
-Tom Wambsgans: version of the bendings in which it's no longer a sidecar, it's FFI.
+Tom Wambsgans: version of the bindings in which it's no longer a sidecar, it's FFI.
 
 101
 00:16:41.660 --> 00:16:59.970
@@ -410,11 +410,11 @@ Tom Wambsgans: take, again, 15-20% improvement by tweaking the stark, but I don'
 
 103
 00:17:17.069 --> 00:17:30.340
-Tom Wambsgans: I just updated the LeanVM.org website, in which I added the Potuz CPU, like, the ASUS,
+Tom Wambsgans: I just updated the leanvm.org website, in which I added the Potuz CPU, like, the ASUS,
 
 104
 00:17:30.340 --> 00:17:38.540
-Tom Wambsgans: the IntelCore Ultra 7 blah blah blah from Potuzz. It's not in the leanvm.org website for the benchmarks.
+Tom Wambsgans: the IntelCore Ultra 7 blah blah blah from Potuz. It's not in the leanvm.org website for the benchmarks.
 
 105
 00:17:39.440 --> 00:17:57.380
@@ -426,7 +426,7 @@ Tom Wambsgans: Mmm…
 
 107
 00:17:59.890 --> 00:18:12.269
-Tom Wambsgans: So, I don't know, like, it's likely we can even squeeze more juice by improving the stock. DAO has an incoming optimization. It tells me it's going to be 15-20%.
+Tom Wambsgans: So, I don't know, like, it's likely we can even squeeze more juice by improving the STARK. DAO has an incoming optimization. It tells me it's going to be 15-20%.
 
 108
 00:18:12.590 --> 00:18:18.859
@@ -450,7 +450,7 @@ Tom Wambsgans: I don't know to what extent it's reasonable, but if we are fine w
 
 113
 00:18:54.730 --> 00:19:14.370
-Tom Wambsgans: And about your question for changing LeanVM version, the 0.17 version is, really breaking, so it will not work with the 16 one altogether. You need to… everyone to update at the same time. I know how… so you need, like, to art fork the… so, yeah.
+Tom Wambsgans: And about your question for changing LeanVM version, the 0.17 version is, really breaking, so it will not work with the 16 one altogether. You need to… everyone to update at the same time. I know how… so you need, like, to hard fork the… so, yeah.
 
 114
 00:19:14.970 --> 00:19:18.289
@@ -470,7 +470,7 @@ Tom Wambsgans: So, Kamil… sorry, Kamil, if the proof gets 15% bigger, Proving 
 
 118
 00:19:49.310 --> 00:20:08.909
-Kevaundray Wedderburn: Yeah, Potuzz also had a comment that I agree with, with making the start more complicated. I think it would be good to have a good overview of both lean VM and networking before we, potentially start making trade-offs and making it more complicated, assuming that it adds, like, a lot of complexity.
+Kevaundray Wedderburn: Yeah, Potuz also had a comment that I agree with, with making the STARK more complicated. I think it would be good to have a good overview of both lean VM and networking before we, potentially start making trade-offs and making it more complicated, assuming that it adds, like, a lot of complexity.
 
 119
 00:20:09.940 --> 00:20:19.859
@@ -482,7 +482,7 @@ Kevaundray Wedderburn: Thanks, Tom. Is Vlad on the call? I…
 
 121
 00:20:27.930 --> 00:20:34.969
-Kevaundray Wedderburn: I don't think so. Just basically the comment that Emil made on us switching from a separate process to FFI again.
+Kevaundray Wedderburn: I don't think so. Just basically the comment that Emile made on us switching from a separate process to FFI again.
 
 122
 00:20:36.920 --> 00:20:47.820
@@ -518,11 +518,11 @@ Tom Wambsgans: So, it's more granular control on what you want to keep in the ag
 
 130
 00:21:47.340 --> 00:22:04.169
-Tom Wambsgans: prover compiled with different flags for, like, AVX2, Ivan 12, GFNI, blah blah blah. So there is a single binary that, and it will dispatch at runtime to select the optimal binary for your CPU.
+Tom Wambsgans: prover compiled with different flags for, like, AVX2, AVX512, GFNI, blah blah blah. So there is a single binary that, and it will dispatch at runtime to select the optimal binary for your CPU.
 
 131
 00:22:06.840 --> 00:22:19.660
-Kevaundray Wedderburn: Yeah, that's great. I think Eitan was asking for that on the Discord channel, something that people also wanted with the Blast library, so this is great. You now have, sort of, runtime dispatch.
+Kevaundray Wedderburn: Yeah, that's great. I think Eitan was asking for that on the Discord channel, something that people also wanted with the blst library, so this is great. You now have, sort of, runtime dispatch.
 
 132
 00:22:19.690 --> 00:22:27.559
@@ -530,7 +530,7 @@ Kevaundray Wedderburn: Instead of, needing to build for AVX512 and an AVX2, or�
 
 133
 00:22:27.560 --> 00:22:41.489
-Tom Wambsgans: And to be clear, it's not a runtime dispatch at every small kernel, because there are a lot of, like, the kernels are… it's in the… every kernel is called millions of times, so it's in the hotpatch. We cannot dispatch at the kernel level, so it's…
+Tom Wambsgans: And to be clear, it's not a runtime dispatch at every small kernel, because there are a lot of, like, the kernels are… it's in the… every kernel is called millions of times, so it's in the hot path. We cannot dispatch at the kernel level, so it's…
 
 134
 00:22:41.490 --> 00:22:48.599
@@ -546,11 +546,11 @@ Kevaundray Wedderburn: Right.
 
 137
 00:22:55.730 --> 00:23:10.139
-Kevaundray Wedderburn: Thank you for the update on LeanVM as well, it's great, and we are at version 0.17, so if clients are on an older version, then, as Emil said, it'd be good if you could update, because this is a breaking change that got added.
+Kevaundray Wedderburn: Thank you for the update on LeanVM as well, it's great, and we are at version 0.17, so if clients are on an older version, then, as Emile said, it'd be good if you could update, because this is a breaking change that got added.
 
 138
 00:23:12.280 --> 00:23:30.370
-Kevaundray Wedderburn: I'm gonna go to the staking contract part, because I think this is also a quick topic that, we can go over. So, gnacio, it's just a question. We're now moving the staking contracts to the SysASM repository, which also holds the other system contracts that we have.
+Kevaundray Wedderburn: I'm gonna go to the staking contract part, because I think this is also a quick topic that, we can go over. So, Ignacio, it's just a question. We're now moving the staking contracts to the sys-asm repository, which also holds the other system contracts that we have.
 
 139
 00:23:30.500 --> 00:23:33.979
@@ -562,7 +562,7 @@ Kevaundray Wedderburn: The signature, since we're doing proof of possession.
 
 141
 00:23:37.870 --> 00:23:41.320
-Kevaundray Wedderburn: will that live in Sys ASM, or how are we thinking about this?
+Kevaundray Wedderburn: will that live in sys-asm, or how are we thinking about this?
 
 142
 00:23:43.100 --> 00:23:45.639
@@ -574,7 +574,7 @@ Kevaundray Wedderburn: You muted yourself,
 
 144
 00:23:51.530 --> 00:24:02.979
-Ignacio: I'm sorry, yeah, I shared in the chat some PR and zcastM with already the system contract moved there. So, the current approach is that we have the,
+Ignacio: I'm sorry, yeah, I shared in the chat some PR and sys-asm with already the system contract moved there. So, the current approach is that we have the,
 
 145
 00:24:03.130 --> 00:24:11.419
@@ -582,7 +582,7 @@ Ignacio: System contract in this repo, because we have all the other ones there.
 
 146
 00:24:11.810 --> 00:24:17.400
-Ignacio: basically similar to the rest of the CTEM contracts that have this queue for registration, and…
+Ignacio: basically similar to the rest of the system contracts that have this queue for registration, and…
 
 147
 00:24:17.590 --> 00:24:23.029
@@ -590,7 +590,7 @@ Ignacio: All that, so it shouldn't be surprising, and at some point, we do a sta
 
 148
 00:24:23.160 --> 00:24:27.740
-Ignacio: to, another contract with verifies the Linux MSA signature.
+Ignacio: to, another contract with verifies the lean XMSS signature.
 
 149
 00:24:28.070 --> 00:24:31.869
@@ -606,7 +606,7 @@ Ignacio: I'm just trying to get some feedback, if this sounds like a good approa
 
 152
 00:24:42.190 --> 00:24:53.120
-Ignacio: put everything in his ASM. Maybe it will be nice to get some opinion from Matt or Felix around this, but I opened this PR yesterday, so maybe it is worth giving them some.
+Ignacio: put everything in sys-asm. Maybe it will be nice to get some opinion from Matt or Felix around this, but I opened this PR yesterday, so maybe it is worth giving them some.
 
 153
 00:24:53.530 --> 00:25:02.070
@@ -614,11 +614,11 @@ Ignacio: A bit of time, no, the XMSS verifier wouldn't be properly done by Alici
 
 154
 00:25:02.170 --> 00:25:10.479
-Ignacio: This is… this is pretty efficient, because we decided to use GetHack, so we can use the GetHack opcode for doing all the…
+Ignacio: This is… this is pretty efficient, because we decided to use Keccak, so we can use the Keccak opcode for doing all the…
 
 155
 00:25:10.850 --> 00:25:13.219
-Ignacio: the Linux MSS checks.
+Ignacio: the lean XMSS checks.
 
 156
 00:25:13.920 --> 00:25:21.160
@@ -630,7 +630,7 @@ Ignacio: We could also eventually formally verify the EVM bytecode, because we h
 
 158
 00:25:28.890 --> 00:25:42.899
-Ignacio: I wouldn't call it, like, super mature, because the EVM formal semantics only flips is pretty new, but it's just, like, an extra layer of protection to seem to try to formally verify it whenever Linux MSS is finalized.
+Ignacio: I wouldn't call it, like, super mature, because the EVM formal semantics only flips is pretty new, but it's just, like, an extra layer of protection to seem to try to formally verify it whenever lean XMSS is finalized.
 
 159
 00:25:43.330 --> 00:25:55.969
@@ -642,7 +642,7 @@ Ignacio: Testing, or auditing, or formally verifying in the background, or simil
 
 161
 00:26:00.520 --> 00:26:05.960
-Ignacio: So, TLDR, the PR is already there in zcastM,
+Ignacio: So, TLDR, the PR is already there in sys-asm,
 
 162
 00:26:06.220 --> 00:26:11.359
@@ -650,11 +650,11 @@ Ignacio: I already pinged some people to get some feedback, and probably we can 
 
 163
 00:26:16.140 --> 00:26:25.390
-Kevaundray Wedderburn: Okay, thanks, Ignacio. Tony had one question, if we can quickly go over. Why would we do it in a different contract than the pre-reg contract?
+Kevaundray Wedderburn: Okay, thanks, Ignacio. Toni had one question, if we can quickly go over. Why would we do it in a different contract than the pre-reg contract?
 
 164
 00:26:26.020 --> 00:26:30.989
-Kevaundray Wedderburn: I think you mean the verification of the… of XMSS, right, Tony?
+Kevaundray Wedderburn: I think you mean the verification of the… of XMSS, right, Toni?
 
 165
 00:26:34.310 --> 00:26:41.260
@@ -662,11 +662,11 @@ Ignacio: Yeah, so, I think this is, like, an open question. I think it was a sug
 
 166
 00:26:41.570 --> 00:26:49.000
-Ignacio: Because, yeah, I don't know if we want to put this in the system, in the CAICSM.
+Ignacio: Because, yeah, I don't know if we want to put this in the system, in the sys-asm.
 
 167
 00:26:49.280 --> 00:26:56.929
-Ignacio: repo, but I'm not, like, really open to simply move everything to CCISM, I mean, so it's just, like…
+Ignacio: repo, but I'm not, like, really open to simply move everything to sys-asm, I mean, so it's just, like…
 
 168
 00:26:57.060 --> 00:27:03.910
@@ -674,11 +674,11 @@ Ignacio: Get in sabbit of feedback, and we can move everything, if that sounds l
 
 169
 00:27:06.570 --> 00:27:12.919
-Kevaundray Wedderburn: Okay, great. Yeah, so you'll follow up with Matt, and maybe potentially Tony, if you have, thoughts there.
+Kevaundray Wedderburn: Okay, great. Yeah, so you'll follow up with Matt, and maybe potentially Toni, if you have, thoughts there.
 
 170
 00:27:13.080 --> 00:27:17.309
-Kevaundray Wedderburn: Well, thank you, Nasher.
+Kevaundray Wedderburn: Well, thank you, Ignacio.
 
 171
 00:27:17.660 --> 00:27:18.840
@@ -726,7 +726,7 @@ Manu: go from a seed to, the leaves of XMSS3 and VRF3.
 
 182
 00:28:51.630 --> 00:29:06.839
-Manu: But, SLAP does not specify how to find the SID, from the mnemonic, as we do today with BNs. And this ERC just specifies, yes, how to go from the mnemonic to the SID.
+Manu: But, SLAP does not specify how to find the seed, from the mnemonic, as we do today with BLS. And this ERC just specifies, yes, how to go from the mnemonic to the seed.
 
 183
 00:29:07.070 --> 00:29:11.549
@@ -770,7 +770,7 @@ Manu: ValidatorCD, and here you do a…
 
 193
 00:29:42.200 --> 00:29:52.869
-Manu: with the LINXMSS key, it gives you the XMSS seed, and with VRF key, it gives you the VRF seed, and that's all.
+Manu: with the lean XMSS key, it gives you the XMSS seed, and with VRF key, it gives you the VRF seed, and that's all.
 
 194
 00:29:53.620 --> 00:29:59.700
@@ -862,7 +862,7 @@ Kevaundray Wedderburn: Yeah.
 
 216
 00:31:35.950 --> 00:31:42.209
-Barnabas: like, if we reuse the mnemonic in this case, let's say I have a Validator with BLASKey on-chain.
+Barnabas: like, if we reuse the mnemonic in this case, let's say I have a Validator with BLS key on-chain.
 
 217
 00:31:42.390 --> 00:31:46.180
@@ -870,7 +870,7 @@ Barnabas: Then, could somehow that seed phrase be you?
 
 218
 00:31:46.330 --> 00:31:55.209
-Barnabas: like, be found out, and then the… No. Basically, the derivation path for the XMS seed.
+Barnabas: like, be found out, and then the… No. Basically, the derivation path for the XMSS seed.
 
 219
 00:31:55.400 --> 00:31:56.539
@@ -918,7 +918,7 @@ Manu: But yes, it's the direction I took, but if it is an issue, we can reconsid
 
 230
 00:33:02.780 --> 00:33:17.420
-Barnabas: Right, so, like, you could not basically indicate that you would like to change your mnemonic for post-quantum keys, and you would like to sign some different VRF. You would have to basically control the mnemonic that used the origin of VLS key.
+Barnabas: Right, so, like, you could not basically indicate that you would like to change your mnemonic for post-quantum keys, and you would like to sign some different VRF. You would have to basically control the mnemonic that used the origin of BLS key.
 
 231
 00:33:17.910 --> 00:33:23.679
@@ -930,7 +930,7 @@ Manu: Between the… yeah, between the…
 
 233
 00:33:28.020 --> 00:33:36.179
-Manu: I mean, there is a single seed, which gives you a single DLS and a single XNSS and VRS, yes.
+Manu: I mean, there is a single seed, which gives you a single BLS and a single XMSS and VRF, yes.
 
 234
 00:33:36.180 --> 00:33:38.340
@@ -978,7 +978,7 @@ Kevaundray Wedderburn: Okay, cool. Yeah, we can continue async on the… on the�
 
 245
 00:34:20.100 --> 00:34:36.490
-Kevaundray Wedderburn: Okay, so this is, I think, all of the short items done. The next item was on specs. Terrence, I was just curious, maybe even Potuzz, if there are any open-spec questions that you think we should discuss. This is just a general call-out, so it's,
+Kevaundray Wedderburn: Okay, so this is, I think, all of the short items done. The next item was on specs. Terrence, I was just curious, maybe even Potuz, if there are any open-spec questions that you think we should discuss. This is just a general call-out, so it's,
 
 246
 00:34:36.760 --> 00:34:40.969
@@ -990,11 +990,11 @@ Kevaundray Wedderburn: Okay, it seems there's nothing, so that was pretty quick,
 
 248
 00:34:53.880 --> 00:34:58.139
-Kevaundray Wedderburn: Okay, Potuzz has a question on staggered aggregation.
+Kevaundray Wedderburn: Okay, Potuz has a question on staggered aggregation.
 
 249
 00:35:04.470 --> 00:35:08.359
-Kevaundray Wedderburn: Who, Potuzz, who should be the one that we…
+Kevaundray Wedderburn: Who, Potuz, who should be the one that we…
 
 250
 00:35:08.920 --> 00:35:12.309
@@ -1002,15 +1002,15 @@ Kevaundray Wedderburn: Is it just the other clients? Have you implemented it, or
 
 251
 00:35:12.310 --> 00:35:29.959
-Potuzz: I haven't… I haven't gotten anything on this DevNet yet. I was, looking at, Justin's… Justin opened, I don't know if it was a comment or a PR for this, but the idea was to, like, stagger, aggregators every 500 milliseconds.
+Potuz: I haven't… I haven't gotten anything on this devnet yet. I was, looking at, Justin's… Justin opened, I don't know if it was a comment or a PR for this, but the idea was to, like, stagger, aggregators every 500 milliseconds.
 
 252
 00:35:30.380 --> 00:35:36.229
-Potuzz: So that the second… the next aggregator doesn't include… doesn't broadcast their aggregate if they…
+Potuz: So that the second… the next aggregator doesn't include… doesn't broadcast their aggregate if they…
 
 253
 00:35:36.460 --> 00:35:41.100
-Potuzz: They don't… they aren't adding many keys.
+Potuz: They don't… they aren't adding many keys.
 
 254
 00:35:45.420 --> 00:35:56.390
@@ -1018,7 +1018,7 @@ Kevaundray Wedderburn: Yeah, my understanding was that no one has implemented it
 
 255
 00:35:57.330 --> 00:35:59.480
-Kevaundray Wedderburn: Flat, did you want to unmute?
+Kevaundray Wedderburn: Vlad, did you want to unmute?
 
 256
 00:36:03.450 --> 00:36:05.639
@@ -1030,7 +1030,7 @@ vlad: But I can't tell you much about it.
 
 258
 00:36:11.200 --> 00:36:18.430
-Kevaundray Wedderburn: Okay, makes sense. And is this… this isn't on the current definite that's broken, right? Just to clarify?
+Kevaundray Wedderburn: Okay, makes sense. And is this… this isn't on the current devnet that's broken, right? Just to clarify?
 
 259
 00:36:19.030 --> 00:36:21.659
@@ -1042,19 +1042,19 @@ Kevaundray Wedderburn: Okay, I see.
 
 261
 00:36:25.000 --> 00:36:30.470
-Kevaundray Wedderburn: Otis, did you have any follow-up questions? I guess they'll be on, like, just…
+Kevaundray Wedderburn: Potuz, did you have any follow-up questions? I guess they'll be on, like, just…
 
 262
 00:36:30.470 --> 00:36:33.880
-Potuzz: That is a comment. Vlad, did you guys implement that comment there?
+Potuz: That is a comment. Vlad, did you guys implement that comment there?
 
 263
 00:36:34.080 --> 00:36:35.869
-Potuzz: I just posted in the chat.
+Potuz: I just posted in the chat.
 
 264
 00:36:41.540 --> 00:36:49.900
-Potuzz: Because it would be nice to align on this, and have every client implementing this, and see if we are bottlenecked on aggregation or not.
+Potuz: Because it would be nice to align on this, and have every client implementing this, and see if we are bottlenecked on aggregation or not.
 
 265
 00:36:50.920 --> 00:36:51.540
@@ -1062,7 +1062,7 @@ vlad: I did…
 
 266
 00:36:51.540 --> 00:36:54.449
-Potuzz: We're saving bandwidth by this, that would be fantastic.
+Potuz: We're saving bandwidth by this, that would be fantastic.
 
 267
 00:36:55.200 --> 00:37:02.099
@@ -1078,11 +1078,11 @@ Kevaundray Wedderburn: Yeah, Barnabas, with staggered aggregation should be in a
 
 270
 00:37:21.190 --> 00:37:27.139
-Kevaundray Wedderburn: It does seem like… Potuzz said it should make less chaos.
+Kevaundray Wedderburn: It does seem like… Potuz said it should make less chaos.
 
 271
 00:37:29.830 --> 00:37:40.820
-Kevaundray Wedderburn: Enrico, yes to your question. 0.17 is for the future PQ DevNet. If you're on PQ DevNet 0, then you can use 0.16 or 0.15.
+Kevaundray Wedderburn: Enrico, yes to your question. 0.17 is for the future PQ devnet. If you're on PQ devnet 0, then you can use 0.16 or 0.15.
 
 272
 00:37:44.920 --> 00:37:57.799
@@ -1094,43 +1094,43 @@ Kevaundray Wedderburn: Should it be opt-in?
 
 274
 00:38:00.560 --> 00:38:16.869
-Kevaundray Wedderburn: And should it potentially be for all staked entities over some amount of stake, so that it includes builders? Because if you just say builders, just generally, you can then DOS a network, because the minimum for a builder is 1 ETH.
+Kevaundray Wedderburn: And should it potentially be for all staked entities over some amount of stake, so that it includes builders? Because if you just say builders, just generally, you can then DoS a network, because the minimum for a builder is 1 ETH.
 
 275
 00:38:17.220 --> 00:38:25.770
-Kevaundray Wedderburn: So the first part is, are we okay with defining an aggregator role? I saw, Potuzz, you had some comments in the Discord chat. Did you want to talk about it?
+Kevaundray Wedderburn: So the first part is, are we okay with defining an aggregator role? I saw, Potuz, you had some comments in the Discord chat. Did you want to talk about it?
 
 276
 00:38:26.530 --> 00:38:43.190
-Potuzz: Yeah, so it's not an issue of dosing the chain under any circumstances. If we add an aggregator role, it doesn't mean that anyone that registered as an aggregator is going to be allowed to broadcast aggregates. It means that we are just going to sample aggregators from that set.
+Potuz: Yeah, so it's not an issue of DoSing the chain under any circumstances. If we add an aggregator role, it doesn't mean that anyone that registered as an aggregator is going to be allowed to broadcast aggregates. It means that we are just going to sample aggregators from that set.
 
 277
 00:38:43.370 --> 00:38:46.949
-Potuzz: And we're still going to limit the number of aggregators per subnet.
+Potuz: And we're still going to limit the number of aggregators per subnet.
 
 278
 00:38:47.290 --> 00:38:53.960
-Potuzz: What the problem is that, besides decentralization, that we want to have, a number of,
+Potuz: What the problem is that, besides decentralization, that we want to have, a number of,
 
 279
 00:38:54.200 --> 00:39:07.369
-Potuzz: a decentralized number of aggregators. The problem is, how do we even implement this? We need to have… find a way of signal that you are going to be an aggregator, like, register this on-chain and do the… change the sampling to be from this set.
+Potuz: a decentralized number of aggregators. The problem is, how do we even implement this? We need to have… find a way of signal that you are going to be an aggregator, like, register this on-chain and do the… change the sampling to be from this set.
 
 280
 00:39:07.440 --> 00:39:17.020
-Potuzz: verify that you are in this set, etc. And we can hack our way to avoid a fork or to avoid a message on the CL. For example, we can just…
+Potuz: verify that you are in this set, etc. And we can hack our way to avoid a fork or to avoid a message on the CL. For example, we can just…
 
 281
 00:39:17.100 --> 00:39:30.730
-Potuzz: take one bit from your committed VRF to decide whether or not you're going to be an aggregator or not. And then validators, when they submit their pre-registration, need to make sure that they are choosing this correctly.
+Potuz: take one bit from your committed VRF to decide whether or not you're going to be an aggregator or not. And then validators, when they submit their pre-registration, need to make sure that they are choosing this correctly.
 
 282
 00:39:30.730 --> 00:39:47.759
-Potuzz: It doesn't matter, we can just hack our way through this. But the point is that if we start making these changes, affecting issuance, and changing rewards and penalties and so forth, I feel like we are already in territory that we should be moving into DC if this is required.
+Potuz: It doesn't matter, we can just hack our way through this. But the point is that if we start making these changes, affecting issuance, and changing rewards and penalties and so forth, I feel like we are already in territory that we should be moving into DC if this is required.
 
 283
 00:39:52.010 --> 00:40:09.840
-Kevaundray Wedderburn: does… yeah, first of all, I say there's some… I agree with builders, it's not a DOS issue, it just makes it easier to become an aggregator. And one issue with what I said, actually, is that builders don't currently have a VR app, so it becomes a bit more difficult to say staked entities.
+Kevaundray Wedderburn: does… yeah, first of all, I say there's some… I agree with builders, it's not a DoS issue, it just makes it easier to become an aggregator. And one issue with what I said, actually, is that builders don't currently have a VRF, so it becomes a bit more difficult to say staked entities.
 
 284
 00:40:10.110 --> 00:40:11.550
@@ -1138,7 +1138,7 @@ Kevaundray Wedderburn: Does anyone have any comments?
 
 285
 00:40:11.550 --> 00:40:17.869
-Potuzz: use a bit from the pop key, it doesn't matter. I mean, as far as a hack, we can certainly hack this in many different ways.
+Potuz: use a bit from the pop key, it doesn't matter. I mean, as far as a hack, we can certainly hack this in many different ways.
 
 286
 00:40:19.530 --> 00:40:25.819
@@ -1146,7 +1146,7 @@ Kevaundray Wedderburn: Okay, yes, you can even use RANDAO, right? Yeah, it doesn
 
 287
 00:40:27.360 --> 00:40:39.309
-Kevaundray Wedderburn: Does anyone have any comments on this? I don't think we need to make a decision, like, today on it, or… like, as Pot just said, it is a bit of a big change, or at least…
+Kevaundray Wedderburn: Does anyone have any comments on this? I don't think we need to make a decision, like, today on it, or… like, as Potuz just said, it is a bit of a big change, or at least…
 
 288
 00:40:39.750 --> 00:40:42.299
@@ -1158,7 +1158,7 @@ Kamil Salakhiev: With this change, proposer is still aggregating, right?
 
 290
 00:41:03.930 --> 00:41:07.820
-Kevaundray Wedderburn: Yann said, why is it not a DOS vector?
+Kevaundray Wedderburn: Yann said, why is it not a DoS vector?
 
 291
 00:41:10.350 --> 00:41:16.539
@@ -1166,11 +1166,11 @@ Kevaundray Wedderburn: It's not, like, permissionless, like, anybody can just ag
 
 292
 00:41:16.810 --> 00:41:32.999
-Kevaundray Wedderburn: So you can't, yeah, you can't DOS the network in that sense, but it is an issue in the sense of if it costs 1 ETH, then you could sibil and just, like, basically just register a bunch… register, like, a bunch of aggregator roles for yourself.
+Kevaundray Wedderburn: So you can't, yeah, you can't DoS the network in that sense, but it is an issue in the sense of if it costs 1 ETH, then you could sybil and just, like, basically just register a bunch… register, like, a bunch of aggregator roles for yourself.
 
 293
 00:41:33.280 --> 00:41:40.009
-Potuzz: Oh, we can just select based on balance. We can just do random selection weighted by balance, so it's fine.
+Potuz: Oh, we can just select based on balance. We can just do random selection weighted by balance, so it's fine.
 
 294
 00:41:41.730 --> 00:41:42.300
@@ -1226,7 +1226,7 @@ Kevaundray Wedderburn: Currently it's the attesters,
 
 307
 00:42:41.320 --> 00:42:43.180
-Kevaundray Wedderburn: But I guess Potuzz' point is that
+Kevaundray Wedderburn: But I guess Potuz' point is that
 
 308
 00:42:43.300 --> 00:42:51.460
@@ -1274,7 +1274,7 @@ Kevaundray Wedderburn: or at least we do need someone to do the aggregation for.
 
 319
 00:44:00.870 --> 00:44:05.960
-Kevaundray Wedderburn: Or we can just do what we do today and just choose from deer testers. So it's kind of orthogonal.
+Kevaundray Wedderburn: Or we can just do what we do today and just choose from the attesters. So it's kind of orthogonal.
 
 320
 00:44:06.370 --> 00:44:09.389
@@ -1318,23 +1318,23 @@ Barnabas: Like, we can then just recycle that idea later on as well, right? So i
 
 330
 00:44:49.780 --> 00:45:00.740
-Potuzz: PQDCDC, in principle, makes aggregation much, much better by removing it from the hot path of the slot. So, in principle, we could move to DC
+Potuz: PQDC, in principle, makes aggregation much, much better by removing it from the hot path of the slot. So, in principle, we could move to DC
 
 331
 00:45:00.890 --> 00:45:04.170
-Potuzz: And not require this.
+Potuz: And not require this.
 
 332
 00:45:04.360 --> 00:45:09.459
-Potuzz: I believe that eventually we are going to need this, because we are going to want to have
+Potuz: I believe that eventually we are going to need this, because we are going to want to have
 
 333
 00:45:09.730 --> 00:45:15.789
-Potuzz: Fast aggregation, if we go with quick slots, or if we want to have faster finality, or whatever it is.
+Potuz: Fast aggregation, if we go with quick slots, or if we want to have faster finality, or whatever it is.
 
 334
 00:45:16.330 --> 00:45:20.950
-Potuzz: But if we can avoid it now, on the first fork, I would prefer to avoid this.
+Potuz: But if we can avoid it now, on the first fork, I would prefer to avoid this.
 
 335
 00:45:25.640 --> 00:45:32.360
@@ -1354,11 +1354,11 @@ Kevaundray Wedderburn: Since there are things happening in the chat, I'll just q
 
 339
 00:45:56.100 --> 00:46:10.380
-Kevaundray Wedderburn: Okay, this is not related, we can… we can skip that. So on to the networking part. Charbo, I think it was last week, Tuesday, we mentioned having a document for just saying the networking methodology, as in, how do we…
+Kevaundray Wedderburn: Okay, this is not related, we can… we can skip that. So on to the networking part. Csaba, I think it was last week, Tuesday, we mentioned having a document for just saying the networking methodology, as in, how do we…
 
 340
 00:46:10.380 --> 00:46:20.599
-Kevaundray Wedderburn: Should we use simulations? Should we use DevNets? How do we do it to sort of come to reasonable conclusions? Did you have an update on this document?
+Kevaundray Wedderburn: Should we use simulations? Should we use devnets? How do we do it to sort of come to reasonable conclusions? Did you have an update on this document?
 
 341
 00:46:21.800 --> 00:46:31.830
@@ -1386,11 +1386,11 @@ Kevaundray Wedderburn: Okay, great, yeah, this would be great. Maybe Pari is som
 
 347
 00:46:55.650 --> 00:47:12.730
-Kevaundray Wedderburn: review it. He had an idea where we use simulation and DevNets for, let's say, 100 nodes, then 200 nodes, and then 300 nodes, and then we check that the simulation and the DevNets are sort of matching in terms of what we care about.
+Kevaundray Wedderburn: review it. He had an idea where we use simulation and devnets for, let's say, 100 nodes, then 200 nodes, and then 300 nodes, and then we check that the simulation and the devnets are sort of matching in terms of what we care about.
 
 348
 00:47:12.730 --> 00:47:23.929
-Kevaundray Wedderburn: And then if you want to go to, let's say, 1,000 or 10,000 nodes, then you can sort of extrapolate from the simulations, so you never need to run massive dev nets. I don't know if this is a good idea, but it does sound…
+Kevaundray Wedderburn: And then if you want to go to, let's say, 1,000 or 10,000 nodes, then you can sort of extrapolate from the simulations, so you never need to run massive devnets. I don't know if this is a good idea, but it does sound…
 
 349
 00:47:23.960 --> 00:47:27.779
@@ -1402,7 +1402,7 @@ Csaba: Yeah, yeah, absolutely. So I have a part on more generic principles, and 
 
 351
 00:47:35.290 --> 00:47:47.480
-Csaba: like this, with numbers, things, best practices, so… so absolutely, if Paddy is… is here, and he would like to review, that could be… and contribute, that's even better.
+Csaba: like this, with numbers, things, best practices, so… so absolutely, if Pari is… is here, and he would like to review, that could be… and contribute, that's even better.
 
 352
 00:47:47.610 --> 00:47:48.910
@@ -1410,11 +1410,11 @@ Csaba: That's perfect.
 
 353
 00:47:49.650 --> 00:47:52.259
-Kevaundray Wedderburn: Okay, great, yeah. Thanks, Trevor.
+Kevaundray Wedderburn: Okay, great, yeah. Thanks, Csaba.
 
 354
 00:47:53.370 --> 00:48:06.499
-Kevaundray Wedderburn: And then the next networking section, that was general networking was just on zcast and Waggle. Kamil… you posted in the Discord, I think you have a proof of concept with Waggle plus zcast, and…
+Kevaundray Wedderburn: And then the next networking section, that was general networking was just on seacast and Waggle. Kamil… you posted in the Discord, I think you have a proof of concept with Waggle plus seacast, and…
 
 355
 00:48:06.500 --> 00:48:15.390
@@ -1426,7 +1426,7 @@ Kamil Salakhiev: Yeah, how do we start? Like, yeah, what I posted was,
 
 357
 00:48:23.310 --> 00:48:40.959
-Kamil Salakhiev: Yeah, first of all, like, I think, yeah, now we have PQ DevNet0, which is great. Yeah, I asked my agent to collect some data, it seems like the peak uplink and downlink bandwidth we have is around 40 megabits, and yeah, we also have bandwidth profiles for the slots, so we kind of see
+Kamil Salakhiev: Yeah, first of all, like, I think, yeah, now we have PQ devnet-0, which is great. Yeah, I asked my agent to collect some data, it seems like the peak uplink and downlink bandwidth we have is around 40 megabits, and yeah, we also have bandwidth profiles for the slots, so we kind of see
 
 358
 00:48:41.140 --> 00:48:54.660
@@ -1434,23 +1434,23 @@ Kamil Salakhiev: like, yeah, how much bandwidth we have now with gossip sub, and
 
 359
 00:48:54.900 --> 00:49:05.769
-Kamil Salakhiev: Waddle, or zcastT, or anything, yeah, actually, it makes sense, which is good. Yeah, I also, wrote this,
+Kamil Salakhiev: Waggle, or seacast, or anything, yeah, actually, it makes sense, which is good. Yeah, I also, wrote this,
 
 360
 00:49:05.980 --> 00:49:21.909
-Kamil Salakhiev: Yeah, just a small write-up about, like, FastProof Broadcast Protocol. Yeah, the main focus was about, like, what kind of messages we send on a wire, and, like, how to… just to avoid sending the LinuxMSS signature with every chunk, yeah, we just signed the…
+Kamil Salakhiev: Yeah, just a small write-up about, like, FastProof Broadcast Protocol. Yeah, the main focus was about, like, what kind of messages we send on a wire, and, like, how to… just to avoid sending the lean XMSS signature with every chunk, yeah, we just signed the…
 
 361
 00:49:21.970 --> 00:49:28.040
-Kamil Salakhiev: Merco root of the, like, chunked proof message, and then, yeah.
+Kamil Salakhiev: Merkle root of the, like, chunked proof message, and then, yeah.
 
 362
 00:49:28.180 --> 00:49:46.100
-Kamil Salakhiev: That… this about… like, yeah, it was mainly about that. Yeah, I was not… then there is a Lighthouse branch where, yeah, I just took the PQ DevNet Zero branch, and then just, like, coded, the… this protocol on top,
+Kamil Salakhiev: That… this about… like, yeah, it was mainly about that. Yeah, I was not… then there is a Lighthouse branch where, yeah, I just took the PQ devnet Zero branch, and then just, like, coded, the… this protocol on top,
 
 363
 00:49:46.100 --> 00:49:59.919
-Kamil Salakhiev: Yeah, I should say this is not a zcastT, it's just some parts of zcastT. Yeah, I'm still… yeah, I'm doing the prototype with zcast simulations, just to actually see… because, like, the zcastT protocol is huge, and yeah, we're still trying to figure out, like, how much
+Kamil Salakhiev: Yeah, I should say this is not a seacast, it's just some parts of seacast. Yeah, I'm still… yeah, I'm doing the prototype with seacast simulations, just to actually see… because, like, the seacast protocol is huge, and yeah, we're still trying to figure out, like, how much
 
 364
 00:49:59.920 --> 00:50:06.370
@@ -1462,15 +1462,15 @@ Kamil Salakhiev: To avoid… end up with some…
 
 366
 00:50:08.510 --> 00:50:26.580
-Kamil Salakhiev: Like, so that we don't need to implement, like, too much to get, actually, maybe 90% of the zcast performance. But yeah. So, yeah, we basically have Lighthouse branch. If we want, we can already spin up a DevNet, with that and compare, if… yeah, if we really want to.
+Kamil Salakhiev: Like, so that we don't need to implement, like, too much to get, actually, maybe 90% of the seacast performance. But yeah. So, yeah, we basically have Lighthouse branch. If we want, we can already spin up a devnet, with that and compare, if… yeah, if we really want to.
 
 367
 00:50:26.910 --> 00:50:39.599
-Kamil Salakhiev: From… yeah, what else? Yeah, I also, like, did a bunch of simulations, so, yeah, basically with this vlad approach, you're already saving a lot of bandwidth compared to gossip-sub, but I already reported that last time.
+Kamil Salakhiev: From… yeah, what else? Yeah, I also, like, did a bunch of simulations, so, yeah, basically with this Waggle approach, you're already saving a lot of bandwidth compared to gossip-sub, but I already reported that last time.
 
 368
 00:50:39.600 --> 00:50:49.690
-Kamil Salakhiev: Yeah, basically, on average, we… with vagil and chunking approach, we receive 1.7 duplicates per message. Comparing to gossip-sub, we receive approximately 7 of them.
+Kamil Salakhiev: Yeah, basically, on average, we… with Waggle and chunking approach, we receive 1.7 duplicates per message. Comparing to gossip-sub, we receive approximately 7 of them.
 
 369
 00:50:49.960 --> 00:50:55.480
@@ -1490,7 +1490,7 @@ Kevaundray Wedderburn: So, did we… just to clarify, so we haven't gotten any f
 
 373
 00:51:12.700 --> 00:51:21.690
-Kamil Salakhiev: Yeah, we have Lighthouse implementation, I have instruction how to spin up Kurtosis network, and yeah, we can start DevNet if… yeah, if people want to.
+Kamil Salakhiev: Yeah, we have Lighthouse implementation, I have instruction how to spin up Kurtosis network, and yeah, we can start devnet if… yeah, if people want to.
 
 374
 00:51:23.050 --> 00:51:29.860
@@ -1498,7 +1498,7 @@ Kevaundray Wedderburn: Okay, yeah, it might be good to sync with, I guess, Barna
 
 375
 00:51:30.010 --> 00:51:43.030
-Kevaundray Wedderburn: maybe have a single client DevNet with this Waggle plus a zcast implementation, and then just compare it against the Lighthouse implementation with gossip sub, just to get, like, rough numbers,
+Kevaundray Wedderburn: maybe have a single client devnet with this Waggle plus a seacast implementation, and then just compare it against the Lighthouse implementation with gossip sub, just to get, like, rough numbers,
 
 376
 00:51:48.800 --> 00:51:51.099
@@ -1506,15 +1506,15 @@ Kamil Salakhiev: Okay, should we just discuss that, I think?
 
 377
 00:51:51.580 --> 00:52:04.130
-Kevaundray Wedderburn: Yeah, that'd be great. Okay. Shaiba, I think you also mentioned there was a Go implementation. Can you say more about the readiness of this, and if you have any findings?
+Kevaundray Wedderburn: Yeah, that'd be great. Okay. Csaba, I think you also mentioned there was a Go implementation. Can you say more about the readiness of this, and if you have any findings?
 
 378
 00:52:05.000 --> 00:52:13.660
-Csaba: So the Go implementation is running on Krutosis. It's implementing zcast on top of zcast.
+Csaba: So the Go implementation is running on Kurtosis. It's implementing seacast on top of Sadiq.
 
 379
 00:52:13.830 --> 00:52:26.639
-Csaba: So what you should know about zcast is that it has four bindings, and one of them is… is Waggle. I went with first implementing the gossip sub binding, simply because it was just closer to the… closest to the
+Csaba: So what you should know about seacast is that it has four bindings, and one of them is… is Waggle. I went with first implementing the gossip sub binding, simply because it was just closer to the… closest to the
 
 380
 00:52:26.640 --> 00:52:37.489
@@ -1522,7 +1522,7 @@ Csaba: current codebase, and the underlying Waggle code is… is moving target, 
 
 381
 00:52:38.600 --> 00:52:47.079
-Csaba: That's what I have. I have some performance numbers in small tests… small kurtosis DevNets, I don't think.
+Csaba: That's what I have. I have some performance numbers in small tests… small kurtosis devnets, I don't think.
 
 382
 00:52:47.550 --> 00:53:02.029
@@ -1530,7 +1530,7 @@ Csaba: I should eat them up. It's just numbers in another scenario anyway, compa
 
 383
 00:53:02.030 --> 00:53:12.540
-Csaba: The… the implementation has its uglinesses, obviously, thanks to Clode, and and thanks to… there's a thing in place in that… that…
+Csaba: The… the implementation has its uglinesses, obviously, thanks to Claude, and and thanks to… there's a thing in place in that… that…
 
 384
 00:53:12.580 --> 00:53:18.380
@@ -1538,7 +1538,7 @@ Csaba: repositories are kind of bloating to the main builds the… Which…
 
 385
 00:53:18.510 --> 00:53:23.079
-Csaba: Pism itself is, is, is moving on, changing, but,
+Csaba: Prysm itself is, is, is moving on, changing, but,
 
 386
 00:53:23.550 --> 00:53:27.730
@@ -1570,11 +1570,11 @@ Csaba: Let's hope.
 
 393
 00:54:15.300 --> 00:54:29.260
-Kevaundray Wedderburn: Okay, alright then. Yeah, thanks, Shaibu. I guess if you could post a link into the Discord when you're ready on this Go implementation, and then ping, I guess, Terrence and potentially Barnabas, we could probably have a single
+Kevaundray Wedderburn: Okay, alright then. Yeah, thanks, Csaba. I guess if you could post a link into the Discord when you're ready on this Go implementation, and then ping, I guess, Terrence and potentially Barnabas, we could probably have a single
 
 394
 00:54:29.450 --> 00:54:43.140
-Kevaundray Wedderburn: Prysm DevNet, with the same thing that we're doing for Lighthouse with Kamil's implementation, just to sort of extrapolate information from there, before sort of doing multi-kind DevNets, which have their own issues.
+Kevaundray Wedderburn: Prysm devnet, with the same thing that we're doing for Lighthouse with Kamil's implementation, just to sort of extrapolate information from there, before sort of doing multi-kind devnets, which have their own issues.
 
 395
 00:54:43.740 --> 00:54:45.580
@@ -1602,7 +1602,7 @@ Csaba: being tested in the light phase and not in a bigger thing. I just… it j
 
 401
 00:55:21.390 --> 00:55:28.450
-Kevaundray Wedderburn: Okay, Barnabas, just before Marco, Barnabas said, single client dev notes make no sense. Barnabas, can you…
+Kevaundray Wedderburn: Okay, Barnabas, just before Mark, Barnabas said, single client devnets make no sense. Barnabas, can you…
 
 402
 00:55:28.580 --> 00:55:30.319
@@ -1618,7 +1618,7 @@ Csaba: That's…
 
 405
 00:55:52.790 --> 00:56:02.559
-Kevaundray Wedderburn: Okay, yeah, I mean, that's great. If we don't… if we think single-client dev nets, sort of don't make any sense, then we can do multi-client after doing local kurtosis, tests,
+Kevaundray Wedderburn: Okay, yeah, I mean, that's great. If we don't… if we think single-client devnets, sort of don't make any sense, then we can do multi-client after doing local kurtosis, tests,
 
 406
 00:56:02.680 --> 00:56:03.850
@@ -1642,7 +1642,7 @@ ethDreamer (Mark): I tried to get some measurements, if people want to see that,
 
 411
 00:56:22.150 --> 00:56:26.350
-ethDreamer (Mark): I don't know, measurements to net zero look like I have… Just a small graph.
+ethDreamer (Mark): I don't know, measurements to devnet zero look like I have… Just a small graph.
 
 412
 00:56:30.220 --> 00:56:33.480
@@ -1654,7 +1654,7 @@ ethDreamer (Mark): Timing, I don't know, can people see this?
 
 414
 00:56:40.790 --> 00:56:53.120
-Kevaundray Wedderburn: Oh, this is for XMSS. Do you mind if we go through the networking, just Waggle plus zcast part, and then we can… I can add this to the… to this… to offer it?
+Kevaundray Wedderburn: Oh, this is for Etis. Do you mind if we go through the networking, just Waggle plus seacast part, and then we can… I can add this to the… to this… to offer it?
 
 415
 00:56:53.510 --> 00:57:00.250
@@ -1662,19 +1662,19 @@ ethDreamer (Mark): Yeah, I mean, it's… it's preliminary, but… or, like, it�
 
 416
 00:57:02.230 --> 00:57:10.080
-Kevaundray Wedderburn: Yeah, okay, that's cool. I'll just go through the Wagold for ZCC stuff, and then I'll just… I think we can go to it after.
+Kevaundray Wedderburn: Yeah, okay, that's cool. I'll just go through the Waggle plus seacast stuff, and then I'll just… I think we can go to it after.
 
 417
 00:57:10.520 --> 00:57:18.610
-Kevaundray Wedderburn: Vlad, I think you also had an implementation of zcast that you're working on, that you plan to have ready, maybe this week?
+Kevaundray Wedderburn: Vlad, I think you also had an implementation of seacast that you're working on, that you plan to have ready, maybe this week?
 
 418
 00:57:19.940 --> 00:57:27.930
-vlad: Yeah, so I'm working off Shaiba's spec, and I hope to be compatible with his Prysm implementation.
+vlad: Yeah, so I'm working off Csaba's spec, and I hope to be compatible with his Prysm implementation.
 
 419
 00:57:29.130 --> 00:57:37.950
-Kevaundray Wedderburn: Okay, that's great. I think Kamil will probably… you want to modify your implementation to be cross-compatible with, like, Shaiba and…
+Kevaundray Wedderburn: Okay, that's great. I think Kamil will probably… you want to modify your implementation to be cross-compatible with, like, Csaba and…
 
 420
 00:57:38.500 --> 00:57:39.690
@@ -1682,11 +1682,11 @@ Kevaundray Wedderburn: as well.
 
 421
 00:57:39.900 --> 00:57:47.680
-Kamil Salakhiev: That's a question I had, like, what protocol we agree on, because the zcast is a general protocol, and for these kind of messages.
+Kamil Salakhiev: That's a question I had, like, what protocol we agree on, because the seacast is a general protocol, and for these kind of messages.
 
 422
 00:57:47.890 --> 00:57:58.269
-Kamil Salakhiev: Yeah, we have other specifics, for example, zcast doesn't specify how we, like, sign the messages, when we send the signatures, things like that.
+Kamil Salakhiev: Yeah, we have other specifics, for example, seacast doesn't specify how we, like, sign the messages, when we send the signatures, things like that.
 
 423
 00:57:58.780 --> 00:58:03.789
@@ -1694,11 +1694,11 @@ Kamil Salakhiev: Do we want to maybe first have some spec that we… everyone ag
 
 424
 00:58:04.000 --> 00:58:08.610
-Kamil Salakhiev: And then we can iterate, because currently it's a bit… sounds to be a bit of house to me.
+Kamil Salakhiev: And then we can iterate, because currently it's a bit… sounds to be a bit of chaos to me.
 
 425
 00:58:09.720 --> 00:58:23.540
-Kevaundray Wedderburn: If Csaba's… if Csaba's got his one to be interrupting with Silver's one, then maybe you can just modify it to interrupt with all three of them. We can just think… we can talk about this async, but it doesn't seem like a hard problem, like…
+Kevaundray Wedderburn: If Csaba's… if Csaba's got his one to be interop with Silver's one, then maybe you can just modify it to interop with all three of them. We can just think… we can talk about this async, but it doesn't seem like a hard problem, like…
 
 426
 00:58:24.460 --> 00:58:28.299
@@ -1706,11 +1706,11 @@ Kevaundray Wedderburn: like, you can just make, yeah, just make a spec for the P
 
 427
 00:58:30.360 --> 00:58:31.270
-Kamil Salakhiev: We need space.
+Kamil Salakhiev: We need a spec.
 
 428
 00:58:31.270 --> 00:58:41.630
-Kevaundray Wedderburn: Okay, cool. That's all of the zcast plus Waggle art… Done,
+Kevaundray Wedderburn: Okay, cool. That's all of the seacast plus Waggle part… Done,
 
 429
 00:58:41.900 --> 00:58:48.559
@@ -1734,7 +1734,7 @@ ethDreamer (Mark): I can run the analysis again to get… get numbers again, but
 
 434
 00:59:09.290 --> 00:59:15.870
-ethDreamer (Mark): Yeah, no, this is just initial measurements off of DevNet Zero, like… an attempt to, like, kind of measure the…
+ethDreamer (Mark): Yeah, no, this is just initial measurements off of devnet Zero, like… an attempt to, like, kind of measure the…
 
 435
 00:59:16.820 --> 00:59:21.710
@@ -1814,7 +1814,7 @@ ethDreamer (Mark): This kind of thing wouldn't happen, so that the…
 
 454
 01:01:18.680 --> 01:01:21.299
-Potuzz: Just drop the aggregate in that case.
+Potuz: Just drop the aggregate in that case.
 
 455
 01:01:25.160 --> 01:01:27.729
@@ -1826,7 +1826,7 @@ ethDreamer (Mark): the…
 
 457
 01:01:28.990 --> 01:01:32.269
-Potuzz: Yeah, just don't aggregate if you're proposing next lot.
+Potuz: Yeah, just don't aggregate if you're proposing next slot.
 
 458
 01:01:34.120 --> 01:01:34.750
@@ -1842,7 +1842,7 @@ ethDreamer (Mark): I grabbed…
 
 461
 01:01:46.870 --> 01:01:56.529
-Potuzz: What are these numbers? What does it mean, this merge R1 and merge R2? You're merging this on your proofs as the aggregates are coming on N-2?
+Potuz: What are these numbers? What does it mean, this merge R1 and merge R2? You're merging this on your proofs as the aggregates are coming on N-2?
 
 462
 01:01:57.570 --> 01:01:58.280
@@ -1850,15 +1850,15 @@ ethDreamer (Mark): Yes.
 
 463
 01:01:58.630 --> 01:02:02.239
-Potuzz: What happens if you're on a fork and you find out your head
+Potuz: What happens if you're on a fork and you find out your head
 
 464
 01:02:02.430 --> 01:02:06.750
-Potuzz: Changed, and so you have two completely different branches.
+Potuz: Changed, and so you have two completely different branches.
 
 465
 01:02:09.140 --> 01:02:12.789
-Potuzz: Which ones are you aggregating?
+Potuz: Which ones are you aggregating?
 
 466
 01:02:14.400 --> 01:02:18.979
@@ -1874,11 +1874,11 @@ ethDreamer (Mark): aggregates aren't going to matter, then you'd kind of drop th
 
 469
 01:02:29.860 --> 01:02:38.860
-Potuzz: You just probably… if you're in a fork that is short enough, you're probably proposing on both sides of the fork, and then you can just probably aggregate all, and if…
+Potuz: You just probably… if you're in a fork that is short enough, you're probably proposing on both sides of the fork, and then you can just probably aggregate all, and if…
 
 470
 01:02:39.100 --> 01:02:46.520
-Potuzz: If it's large and long enough, then you're only proposing one, so you only aggregate it from one anyways. Yeah, my complaint doesn't make any sense.
+Potuz: If it's large and long enough, then you're only proposing one, so you only aggregate it from one anyways. Yeah, my complaint doesn't make any sense.
 
 471
 01:02:47.090 --> 01:02:47.880
@@ -1906,7 +1906,7 @@ Kevaundray Wedderburn: I think we're at time, just to summarize, roughly the stu
 
 477
 01:03:17.680 --> 01:03:30.510
-Kevaundray Wedderburn: the… we want, sort of, client devs to fix their implementation so that we can continue on DevNet 0, and this is just making sure you're caching the keys. We're gonna postpone the separate aggregator role.
+Kevaundray Wedderburn: the… we want, sort of, client devs to fix their implementation so that we can continue on devnet 0, and this is just making sure you're caching the keys. We're gonna postpone the separate aggregator role.
 
 478
 01:03:30.560 --> 01:03:39.080
@@ -1914,15 +1914,15 @@ Kevaundray Wedderburn: Until we potentially actually need it. Gotti is going to 
 
 479
 01:03:39.230 --> 01:03:45.219
-Kevaundray Wedderburn: Hari to review, Shaiba's document once it's released, which will be tomorrow.
+Kevaundray Wedderburn: Pari to review, Csaba's document once it's released, which will be tomorrow.
 
 480
 01:03:45.840 --> 01:03:51.140
-Kevaundray Wedderburn: And then, yeah, I guess we still need to get more information on zcast plus Waggle,
+Kevaundray Wedderburn: And then, yeah, I guess we still need to get more information on seacast plus Waggle,
 
 481
 01:03:51.280 --> 01:03:57.900
-Kevaundray Wedderburn: the zcast plus stuff, you can just think of it as, sort of, pipelining. We may not use it, or we… I mean…
+Kevaundray Wedderburn: the seacast plus stuff, you can just think of it as, sort of, pipelining. We may not use it, or we… I mean…
 
 482
 01:03:58.220 --> 01:04:02.030
@@ -1958,7 +1958,7 @@ Kevaundray Wedderburn: If there's nothing else… I will see you folks tomorrow.
 
 490
 01:04:49.770 --> 01:04:51.890
-Barnabas: Could we discuss what we want in the next zodnet?
+Barnabas: Could we discuss what we want in the next devnet?
 
 491
 01:04:54.170 --> 01:04:58.810
@@ -1982,7 +1982,7 @@ Barnabas: Have the system contract deployed, get the key registration working, a
 
 496
 01:05:22.540 --> 01:05:29.570
-Barnabas: I get the clients to basically do the fork transition. I'm just not sure if this is reasonable for the next subnet or really.
+Barnabas: I get the clients to basically do the fork transition. I'm just not sure if this is reasonable for the next devnet or really.
 
 497
 01:05:30.750 --> 01:05:37.039
@@ -1994,11 +1994,11 @@ Kevaundray Wedderburn: talk about it in tomorrow's call. Best case, we just have
 
 499
 01:05:42.960 --> 01:05:45.050
-Potuzz: Wait, wait, what's tomorrow's called?
+Potuz: Wait, wait, what's tomorrow's called?
 
 500
 01:05:45.660 --> 01:05:54.329
-Potuzz: Are we keeping the crazy schedule of, like, 3 calls a week? That was just to have a spec that we can code. We already have this. Do we really need 3 meetings a week?
+Potuz: Are we keeping the crazy schedule of, like, 3 calls a week? That was just to have a spec that we can code. We already have this. Do we really need 3 meetings a week?
 
 501
 01:05:56.210 --> 01:05:59.559
@@ -2010,7 +2010,7 @@ Kevaundray Wedderburn: I mean, I don't think we need…
 
 503
 01:06:02.890 --> 01:06:06.669
-Kevaundray Wedderburn: If people want to do less than free calls, I'm also a fan of that.
+Kevaundray Wedderburn: If people want to do less than three calls, I'm also a fan of that.
 
 504
 01:06:16.550 --> 01:06:31.099
@@ -2038,15 +2038,15 @@ Barnabas: If clients would be ready to do the fork transition already on Friday.
 
 510
 01:07:04.470 --> 01:07:10.840
-Barnabas: And if we just have the call on Friday, then we likely won't be able to launch the next subnet till, like, next week, Monday.
+Barnabas: And if we just have the call on Friday, then we likely won't be able to launch the next devnet till, like, next week, Monday.
 
 511
 01:07:12.530 --> 01:07:15.830
-Kevaundray Wedderburn: Wait, we can launch in DevNet without a call, though, like,
+Kevaundray Wedderburn: Wait, we can launch in devnet without a call, though, like,
 
 512
 01:07:17.390 --> 01:07:29.629
-Barnabas: We definitely can, if we just agree that we're gonna be dedicating to that new system contract, we're gonna do the pre-registration of the keys, and we're gonna be able to handle the fork transition for the next subnet.
+Barnabas: We definitely can, if we just agree that we're gonna be dedicating to that new system contract, we're gonna do the pre-registration of the keys, and we're gonna be able to handle the fork transition for the next devnet.
 
 513
 01:07:29.770 --> 01:07:34.800
@@ -2054,7 +2054,7 @@ Barnabas: If everybody is on board for this, by Friday, then I'm good.
 
 514
 01:07:34.800 --> 01:07:36.989
-Potuzz: Are you going to do two forks?
+Potuz: Are you going to do two forks?
 
 515
 01:07:40.900 --> 01:07:44.920
@@ -2062,11 +2062,11 @@ Barnabas: Yeah, one for the… well, the system contract doesn't require a fork,
 
 516
 01:07:45.450 --> 01:07:53.830
-Potuzz: Yes. So I'm deploying the contract does not, but going from pre-deployment to PQ validators, it requires two forks.
+Potuz: Yes. So I'm deploying the contract does not, but going from pre-deployment to PQ validators, it requires two forks.
 
 517
 01:07:55.630 --> 01:08:05.500
-Potuzz: We can… we can coordinate this offline, but without a synchronous call, but it needs coordination, it needs, like, to… to have the configuration for both forks, and so forth.
+Potuz: We can… we can coordinate this offline, but without a synchronous call, but it needs coordination, it needs, like, to… to have the configuration for both forks, and so forth.
 
 518
 01:08:05.500 --> 01:08:12.740
@@ -2074,7 +2074,7 @@ ethDreamer (Mark): I don't understand why we need to really test that right now,
 
 519
 01:08:12.740 --> 01:08:17.390
-Potuzz: Yes, I agree. I don't see why in the hell would be testing the contract.
+Potuz: Yes, I agree. I don't see why in the hell would be testing the contract.
 
 520
 01:08:19.229 --> 01:08:24.739
@@ -2082,7 +2082,7 @@ Barnabas: Yeah, okay, like, that's why I wanted to discuss whether we want to de
 
 521
 01:08:28.029 --> 01:08:28.739
-Potuzz: Yeah, we don't.
+Potuz: Yeah, we don't.
 
 522
 01:08:29.340 --> 01:08:31.169
@@ -2114,7 +2114,7 @@ Barnabas: Have fun, Keva.
 
 529
 01:08:56.630 --> 01:08:58.140
-Potuzz: So, guys, have a nice day.
+Potuz: So, guys, have a nice day.
 
 530
 01:08:59.359 --> 01:09:00.449

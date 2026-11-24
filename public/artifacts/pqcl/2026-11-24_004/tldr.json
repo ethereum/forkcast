@@ -8,7 +8,7 @@
       },
       {
         "timestamp": "00:08:25",
-        "highlight": "55-slot reorg caused by late attestations; Prysm rejected reorgs >32 slots; max reorg depth flag set to unlimited, chain slowly recovering"
+        "highlight": "55-slot reorg caused by late attestations; Geth rejected reorgs >32 slots; max reorg depth flag set to unlimited, chain slowly recovering"
       },
       {
         "timestamp": "00:14:00",
@@ -28,7 +28,7 @@
     "staking_contract": [
       {
         "timestamp": "00:23:30",
-        "highlight": "Staking contract moved to sys-asm repo (PR open); XMSS verifier uses EVM bytecode via a dedicated opcode, living in a separate contract via static call"
+        "highlight": "Staking contract moved to sys-asm repo (PR open); XMSS verifier is Solidity/EVM bytecode (using the Keccak opcode) in a separate contract, called via static call"
       },
       {
         "timestamp": "00:31:11",
@@ -38,7 +38,7 @@
     "erc_key_derivation": [
       {
         "timestamp": "00:28:21",
-        "highlight": "ERC PR open (ethereum/ERCs#2214): specifies derivation from mnemonic \u2192 seed \u2192 XMSS and VRF keys; ERC-2335 (JSON keystore format) also in progress"
+        "highlight": "ERC PR open (ethereum/ERCs#2214): specifies derivation from mnemonic \u2192 seed \u2192 XMSS and VRF keys; ERC-2335 (JSON keystore) counterpart not started yet"
       }
     ],
     "aggregator_role": [
@@ -58,7 +58,7 @@
       },
       {
         "timestamp": "00:52:05",
-        "highlight": "Csaba: Prysm Go zcast implementation targeting end-of-day/tomorrow; compatible with Silver (vlad) implementation; single-client Kurtosis testing recommended before multi-client devnet"
+        "highlight": "Csaba: Prysm (Go) seacast implementation targeting end-of-day/tomorrow; compatible with Silver (vlad) implementation; single-client Kurtosis testing recommended before multi-client devnet"
       },
       {
         "timestamp": "00:58:29",
@@ -77,24 +77,24 @@
     ],
     "organizational": [
       {
-        "timestamp": "01:05:45",
-        "highlight": "Call cadence reduced: tomorrow's call canceled; keeping Friday call; plan to reduce to 1\u20132 per week going forward"
-      },
-      {
         "timestamp": "01:04:51",
         "highlight": "pq-devnet-1 notes page published; next devnet will NOT include fork transition or system contract testing \u2014 focus remains on timing/aggregation"
+      },
+      {
+        "timestamp": "01:05:45",
+        "highlight": "Call cadence reduced: tomorrow's call canceled; keeping Friday call; plan to reduce to 1\u20132 per week going forward"
       }
     ]
   },
   "action_items": [
     {
       "timestamp": "00:13:46",
-      "action": "All CL teams: fix XMSS key pre-generation/caching and add key-gen-rate logging before pq-devnet-1",
+      "action": "All CL teams: fix XMSS key pre-generation/caching and add key-gen-rate logging so pq-devnet-0 can recover",
       "owner": "Prysm, Grandine, and other CL client teams"
     },
     {
       "timestamp": "00:30:38",
-      "action": "Review ERC-2214 (mnemonic \u2192 XMSS/VRF derivation) for cryptographic correctness, including mnemonic-reuse safety",
+      "action": "Review the key-derivation ERC (ethereum/ERCs PR 2214; mnemonic \u2192 XMSS/VRF derivation) for cryptographic correctness, including mnemonic-reuse safety",
       "owner": "Gottfried Herold"
     },
     {
@@ -105,12 +105,12 @@
   ],
   "decisions": [
     {
-      "timestamp": "00:37:57",
-      "decision": "Separate aggregator role deferred from first PQ fork; revisit only if needed for quick slots or faster finality"
+      "timestamp": "00:37:29",
+      "decision": "LeanVM 0.17 adopted for pq-devnet-1; all clients must update simultaneously (breaking change)"
     },
     {
-      "timestamp": "00:23:48",
-      "decision": "LeanVM 0.17 adopted for pq-devnet-1; all clients must update simultaneously (breaking change)"
+      "timestamp": "00:37:57",
+      "decision": "Separate aggregator role deferred from first PQ fork; revisit only if needed for quick slots or faster finality"
     },
     {
       "timestamp": "01:04:51",
@@ -119,10 +119,6 @@
     {
       "timestamp": "01:05:45",
       "decision": "Tomorrow's PQ-CL call canceled; cadence reduced to 1\u20132 calls per week (next call: Friday)"
-    },
-    {
-      "timestamp": "00:55:01",
-      "decision": "Single-client devnets replaced by Kurtosis local tests; multi-client devnets only after Kurtosis interop confirmed"
     }
   ],
   "targets": [
@@ -132,7 +128,7 @@
     },
     {
       "timestamp": "00:46:50",
-      "target": "Csaba networking methodology doc \u2014 end of day November 24 or morning November 25"
+      "target": "Csaba networking methodology doc \u2014 morning of November 25"
     }
   ]
 }

@@ -3,34 +3,42 @@
   "highlights": {
     "parameter_and_aggregation_strategy": [
       {
-        "timestamp": "00:19:49",
-        "highlight": "Proposed 3-stage approach: benchmark raw signatures first (no aggregation), then block-builder aggregation, then mempool aggregation"
+        "timestamp": "00:19:37",
+        "highlight": "Kev's proposed 3-stage approach: benchmark raw signatures first (no aggregation), then block-builder aggregation, then mempool aggregation"
       },
       {
-        "timestamp": "00:24:44",
-        "highlight": "lightclient: aggregation unlikely in Hegota; EL blocks at 2\u20134 MB range are manageable without aggregation; networking improvements (e.g., block witness) can offset larger sig sizes"
+        "timestamp": "00:23:12",
+        "highlight": "Safe Transaction Service signature limit is <5 KB; current sphincs.art default params yield ~8 KB signatures (up from ~4 KB); Nico: at least 15% fewer verification hashes (30\u201340% with other parameter trades) without changing lifetime"
       },
       {
-        "timestamp": "00:23:16",
-        "highlight": "Safe Transaction Service signature limit is <5 KB; current sphincs.art default params yield ~8 KB signatures (up from ~4 KB); Nico estimates 15\u201330% hash reduction possible without changing lifetime"
+        "timestamp": "00:24:39",
+        "highlight": "lightclient: aggregation unlikely in Hegota; EL blocks in the 2\u20134 MB range are manageable without it, helped by networking improvements such as not re-propagating signatures already in the mempool"
       },
       {
-        "timestamp": "00:40:00",
-        "highlight": "One-time migration consensus: shipping two SPHINCS+ variants requiring two user migrations is explicitly ruled out"
+        "timestamp": "00:31:25",
+        "highlight": "lightclient: users must migrate only once; shipping two SPHINCS variants would be a failure (Iv\u00e1n agreed in chat; Justin Florentine was open to two if aggregation proves incompatible)"
+      },
+      {
+        "timestamp": "00:47:20",
+        "highlight": "Kev: the group still lacks a process for choosing the mainnet parameter set (sig size, wallet/MPC needs, aggregation speed); the next devnet doesn't need to wait on it"
+      },
+      {
+        "timestamp": "00:51:53",
+        "highlight": "Toni: gas prices every byte, so bigger signatures cap throughput (fewer txs per block) rather than worst-case block size"
+      },
+      {
+        "timestamp": "01:01:57",
+        "highlight": "Pruning disputed: Matteo called the 4 KB option's tree pruning risky and privacy-losing; Nico said hardware wallet makers strongly prefer pruning as the simplest option"
       }
     ],
     "devnet_and_spec_path": [
       {
         "timestamp": "00:58:28",
-        "highlight": "Consensus formed: target bogota-devnet-3 (not Daisugi) with Lean SPHINCS+ and either PROOF frame or sig list \u2014 no aggregation"
+        "highlight": "Agreed: target bogota-devnet-3 (not Daisugi) with leanSPHINCS and either PROOF frame or sig list \u2014 no aggregation"
       },
       {
-        "timestamp": "01:01:21",
-        "highlight": "PROOF frame vs. sig list still undecided; EL teams need to resolve before bogota-devnet-3 spec is finalized"
-      },
-      {
-        "timestamp": "01:05:34",
-        "highlight": "Interim: restart Daisugi testnet with latest Nethermind (sphincs.art default params) for baseline benchmarks while bogota-devnet-3 spec is prepared"
+        "timestamp": "01:01:14",
+        "highlight": "PROOF frame vs. sig list still undecided; EL teams need to resolve it before the bogota-devnet-3 spec is finalized"
       }
     ],
     "organizational": [
@@ -43,36 +51,32 @@
         "highlight": "EthPandaOps (Philip) migrated Daisugi testnet to larger infrastructure; Project 11 and Nethermind assisted"
       },
       {
-        "timestamp": "01:11:34",
-        "highlight": "Nico: deadline pressure \u2014 end-of-January target, December holidays reduce capacity; warns against further parameter drift without learning"
+        "timestamp": "01:10:53",
+        "highlight": "Nico: deadline is end of January and December holidays reduce capacity; warns against keeping a parameter set the group learns nothing from"
       }
     ]
   },
   "action_items": [
     {
-      "timestamp": "00:36:14",
-      "action": "Nethermind: restart Daisugi testnet with sphincs.art default parameters for benchmark baseline",
-      "owner": "Nethermind / Antonio Sanso"
+      "timestamp": "00:36:21",
+      "action": "Restart Daisugi with the latest Nethermind branch (sphincs.art default parameters) to start benchmarking; Antonio later said Daisugi isn't needed once bogota-devnet-3 carries the PQ changes",
+      "owner": "Nethermind (via PK, EthPandaOps)"
+    },
+    {
+      "timestamp": "00:46:32",
+      "action": "Share alternative SPHINCS parameter sets (more permutation/aggregation-friendly, no experimental optimizations) for comparison",
+      "owner": "Nico"
     },
     {
       "timestamp": "01:01:14",
-      "action": "Resolve PROOF frame vs. sig list to unblock bogota-devnet-3 spec; discuss in pq-el Discord",
+      "action": "Resolve PROOF frame vs. sig list to unblock the bogota-devnet-3 spec; discuss in pq-el Discord",
       "owner": "EL client teams / lightclient"
-    },
-    {
-      "timestamp": "00:46:19",
-      "action": "Nico to share alternative sphincs.art parameter sets optimized for permutation/aggregation friendliness",
-      "owner": "Nico"
     }
   ],
   "decisions": [
     {
       "timestamp": "00:59:23",
-      "decision": "No aggregation in bogota-devnet-3; ship Lean SPHINCS+ with sphincs.art default parameters into next Bogota devnet (not Daisugi)"
-    },
-    {
-      "timestamp": "00:31:35",
-      "decision": "Only one SPHINCS+ variant will be shipped; requiring users to migrate twice is not acceptable"
+      "decision": "No aggregation in bogota-devnet-3; ship leanSPHINCS into the next Bogota devnet (not Daisugi). Parameter set not yet fixed: Antonio prefers sphincs.art defaults, Kev said any set works"
     },
     {
       "timestamp": "01:12:39",
@@ -82,11 +86,11 @@
   "targets": [
     {
       "timestamp": "01:00:53",
-      "target": "bogota-devnet-3 \u2014 Lean SPHINCS+ + PROOF frame or sig list; spec to be finalized in Discord before launch"
+      "target": "bogota-devnet-3 \u2014 leanSPHINCS + PROOF frame or sig list; spec to be finalized in Discord before launch"
     },
     {
       "timestamp": "01:11:34",
-      "target": "Parameter and design decisions needed before end of January to meet Hegota timeline"
+      "target": "Nico: parameter and design decisions needed by end of January"
     }
   ]
 }

@@ -1,0 +1,148 @@
+{
+  "meeting": "ACDC #192 - 2026-11-26",
+  "eips": [
+    {
+      "eip": 8037,
+      "title": "State Creation Gas Cost Increase",
+      "weight": "discussed",
+      "summary": "EL teams polled on whether to ship Glamsterdam with EIP-8037 as is or delay; rough consensus reached to proceed unchanged.",
+      "moments": [
+        {
+          "timestamp": "00:14:00",
+          "context": "Ben Edgington introduced the overhanging ACDE question of whether to commit to shipping EIP-8037 as is or change the spec, with Hoodi targeted for the week of 14 December."
+        },
+        {
+          "timestamp": "00:17:02",
+          "context": "Ansgar polled each EL client team. Geth leaned toward shipping as is since no strong alternative proposal exists; Nethermind said proposals don't move the needle enough; Besu acknowledged its own proposal wasn't strong enough and abstained; Erigon called it the lesser evil; Reth and ethrex explicitly supported shipping as is."
+        },
+        {
+          "timestamp": "00:31:01",
+          "context": "Ansgar summarized that no client unambiguously favored delaying, and asked for any veto. None came; EL rough consensus was reached to lock in Glamsterdam with 8037 unchanged."
+        }
+      ]
+    },
+    {
+      "eip": 4337,
+      "weight": "mentioned",
+      "summary": "Cited in chat as an example of the griefing attacks that full deferral of state gas refills would open up.",
+      "moments": [
+        {
+          "timestamp": "00:22:21",
+          "context": "Toni wrote that fully deferring state gas refills would make users post more gas, opening larger griefing attacks (e.g. 4337, calls to untrusted contracts), and that no spec-change alternative is clearly better than 8037 as implemented."
+        }
+      ]
+    },
+    {
+      "eip": 8237,
+      "title": "Independent CL/EL Sync",
+      "weight": "mentioned",
+      "summary": "Barnabas suggested CFIing EIP-8237 for Gloas to decouple CL from EL payload syncing, addressing the RLP backfill concern.",
+      "moments": [
+        {
+          "timestamp": "00:43:43",
+          "context": "Barnabas proposed in chat that EIP-8237 (Independent CL/EL Sync) could be CFI'd for Gloas to avoid the CL needing to care about payload syncing and RLP for backfill."
+        }
+      ]
+    },
+    {
+      "eip": 8383,
+      "title": "Reduce CL Block Retention Window",
+      "weight": "mentioned",
+      "summary": "Barnabas noted EIP-8383 is already CFI'd and will reduce the CL block retention window, lessening the RLP backfill concern.",
+      "moments": [
+        {
+          "timestamp": "00:48:31",
+          "context": "Barnabas pointed out in chat that EIP-8383 is CFI'd to reduce the retention window, so the RLP backfill issue will become even less relevant going forward."
+        }
+      ]
+    },
+    {
+      "eip": 7805,
+      "title": "Fork-choice enforced Inclusion Lists (FOCIL)",
+      "weight": "discussed",
+      "summary": "Extensive debate on whether FOCIL should remain an SFI headliner for Hegota or be dropped to prioritize post-quantum work; no decision made, deferred to next call.",
+      "moments": [
+        {
+          "timestamp": "00:56:45",
+          "context": "Ben Edgington proposed reexamining Heze's headliner, EIP-7805 FOCIL, in light of the push to prioritize PQ and AI security, noting that removing a headliner would be an extraordinary decision for which he'd want near-unanimity from client teams, including EL teams."
+        },
+        {
+          "timestamp": "01:04:48",
+          "context": "Thomas (soispoke) laid out options: no FOCIL, FOCIL V0 without frames support, minimal FOCIL plus frames with no aggregation (the preferred path), and full PQ FOCIL with aggregation. The argument was that a Hegota cut to FOCIL and frames need not materially delay PQCL."
+        },
+        {
+          "timestamp": "01:14:34",
+          "context": "Jihoon argued FOCIL is in late development and can be pipelined alongside PQ research, with limited impact on PQ timelines, since researchers and developers have different skill sets."
+        },
+        {
+          "timestamp": "01:18:42",
+          "context": "Andrew Ashikhmin argued FOCIL does not solve censorship in full blocks and is far from finished, making it a massive distraction from PQ work."
+        },
+        {
+          "timestamp": "01:23:03",
+          "context": "Caspar argued FOCIL should be dropped because Hegota should be reprioritized to include only PQ-critical items, and FOCIL competes for the same bottleneck of high-context people."
+        },
+        {
+          "timestamp": "01:29:25",
+          "context": "Ben Adams said FOCIL's spec is now incomplete due to PQ unknowns, putting it at risk, but killing it now might be premature. Fabio from Besu supported keeping a bare minimum FOCIL. Lodestar said FOCIL is already implemented on CL and doesn't see the overlap. Ivan from ethrex was undecided."
+        },
+        {
+          "timestamp": "01:35:11",
+          "context": "Ben Edgington drew a line, stating the decision on FOCIL and full Heze scope will be made on the next call in two weeks."
+        }
+      ]
+    },
+    {
+      "eip": 8288,
+      "title": "In-mempool signature and proof aggregation",
+      "weight": "discussed",
+      "summary": "Referenced as a potential approach for in-mempool signature and proof aggregation and its interaction with FOCIL and PQ transactions.",
+      "moments": [
+        {
+          "timestamp": "01:00:41",
+          "context": "Thomas noted that if Hegota does not include 8288-style mempool aggregation, FOCIL works out of the box with PQ transactions without spec changes, since each IL just holds fewer PQ transactions."
+        },
+        {
+          "timestamp": "01:03:25",
+          "context": "Felix suggested in chat that EIP-8288 has structural similarities to FOCIL networking needs and could be another avenue to ship FOCIL, avoiding relaying large PQ transaction bundles in the CL."
+        }
+      ]
+    },
+    {
+      "eip": 7702,
+      "title": "Set Code for EOAs",
+      "weight": "mentioned",
+      "summary": "Thomas mentioned 7702 transactions as one of the legacy types that a minimal FOCIL version without frames support could still include.",
+      "moments": [
+        {
+          "timestamp": "01:05:20",
+          "context": "Thomas listed legacy transactions and 7702 as the transaction types a FOCIL V0 (without frames support) would be limited to including in inclusion lists."
+        }
+      ]
+    },
+    {
+      "eip": 1559,
+      "title": "Fee market change for ETH 1.0 chain",
+      "weight": "mentioned",
+      "summary": "Raised in chat as the answer to the full-block censorship argument against FOCIL: base fees keep rising, so the attack cannot be sustained.",
+      "moments": [
+        {
+          "timestamp": "01:19:26",
+          "context": "Replying in chat to Andrew's point that a builder can fill blocks to bypass FOCIL, Thomas said the attack can't be sustained because base fees keep going up; Marius replied '1559???', which Thomas thumbed up."
+        }
+      ]
+    },
+    {
+      "eip": 8046,
+      "title": "Uniform price auction over inclusion lists",
+      "weight": "mentioned",
+      "summary": "Anders referenced EIP-8046 as a complement to FOCIL for solving censorship resistance in full blocks.",
+      "moments": [
+        {
+          "timestamp": "01:21:24",
+          "context": "Anders posted in chat that EIP-8046 (Uniform Price Auction over Inclusion Lists, UPIL) exists on top of FOCIL to address censorship resistance in full blocks, but noted it is probably a later discussion."
+        }
+      ]
+    }
+  ]
+}

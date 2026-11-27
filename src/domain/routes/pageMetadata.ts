@@ -114,6 +114,11 @@ export const staticPageMetadata = {
     title: 'Glamsterdam Test Complexity - Forkcast',
     description: 'Analyze STEEL test complexity assessments for EIPs proposed for Glamsterdam.',
   },
+  research: {
+    title: 'Ethereum Research - Forkcast',
+    description:
+      'Plain-language tour of the research areas being explored for Ethereum upgrades beyond Hegotá: decoupled consensus, post-quantum cryptography, real-time proving, privacy, and more.',
+  },
 } satisfies Record<string, PageMetadata>;
 
 /**
@@ -144,4 +149,5 @@ export const staticPageRoutes = {
   glamsterdamDevnetInclusion: '/upgrade/glamsterdam/devnet-inclusion',
   glamsterdamClientPriority: '/upgrade/glamsterdam/client-priority',
   glamsterdamTestComplexity: '/upgrade/glamsterdam/test-complexity',
+  research: '/research',
 } satisfies Record<keyof typeof staticPageMetadata, string>;

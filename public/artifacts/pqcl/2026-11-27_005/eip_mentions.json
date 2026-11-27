@@ -1,0 +1,64 @@
+{
+  "meeting": "PQCL #005 - 2026-11-27",
+  "eips": [
+    {
+      "eip": 8483,
+      "title": "Post-Quantum Material Registration",
+      "weight": "discussed",
+      "summary": "The pre-registry contract for PQ material: its deployment timeline, open architecture questions, auditing, and a mainnet launch estimated about four months out.",
+      "moments": [
+        {
+          "timestamp": "00:35:12",
+          "context": "Kevaundray asked when to launch the pre-registry contract; Barnabas said it should be tested first, to check every component works as expected."
+        },
+        {
+          "timestamp": "00:35:59",
+          "context": "Ignacio shared the EIP-8483 workstream status document in chat."
+        },
+        {
+          "timestamp": "00:36:19",
+          "context": "Ignacio laid out the timeline: deploy the contracts before H-star so validators and builders can pre-register PQ material, start dequeuing at the H-star fork, and eject the remaining BLS validators at I-star."
+        },
+        {
+          "timestamp": "00:41:18",
+          "context": "Ignacio estimated deployment about four months out, blocked mainly on freezing the XMSS spec; Kevaundray proposed asking LightClient and the Steel team to review the non-XMSS parts."
+        }
+      ]
+    },
+    {
+      "eip": 8205,
+      "title": "Withdrawal credentials preregistration",
+      "weight": "discussed",
+      "summary": "Discussed updating EIP-8205 for PQ, with Tau and Lido collaborating on the changes.",
+      "moments": [
+        {
+          "timestamp": "00:42:41",
+          "context": "Kevaundray noted that EIP-8205 would likely need to be updated for PQ and asked if Lido or Tau would take the work. Dima from Lido confirmed they expect the EIP to be included with PQ updates and welcomed help. Tau agreed to collaborate with Dima."
+        }
+      ]
+    },
+    {
+      "eip": 7002,
+      "title": "Execution layer triggerable withdrawals",
+      "weight": "discussed",
+      "summary": "Dima asked how the new EL-triggered voluntary exit contract differs from EIP-7002.",
+      "moments": [
+        {
+          "timestamp": "00:44:09",
+          "context": "Dima asked how the proposed voluntary exit contract differs from 7002, noting that supplying amount zero already triggers an exit. Kevaundray clarified the new contract moves voluntary exits to the EL with operator signing, and the discussion covered keeping the BLS message format unchanged pre-PQ."
+        }
+      ]
+    },
+    {
+      "eip": 8517,
+      "weight": "mentioned",
+      "summary": "Manu shared a link to ERC-8517 during the miscellaneous section on the ERC PR review.",
+      "moments": [
+        {
+          "timestamp": "01:12:34",
+          "context": "Manu posted the ERC-8517 link in chat. Kevaundray and Gottfried discussed reviewing the ERC, with Gottfried flagging that the key store implicitly assumes XMSS key lifetime exceeds all relevant timeframes."
+        }
+      ]
+    }
+  ]
+}

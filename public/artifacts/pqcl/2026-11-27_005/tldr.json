@@ -4,7 +4,7 @@
     "devnet_status": [
       {
         "timestamp": "00:20:06",
-        "highlight": "PQ devnet-0 stable after resolving XMSS key-loading/caching issues; devnet-1 launched mid-call with all 8 CL clients participating"
+        "highlight": "PQ devnet-0 stable after resolving XMSS key-loading/caching issues; devnet-1 launched just before the call, with all 8 CL clients participating"
       },
       {
         "timestamp": "00:21:14",
@@ -18,7 +18,7 @@
     "leanvm_performance": [
       {
         "timestamp": "00:24:47",
-        "highlight": "LeanVM v0.19 is current release; 16-to-1 recursion on NUC 14 Pro at 4 cores = 2.2s idle, ~3s under EVM load"
+        "highlight": "leanVM v0.19 is current release; 16-to-1 recursion on NUC 14 Pro at 4 cores = 2.2s idle, ~3s under EVM load"
       },
       {
         "timestamp": "00:26:36",
@@ -26,7 +26,7 @@
       },
       {
         "timestamp": "00:29:06",
-        "highlight": "If LeanVM needs 2x speedup, options are: reduce DVT-friendliness (1.5x gain), add top-layer caching/pre-aggregation, or pivot to DC"
+        "highlight": "If leanVM needs a 2x speedup, options are: reduce DVT-friendliness (1.5x gain), add top-layer caching/pre-aggregation, or pivot to DC"
       }
     ],
     "staking_contracts": [
@@ -54,11 +54,11 @@
       },
       {
         "timestamp": "00:55:36",
-        "highlight": "General consensus: gossip-sub baseline likely insufficient; Kamil's simulations show simpler segmented-broadcast approaches perform comparably or better than zcast with less complexity"
+        "highlight": "Kamil and Csaba expect the gossipsub baseline to be insufficient, but Anton's numbers were not that bad, so it is not ruled out yet; Kamil's simulations show simpler segmented-broadcast approaches comparable to or better than seacast"
       },
       {
-        "timestamp": "01:17:20",
-        "highlight": "Two implementation tracks exist: zcast over gossip (Silver + Prysm) and segmented broadcast over Waggle (Lighthouse + Teku); proposal to run separate devnets for each and compare proof propagation"
+        "timestamp": "01:25:55",
+        "highlight": "Two implementation tracks exist: seacast over gossip (Silver + Prysm) and segmented broadcast over Waggle (Lighthouse + Teku); proposal to run separate devnets for each and compare proof propagation"
       }
     ],
     "organizational": [
@@ -76,7 +76,7 @@
     },
     {
       "timestamp": "01:04:47",
-      "action": "Csaba, Kamil, Anton, and jxs to cross-validate simulation results and publish unified findings by Friday",
+      "action": "Csaba, Kamil, Anton, and jxs to cross-validate simulation results and publish unified findings by Friday next week",
       "owner": "Csaba / Kamil Salakhiev / Anton Nashatyrev"
     },
     {
@@ -88,7 +88,7 @@
   "decisions": [
     {
       "timestamp": "00:23:39",
-      "decision": "PQ specs considered stable; no changes needed to answer the PQ-Casper vs DC question"
+      "decision": "PQ specs considered stable; no changes needed to answer the PQ Gasper vs DC question"
     },
     {
       "timestamp": "01:15:26",
@@ -96,7 +96,7 @@
     },
     {
       "timestamp": "01:22:51",
-      "decision": "Next devnet will add segmented proof broadcast (zcast-over-gossip or equivalent) on top of devnet-1 spec; aggregation proofs only, everything else remains on gossip-sub"
+      "decision": "Next devnet will add segmented broadcasting of aggregation proofs on top of the devnet-1 spec, everything else staying on gossipsub; which protocol(s), and whether to run one devnet per track, to be agreed async"
     }
   ],
   "targets": [

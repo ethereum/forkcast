@@ -40,6 +40,7 @@ const UNTRACKED_PROPOSALS = new Set([
   7730, // ERC-7730: Clear signing metadata
   8047, // Not in the compiled EIP corpus
   8403, // Not in the compiled EIP corpus
+  8517, // ERC-8517: PQ validator keystore (PQCL 5)
 ]);
 
 /**

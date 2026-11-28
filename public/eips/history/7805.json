@@ -2,6 +2,16 @@
   "eipId": 7805,
   "commits": [
     {
+      "sha": "d2be3735b2f894e1e35f54de408159b5c7e14a94",
+      "date": "2026-11-27T21:24:13Z",
+      "message": "Update EIP-7805: Count the IL size over the EIP-2718 encoding",
+      "author": "tcoratger",
+      "prNumber": null,
+      "patch": "@@ -8,7 +8,7 @@ status: Draft\n type: Standards Track\n category: Core\n created: 2024-11-01\n-requires: 7732, 8037\n+requires: 2718, 7732, 8037\n ---\n \n ## Abstract\n@@ -117,7 +117,7 @@ We make the following changes to the engine API:\n \n #### IL Building\n \n-The rules for building ILs are left to the discretion of implementers. For instance, they may select transactions from the public mempool in various ways such as at random, by priority fee, or based on how long they have been pending. The total size of the IL transactions must not exceed `MAX_TRANSACTIONS_BYTES_PER_INCLUSION_LIST` (8 KiB).\n+The rules for building ILs are left to the discretion of implementers. For instance, they may select transactions from the public mempool in various ways such as at random, by priority fee, or based on how long they have been pending. The total size of the IL transactions must not exceed `MAX_TRANSACTIONS_BYTES_PER_INCLUSION_LIST` (8 KiB) in their [EIP-2718](./eip-2718.md) encoding.\n \n ### Consensus Layer\n ",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
       "sha": "fbc43ec3a187f0b3dd448e995a041227f4baa7b1",
       "date": "2026-11-27T17:03:19Z",
       "message": "Update EIP-7805: Rebase and update EIP-7805",
@@ -90,17 +100,9 @@
       "number": 12723,
       "title": "Update EIP-7805: Skip IL transactions that don't fit by size",
       "author": "soispoke",
-      "updatedAt": "2026-11-27T18:09:53Z",
-      "additions": 60,
-      "deletions": 9
-    },
-    {
-      "number": 12702,
-      "title": "Update EIP-7805: Count the IL size over the EIP-2718 encoding",
-      "author": "tcoratger",
-      "updatedAt": "2026-11-22T21:44:32Z",
-      "additions": 2,
-      "deletions": 1
+      "updatedAt": "2026-11-28T05:30:19Z",
+      "additions": 59,
+      "deletions": 10
     },
     {
       "number": 12023,
@@ -114,7 +116,7 @@
       "number": 12394,
       "title": "Update EIP-7805: Profile 2 omission claims and per-list VERIFY budget",
       "author": "Marchhill",
-      "updatedAt": "2026-10-27T13:01:11Z",
+      "updatedAt": "2026-11-27T23:13:58Z",
       "additions": 161,
       "deletions": 20
     },
